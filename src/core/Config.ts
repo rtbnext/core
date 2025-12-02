@@ -25,7 +25,11 @@ export class Config {
     public static readonly cwd = process.cwd();
     public readonly config: ConfigObject;
 
-    private constructor () { this.config = this.loadConfig() }
+    private constructor () {
+
+        this.config = this.loadConfig();
+
+    }
 
     public static getInstance () : Config {
 

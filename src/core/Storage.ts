@@ -3,23 +3,16 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { parse } from 'csv-parse';
 import { stringify } from 'csv-stringify';
-import { Config } from './Config';
-
-export interface StorageConfig {
-    baseDir: string;
-    minify: boolean;
-    csvDelimiter: string;
-};
+import { Config, ConfigObject } from './Config';
 
 export class Storage {
 
     private static instance: Storage;
-    private static readonly cwd = process.cwd();
-    private readonly config: StorageConfig;
+    private readonly config: ConfigObject[ 'storage' ];
 
     private constructor () {
 
-        this.config = Config.load< StorageConfig >( 'storage' )!;
+        this.config = Config.getInstance().getStorageConfig();
 
     }
 
@@ -32,7 +25,7 @@ export class Storage {
 
     private pathBuilder ( path: string ) : string {
 
-        return join( Storage.cwd, this.config.baseDir, path );
+        return join( Config.cwd, this.config.baseDir, path );
 
     }
 
