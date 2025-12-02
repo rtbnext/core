@@ -16,5 +16,8 @@
   },
   "bugs": {
     "url": "https://github.com/rtbnext/database/issues"
+  },
+  "dependencies": {
+    "@rtbnext/schema": "github:rtbnext/schema"
   }
 }
