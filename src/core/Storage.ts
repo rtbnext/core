@@ -8,6 +8,7 @@ import { Config } from './Config';
 export interface StorageConfig {
     baseDir: string;
     minify: boolean;
+    csvDelimiter: string;
 };
 
 export class Storage {
@@ -53,7 +54,7 @@ export class Storage {
 
     private async saveCSV< T extends [] = any > ( path: string, data: T ) : Promise< void > {
 
-        const content = stringify( data, { delimiter: ' ' } );
+        const content = stringify( data, { delimiter: this.config.csvDelimiter } );
         await writeFile( this.pathBuilder( path ), content, 'utf8' );
 
     }
@@ -63,7 +64,7 @@ export class Storage {
         if ( ! existsSync( path ) ) return;
 
         const content = await readFile( this.pathBuilder( path ), 'utf8' );
-        return parse( content, { bom: true, delimiter: ' ' } ) as T;
+        return parse( content, { bom: true, delimiter: this.config.csvDelimiter } ) as T;
 
     }
 
