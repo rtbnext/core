@@ -5,6 +5,8 @@ export interface ConfigObject {
     storage: {
         baseDir: string;
         minify: boolean;
+        fileExtensions: boolean;
+        compression: boolean;
         csvDelimiter: string;
     };
     api: {
