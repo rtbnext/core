@@ -24,6 +24,7 @@ export interface ConfigObject {
 export class Config {
 
     private static instance: Config;
+    public static readonly env = process.env.NODE_ENV ?? 'default';
     public static readonly cwd = process.cwd();
     public readonly config: ConfigObject;
 
@@ -44,7 +45,7 @@ export class Config {
 
         try {
 
-            const path = join( Config.cwd, 'config', ( process.env.ENV ?? 'default' ) + '.yml' );
+            const path = join( Config.cwd, 'config', Config.env + '.yml' );
             return load( path ) as ConfigObject;
 
         } catch ( err ) { throw new Error(
