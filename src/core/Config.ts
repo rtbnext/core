@@ -7,13 +7,23 @@ export interface ConfigObject {
         minify: boolean;
         csvDelimiter: string;
     };
+    api: {
+        baseUrl: string;
+        endpoints: {
+            list: string;
+            profile: string;
+        };
+        rateLimiting: {
+            batch: number;
+        };
+    };
 }
 
 export class Config {
 
     private static instance: Config;
     public static readonly cwd = process.cwd();
-    private readonly config: ConfigObject;
+    public readonly config: ConfigObject;
 
     private constructor () { this.config = this.loadConfig() }
 
@@ -36,5 +46,9 @@ export class Config {
         ) }
 
     }
+
+    public getConfig () : ConfigObject { return this.config }
+    public getStorageConfig () : ConfigObject[ 'storage' ] { return this.config.storage }
+    public getAPIConfig () : ConfigObject[ 'api' ] { return this.config.api }
 
 }

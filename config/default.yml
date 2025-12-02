@@ -2,3 +2,11 @@ storage:
   baseDir: "api"
   minify: true
   csvDelimiter: " "
+
+api:
+  baseUrl: "https://forbes.com/forbesapi/"
+  endpoints:
+    list: "person/{URI}/0/position/true.json"
+    profile: "person/{URI}.json"
+  rateLimiting:
+    batch: 25
