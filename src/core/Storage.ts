@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { load } from 'js-yaml';
+
+import { Config } from './Config';
 
 export interface StorageConfig {
     baseDir: string;
@@ -12,12 +13,11 @@ export class Storage {
 
     private static instance: Storage;
     private static readonly cwd = process.cwd();
-
     private readonly config: StorageConfig;
 
     private constructor () {
 
-        this.config = load( join( Storage.cwd, 'config/storage.yml' ) ) as StorageConfig;
+        this.config = Config.load< StorageConfig >( 'storage' )!;
 
     }
 
@@ -28,24 +28,24 @@ export class Storage {
 
     }
 
-    private pathBuilder ( filePath: string ) : string {
+    private pathBuilder ( path: string ) : string {
 
-        return join( Storage.cwd, this.config.baseDir, filePath );
-
-    }
-
-    private async saveJson< T = any > ( filePath: string, data: T ) : Promise< void > {
-
-        const jsonData = JSON.stringify( data, null, 2 );
-        await writeFile( this.pathBuilder( filePath ), jsonData, 'utf8' );
+        return join( Storage.cwd, this.config.baseDir, path );
 
     }
 
-    private async loadJson< T = any > ( filePath: string ) : Promise< T | false > {
+    private async saveJson< T = any > ( path: string, data: T ) : Promise< void > {
 
-        if ( ! existsSync( filePath ) ) return false;
+        const jsonData = JSON.stringify( data, null, this.config.minify ? undefined : 2 );
+        await writeFile( this.pathBuilder( path ), jsonData, 'utf8' );
 
-        const data = await readFile( this.pathBuilder( filePath ), 'utf8' );
+    }
+
+    private async loadJson< T = any > ( path: string ) : Promise< T | false > {
+
+        if ( ! existsSync( path ) ) return false;
+
+        const data = await readFile( this.pathBuilder( path ), 'utf8' );
         return JSON.parse( data ) as T;
 
     }
