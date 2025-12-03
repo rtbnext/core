@@ -1,5 +1,13 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { Config, ConfigObject } from './Config';
+
+export interface Response< T > {
+    success: boolean;
+    data?: T;
+    error?: string;
+    statusCode?: number;
+    duration: [ number, number ];
+}
 
 export class Fetch {
 
@@ -55,15 +63,19 @@ export class Fetch {
 
     }
 
-    public async request< T > ( target: string, retries: number = 0 ) : Promise< AxiosResponse< T > > {
+    public async request< T > ( target: string, retries: number = 0 ) : Promise< Response< T > > {
+
+        const startTime = process.hrtime();
 
         try {
 
             const userAgent = this.getRandomUserAgent();
             const headers = { ...this.config.headers, 'User-Agent': userAgent };
-            const response = await this.httpClient.get< T >( target, { headers } );
+            const res = await this.httpClient.get< T >( target, { headers } );
+            const duration = process.hrtime( startTime );
 
-            return response;
+            if ( res.status === 200 && res.data ) return { success: true, data: res.data, statusCode: res.status, duration };
+            return { success: false, error: `Invalid response status: ${ res.status }`, statusCode: res.status, duration };
 
         } catch ( err: any ) {
 
@@ -84,7 +96,7 @@ export class Fetch {
 
     }
 
-    public async requestMultiple< T > ( targets: string[] ) : Promise< AxiosResponse< T >[] > {
+    public async requestMultiple< T > ( targets: string[] ) : Promise< Response< T >[] > {
 
         const results = [];
         let target, count = 0;
