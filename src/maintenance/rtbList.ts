@@ -40,16 +40,13 @@ export class RTBList extends Maintenance {
 
         this.logger.info( `Fetch daily real-time billionaires list` );
 
-        const res = await this.fetch.request< RTBResponse >(
-            this.config.endpoints.list.replace( '{URI}', 'rtb' )
-        );
+        const res = await this.fetch.request< RTBResponse >( this.config.endpoints.list.replace( '{URI}', 'rtb' ) );
+        if ( ! res.success || ! res.data ) this.logger.exit( res.error || '' );
 
-        if ( ! res.success || ! res.data ) { this.logger.error( res.error || '' ) } else {
+        const list = res.data?.personList?.personsLists ?? [];
+        if ( ! list || list.length === 0 ) this.logger.exit( 'Empty list' );
 
-            const list = res.data?.personList?.personsLists ?? [];
-            // proceed list data ...
-
-        }
+        // ...
 
     }
 
