@@ -17,19 +17,20 @@
   "bugs": {
     "url": "https://github.com/rtbnext/database/issues"
   },
+  "type": "module",
   "scripts": {
-    "install": "tsc"
+    "install": "tsc & tsc-alias"
   },
   "dependencies": {
     "@rtbnext/schema": "github:rtbnext/schema",
     "axios": "^1.13.2",
     "csv-parse": "^6.1.0",
     "csv-stringify": "^6.6.0",
-    "js-yaml": "^4.1.1"
+    "yaml": "^2.8.2"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.10.1",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   }
 }
