@@ -52,7 +52,8 @@ export class RTBList extends Maintenance {
 
             const listData: ListItem = {
                 rank: Parser.number( entry.rank ),
-                networth: Parser.number( entry.finalWorth, 3 )
+                networth: Parser.number( entry.finalWorth, 3 ),
+                citizenship: Parser.country2ISOCode( entry.countryOfCitizenship )
             };
 
         } );
