@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { Config, ConfigObject } from './Config';
 import { Parser } from './Parser';
 import { Storage } from './Storage';
@@ -36,14 +36,7 @@ export class Fetch {
         this.httpClient = axios.create( {
             baseURL: this.config.baseUrl,
             timeout: this.config.rateLimiting.timeout,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Accept': 'application/json',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1'
-            }
+            headers: { ...this.config.headers }
         } );
 
     }
@@ -71,6 +64,35 @@ export class Fetch {
         const { max, min } = this.config.rateLimiting.requestDelay;
         const delay = Math.random() * ( max - min ) + min;
         return new Promise( resolve => setTimeout( resolve, delay ) );
+
+    }
+
+    public async makeRequestWithRetry< T > ( url: string, retries: number ) : Promise< AxiosResponse< T > > {
+
+        try {
+
+            const userAgent = this.getRandomUserAgent();
+            const headers = { ...this.config.headers, 'User-Agent': userAgent };
+            const response = await this.httpClient.get< T >( url, { headers } );
+
+            return response;
+
+        } catch ( err: any ) {
+
+            console.warn( `Request failed: ${err.message}`, `URL: ${url}, Attempt: ${ retries + 1 }`);
+
+            if ( retries < this.config.rateLimiting.retries ) {
+
+                console.debug( `Retrying ...` );
+                await this.getRandomDelay();
+
+                return this.makeRequestWithRetry< T >( url, retries + 1 );
+
+            }
+
+            throw err;
+
+        }
 
     }
 

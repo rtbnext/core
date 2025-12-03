@@ -14,6 +14,7 @@ export interface ConfigObject {
             list: string;
             profile: string;
         };
+        headers: Record< string, string >;
         rateLimiting: {
             batch: number;
             timeout: number;
