@@ -34,7 +34,7 @@ export interface RTBResponse {
     }
 };
 
-class RTBList extends Maintenance {
+export class RTBList extends Maintenance {
 
     public async run () : Promise< void > {
 
@@ -54,5 +54,3 @@ class RTBList extends Maintenance {
     }
 
 }
-
-export const rtbList = new RTBList();
