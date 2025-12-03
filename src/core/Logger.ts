@@ -84,6 +84,13 @@ export class Logger {
 
     }
 
+    public exit ( message: string, context?: string, err?: Error ) : void {
+
+        this.error( message, context, err );
+        process.exit( 1 );
+
+    }
+
     public warn ( message: string, context?: string ) : void {
 
         this.log( LogLevel.WARN, {
