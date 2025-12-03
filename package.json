@@ -26,6 +26,7 @@
     "axios": "^1.13.2",
     "csv-parse": "^6.1.0",
     "csv-stringify": "^6.6.0",
+    "i18n-iso-countries": "^7.14.0",
     "yaml": "^2.8.2"
   },
   "devDependencies": {
