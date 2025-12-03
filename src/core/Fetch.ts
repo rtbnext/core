@@ -1,13 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { Config, ConfigObject } from './Config';
-import { Parser } from './Parser';
-import { Storage } from './Storage';
 
 export class Fetch {
 
     private static instance: Fetch;
-    private readonly storage: Storage;
-    private readonly parser: Parser;
     private readonly config: ConfigObject[ 'api' ];
 
     private httpClient!: AxiosInstance;
@@ -15,8 +11,6 @@ export class Fetch {
 
     protected constructor () {
 
-        this.storage = Storage.getInstance();
-        this.parser = Parser.getInstance();
         this.config = Config.getInstance().getAPIConfig();
 
         this.setupHttpClient();
