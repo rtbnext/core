@@ -1,6 +1,7 @@
 import { Config, ConfigObject } from './Config';
 import { Fetch } from './Fetch';
 import { Logger } from './Logger';
+import { Parser } from './Parser';
 import { Storage } from './Storage';
 
 export abstract class Maintenance {
@@ -9,6 +10,7 @@ export abstract class Maintenance {
     protected logger: Logger;
     protected fetch: Fetch;
     protected storage: Storage;
+    protected parser: Parser;
 
     constructor () {
 
@@ -16,6 +18,7 @@ export abstract class Maintenance {
         this.logger = Logger.getInstance();
         this.fetch = Fetch.getInstance();
         this.storage = Storage.getInstance();
+        this.parser = Parser.getInstance();
 
     }
 
