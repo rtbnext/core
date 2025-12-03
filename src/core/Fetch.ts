@@ -61,32 +61,52 @@ export class Fetch {
 
     }
 
-    public async makeRequestWithRetry< T > ( url: string, retries: number ) : Promise< AxiosResponse< T > > {
+    public async request< T > ( target: string, retries: number = 0 ) : Promise< AxiosResponse< T > > {
 
         try {
 
             const userAgent = this.getRandomUserAgent();
             const headers = { ...this.config.headers, 'User-Agent': userAgent };
-            const response = await this.httpClient.get< T >( url, { headers } );
+            const response = await this.httpClient.get< T >( target, { headers } );
 
             return response;
 
         } catch ( err: any ) {
 
-            console.warn( `Request failed: ${err.message}`, `URL: ${url}, Attempt: ${ retries + 1 }`);
+            console.warn( `Request failed: ${err.message}`, `URL: ${target}, Attempt: ${ retries + 1 }`);
 
             if ( retries < this.config.rateLimiting.retries ) {
 
                 console.debug( `Retrying ...` );
                 await this.getRandomDelay();
 
-                return this.makeRequestWithRetry< T >( url, retries + 1 );
+                return this.request< T >( target, retries + 1 );
 
             }
 
             throw err;
 
         }
+
+    }
+
+    public async requestMultiple< T > ( targets: string[] ) : Promise< AxiosResponse< T >[] > {
+
+        const results = [];
+        let target, count = 0;
+
+        while ( target = targets.shift() && target && count < this.config.rateLimiting.batch ) {
+
+            results.push( await this.request< T >( target ) );
+            count++;
+
+            await this.getRandomDelay();
+
+        }
+
+        if ( targets.length ) console.warn( `Batch limit reached. ${ targets.length } requests remaining.` );
+
+        return results;
 
     }
 
