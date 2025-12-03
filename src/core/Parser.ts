@@ -38,4 +38,14 @@ export class Parser {
 
     }
 
+    public static gender ( value: any ) : Const.Gender {
+
+        switch ( this.string( value ).toLowerCase() ) {
+            case 'm': return 'm';
+            case 'f': return 'f';
+            default: return 'd';
+        }
+
+    }
+
 }
