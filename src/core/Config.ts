@@ -15,6 +15,7 @@ export interface ConfigObject {
             profile: string;
         };
         headers: Record< string, string >;
+        agentPool: string[];
         rateLimiting: {
             batch: number;
             timeout: number;
