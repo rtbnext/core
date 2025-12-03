@@ -50,15 +50,15 @@ export class RTBList extends Maintenance {
 
         list.forEach( ( entry, i ) => {
 
-            const listData: ListItem = {
-                rank: Parser.number( entry.rank ),
-                networth: Parser.number( entry.finalWorth, 3 ),
-                gender: Parser.gender( entry.gender ),
-                age: Parser.age( entry.birthDate ),
-                citizenship: Parser.country( entry.countryOfCitizenship ),
-                industry: Parser.industry( entry.industries.shift() ),
-                source: Parser.list( entry.source )
-            };
+            const listData = Parser.mapObject< ListItem >( {
+                rank: { value: entry.rank, type: 'number' },
+                networth: { value: entry.finalWorth, type: 'number', args: [ 3 ] },
+                gender: { value: entry.gender, type: 'gender' },
+                age: { value: entry.birthDate, type: 'age' },
+                citizenship: { value: entry.countryOfCitizenship, type: 'country' },
+                industry: { value: entry.industries.shift(), type: 'industry' },
+                source: { value: entry.source, type: 'list' }
+            } );
 
         } );
 
