@@ -56,17 +56,25 @@ export class Fetch {
 
     }
 
-    public async request< T > ( target: string, retries: number = 0 ) : Promise< Response< T > > {
+    private getDuration ( duration: [ number, number ], digits = 3 ) : number {
 
+        return Number ( ( ( duration[ 0 ] * 1e9 + duration[ 1 ] ) / 1e6 ).toFixed( digits ) );
+
+    }
+
+    public async request< T > ( target: string, method: 'get' | 'post' = 'get', retries: number = 0 ) : Promise< Response< T > > {
+
+        this.logger.info( `Request for [${method}] ${target} ...` );
         const startTime = process.hrtime();
 
         try {
 
             const userAgent = this.getRandomUserAgent();
             const headers = { ...this.config.headers, 'User-Agent': userAgent };
-            const res = await this.httpClient.get< T >( target, { headers } );
+            const res = await this.httpClient[ method ]< T >( target, { headers } );
             const duration = process.hrtime( startTime );
 
+            this.logger.info( `Request finished with status [${ res.status }] after ${ this.getDuration( duration ) }ms` );
             if ( res.status === 200 && res.data ) return { success: true, data: res.data, statusCode: res.status, duration };
             return { success: false, error: `Invalid response status: ${ res.status }`, statusCode: res.status, duration };
 
@@ -77,7 +85,7 @@ export class Fetch {
             if ( retries < this.config.rateLimiting.retries ) {
 
                 await this.getRandomDelay();
-                return this.request< T >( target, retries + 1 );
+                return this.request< T >( target, method, retries + 1 );
 
             }
 
