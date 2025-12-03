@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/rtbnext/database/issues"
   },
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "install": "tsc & tsc-alias"
   },
