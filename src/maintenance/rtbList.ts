@@ -1,5 +1,6 @@
 import { ListItem } from '@rtbnext/schema/src/collection/list';
 import { Maintenance } from '../core/Maintenance';
+import { Parser } from '../core/Parser';
 
 export interface RTBResponse {
     personList: {
@@ -50,8 +51,8 @@ export class RTBList extends Maintenance {
         list.forEach( ( entry, i ) => {
 
             const listData: ListItem = {
-                rank: Number( entry.rank ),
-                networth: Number( entry.finalWorth )
+                rank: Parser.number( entry.rank ),
+                networth: Parser.number( entry.finalWorth, 3 )
             };
 
         } );

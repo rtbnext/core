@@ -1,13 +1,8 @@
 export class Parser {
 
-    private static instance: Parser;
+    public static number ( value: any, digits = 0 ) : number {
 
-    private constructor () {}
-
-    public static getInstance () : Parser {
-
-        if ( ! Parser.instance ) Parser.instance = new Parser();
-        return Parser.instance;
+        return Number( ( Number( value ) ).toFixed( digits ) );
 
     }
 
