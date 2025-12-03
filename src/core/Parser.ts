@@ -1,6 +1,7 @@
 import * as Const from '@rtbnext/schema/src/abstract/const';
 import { DateString } from '@rtbnext/schema/src/abstract/primitives';
 import { getAlpha2Code } from 'i18n-iso-countries';
+import { abbr } from 'us-state-converter';
 
 export const Industry = ( [
     'automotive', 'casinos', 'diversified', 'energy', 'engineering', 'finance',
@@ -31,7 +32,7 @@ export class Parser {
 
     public static state ( value: any ) : Const.USStateCode {
 
-        //
+        return abbr( this.string( value ) ).toLowerCase() as Const.USStateCode;
 
     }
 
