@@ -4,22 +4,22 @@ import { Database } from './Api';
 
 export class Profile {
 
-    private database: Database;
+    private DB: Database;
 
     private uri: ProfileURI;
     private path: string;
     private redirected: boolean;
-    private data: Partial< ProfileData< ProfileURI > > = {};
-    private resources: string[] = [];
-    private loaded: string[] = [];
+    private data: Partial< ProfileData< ProfileURI > >;
+    private resources: string[];
+    private loaded: string[];
 
     constructor ( uriLike: string ) {
 
-        this.database = Database.getInstance();
+        this.DB = Database.getInstance();
 
         const uri = Database.sanitize< ProfileURI >( uriLike );
-        if ( uri in this.database.profileIndex ) this.loadProfile( uri, false );
-        else if ( uri in this.database.profileAlias ) this.loadProfile( this.database.profileAlias[ uri ], true );
+        if ( uri in this.DB.profileIndex ) this.loadProfile( uri, false );
+        else if ( uri in this.DB.profileAlias ) this.loadProfile( this.DB.profileAlias[ uri ], true );
         throw new Error( `Profile [${uri}] does not exist` );
 
     }
@@ -29,6 +29,9 @@ export class Profile {
         this.uri = uri;
         this.path = `profile/${uri}/`;
         this.redirected = redirected;
+        this.data = {};
+        this.resources = this.DB.getStorage().scanDir( this.path );
+        this.loaded = [];
 
     }
 

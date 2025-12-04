@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'csv-parse';
 import { stringify } from 'csv-stringify';
@@ -32,34 +32,47 @@ export class Storage {
 
     }
 
+    public scanDir ( path: string, recursive = true ) : string[] {
+
+        const fullPath = this.pathBuilder( path );
+        if ( ! existsSync( fullPath ) ) return [];
+
+        return [ ...readdirSync( fullPath, { recursive } ) ] as string[];
+
+    }
+
     public saveJson< T extends {} = any > ( path: string, data: T ) : void {
 
+        const fullPath = this.pathBuilder( path, 'json' );
         const content = JSON.stringify( data, null, this.config.compression ? undefined : 2 );
-        writeFileSync( this.pathBuilder( path, 'json' ), content, 'utf8' );
+        writeFileSync( fullPath, content, 'utf8' );
 
     }
 
     public loadJson< T = any > ( path: string ) : T | undefined {
 
-        if ( ! existsSync( path ) ) return;
+        const fullPath = this.pathBuilder( path, 'json' );
+        if ( ! existsSync( fullPath ) ) return;
 
-        const content = readFileSync( this.pathBuilder( path, 'json' ), 'utf8' );
+        const content = readFileSync( fullPath, 'utf8' );
         return JSON.parse( content ) as T;
 
     }
 
     public saveCSV< T extends [] = any > ( path: string, data: T ) : void {
 
+        const fullPath = this.pathBuilder( path, 'csv' );
         const content = stringify( data, { delimiter: this.config.csvDelimiter } ) as unknown as string;
-        writeFileSync( this.pathBuilder( path, 'csv' ), content, 'utf8' );
+        writeFileSync( fullPath, content, 'utf8' );
 
     }
 
     public loadCSV< T = any > ( path: string ) : T | undefined {
 
-        if ( ! existsSync( path ) ) return;
+        const fullPath = this.pathBuilder( path, 'csv' );
+        if ( ! existsSync( fullPath ) ) return;
 
-        const content = readFileSync( this.pathBuilder( path, 'csv' ), 'utf8' );
+        const content = readFileSync( fullPath, 'utf8' );
         return parse( content, { bom: true, delimiter: this.config.csvDelimiter } ) as T;
 
     }

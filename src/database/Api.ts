@@ -31,4 +31,6 @@ export class Database {
 
     }
 
+    public getStorage () : Storage { return this.storage }
+
 }
