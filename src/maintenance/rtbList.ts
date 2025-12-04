@@ -1,6 +1,7 @@
 import { ListItem } from '@rtbnext/schema/src/collection/list';
 import { Maintenance } from '../core/Maintenance';
 import { Parser } from '../core/Parser';
+import { getProfile } from '../database/Profile';
 
 export interface RTBResponse {
     personList: {
@@ -51,6 +52,8 @@ export class RTBList extends Maintenance {
         this.logger.info( `Proceed ${list.length} list entries ...` );
 
         list.forEach( ( entry, i ) => {
+
+            const profile = getProfile( entry.uri );
 
             const listData = Parser.mapObject< ListItem >( {
                 rank: { value: entry.rank, type: 'number' },
