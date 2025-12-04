@@ -35,6 +35,9 @@ export class Profile {
 
     }
 
+    public getUri () : ProfileURI { return this.uri }
+    public isRedirected () : boolean { return this.redirected }
+
 }
 
 export function getProfile ( uriLike: string ) : Profile | false {
