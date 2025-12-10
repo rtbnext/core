@@ -2,8 +2,22 @@ import { Primitive } from 'devtypes/types/primitives';
 
 export class Parser {
 
-    public static strict< T = any > ( value: any, method: keyof typeof Parser, ...args: any ) : T | undefined {
-        return value === null || value === undefined ? undefined : ( Parser as any )[ method ]( value, ...args ) as T;
+    public static mapper< T = any > ( obj: Record< string, {
+        value: any, method: keyof typeof Parser, strict?: boolean, args?: any[]
+    } > ) : T {
+        return Object.fromEntries( Object.entries( obj ).map(
+            ( [ key, { value, method, strict, args } ] ) => [
+                key, strict ? this.strict( value, method, ...( args || [] ) )
+                    : ( this as any )[ method ]( value, ...( args || [] ) )
+            ]
+        ) ) as T;
+    }
+
+    public static strict< T = any > (
+        value: any, method: keyof typeof Parser, ...args: any
+    ) : T | undefined {
+        return value === null || value === undefined ? undefined
+            : ( this as any )[ method ]( value, ...args ) as T;
     }
 
     public static primitive ( value: any ) : Primitive {
