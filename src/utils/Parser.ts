@@ -2,7 +2,7 @@ import { Primitive } from 'devtypes/types/primitives';
 
 export class Parser {
 
-    public static mapper< T = any > ( obj: Record< string, {
+    public static container< T = any > ( obj: Record< string, {
         value: any, method: keyof typeof Parser, strict?: boolean, args?: any[]
     } > ) : T {
         return Object.fromEntries( Object.entries( obj ).map(
@@ -32,16 +32,17 @@ export class Parser {
         return list.map( this.primitive ).filter( Boolean );
     }
 
-    public static enum< T extends string, L extends Record< string, T > > (
-        list: L, value: any, fb: T | undefined = undefined, exactMatch: boolean = false
+    public static map< T extends Primitive, L extends Record< string | number, T > > (
+        list: L, value: any, fb: T | undefined = undefined,
+        exactMatch: boolean = false, useKey: boolean = true
     ) : T | undefined {
         value = this.string( value ).toLowerCase();
-        return Object.values( list ).find( v => {
-            const test = this.string( v ).toLowerCase();
+        return Object.entries( list ).find( ( [ k, v ] ) => {
+            const test = this.string( useKey ? k : v ).toLowerCase();
             return exactMatch ? value === test : (
                 value.includes( test ) || test.includes( value )
-            );
-        } ) || fb;
+            )
+        } )?.[ 1 ] || fb;
     }
 
     public static string ( value: any ) : string {
