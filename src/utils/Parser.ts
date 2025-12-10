@@ -1,5 +1,5 @@
 import { Primitive } from 'devtypes/types/primitives';
-import { Gender, MaritalStatus } from './Const';
+import { Gender, Industry, MaritalStatus } from './Const';
 
 export class Parser {
 
@@ -118,6 +118,10 @@ export class Parser {
 
     public static maritalStatus ( value: any ) : MaritalStatus | undefined {
         return this.map< MaritalStatus, typeof MaritalStatus >( MaritalStatus, value );
+    }
+
+    public static industry ( value: any ) : Industry {
+        return this.map< Industry, typeof Industry >( Industry, value, 'diversified' )!;
     }
 
 }
