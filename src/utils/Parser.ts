@@ -65,4 +65,17 @@ export class Parser {
         return this.number( value, 3 );
     }
 
+    public static date ( value: any, format: 'ymd' | 'iso' = 'ymd' ) : string | undefined {
+        const date = new Date( value );
+        return isNaN( date.getTime() ) ? undefined
+            : format === 'iso' ? date.toISOString()
+                : date.toISOString().split( 'T' )[ 0 ];
+    }
+
+    public static age ( value: any ) : number | undefined {
+        const date = new Date( value );
+        return isNaN( date.getTime() ) ? undefined
+            : new Date( Date.now() - date.getTime() ).getUTCFullYear() - 1970;
+    }
+
 }
