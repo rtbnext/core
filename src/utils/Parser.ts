@@ -80,6 +80,32 @@ export class Parser {
 
     // Special
 
+    public static name (
+        value: any, lastName: any = undefined, firstName: any = undefined,
+        asianFormat: boolean = false
+    ) : {
+        name: string, shortName: string,
+        lastName: string, firstName: string,
+        family: boolean
+    } {
+        const clean = this.string( value ).replace( /&\s*family/i, '' ).trim();
+        const family = /&\s*family/i.test( value );
+        const parts = clean.split( /\s+/ ).filter( Boolean );
+
+        const fN = firstName ? this.string( firstName ) : (
+            asianFormat ? parts.slice( 1 ).join( ' ' ) : parts.slice( 0, -1 ).join( ' ' )
+        );
+        const lN = lastName ? this.string( lastName ) : (
+            asianFormat ? parts[ 0 ] || '' : parts.pop() || ''
+        );
+
+        return {
+            name: clean + ( family ? ' & family' : '' ),
+            shortName: `${ fN.split( ' ' )[ 0 ] } ${lN}`.trim(),
+            lastName: lN, firstName: fN, family
+        };
+    }
+
     public static age ( value: any ) : number | undefined {
         const date = new Date( value );
         return isNaN( date.getTime() ) ? undefined
