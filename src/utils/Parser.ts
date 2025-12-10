@@ -13,4 +13,12 @@ export class Parser {
         );
     }
 
+    public static number ( value: any, digits: number = 0 ) : number {
+        return Number( Number( value ).toFixed( digits ) );
+    }
+
+    public static money ( value: any ) : number {
+        return this.number( value, 3 );
+    }
+
 }
