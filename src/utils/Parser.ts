@@ -1,5 +1,7 @@
-import { Primitive } from 'devtypes/types/primitives';
 import { Gender, Industry, MaritalStatus } from './Const';
+import { Primitive } from 'devtypes/types/primitives';
+import { getAlpha2Code } from 'i18n-iso-countries';
+import { abbr } from 'us-state-converter';
 
 export class Parser {
 
@@ -122,6 +124,15 @@ export class Parser {
 
     public static industry ( value: any ) : Industry {
         return this.map< Industry, typeof Industry >( Industry, value, 'diversified' )!;
+    }
+
+    public static country ( value: any ) : string | undefined {
+        const code = getAlpha2Code( this.string( value ), 'en' );
+        return code ? code.toLowerCase() : undefined;
+    }
+
+    public static state ( value: any ) : string | undefined {
+        return value ? abbr( this.string( value ) ).toLowerCase() : undefined;
     }
 
 }
