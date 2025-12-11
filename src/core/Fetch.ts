@@ -69,6 +69,7 @@ export class Fetch {
             results.push( await this.fetch< T >( url, method ) );
             await this.getRandomDelay();
         }
+        if ( urls.length ) this.logger.warn( `Batch limit reached. ${ urls.length } URLs remaining.` );
         return results;
     }
 
