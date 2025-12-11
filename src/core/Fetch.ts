@@ -34,25 +34,26 @@ export class Fetch {
     }
 
     private async fetch< T > (
-        url: string, method: 'get' | 'post' = 'get', retries: number = 0
+        url: string, method: 'get' | 'post' = 'get'
     ) : Promise< Response< T > > {
         const { result: res, ms } = await Utils.measure( async () => {
             let res: AxiosResponse< T, any, {} >;
+            let retries = 0;
             do {
                 const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent() };
                 res = await this.httpClient[ method ]< T >( url, { headers } );
                 if ( res.status === 200 && res.data ) break;
                 await this.getRandomDelay();
             } while ( ++retries < this.config.rateLimit.retries );
-            return res;
+            return { ...res, retries };
         } );
 
-        return res.status === 200 && res.data ? {
-            success: true, data: res.data, duration: ms, retries
-        } : {
-            success: false, error: `Invalid response status: ${ res.status }`,
-            statusCode: res.status, duration: ms, retries
-        };
+        return Object.assign( { duration: ms, retries: res.retries },
+            res.status === 200 && res.data ? { success: true, data: res.data } : {
+                success: false, error: `Invalid response status: ${ res.status }`,
+                statusCode: res.status
+            }
+        );
     }
 
     public async single< T > ( url: string, method: 'get' | 'post' = 'get' ) : Promise< Response< T > > {
@@ -60,14 +61,11 @@ export class Fetch {
     }
 
     public async batch< T > ( urls: string[], method: 'get' | 'post' = 'get' ) : Promise< Response< T >[] > {
-        const results: Response<T>[] = [];
-        let url;
-
+        const results: Response<T>[] = []; let url;
         while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.maxBatchSize ) {
             results.push( await this.fetch< T >( url, method ) );
             await this.getRandomDelay();
         }
-
         return results;
     }
 
