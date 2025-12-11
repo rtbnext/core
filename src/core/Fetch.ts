@@ -64,7 +64,7 @@ export class Fetch {
     }
 
     public async batch< T > ( urls: string[], method: 'get' | 'post' = 'get' ) : Promise< Response< T >[] > {
-        const results: Response<T>[] = []; let url;
+        const results: Response< T >[] = []; let url;
         while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.maxBatchSize ) {
             results.push( await this.fetch< T >( url, method ) );
             await this.getRandomDelay();
