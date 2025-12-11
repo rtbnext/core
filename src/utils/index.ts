@@ -5,7 +5,7 @@ import { Logger } from './Logger';
 import { Parser } from './Parser';
 
 const Utils = {
-    const: Const, base: Base, config: ConfigLoader,
+    base: Base, config: ConfigLoader,
     logger: Logger, parser: Parser
 };
 
