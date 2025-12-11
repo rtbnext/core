@@ -19,16 +19,20 @@ export class Storage {
         this.initDB();
     }
 
-    private fullPath ( path: string ) : string {
+    private resolvePath ( path: string ) : string {
         return join( this.path, path );
     }
 
     public exists ( path: string ) : boolean {
-        return existsSync( path );
+        return existsSync( this.resolvePath( path ) );
+    }
+
+    public assertPath ( path: string ) : void | never {
+        if ( ! this.exists( path ) ) throw new Error( `Path ${path} does not exist` );
     }
 
     public ensurePath ( path: string ) : void {
-        mkdirSync( this.fullPath( path ), { recursive: true } );
+        mkdirSync( this.resolvePath( path ), { recursive: true } );
     }
 
     public initDB () : void {
