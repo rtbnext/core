@@ -4,4 +4,5 @@ export interface Response< T > {
     error?: string;
     statusCode?: number;
     duration: number;
+    retries: number;
 }

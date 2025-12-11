@@ -1,8 +1,9 @@
 import { ConfigLoader } from '@/core/ConfigLoader';
 import { FetchConfig } from '@/types/config';
 import { Response } from '@/types/response';
+import { Utils } from '@/utils';
 import { Logger } from '@/utils/Logger';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 export class Fetch {
 
@@ -32,17 +33,37 @@ export class Fetch {
         return new Promise( resolve => setTimeout( resolve, delay ) );
     }
 
-    public async single< T > (
-        urlLike: string, method: 'get' | 'post' = 'get', retries: number = 0
-    ) : Promise< Response< T > > {}
+    private async fetch< T > (
+        url: string, method: 'get' | 'post' = 'get', retries: number = 0
+    ) : Promise< Response< T > > {
+        const { result: res, ms } = await Utils.measure( async () => {
+            let res: AxiosResponse< T, any, {} >;
+            do {
+                const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent() };
+                res = await this.httpClient[ method ]< T >( url, { headers } );
+                if ( res.status === 200 && res.data ) break;
+                await this.getRandomDelay();
+            } while ( ++retries < this.config.rateLimit.retries );
+            return res;
+        } );
 
-    public async batch (
-        urlLike: string[], method: 'get' | 'post' = 'get'
-    ) : Promise< Response< T >[] > {}
+        return res.status === 200 && res.data ? {
+            success: true, data: res.data, duration: ms, retries
+        } : {
+            success: false, error: `Invalid response status: ${ res.status }`,
+            statusCode: res.status, duration: ms, retries
+        };
+    }
 
-    public async profile ( ...uri: string[] ) : Promise< Response< T >[] > {}
+    public async single< T > ( url: string, method: 'get' | 'post' = 'get' ) : Promise< Response< T > > {
+        return this.fetch< T >( url, method );
+    }
 
-    public async list ( list: string, year: string ) : Promise< Response< T > > {}
+    public async batch ( url: string[], method: 'get' | 'post' = 'get' ) : Promise< Response< T >[] > {}
+
+    public async profile ( ...uriLike: string[] ) : Promise< Response< T >[] > {}
+
+    public async list ( uriLike: string, year: string ) : Promise< Response< T > > {}
 
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
