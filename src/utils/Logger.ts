@@ -1,9 +1,10 @@
+import { LoggingConfig } from '../types/config';
 import { ConfigLoader } from './ConfigLoader';
 
 export class Logger {
 
     private static instance: Logger;
-    private readonly config;
+    private readonly config: LoggingConfig;
 
     private constructor () {
         this.config = ConfigLoader.getInstance().logging;
