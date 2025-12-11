@@ -1,5 +1,6 @@
 import { ConfigLoader } from '@/core/ConfigLoader';
 import { FetchConfig } from '@/types/config';
+import { Response } from '@/types/response';
 import { Logger } from '@/utils/Logger';
 import axios, { AxiosInstance } from 'axios';
 
@@ -31,13 +32,17 @@ export class Fetch {
         return new Promise( resolve => setTimeout( resolve, delay ) );
     }
 
-    public async single ( urlLike: string, method: 'get' | 'post' = 'get', retries: number = 0 ) {}
+    public async single< T > (
+        urlLike: string, method: 'get' | 'post' = 'get', retries: number = 0
+    ) : Promise< Response< T > > {}
 
-    public async batch ( urlLike: string[], method: 'get' | 'post' = 'get' ) {}
+    public async batch (
+        urlLike: string[], method: 'get' | 'post' = 'get'
+    ) : Promise< Response< T >[] > {}
 
-    public async profile ( ...uri: string[] ) {}
+    public async profile ( ...uri: string[] ) : Promise< Response< T >[] > {}
 
-    public async list ( list: string, year: string ) {}
+    public async list ( list: string, year: string ) : Promise< Response< T > > {}
 
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
