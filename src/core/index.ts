@@ -1,10 +1,10 @@
 import { ConfigLoader } from '@/core/ConfigLoader';
 import { Fetch } from '@/core/Fetch';
 
-const services = {
+const service = {
     config: ConfigLoader.getInstance,
     fetch: Fetch.getInstance
 };
 
 export { ConfigLoader, Fetch };
-export default services;
+export default service;
