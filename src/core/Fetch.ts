@@ -1,14 +1,17 @@
 import { ConfigLoader } from '@/core/ConfigLoader';
 import { FetchConfig } from '@/types/config';
+import { Logger } from '@/utils/Logger';
 import axios, { AxiosInstance } from 'axios';
 
 export class Fetch {
 
     private static instance: Fetch;
+    private readonly logger: Logger;
     private readonly config: FetchConfig;
     private httpClient: AxiosInstance;
 
     private constructor () {
+        this.logger = Logger.getInstance();
         this.config = ConfigLoader.getInstance().fetch;
         this.httpClient = this.setupHttpClient();
     }
