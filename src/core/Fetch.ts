@@ -31,6 +31,14 @@ export class Fetch {
         return new Promise( resolve => setTimeout( resolve, delay ) );
     }
 
+    public async single ( urlLike: string, method: 'get' | 'post' = 'get', retries: number = 0 ) {}
+
+    public async batch ( urlLike: string[], method: 'get' | 'post' = 'get' ) {}
+
+    public async profile ( ...uri: string[] ) {}
+
+    public async list ( list: string, year: string ) {}
+
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
     }
