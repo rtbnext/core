@@ -1,3 +1,7 @@
+export interface FetchConfig {}
+
+export interface StorageConfig {}
+
 export interface LoggingConfig {
     level: 'error' | 'warn' | 'info' | 'debug';
     console?: boolean;
@@ -5,5 +9,7 @@ export interface LoggingConfig {
 }
 
 export interface ConfigObject {
+    fetch: FetchConfig;
+    storage: StorageConfig;
     logging: LoggingConfig;
 }

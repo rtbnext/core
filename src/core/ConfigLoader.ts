@@ -1,4 +1,4 @@
-import { ConfigObject, LoggingConfig } from '@/types/config';
+import { ConfigObject, FetchConfig, LoggingConfig, StorageConfig } from '@/types/config';
 import { Helper } from '@/utils/Helper';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -36,6 +36,8 @@ export class ConfigLoader {
 
     public get environment () : string { return this.env }
     public get config () : ConfigObject { return this.cfg }
+    public get fetch () : FetchConfig { return this.cfg.fetch }
+    public get storage () : StorageConfig { return this.cfg.storage }
     public get logging () : LoggingConfig { return this.cfg.logging }
 
     public static getInstance () : ConfigLoader {
