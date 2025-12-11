@@ -1,4 +1,5 @@
 import { ListLike } from 'devtypes/types/lists';
+import { hrtime } from 'node:process';
 
 export class Utils {
 
@@ -40,6 +41,19 @@ export class Utils {
         text = this.sanitize( text ), query = this.sanitize( query );
         return exactMatch ? text.includes( query )
             : query.split( '-' ).every( q => text.includes( q ) );
+    }
+
+    public static async measure<
+        F extends ( ...args: any[] ) => any,
+        R = Awaited< ReturnType< F > >
+    > ( fn: F ): Promise< { result: R; ms: number } > {
+        if ( typeof fn !== 'function' ) throw new TypeError( 'Parameter must be a function' );
+
+        const diff = ( t: bigint ) : number => Number( hrtime.bigint() - t ) / 1e6;
+        const start = process.hrtime.bigint();
+
+        try { return { result: await fn() as R, ms: diff( start ) } }
+        catch ( err ) { throw { ...err as any, ms: diff( start ) } }
     }
 
 }
