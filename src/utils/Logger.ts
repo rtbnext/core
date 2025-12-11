@@ -1,6 +1,9 @@
 import { LoggingConfig } from '../types/config';
 import { ConfigLoader } from './ConfigLoader';
-import { exit } from 'node:process';
+import { appendFileSync, mkdirSync } from 'node:fs';
+import { EOL } from 'node:os';
+import { join } from 'node:path';
+import { cwd, exit } from 'node:process';
 
 export class Logger {
 
@@ -10,9 +13,16 @@ export class Logger {
 
     private static instance: Logger;
     private readonly config: LoggingConfig;
+    private readonly path: string;
 
     private constructor () {
         this.config = ConfigLoader.getInstance().logging;
+        this.path = join( cwd(), 'logs' );
+        if ( this.config.file ) mkdirSync( this.path );
+    }
+
+    private logDate () : string {
+        return new Date().toISOString().split( '-' ).slice( 0, 2 ).join( '-' );
     }
 
     private shouldLog ( level: LoggingConfig[ 'level' ] ) : boolean {
@@ -30,11 +40,13 @@ export class Logger {
         ( console[ level ] ?? console.log )( entry );
     }
 
-    private log2File ( entry: string ) : void {}
+    private log2File ( entry: string ) : void {
+        const path = join( this.path, `${ this.logDate() }.log` );
+        appendFileSync( path, entry + EOL, 'utf8' );
+    }
 
     private log ( level: LoggingConfig[ 'level' ], msg: string, meta?: any ) : void {
         if ( ! this.shouldLog( level ) ) return;
-
         const entry = this.format( level, msg, meta );
         if ( this.config.console ) this.log2Console( level, entry );
         if ( this.config.file ) this.log2File( entry );
