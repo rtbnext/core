@@ -1,4 +1,4 @@
-import { Gender, Industry, MaritalStatus } from './Const';
+import { Gender, Industry, MaritalStatus } from '@/utils/Const';
 import { Primitive } from 'devtypes/types/primitives';
 import { getAlpha2Code } from 'i18n-iso-countries';
 import { abbr } from 'us-state-converter';

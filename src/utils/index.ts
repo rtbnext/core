@@ -1,8 +1,8 @@
-import { Base } from './Base';
-import { ConfigLoader } from './ConfigLoader';
-import * as Const from './Const';
-import { Logger } from './Logger';
-import { Parser } from './Parser';
+import { Base } from '@/utils/Base';
+import { ConfigLoader } from '@/utils/ConfigLoader';
+import * as Const from '@/utils/Const';
+import { Logger } from '@/utils/Logger';
+import { Parser } from '@/utils/Parser';
 
 const Utils = {
     base: Base, config: ConfigLoader,

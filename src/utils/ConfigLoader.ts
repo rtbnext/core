@@ -1,5 +1,5 @@
+import { Config, LoggingConfig } from '@/types/config';
 import { existsSync, readFileSync } from 'node:fs';
-import { Config, LoggingConfig } from '../types/config';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
 import { parse } from 'yaml';
