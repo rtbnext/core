@@ -73,9 +73,19 @@ export class Fetch {
         return results;
     }
 
-    public async profile ( ...uriLike: string[] ) : Promise< Response< T >[] > {}
+    public async profile ( ...uriLike: string[] ) : Promise< Response< any >[] > {
+        const url = this.config.endpoints.profile;
+        return this.batch< any >( uriLike.map(
+            uri => url.replace( '{URI}', Utils.sanitize( uri ) )
+        ) );
+    }
 
-    public async list ( uriLike: string, year: string ) : Promise< Response< T > > {}
+    public async list ( uriLike: string, year: string ) : Promise< Response< any > > {
+        return this.single< any >( this.config.endpoints.list
+            .replace( '{URI}', Utils.sanitize( uriLike ) )
+            .replace( '{YEAR}', year )
+        );
+    }
 
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
