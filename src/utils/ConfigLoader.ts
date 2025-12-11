@@ -3,13 +3,17 @@ import { Config, LoggingConfig } from '../types/config';
 export class ConfigLoader {
 
     private static instance: ConfigLoader;
-    private readonly config: Config;
+    private readonly env: string;
+    private readonly cfg: Config;
 
     private constructor () {
-        this.config = {} as Config;
+        this.env = process.env.NODE_ENV || 'production';
+        this.cfg = {} as Config;
     }
 
-    public get logging () : LoggingConfig { return this.config.logging; }
+    public get environment () : string { return this.env }
+    public get config () : Config { return this.cfg }
+    public get logging () : LoggingConfig { return this.cfg.logging }
 
     public static getInstance () : ConfigLoader {
         return ConfigLoader.instance ||= new ConfigLoader();
