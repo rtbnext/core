@@ -21,4 +21,10 @@ export class Base {
         ) as L;
     }
 
+    public static search ( text: string, query: string, exactMatch: boolean = false ) : boolean {
+        text = this.sanitize( text ), query = this.sanitize( query );
+        return exactMatch ? text.includes( query )
+            : query.split( '-' ).every( q => text.includes( q ) );
+    }
+
 }
