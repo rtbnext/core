@@ -5,5 +5,5 @@ import { Parser } from '@/utils/Parser';
 
 const helper = { Utils, Logger, Parser } as const;
 
-export { Const, Utils as Helper, Logger, Parser };
+export { Const, Utils, Logger, Parser };
 export default helper;
