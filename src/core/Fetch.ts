@@ -22,4 +22,14 @@ export class Fetch {
         return Fetch.instance ||= new Fetch();
     }
 
+    private getRandomUserAgent () : string {
+        return this.config.agentPool[ Math.floor( Math.random() * this.config.agentPool.length ) ];
+    }
+
+    private getRandomDelay () : Promise< void > {
+        const { max, min } = this.config.rateLimit.requestDelay;
+        const delay = Math.random() * ( max - min ) + min;
+        return new Promise( resolve => setTimeout( resolve, delay ) );
+    }
+
 }
