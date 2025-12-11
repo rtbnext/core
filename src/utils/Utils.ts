@@ -1,6 +1,6 @@
 import { ListLike } from 'devtypes/types/lists';
 
-export class Helper {
+export class Utils {
 
     public static sanitize ( value: any, delimiter: string = '-' ) : string {
         return String( value ).toLowerCase().trim().replace( /[^a-z0-9]/g, delimiter )

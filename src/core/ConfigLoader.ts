@@ -1,5 +1,5 @@
 import * as config from '@/types/config';
-import { Helper } from '@/utils/Helper';
+import { Utils } from '@/utils/Utils';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
@@ -30,7 +30,7 @@ export class ConfigLoader {
     private loadConfig () : config.ConfigObject {
         return deepmerge< config.ConfigObject >(
             this.loadConfigFile( 'default.yml' ), this.loadConfigFile( `${this.env}.yml` ),
-            { arrayMerge: ( t, s ) => Helper.mergeArray( t, s, 'replace' ) }
+            { arrayMerge: ( t, s ) => Utils.mergeArray( t, s, 'replace' ) }
         );
     }
 

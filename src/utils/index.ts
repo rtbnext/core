@@ -1,9 +1,9 @@
 import * as Const from '@/utils/Const';
-import { Helper } from '@/utils/Helper';
+import { Utils } from '@/utils/Utils';
 import { Logger } from '@/utils/Logger';
 import { Parser } from '@/utils/Parser';
 
-const Utils = { Helper, Logger, Parser };
+const helper = { Utils, Logger, Parser };
 
-export { Const, Helper, Logger, Parser };
-export default Utils;
+export { Const, Utils as Helper, Logger, Parser };
+export default helper;
