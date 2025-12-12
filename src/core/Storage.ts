@@ -1,7 +1,7 @@
 import { StorageConfig } from '@/types/config';
 import { Logger } from '@/utils/Logger';
 import { ConfigLoader } from './ConfigLoader';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join, extname } from 'node:path';
 import { cwd } from 'node:process';
@@ -97,6 +97,32 @@ export class Storage {
     public appendCSV< T extends [] > ( path: string, content: T, nl: boolean = true ) : boolean {
         try { this.write( path, content, 'csv', { append: true, nl } ); return true }
         catch { return false }
+    }
+
+    public move ( from: string, to: string, force: boolean = false ) : boolean {
+        try {
+            this.assertPath( from = this.resolvePath( from ) );
+            if ( this.exists( to = this.resolvePath( to ) ) ) {
+                if ( force ) this.remove( to, true );
+                else throw new Error( `Destination path ${to} already exists` );
+            }
+            renameSync( from, to );
+            return true;
+        } catch ( err ) {
+            this.logger.error( `Failed to move ${from} to ${to}: ${ ( err as Error ).message }`, err as Error );
+            return false;
+        }
+    }
+
+    public remove ( path: string, force: boolean = true ) : boolean {
+        try {
+            this.assertPath( path = this.resolvePath( path ) );
+            rmSync( path, { recursive: true, force } );
+            return true;
+        } catch ( err ) {
+            this.logger.error( `Failed to delete ${path}: ${ ( err as Error ).message }`, err as Error );
+            return false;
+        }
     }
 
     public initDB () : void {
