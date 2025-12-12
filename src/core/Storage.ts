@@ -1,7 +1,7 @@
 import { StorageConfig } from '@/types/config';
 import { Logger } from '@/utils/Logger';
 import { ConfigLoader } from './ConfigLoader';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join, extname } from 'node:path';
 import { cwd } from 'node:process';
@@ -76,6 +76,13 @@ export class Storage {
 
     public ensurePath ( path: string ) : void {
         mkdirSync( this.resolvePath( path ), { recursive: true } );
+    }
+
+    public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ] ) : string[] {
+        this.assertPath( path = this.resolvePath( path ) );
+        return readdirSync( path ).filter(
+            f => ext.includes( extname( f ).toLowerCase().replace( '.', '' ) )
+        );
     }
 
     public readJSON< T > ( path: string ) : T | false {
