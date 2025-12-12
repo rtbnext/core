@@ -24,18 +24,18 @@ export class Storage {
         return join( this.path, path );
     }
 
-    private read ( path: string, raw: boolean = false ) : any {
+    private read ( path: string, type?: 'raw' | 'json' | 'csv' ) : any {
         try {
             this.assertPath( path = this.resolvePath( path ) );
             const content = readFileSync( path, 'utf8' );
-            if ( raw ) return content;
-            switch ( extname( path ).toLowerCase() ) {
-                case '.json': return JSON.parse( content );
-                case '.csv': return parse( content );
+            switch ( type ?? extname( path ).toLowerCase() ) {
+                case 'raw': return content;
+                case 'json': case '.json': return JSON.parse( content );
+                case 'csv': case '.csv': return parse( content );
             }
             throw new Error( `Unsupported file extension: ${ extname( path ) }` );
         } catch ( err ) {
-            this.logger.error( `Failed to read file at path: ${path}`, err as Error );
+            this.logger.error( `Failed to read ${path}: ${ ( err as Error ).message }`, err as Error );
             throw err;
         }
     }
@@ -53,12 +53,12 @@ export class Storage {
     }
 
     public readJSON< T > ( path: string ) : T | false {
-        try { return this.read( path ) as T }
+        try { return this.read( path, 'json' ) as T }
         catch { return false }
     }
 
     public readCSV< T extends [] > ( path: string ) : T | false {
-        try { return this.read( path ) as T }
+        try { return this.read( path, 'csv' ) as T }
         catch { return false }
     }
 
