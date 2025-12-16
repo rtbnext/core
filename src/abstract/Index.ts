@@ -42,12 +42,12 @@ export abstract class Index<
         return this.index.get( Utils.sanitize( uriLike ) );
     }
 
-    public update () : I | false {
+    public update ( uriLike: string, data: Partial< I >, allowUpdate: boolean = true ) : I | false {
         return false;
     }
 
-    public add () : I | false {
-        return false;
+    public add ( uriLike: string, data: I ) : I | false {
+        return this.update( uriLike, data, false );
     }
 
     public delete ( uriLike: string ) : void {
