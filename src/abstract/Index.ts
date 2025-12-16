@@ -1,4 +1,5 @@
 import { Storage } from '@/core/Storage';
+import { Utils } from '@/utils';
 
 export abstract class Index< T extends Map< string, any > > {
 
@@ -13,5 +14,21 @@ export abstract class Index< T extends Map< string, any > > {
     protected abstract loadIndex () : T;
 
     protected abstract saveIndex () : void;
+
+    public getIndex () : T {
+        return this.index;
+    }
+
+    public size () : number {
+        return this.index.size;
+    }
+
+    public has ( uriLike: string ) : boolean {
+        return this.index.has( Utils.sanitize( uriLike ) );
+    }
+
+    public get ( uriLike: string ) : any | undefined {
+        return this.index.get( Utils.sanitize( uriLike ) );
+    }
 
 }
