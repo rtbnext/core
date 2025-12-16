@@ -1,6 +1,6 @@
 import { Storage } from '@/core/Storage';
 
-export abstract class Index< T > {
+export abstract class Index< T extends Map< string, any > > {
 
     protected readonly storage: Storage;
     protected index: T;
