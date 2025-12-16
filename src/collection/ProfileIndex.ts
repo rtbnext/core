@@ -1,1 +1,3 @@
-export class ProfileIndex {}
+import { Index } from '@/abstract/Index';
+
+export class ProfileIndex extends Index {}
