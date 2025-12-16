@@ -34,6 +34,7 @@ export class ConfigLoader {
         );
     }
 
+    public get root () : string { return this.cwd }
     public get environment () : string { return this.env }
     public get config () : config.ConfigObject { return this.cfg }
     public get fetch () : config.FetchConfig { return this.cfg.fetch }
