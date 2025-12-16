@@ -4,7 +4,6 @@ import { ConfigLoader } from './ConfigLoader';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join, extname } from 'node:path';
-import { cwd } from 'node:process';
 import { parse, stringify } from 'csv-string';
 
 export class Storage {
@@ -16,8 +15,9 @@ export class Storage {
 
     private constructor () {
         this.logger = Logger.getInstance();
-        this.config = ConfigLoader.getInstance().storage;
-        this.path = join( cwd(), this.config.baseDir );
+        const { root, storage } = ConfigLoader.getInstance();
+        this.config = storage;
+        this.path = join( root, this.config.baseDir );
         this.initDB();
     }
 

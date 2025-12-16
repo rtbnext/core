@@ -3,7 +3,7 @@ import { ConfigLoader } from '@/core/ConfigLoader';
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join } from 'node:path';
-import { cwd, exit } from 'node:process';
+import { exit } from 'node:process';
 
 export class Logger {
 
@@ -16,9 +16,10 @@ export class Logger {
     private readonly path: string;
 
     private constructor () {
-        this.config = ConfigLoader.getInstance().logging;
-        this.path = join( cwd(), 'logs' );
-        if ( this.config.file ) mkdirSync( this.path );
+        const { root, logging } = ConfigLoader.getInstance();
+        this.config = logging;
+        this.path = join( root, 'logs' );
+        mkdirSync( this.path );
     }
 
     private logDate () : string {
