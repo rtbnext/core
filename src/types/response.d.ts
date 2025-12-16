@@ -1,4 +1,4 @@
-export interface Response< T > {
+export interface TResponse< T > {
     success: boolean;
     data?: T;
     error?: string;
@@ -7,6 +7,6 @@ export interface Response< T > {
     retries: number;
 }
 
-export interface ProfileResponse {}
+export interface TProfileResponse {}
 
-export interface ListResponse {}
+export interface TListResponse {}

@@ -1,6 +1,6 @@
 import { ConfigLoader } from '@/core/ConfigLoader';
 import { TFetchConfig } from '@/types/config';
-import { ListResponse, ProfileResponse, Response } from '@/types/response';
+import { TListResponse, TProfileResponse, TResponse } from '@/types/response';
 import { Utils } from '@/utils';
 import { Logger } from '@/utils/Logger';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
@@ -35,7 +35,7 @@ export class Fetch {
 
     private async fetch< T > (
         url: string, method: 'get' | 'post' = 'get'
-    ) : Promise< Response< T > > {
+    ) : Promise< TResponse< T > > {
         this.logger.info( `Fetching URL: ${url} via ${ method.toUpperCase() }` );
 
         const { result: res, ms } = await Utils.measure( async () => {
@@ -60,12 +60,12 @@ export class Fetch {
         );
     }
 
-    public async single< T > ( url: string, method: 'get' | 'post' = 'get' ) : Promise< Response< T > > {
+    public async single< T > ( url: string, method: 'get' | 'post' = 'get' ) : Promise< TResponse< T > > {
         return this.fetch< T >( url, method );
     }
 
-    public async batch< T > ( urls: string[], method: 'get' | 'post' = 'get' ) : Promise< Response< T >[] > {
-        const results: Response< T >[] = []; let url;
+    public async batch< T > ( urls: string[], method: 'get' | 'post' = 'get' ) : Promise< TResponse< T >[] > {
+        const results: TResponse< T >[] = []; let url;
 
         while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.maxBatchSize ) {
             results.push( await this.fetch< T >( url, method ) );
@@ -76,15 +76,15 @@ export class Fetch {
         return results;
     }
 
-    public async profile ( ...uriLike: string[] ) : Promise< Response< ProfileResponse >[] > {
+    public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
         const url = this.config.endpoints.profile;
-        return this.batch< ProfileResponse >( uriLike.map(
+        return this.batch< TProfileResponse >( uriLike.map(
             uri => url.replace( '{URI}', Utils.sanitize( uri ) )
         ) );
     }
 
-    public async list ( uriLike: string, year: string ) : Promise< Response< ListResponse > > {
-        return this.single< ListResponse >( this.config.endpoints.list
+    public async list ( uriLike: string, year: string ) : Promise< TResponse< TListResponse > > {
+        return this.single< TListResponse >( this.config.endpoints.list
             .replace( '{URI}', Utils.sanitize( uriLike ) )
             .replace( '{YEAR}', year )
         );
