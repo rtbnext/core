@@ -1,5 +1,6 @@
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/utils';
+import deepmerge from 'deepmerge';
 
 export abstract class Index<
     I extends { readonly uri: string, text: string },
@@ -17,7 +18,7 @@ export abstract class Index<
     }
 
     protected loadIndex () : T {
-        const raw = this.storage.readJSON< Record< string, I > > ( this.path ) || {};
+        const raw = this.storage.readJSON< Record< string, I > > ( this.path ) ?? {};
         return new Map( Object.entries( raw ) ) as T;
     }
 
@@ -43,7 +44,17 @@ export abstract class Index<
     }
 
     public update ( uriLike: string, data: Partial< I >, allowUpdate: boolean = true ) : I | false {
-        return false;
+        const uri = Utils.sanitize( uriLike );
+        if ( ! allowUpdate && this.index.has( uri ) ) return false;
+
+        const item = deepmerge< I >( this.index.get( uri ) ?? {}, data, {
+            arrayMerge: ( t, s ) => Utils.mergeArray( t, s, 'unique' )
+        } );
+
+        this.index.set( uri, item );
+        this.saveIndex();
+
+        return item;
     }
 
     public add ( uriLike: string, data: I ) : I | false {
