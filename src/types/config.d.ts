@@ -1,4 +1,4 @@
-export interface FetchConfig {
+export interface TFetchConfig {
     baseUrl: string;
     endpoints: {
         profile: string;
@@ -17,19 +17,19 @@ export interface FetchConfig {
     };
 }
 
-export interface StorageConfig {
+export interface TStorageConfig {
     baseDir: string;
     compressing: boolean;
 }
 
-export interface LoggingConfig {
+export interface TLoggingConfig {
     level: 'error' | 'warn' | 'info' | 'debug';
     console?: boolean;
     file?: boolean;
 }
 
-export interface ConfigObject {
-    fetch: FetchConfig;
-    storage: StorageConfig;
-    logging: LoggingConfig;
+export interface TConfigObject {
+    fetch: TFetchConfig;
+    storage: TStorageConfig;
+    logging: TLoggingConfig;
 }

@@ -1,5 +1,5 @@
 import { ConfigLoader } from '@/core/ConfigLoader';
-import { FetchConfig } from '@/types/config';
+import { TFetchConfig } from '@/types/config';
 import { ListResponse, ProfileResponse, Response } from '@/types/response';
 import { Utils } from '@/utils';
 import { Logger } from '@/utils/Logger';
@@ -9,7 +9,7 @@ export class Fetch {
 
     private static instance: Fetch;
     private readonly logger: Logger;
-    private readonly config: FetchConfig;
+    private readonly config: TFetchConfig;
     private httpClient: AxiosInstance;
 
     private constructor () {

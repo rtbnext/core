@@ -1,4 +1,4 @@
-import { StorageConfig } from '@/types/config';
+import { TStorageConfig } from '@/types/config';
 import { Logger } from '@/utils/Logger';
 import { ConfigLoader } from './ConfigLoader';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -10,7 +10,7 @@ export class Storage {
 
     private static instance: Storage;
     private readonly logger: Logger;
-    private readonly config: StorageConfig;
+    private readonly config: TStorageConfig;
     private readonly path: string;
 
     private constructor () {

@@ -1,4 +1,4 @@
-import { LoggingConfig } from '@/types/config';
+import { TLoggingConfig } from '@/types/config';
 import { ConfigLoader } from '@/core/ConfigLoader';
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { EOL } from 'node:os';
@@ -7,12 +7,12 @@ import { exit } from 'node:process';
 
 export class Logger {
 
-    private static readonly LEVEL: Record< LoggingConfig[ 'level' ], number > = {
+    private static readonly LEVEL: Record< TLoggingConfig[ 'level' ], number > = {
         error: 0, warn: 1, info: 2, debug: 3
     };
 
     private static instance: Logger;
-    private readonly config: LoggingConfig;
+    private readonly config: TLoggingConfig;
     private readonly path: string;
 
     private constructor () {
@@ -26,18 +26,18 @@ export class Logger {
         return new Date().toISOString().split( '-' ).slice( 0, 2 ).join( '-' );
     }
 
-    private shouldLog ( level: LoggingConfig[ 'level' ] ) : boolean {
+    private shouldLog ( level: TLoggingConfig[ 'level' ] ) : boolean {
         return Logger.LEVEL[ level ] <= Logger.LEVEL[ this.config.level ];
     }
 
-    private format ( level: LoggingConfig[ 'level' ], msg: string, meta?: any ) : string {
+    private format ( level: TLoggingConfig[ 'level' ], msg: string, meta?: any ) : string {
         const entry = `[${ new Date().toISOString() }] ${ level.toUpperCase() } ${msg}`;
         if ( meta instanceof Error ) entry.concat( `: ${ meta.stack?.replaceAll( '\n', ' // ' ) }` );
         else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
         return entry;
     }
 
-    private log2Console ( level: LoggingConfig[ 'level' ], entry: string ) : void {
+    private log2Console ( level: TLoggingConfig[ 'level' ], entry: string ) : void {
         ( console[ level ] ?? console.log )( entry );
     }
 
@@ -46,7 +46,7 @@ export class Logger {
         appendFileSync( path, entry + EOL, 'utf8' );
     }
 
-    private log ( level: LoggingConfig[ 'level' ], msg: string, meta?: any ) : void {
+    private log ( level: TLoggingConfig[ 'level' ], msg: string, meta?: any ) : void {
         if ( ! this.shouldLog( level ) ) return;
         const entry = this.format( level, msg, meta );
         if ( this.config.console ) this.log2Console( level, entry );
