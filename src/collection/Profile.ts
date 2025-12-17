@@ -39,7 +39,10 @@ export class Profile {
                     name: { value: raw.organization, method: 'string' },
                     title: { value: raw.title, method: 'string' }
                 } ) : undefined
-            }
+            },
+            bio: Parser.container< TProfileData[ 'bio' ] > ( {
+                quotes: { value: raw.quote, method: 'list' }
+            } )
         };
     }
 
