@@ -60,3 +60,34 @@ export class Profile {
     }
 
 }
+
+export class ProfileParser {
+
+    private readonly raw: TProfileResponse[ 'person' ];
+    private readonly lists: TProfileResponse[ 'person' ][ 'personLists' ];
+
+    constructor ( res: TProfileResponse ) {
+        this.raw = res.person;
+        this.lists = res.person.personLists.sort( ( a, b ) => b.date - a.date );
+    }
+
+    public bio () : TProfileData[ 'bio' ] {
+        return {
+            cv: this.cv(), facts: this.facts(),
+            quotes: Parser.list( [ this.raw.quote ] ) as string[]
+        };
+    }
+
+    public cv () : string[] {
+        return this.lists.filter( i => i.bios )[ 0 ]?.bios ?? [];
+    }
+
+    public facts () : string[] {
+        return this.lists.filter( i => i.abouts )[ 0 ]?.abouts ?? [];
+    }
+
+    public philanthropyScore () : number | undefined {
+        return this.lists.filter( i => i.philanthropyScore )[ 0 ]?.philanthropyScore;
+    }
+
+}
