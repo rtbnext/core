@@ -2,13 +2,22 @@ import { TProfileData } from '@/types/profile';
 import { TProfileResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
+import { DeepPartial } from 'devtypes/types/collections';
 
 export class Profile {
 
-    public static parser ( raw: TProfileResponse[ 'person' ] ) : Partial< TProfileData > {
+    public static parser ( raw: TProfileResponse[ 'person' ] ) : DeepPartial< TProfileData > {
         return {
-            ...Parser.container< TProfileData >( {} ),
-            uri: Utils.sanitize( raw.uri )
+            uri: Utils.sanitize( raw.uri ),
+            info: Parser.container< Partial< TProfileData[ 'info' ] > >( {
+                gender: { value: raw.gender, method: 'gender' },
+                birthDate: { value: raw.birthDate, method: 'date' },
+                citizenship: { value: raw.countryOfCitizenship || raw.countryOfResidence, method: 'country' },
+                maritalStatus: { value: raw.maritalStatus, method: 'maritalStatus' },
+                children: { value: raw.numberOfChildren, method: 'number' },
+                industry: { value: raw.industries, method: 'industry' },
+                source: { value: raw.source, method: 'list' }
+            } )
         };
     }
 

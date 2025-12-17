@@ -16,7 +16,7 @@ export class Parser {
 
     public static container< T = any > ( obj: { [ K in keyof T ]: ContainerEntry } ) : T {
         return Object.fromEntries( Object.entries< ContainerEntry >( obj ).map(
-            ( [ key, { value, method, strict, args } ] ) => [
+            ( [ key, { value, method, strict = true, args } ] ) => [
                 key, strict ? this.strict( value, method, ...( args || [] ) )
                     : ( this as any )[ method ]( value, ...( args || [] ) )
             ]
