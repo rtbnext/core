@@ -8,6 +8,13 @@ import { DeepPartial } from 'devtypes/types/collections';
 export class Profile {
 
     public static parser ( raw: TProfileResponse[ 'person' ] ) : DeepPartial< TProfileData > {
+        const cv: string[] = [], facts: string[] = [];
+        for ( const item of ( raw.personLists ).sort( ( a, b ) => b.date - a.date ) ) {
+            if ( cv.length === 0 ) cv.push( ...Utils.unique( item.bios ?? [] ) );
+            if ( facts.length === 0 ) facts.push( ...Utils.unique( item.abouts ?? [] ) );
+            if ( cv.length > 0 && facts.length > 0 ) break;
+        }
+
         return {
             uri: Utils.sanitize( raw.uri ),
             info: {
@@ -41,6 +48,8 @@ export class Profile {
                 } ) : undefined
             },
             bio: Parser.container< TProfileData[ 'bio' ] > ( {
+                cv: { value: cv, method: 'list' },
+                facts: { value: facts, method: 'list' },
                 quotes: { value: raw.quote, method: 'list' }
             } )
         };
