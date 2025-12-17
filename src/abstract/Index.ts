@@ -1,5 +1,5 @@
 import { Storage } from '@/core/Storage';
-import { Utils } from '@/utils';
+import { Utils } from '@/utils/Utils';
 import deepmerge from 'deepmerge';
 
 export abstract class Index<

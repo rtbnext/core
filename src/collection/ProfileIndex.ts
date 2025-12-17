@@ -1,6 +1,6 @@
 import { Index } from '@/abstract/Index';
 import { TProfileIndex, TProfileIndexItem } from '@/types/profile';
-import { Utils } from '@/utils';
+import { Utils } from '@/utils/Utils';
 
 export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > {
 
