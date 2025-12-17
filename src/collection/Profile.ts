@@ -9,10 +9,13 @@ export class Profile {
 
     public static parser ( raw: TProfileResponse[ 'person' ] ) : DeepPartial< TProfileData > {
         const cv: string[] = [], facts: string[] = [];
+        let philanthropyScore: number | undefined = undefined;
+
         for ( const item of ( raw.personLists ).sort( ( a, b ) => b.date - a.date ) ) {
             if ( cv.length === 0 ) cv.push( ...Utils.unique( item.bios ?? [] ) );
             if ( facts.length === 0 ) facts.push( ...Utils.unique( item.abouts ?? [] ) );
-            if ( cv.length > 0 && facts.length > 0 ) break;
+            if ( ! philanthropyScore ) philanthropyScore = item.philanthropyScore;
+            if ( cv.length > 0 && facts.length > 0 && philanthropyScore ) break;
         }
 
         return {
@@ -31,7 +34,8 @@ export class Profile {
                     maritalStatus: { value: raw.maritalStatus, method: 'maritalStatus' },
                     children: { value: raw.numberOfChildren, method: 'number' },
                     industry: { value: raw.industries, method: 'industry' },
-                    source: { value: raw.source, method: 'list' }
+                    source: { value: raw.source, method: 'list' },
+                    philanthropyScore: { value: philanthropyScore, method: 'number' }
                 } ),
                 education: ( raw.educations ?? [] ).map( ( { school, degree } ) => Parser.container< TEducation >( {
                     school: { value: school, method: 'string' },
