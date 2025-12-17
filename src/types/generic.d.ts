@@ -3,13 +3,18 @@ export interface TMetaData {
     lastModified: string;
 };
 
-export type TLocation = {
+export interface TLocation {
     country: string;
     state?: string;
     city?: string;
 };
 
-export type TImage = {
+export interface TEducation {
+    school: string;
+    degree?: string;
+};
+
+export interface TImage {
     url: string;
     credits: string;
     file: string;

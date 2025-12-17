@@ -1,3 +1,4 @@
+import { TEducation } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TProfileResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
@@ -24,7 +25,11 @@ export class Profile {
                     children: { value: raw.numberOfChildren, method: 'number' },
                     industry: { value: raw.industries, method: 'industry' },
                     source: { value: raw.source, method: 'list' }
-                } )
+                } ),
+                education: ( raw.educations ?? [] ).map( ( { school, degree } ) => Parser.container< TEducation >( {
+                    school: { value: school, method: 'string' },
+                    degree: { value: degree, method: 'string' }
+                } ) )
             }
         };
     }

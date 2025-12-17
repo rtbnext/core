@@ -1,4 +1,4 @@
-import { TLocation, TMetaData } from '@/types/generic';
+import { TEducation, TLocation, TMetaData } from '@/types/generic';
 import { Gender, Industry, MaritalStatus } from '@/utils/Const';
 
 export type TProfileIndex< T extends string = string > = Map< T, TProfileIndexItem< T > >;
@@ -28,10 +28,7 @@ export interface TProfileData< T extends string = string > {
         residence?: TLocation;
         maritalStatus?: MaritalStatus;
         children?: number;
-        education?: {
-            school: string;
-            degree: string;
-        }[];
+        education?: TEducation[];
         industry: Industry;
         source: string[];
         selfMade: {
