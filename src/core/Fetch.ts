@@ -1,7 +1,7 @@
 import { ConfigLoader } from '@/core/ConfigLoader';
 import { TFetchConfig } from '@/types/config';
 import { TListResponse, TProfileResponse, TResponse } from '@/types/response';
-import { Utils } from '@/utils';
+import { Utils } from '@/utils/Utils';
 import { Logger } from '@/utils/Logger';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 

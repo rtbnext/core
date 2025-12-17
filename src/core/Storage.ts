@@ -1,6 +1,6 @@
 import { TStorageConfig } from '@/types/config';
 import { Logger } from '@/utils/Logger';
-import { ConfigLoader } from './ConfigLoader';
+import { ConfigLoader } from '@/core/ConfigLoader';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join, extname } from 'node:path';

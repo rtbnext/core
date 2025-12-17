@@ -1,7 +1,7 @@
-import { List } from './List';
-import { ListIndex } from './ListIndex';
-import { Profile } from './Profile';
-import { ProfileIndex } from './ProfileIndex';
+import { List } from '@/collection/List';
+import { ListIndex } from '@/collection/ListIndex';
+import { Profile } from '@/collection/Profile';
+import { ProfileIndex } from '@/collection/ProfileIndex';
 
 export const index = {
     profileIndex: ProfileIndex.getInstance,
