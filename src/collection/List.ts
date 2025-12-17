@@ -22,6 +22,18 @@ export class List {
         this.dates = List.storage.scanDir( this.path );
     }
 
+    public getUri () : string {
+        return this.uri;
+    }
+
+    public getData () : TListIndexItem {
+        return this.data;
+    }
+
+    public getDates () : string[] {
+        return this.dates;
+    }
+
     public static get ( uriLike: string ) : List | false {
         try { return new List( List.index.get( uriLike ) ) }
         catch { return false }
