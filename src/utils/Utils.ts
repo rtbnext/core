@@ -55,7 +55,7 @@ export class Utils {
         if ( ! values.length ) return undefined;
         if ( typeof aggregator === 'function' ) return aggregator( values );
 
-        const sum = ( acc: number |undefined, val: T[ K ] ) : number | undefined => (
+        const sum = ( acc: number | undefined, val: T[ K ] ) : number | undefined => (
             acc === undefined || typeof val !== 'number' ? undefined : acc + val
         );
 
@@ -66,7 +66,7 @@ export class Utils {
             case 'sum': return values.reduce< number | undefined >( sum, 0 );
             case 'avg':
                 const s = values.reduce< number | undefined >( sum, 0 );
-                return s ? s / values.length : undefined;
+                return s === undefined ? undefined : s / values.length;
         }
     }
 
