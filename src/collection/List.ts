@@ -60,7 +60,7 @@ export class List {
     ) : T | false {
         const target = Parser.date( dateLike )!;
         const date = this.availableDate( target ) ? target : exactMatch ? undefined : this.nearestDate( target );
-        return date ? List.storage.readJSON< T >( join( this.path!, `${date}.json` ) ) : false;
+        return date ? List.storage.readJSON< T >( join( this.path, `${date}.json` ) ) : false;
     }
 
     public getLatest< T extends TListSnapshot > () : T | false {
