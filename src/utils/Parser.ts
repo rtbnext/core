@@ -86,6 +86,13 @@ export class Parser {
             : date.toISOString().split( 'T' )[ 0 ];
     }
 
+    public static latLng ( lat: any, lng: any ) : [ number, number ] | undefined {
+        const latitude = this.number( lat, 6 );
+        const longitude = this.number( lng, 6 );
+        return isNaN( latitude ) || isNaN( longitude ) ? undefined
+            : [ latitude, longitude ];
+    }
+
     // Special
 
     public static name (
