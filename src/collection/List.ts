@@ -1,6 +1,7 @@
 import { ListIndex } from '@/collection/ListIndex';
 import { Storage } from '@/core/Storage';
 import { TListIndexItem, TListSnapshot } from '@/types/list';
+import { Utils } from '@/utils/Utils';
 import { Parser } from '@/utils/Parser';
 import { join } from 'node:path';
 
@@ -20,7 +21,7 @@ export class List {
         this.uri = item.uri;
         this.path = join( 'list', item.uri );
         this.data = item;
-        this.dates = List.storage.scanDir( this.path );
+        this.dates = Utils.sort( List.storage.scanDir( this.path ) );
     }
 
     public getUri () : string {
@@ -40,12 +41,12 @@ export class List {
     }
 
     public latestDate () : string | undefined {
-        return this.dates.sort().reverse()[ 0 ];
+        return this.dates.slice().reverse()[ 0 ];
     }
 
     public nearestDate ( dateLike: string ) : string | undefined {
         const target = Parser.date( dateLike )!;
-        return this.dates.slice().sort().reduce(
+        return this.dates.slice().reduce(
             ( nearest, date ) => date > target ? nearest : date
         );
     }
