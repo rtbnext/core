@@ -61,14 +61,9 @@ export class List {
         return this.dates.filter( date => date >= fromDate && date <= toDate );
     }
 
-    public lastInYear ( year: string | number ) : string | undefined {
+    public latestInYear ( year: string | number ) : string | undefined {
         const target = Parser.string( year );
-
-        for ( let i = this.dates.length - 1; i >= 0; i-- ) {
-            if ( this.dates[ i ].substring( 0, 4 ) === target ) {
-                return this.dates[ i ];
-            }
-        }
+        return this.dates.filter( date => date.substring( 0, 4 ) === target ).at( -1 );
     }
 
     public static get ( uriLike: string ) : List | false {
