@@ -1,4 +1,4 @@
-import { TEducation, TLocation, TMetaData, TRelation } from '@/types/generic';
+import { TEducation, TImage, TLocation, TMetaData, TRelation } from '@/types/generic';
 import { Gender, Industry, MaritalStatus, Relationship } from '@/utils/Const';
 
 export type TProfileIndex< T extends string = string > = Map< T, TProfileIndexItem< T > >;
@@ -48,6 +48,7 @@ export interface TProfileData< T extends string = string > {
         quotes: string[];
     };
     related: TRelation[];
+    media: TImage[];
 };
 
 export type TProfileHistory = TProfileHistoryItem[];
