@@ -23,7 +23,7 @@ export abstract class Job {
 
 export function jobRunner< T extends typeof Job > (
     cls: T, method: keyof InstanceType< T > = 'run', ci: string = '--run',
-    options: { silent: boolean, safeMode: boolean }, 
+    options: { silent?: boolean, safeMode?: boolean } = {}
 ) : void {
     if ( ! process.argv.includes( ci ) ) return;
     const { silent = false, safeMode = false } = options;
