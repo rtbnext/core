@@ -76,6 +76,16 @@ export class Utils {
             : query.split( '-' ).every( q => text.includes( q ) );
     }
 
+    public static parseArgs ( args: readonly string[] ) : Record< string, string | boolean > {
+        return args.reduce( ( res, a, i ) => {
+            if ( a.startsWith( '--' ) ) {
+                const [ key, val ] = a.slice( 2 ).split( '=', 2 );
+                res[ key ] = val ?? ( args[ i + 1 ]?.startsWith( '--' ) ? true : args[ ++i ] );
+            }
+            return res;
+        }, {} as Record< string, string | boolean > );
+    }
+
     public static async measure<
         F extends ( ...args: any[] ) => any,
         R = Awaited< ReturnType< F > >
