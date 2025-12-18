@@ -43,8 +43,11 @@ export class Parser {
         return list.map( this.primitive ).filter( Boolean );
     }
 
-    public static map< T extends Primitive, L extends readonly T[] | Record< string | number, T > > (
-        list: L, value: any, fb: T | undefined = undefined,
+    public static map<
+        T extends Primitive,
+        L extends readonly T[] | Record< string | number, T >
+    > (
+        value: any, list: L, fb: T | undefined = undefined,
         exactMatch: boolean = false, useKey: boolean = true
     ) : T | undefined {
         value = this.string( value ).toLowerCase();
@@ -128,15 +131,15 @@ export class Parser {
     }
 
     public static gender ( value: any ) : Gender | undefined {
-        return this.map< Gender, typeof Gender >( Gender, value );
+        return this.map< Gender, typeof Gender >( value, Gender );
     }
 
     public static maritalStatus ( value: any ) : MaritalStatus | undefined {
-        return this.map< MaritalStatus, typeof MaritalStatus >( MaritalStatus, value );
+        return this.map< MaritalStatus, typeof MaritalStatus >( value, MaritalStatus );
     }
 
     public static industry ( value: any ) : Industry {
-        return this.map< Industry, typeof Industry >( Industry, value, 'diversified' )!;
+        return this.map< Industry, typeof Industry >( value, Industry, 'diversified' )!;
     }
 
     public static country ( value: any ) : string | undefined {
