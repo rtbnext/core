@@ -17,6 +17,16 @@ export class ProfileParser {
         this.lists = res.person.personLists.sort( ( a, b ) => b.date - a.date );
     }
 
+    public uri () : string {
+        return Utils.sanitize( this.raw.uri );
+    }
+
+    public aliases () : string[] {
+        const uri = this.uri();
+        return this.raw.uris.filter( Boolean ).map( i => Utils.sanitize( i ) )
+            .filter( i => i !== uri ).sort();
+    }
+
     public name () : ReturnType< typeof Parser.name > {
         return Parser.name(
             this.raw.name, this.raw.lastName, this.raw.firstName,
