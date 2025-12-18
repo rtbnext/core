@@ -1,4 +1,4 @@
-import { TEducation } from '@/types/generic';
+import { TEducation, TImage } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TProfileResponse } from '@/types/response';
 import { Relationship } from '@/utils/Const';
@@ -58,17 +58,19 @@ export class ProfileParser {
 
     public citizenship () : string | undefined {
         return Parser.strict(
-            this.raw.countryOfCitizenship || this.raw.countryOfResidence,
+            this.raw.countryOfCitizenship ||
+            this.raw.countryOfResidence,
             'country'
         );
     }
 
     public education () : TProfileData[ 'info' ][ 'education' ] {
-        if ( this.raw.educations ) return this.raw.educations.filter( Boolean )
-            .map( ( { school, degree } ) => Parser.container< TEducation >( {
-                school: { value: school, method: 'string' },
-                degree: { value: degree, method: 'string' }
-            } ) );
+        return ( this.raw.educations ?? [] ).filter( Boolean ).map( item => (
+            Parser.container< TEducation >( {
+                school: { value: item.school, method: 'string' },
+                degree: { value: item.degree, method: 'string' }
+            } )
+        ) );
     }
 
     public selfMade () : TProfileData[ 'info' ][ 'selfMade' ] {
@@ -84,7 +86,8 @@ export class ProfileParser {
     }
 
     public organization () : TProfileData[ 'info' ][ 'organization' ] {
-        if ( this.raw.organization ) return Parser.container< TProfileData[ 'info' ][ 'organization' ] >( {
+        if ( ! this.raw.organization ) return;
+        return Parser.container< TProfileData[ 'info' ][ 'organization' ] >( {
             name: { value: this.raw.organization, method: 'string' },
             title: { value: this.raw.title, method: 'string' }
         } );
@@ -113,6 +116,18 @@ export class ProfileParser {
                 relation: Parser.strict( relationshipType, 'string' ),
                 uri: uri ? Utils.sanitize( uri ) : undefined
             } ) );
+    }
+
+    public media () : TProfileData[ 'media' ] {
+        return ( this.raw.listImages ?? [] ).filter( Boolean ).map( item => (
+            Parser.container< TImage >( {
+                url: { value: item.uri, method: 'string' },
+                credits: { value: item.credit, method: 'string' },
+                file: { value: item.image, method: 'string' },
+                caption: { value: item.caption, method: 'string' },
+                desc: { value: item.description, method: 'string' }
+            } )
+        ) );
     }
 
 }
