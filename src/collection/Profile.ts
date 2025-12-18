@@ -1,11 +1,12 @@
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { Storage } from '@/core/Storage';
 import { TEducation, TImage, TMetaData, TRelation } from '@/types/generic';
-import { TProfileData, TProfileHistory } from '@/types/profile';
+import { TProfileData, TProfileHistory, TProfileIndexItem } from '@/types/profile';
 import { TProfileResponse } from '@/types/response';
 import { Relationship } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
+import { join } from 'node:path';
 
 export class Profile {
 
@@ -14,9 +15,20 @@ export class Profile {
 
     private uri: string;
     private path: string;
-    private data: TProfileData;
-    private history: TProfileHistory;
+    private data?: TProfileData;
+    private history?: TProfileHistory;
     private meta: TMetaData;
+
+    private constructor ( item?: TProfileIndexItem ) {
+        if ( ! item ) throw new Error( `Profile index item not given` );
+
+        this.uri = item.uri;
+        this.path = join( 'profile', item.uri );
+
+        this.meta = Profile.storage.readJSON< TMetaData >( join( this.path, 'meta.json' ) ) || {
+            schemaVersion: 2, lastModified: new Date().toISOString()
+        };
+    }
 
 }
 
