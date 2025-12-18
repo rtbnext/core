@@ -1,11 +1,25 @@
-import { TEducation, TImage, TRelation } from '@/types/generic';
-import { TProfileData } from '@/types/profile';
+import { ProfileIndex } from '@/collection/ProfileIndex';
+import { Storage } from '@/core/Storage';
+import { TEducation, TImage, TMetaData, TRelation } from '@/types/generic';
+import { TProfileData, TProfileHistory } from '@/types/profile';
 import { TProfileResponse } from '@/types/response';
 import { Relationship } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
 
-export class Profile {}
+export class Profile {
+
+    private static readonly storage = Storage.getInstance();
+    private static readonly index = ProfileIndex.getInstance();
+
+    private uri: string;
+    private path: string;
+    private data: TProfileData;
+    private history: TProfileHistory;
+    private meta: TMetaData;
+
+}
+
 
 export class ProfileParser {
 

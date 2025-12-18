@@ -19,6 +19,7 @@ export class UpdateProfile extends Job {
                 }
 
                 const parser = new ProfileParser( row.data );
+                const uri = parser.uri();
                 // create or update profile
             }
         } );
