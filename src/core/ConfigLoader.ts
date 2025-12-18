@@ -37,9 +37,10 @@ export class ConfigLoader {
     public get root () : string { return this.cwd }
     public get environment () : string { return this.env }
     public get config () : config.TConfigObject { return this.cfg }
-    public get fetch () : config.TFetchConfig { return this.cfg.fetch }
-    public get storage () : config.TStorageConfig { return this.cfg.storage }
     public get logging () : config.TLoggingConfig { return this.cfg.logging }
+    public get storage () : config.TStorageConfig { return this.cfg.storage }
+    public get fetch () : config.TFetchConfig { return this.cfg.fetch }
+    public get queue () : config.TQueueConfig { return this.cfg.queue }
 
     public static getInstance () : ConfigLoader {
         return ConfigLoader.instance ||= new ConfigLoader();

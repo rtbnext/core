@@ -1,3 +1,14 @@
+export interface TLoggingConfig {
+    level: 'error' | 'warn' | 'info' | 'debug';
+    console?: boolean;
+    file?: boolean;
+}
+
+export interface TStorageConfig {
+    baseDir: string;
+    compressing: boolean;
+}
+
 export interface TFetchConfig {
     baseUrl: string;
     endpoints: {
@@ -17,19 +28,14 @@ export interface TFetchConfig {
     };
 }
 
-export interface TStorageConfig {
-    baseDir: string;
-    compressing: boolean;
-}
-
-export interface TLoggingConfig {
-    level: 'error' | 'warn' | 'info' | 'debug';
-    console?: boolean;
-    file?: boolean;
+export interface TQueueConfig {
+    maxSize: number;
+    defaultPrio: number;
 }
 
 export interface TConfigObject {
-    fetch: TFetchConfig;
-    storage: TStorageConfig;
     logging: TLoggingConfig;
+    storage: TStorageConfig;
+    fetch: TFetchConfig;
+    queue: TQueueConfig;
 }
