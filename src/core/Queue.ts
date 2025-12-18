@@ -3,6 +3,7 @@ import { Storage } from '@/core/Storage';
 import { TQueueConfig } from '@/types/config';
 import { QueueType, TQueue, TQueueItem, TQueueStorage } from '@/types/queue';
 import { Logger } from '@/utils/Logger';
+import { Utils } from '@/utils/Utils';
 
 export class Queue {
 
@@ -44,6 +45,23 @@ export class Queue {
 
     public size ( type: QueueType ) : number {
         return this.queue[ type ].size;
+    }
+
+    public has ( type: QueueType, uriLike: string ) : boolean {
+        return this.queue[ type ].has( Utils.sanitize( uriLike ) );
+    }
+
+    public add ( type: QueueType, uriLike: string, prio?: number ) : boolean {
+        if ( this.queue[ type ].size > this.config.maxSize ) return false;
+        const uri = Utils.sanitize( uriLike );
+        this.queue[ type ].set( uri, { uri, prio, ts: new Date().toISOString() } );
+        this.saveQueue();
+        return true;
+    }
+
+    public clear ( type: QueueType ) {
+        this.queue[ type ].clear();
+        this.saveQueue();
     }
 
     public static getInstance () {
