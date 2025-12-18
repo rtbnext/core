@@ -38,6 +38,14 @@ export class Queue {
         ) as TQueueStorage );
     }
 
+    public getQueue< T extends QueueType = QueueType > ( type: T ) : TQueue[ T ] {
+        return this.queue[ type ];
+    }
+
+    public size ( type: QueueType ) : number {
+        return this.queue[ type ].size;
+    }
+
     public static getInstance () {
         return Queue.instance ||= new Queue();
     }
