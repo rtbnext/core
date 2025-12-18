@@ -7,11 +7,11 @@ export class FetchProfile extends Job {
     protected override readonly job = 'FetchProfile';
 
     public async run ( args: TArgs ) : Promise< void > {
-        const batch = 'profile' in args && typeof args.profile === 'string'
-            ? args.profile.split( ',' ).filter( Boolean ).map( i => ( { uri: i } ) )
-            : this.queue.next( 'profile', this.config.fetch.rateLimit.maxBatchSize );
+        const batch = ! ( 'profile' in args ) || typeof args.profile !== 'string'
+            ? this.queue.next( 'profile', this.config.fetch.rateLimit.maxBatchSize ).map( i => i.uri )
+            : args.profile.split( ',' ).filter( Boolean );
 
-        for ( const row of await this.fetch.profile( ...batch.map( i => i.uri ) ) ) {
+        for ( const row of await this.fetch.profile( ...batch ) ) {
             if ( ! row || ! row.success || ! row.data ) {
                 this.log( 'Request failed', row, 'warn' );
                 continue;
