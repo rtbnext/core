@@ -20,6 +20,8 @@ export abstract class Job {
         this.config = ConfigLoader.getInstance();
         this.queue = Queue.getInstance();
         this.fetch = Fetch.getInstance();
+
+        this.log( `Starting job: ${this.job}` );
     }
 
     protected async catch<
