@@ -2,7 +2,7 @@ import { ConfigLoader } from '@/core/ConfigLoader';
 import { Fetch } from '@/core/Fetch';
 import { Queue } from '@/core/Queue';
 import { TConfigObject, TLoggingConfig } from '@/types/config';
-import helper from '@/utils';
+import helper, { Utils } from '@/utils';
 
 export abstract class Job {
 
@@ -33,19 +33,21 @@ export abstract class Job {
         if ( exit ) process.exit( 1 );
     }
 
-    public abstract run () : void | Promise< void >;
+    public abstract run ( ...args: any[] ) : void | Promise< void >;
 
 }
 
 export function jobRunner< T extends typeof Job > (
-    cls: T, method: keyof InstanceType< T > = 'run', ci: string = '--run',
+    cls: T, method: keyof InstanceType< T > = 'run', trigger: string = '--run',
     options: { silent?: boolean, safeMode?: boolean } = {}
 ) : void {
-    if ( ! process.argv.includes( ci ) ) return;
+    if ( ! process.argv.includes( trigger ) ) return;
     const { silent = false, safeMode = false } = options;
+
     try {
         const job = new ( cls as any )( silent, safeMode );
-        ( job[ method ] as Function )();
+        const args = Utils.parseArgs( process.argv );
+        ( job[ method ] as Function )( args );
     } catch ( err ) {
         if ( ! silent ) helper.log.error(
             `Job failed: ${ ( err as Error ).message }`,
