@@ -2,7 +2,7 @@ import { Job, jobRunner } from '@/abstract/Job';
 import { ProfileParser } from '@/collection/Profile';
 import { TArgs } from '@/types/generic';
 
-export class FetchProfile extends Job {
+export class UpdateProfile extends Job {
 
     protected override readonly job = 'FetchProfile';
 
@@ -26,4 +26,4 @@ export class FetchProfile extends Job {
 
 }
 
-jobRunner( FetchProfile );
+jobRunner( UpdateProfile );
