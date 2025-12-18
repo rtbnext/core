@@ -70,6 +70,10 @@ export class Queue {
         return items;
     }
 
+    public nextUri ( type: QueueType, n: number = 1 ) : string[] {
+        return this.next( type, n ).filter( Boolean ).map( i => i.uri );
+    }
+
     public clear ( type: QueueType ) {
         this.queue[ type ].clear();
         this.saveQueue();
