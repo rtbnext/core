@@ -33,6 +33,7 @@ export class ProfileMerger {
     public static mergeProfiles ( target: Profile, source: Profile, force: boolean = false ) : void {
         if ( ! ( force || this.mergeableProfiles( target.getData(), source.getData() ) ) ) return;
         target.updateData( source.getData(), [], 'unique' );
+        target.mergeHistory( source.getHistory() );
         target.save();
         Profile.delete( source.getUri() );
     }
