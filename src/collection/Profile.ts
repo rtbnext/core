@@ -103,6 +103,13 @@ export class Profile {
         this.touch();
     }
 
+    public mergeHistory ( history: TProfileHistory ) : void {
+        const map = new Map< string, TProfileHistoryItem >();
+        for ( const item of [ ...this.getHistory(), ...history ] ) map.set( item[ 0 ], item );
+        this.history = Array.from( map.values() ).sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
+        this.touch();
+    }
+
     public save () : void {
         Profile.index.update( this.uri, this.item );
         Profile.storage.ensurePath( this.path );
