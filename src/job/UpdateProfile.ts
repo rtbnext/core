@@ -1,6 +1,7 @@
 import { Job, jobRunner } from '@/abstract/Job';
-import { Profile, ProfileParser } from '@/collection/Profile';
+import { Profile } from '@/collection/Profile';
 import { TArgs } from '@/types/generic';
+import { ProfileParser } from '@/utils/ProfileParser';
 
 export class UpdateProfile extends Job {
 
