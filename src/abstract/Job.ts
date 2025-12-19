@@ -24,7 +24,7 @@ export abstract class Job {
         this.log( `Starting job: ${this.job}` );
     }
 
-    protected async catch<
+    protected async protect<
         F extends ( ...args: any[] ) => any,
         R = Awaited< ReturnType< F > >
     > ( fn: F ) : Promise< R | undefined > {
@@ -39,12 +39,11 @@ export abstract class Job {
         if ( ! this.silent ) helper.log[ as ]( msg, meta );
     }
 
-    protected err ( err: unknown, msg?: string, exit: boolean = true ) : void {
+    protected err ( err: unknown, msg?: string ) : void {
         if ( ! this.silent ) helper.log.error(
             `Job [${this.job}] failed: ${ msg ?? ( err as Error ).message }`,
             err as Error
         );
-        if ( exit ) process.exit( 1 );
     }
 
     public abstract run ( args: TArgs ) : void | Promise< void >;

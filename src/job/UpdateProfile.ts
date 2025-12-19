@@ -4,10 +4,10 @@ import { TArgs } from '@/types/generic';
 
 export class UpdateProfile extends Job {
 
-    protected override readonly job = 'FetchProfile';
+    protected override readonly job = 'UpdateProfile';
 
     public async run ( args: TArgs ) : Promise< void > {
-        this.catch( async () => {
+        await this.protect( async () => {
             const batch = 'profile' in args && typeof args.profile === 'string'
                 ? args.profile.split( ',' ).filter( Boolean )
                 : this.queue.nextUri( 'profile', this.config.fetch.rateLimit.maxBatchSize );
