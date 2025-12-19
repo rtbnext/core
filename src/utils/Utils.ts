@@ -1,12 +1,21 @@
 import { TArgs } from '@/types/generic';
 import { ListLike } from 'devtypes/types/lists';
 import { hrtime } from 'node:process';
+import { sha256 } from 'js-sha256';
 
 export class Utils {
 
     public static sanitize ( value: any, delimiter: string = '-' ) : string {
         return String( value ).toLowerCase().trim().replace( /[^a-z0-9]/g, delimiter )
             .replace( new RegExp( `[${delimiter}]{2,}`, 'g' ), delimiter );
+    }
+
+    public static hash ( value: any ) : string {
+        return sha256( String( value ) );
+    }
+
+    public static verifyHash ( value: any, hash: string ) : boolean {
+        return this.hash( value ) === hash;
     }
 
     public static sort< L extends ListLike > (
