@@ -12,29 +12,39 @@ export class ProfileMerger {
     private static readonly cmp = CmpStr.create( { metric: 'dice' } );
     private static readonly index = ProfileIndex.getInstance();
 
-    private static findSimilar ( uri: string ) : string[] {
+    private static similarURIs ( uri: string ) : string[] {
         return ProfileMerger.cmp.match< CmpStrResult[] >(
             [ ...ProfileMerger.index.getIndex().keys() ], uri, 0.5
         ).map( i => i.source );
     }
 
-    private static mergeableProfiles ( target: Profile, source: Profile ) : boolean {
-        const targetData = target.getData();
-        const sourceData = source.getData();
-
-        if ( targetData.id === sourceData.id ) return true;
+    private static mergeableProfiles ( target: TProfileData, source: TProfileData ) : boolean {
+        if ( target.id === source.id ) return true;
 
         for ( const test of [ 'gender', 'birthDate', 'birthPlace', 'citizenship' ] ) if (
-            test in targetData.info && test in sourceData.info &&
-            JSON.stringify( ( targetData.info as any )[ test ] ) !==
-            JSON.stringify( ( sourceData.info as any )[ test ] )
+            test in target.info && test in source.info &&
+            JSON.stringify( ( target.info as any )[ test ] ) !==
+            JSON.stringify( ( source.info as any )[ test ] )
         ) return false;
 
         return true;
     }
 
-    public static mergeProfiles ( target: Profile, source: Profile ) : void {}
+    public static mergeProfiles ( target: Profile, source: Profile, force: boolean = false ) : void {
+        if ( ! ( force || this.mergeableProfiles( target.getData(), source.getData() ) ) ) return;
+        target.updateData( source.getData(), [], 'unique' );
+        target.save();
+        Profile.delete( source.getUri() );
+    }
 
-    public static findMatch ( data: Partial< TProfileData > ) : Profile | false {}
+    public static findMatch ( data: Partial< TProfileData > ) : Profile | false {
+        const { id, uri } = data;
+        if ( ! id || ! uri ) return false;
+        for ( const test of ProfileMerger.similarURIs( uri ) ) {
+            const profile = Profile.get( test );
+            if ( profile && this.mergeableProfiles( profile.getData(), data as TProfileData ) ) return profile;
+        }
+        return false;
+    }
 
 }

@@ -1,6 +1,7 @@
 import { Job, jobRunner } from '@/abstract/Job';
 import { Profile } from '@/collection/Profile';
 import { TArgs } from '@/types/generic';
+import { ProfileMerger } from '@/utils/ProfileMerger';
 import { ProfileParser } from '@/utils/ProfileParser';
 
 export class UpdateProfile extends Job {
@@ -38,9 +39,12 @@ export class UpdateProfile extends Job {
                         this.log( `Renaming profile from ${ profile.getUri() } to ${uri}` );
                         profile.move( uri, true );
                     }
-                } else if ( false ) {
-                    // merge profiles if possible
-                } else {
+                } /*else if ( ( profile = ProfileMerger.findMatchForNewProfile( profileData, uri ) ) ) {
+                    this.log( `Merging new profile data into existing profile: ${profile.getUri()}` );
+                    profile.move( uri, true ); // Rename the existing profile to the new URI
+                    profile.updateData( profileData, aliases ); // Update with new data
+                    profile.save();
+                }*/ else {
                     this.log( `Creating profile: ${uri}` );
                     Profile.create( uri, profileData, [], aliases );
                 }
