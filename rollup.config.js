@@ -7,7 +7,7 @@ export default {
     input: [ 'src/index.ts' ],
     external: [
         'axios', 'csv-string', 'deepmerge', 'devtypes', 'i18n-iso-countries',
-        'us-state-converter', 'yaml'
+        'js-sha256', 'us-state-converter', 'yaml'
     ],
     output: [ {
         dir: 'dist',
