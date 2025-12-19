@@ -14,8 +14,23 @@ export class ProfileMerger {
 
     private static findSimilar ( uri: string ) : string[] {
         return ProfileMerger.cmp.match< CmpStrResult[] >(
-            [ ...ProfileMerger.index.getIndex().keys() ], uri, 0.6
+            [ ...ProfileMerger.index.getIndex().keys() ], uri, 0.5
         ).map( i => i.source );
+    }
+
+    private static mergeableProfiles ( target: Profile, source: Profile ) : boolean {
+        const targetData = target.getData();
+        const sourceData = source.getData();
+
+        if ( targetData.id === sourceData.id ) return true;
+
+        for ( const test of [ 'gender', 'birthDate', 'birthPlace', 'citizenship' ] ) if (
+            test in targetData.info && test in sourceData.info &&
+            JSON.stringify( ( targetData.info as any )[ test ] ) !==
+            JSON.stringify( ( sourceData.info as any )[ test ] )
+        ) return false;
+
+        return true;
     }
 
     public static mergeProfiles ( target: Profile, source: Profile ) : void {}
