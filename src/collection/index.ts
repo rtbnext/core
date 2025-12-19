@@ -6,6 +6,6 @@ import { ProfileIndex } from '@/collection/ProfileIndex';
 export const index = {
     profileIndex: ProfileIndex.getInstance,
     listIndex: ListIndex.getInstance
-};
+} as const;
 
 export { List, ListIndex, Profile, ProfileIndex };
