@@ -21,13 +21,14 @@ export class UpdateProfile extends Job {
                 let profile: Profile | false;
                 const parser = new ProfileParser( row.data );
                 const uri = parser.uri();
+                const id = parser.id();
                 const aliases = parser.aliases();
                 const profileData = {
-                    uri, info: parser.info(), bio: parser.bio(),
+                    uri, id, info: parser.info(), bio: parser.bio(),
                     related: parser.related(), media: parser.media()
                 };
 
-                if ( profile = Profile.find( uri ) ) {
+                if ( ( profile = Profile.find( uri ) ) && profile.verify( id ) ) {
                     this.log( `Updating profile: ${uri}` );
                     profile.updateData( profileData, aliases );
                     profile.save();
@@ -36,6 +37,8 @@ export class UpdateProfile extends Job {
                         this.log( `Renaming profile from ${ profile.getUri() } to ${uri}` );
                         profile.move( uri, true );
                     }
+                } else if ( false ) {
+                    // merge profiles if possible
                 } else {
                     this.log( `Creating profile: ${uri}` );
                     Profile.create( uri, profileData, [], aliases );

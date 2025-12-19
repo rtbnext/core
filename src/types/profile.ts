@@ -12,6 +12,7 @@ export interface TProfileIndexItem< T extends string = string > {
 
 export interface TProfileData< T extends string = string > {
     uri: T;
+    id: string;
     info: {
         deceased: boolean;
         family: boolean;

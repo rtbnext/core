@@ -45,6 +45,10 @@ export class Profile {
         };
     }
 
+    public verify ( id: string ) : boolean {
+        return Utils.verifyHash( id, this.getData().id );
+    }
+
     public getUri () : string {
         return this.uri;
     }
@@ -176,6 +180,10 @@ export class ProfileParser {
 
     public uri () : string {
         return Utils.sanitize( this.raw.uri );
+    }
+
+    public id () : string {
+        return Utils.hash( this.raw.naturalId );
     }
 
     public aliases () : string[] {

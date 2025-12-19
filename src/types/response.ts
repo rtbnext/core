@@ -9,6 +9,7 @@ export interface TResponse< T > {
 
 export interface TProfileResponse {
     person: {
+        naturalId: string;
         name: string;
         listImages?: {
             image: string;
