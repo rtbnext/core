@@ -6,8 +6,9 @@ import prettier from 'rollup-plugin-prettier';
 export default {
     input: [ 'src/index.ts' ],
     external: [
-        'axios', 'csv-string', 'deepmerge', 'devtypes', 'i18n-iso-countries',
-        'js-sha256', 'us-state-converter', 'yaml'
+        'axios', 'cmpstr', 'csv-string', 'deepmerge',
+        'devtypes', 'i18n-iso-countries', 'js-sha256',
+        'us-state-converter', 'yaml'
     ],
     output: [ {
         dir: 'dist',
