@@ -1,26 +1,27 @@
+import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
-import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import prettier from 'rollup-plugin-prettier';
 
 export default {
     input: [ 'src/index.ts' ],
+    external: [
+        'axios', 'csv-string', 'deepmerge', 'devtypes', 'i18n-iso-countries',
+        'us-state-converter', 'yaml'
+    ],
     output: [ {
         dir: 'dist',
-        format: 'esm',
+        format: 'es',
         entryFileNames: '[name].js',
         preserveModules: true,
         preserveModulesRoot: 'src',
         sourcemap: true
     } ],
     plugins: [
+        commonjs(),
         resolve(),
         typescript( {
             tsconfig: './tsconfig.json'
-        } ),
-        terser( {
-            format: { comments: false },
-            compress: false
         } ),
         prettier( {
             parser: 'babel',
