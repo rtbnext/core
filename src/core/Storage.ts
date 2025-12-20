@@ -26,11 +26,11 @@ export class Storage {
     }
 
     private resolvePath ( path: string ) : string {
-        return join( this.path, path );
+        return path.includes( this.path ) ? path : join( this.path, path );
     }
 
     private fileExt ( path: string ) : string {
-        return extname( path ).toLowerCase().replace( '.', '' );
+        return extname( this.resolvePath( path ) ).toLowerCase().replace( '.', '' );
     }
 
     private read ( path: string, type?: 'raw' | 'json' | 'csv' ) : any {
@@ -54,7 +54,7 @@ export class Storage {
         options = { append: false, nl: true }
     ) : void {
         try {
-            this.assertPath( path = this.resolvePath( path ) );
+            this.ensurePath( path = this.resolvePath( path ) );
             switch ( type ?? this.fileExt( path ) ) {
                 case 'csv': content = stringify( content );
                 case 'json': content = JSON.stringify(
