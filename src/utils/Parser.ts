@@ -1,5 +1,5 @@
 import { TLocation } from '@/types/generic';
-import { Gender, Industry, MaritalStatus } from '@/utils/Const';
+import * as Const from '@/utils/Const';
 import { Primitive } from 'devtypes/types/primitives';
 import { getAlpha2Code } from 'i18n-iso-countries';
 import { abbr } from 'us-state-converter';
@@ -48,14 +48,15 @@ export class Parser {
         L extends readonly T[] | Record< string | number, T >
     > (
         value: any, list: L, fb: T | undefined = undefined,
-        exactMatch: boolean = false, useKey: boolean = true
+        exactMatch: boolean = false, useKey?: boolean
     ) : T | undefined {
+        if ( useKey === undefined ) useKey = ! Array.isArray( list );
         value = Parser.string( value ).toLowerCase();
         return Object.entries( list ).find( ( [ k, v ] ) => {
             const test = Parser.string( useKey ? k : v ).toLowerCase();
             return exactMatch ? value === test : (
                 value.includes( test ) || test.includes( value )
-            )
+            );
         } )?.[ 1 ] || fb;
     }
 
@@ -130,16 +131,20 @@ export class Parser {
             : new Date( Date.now() - date.getTime() ).getUTCFullYear() - 1970;
     }
 
-    public static gender ( value: any ) : Gender | undefined {
-        return Parser.map< Gender, typeof Gender >( value, Gender );
+    public static gender ( value: any ) : Const.Gender | undefined {
+        return Parser.map< Const.Gender, typeof Const.Gender >( value, Const.Gender );
     }
 
-    public static maritalStatus ( value: any ) : MaritalStatus | undefined {
-        return Parser.map< MaritalStatus, typeof MaritalStatus >( value, MaritalStatus );
+    public static maritalStatus ( value: any ) : Const.MaritalStatus | undefined {
+        return Parser.map< Const.MaritalStatus, typeof Const.MaritalStatusResolver >(
+            value, Const.MaritalStatusResolver
+        );
     }
 
-    public static industry ( value: any ) : Industry {
-        return Parser.map< Industry, typeof Industry >( value, Industry, 'diversified' )!;
+    public static industry ( value: any ) : Const.Industry {
+        return Parser.map< Const.Industry, typeof Const.IndustryResolver >(
+            value, Const.IndustryResolver, 'diversified'
+        )!;
     }
 
     public static country ( value: any ) : string | undefined {
