@@ -92,7 +92,7 @@ export class Fetch {
 
     public async wiki< T > ( query: Record< string, any >, lang: string = 'en' ) : Promise< TResponse< T > > {
         return this.single< T >( this.config.endpoints.wiki
-            .replace( '{QUERY}', Utils.queryStr( { ...{ format: 'json' }, ...query } ) )
+            .replace( '{QUERY}', Utils.queryStr( { ...{ format: 'json', formatversion: 2 }, ...query } ) )
             .replace( '{LANG}', lang )
         );
     }

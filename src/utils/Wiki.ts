@@ -10,7 +10,7 @@ export class Wiki {
 
     private static async search ( query: string ) : Promise< string | false > {
         const res = await Wiki.fetch.wiki< [ string, string[], string[], string[] ] >( {
-            action: 'opensearch', search: query, namespace: '0', redirects: 'resolve'
+            action: 'opensearch', search: query, namespace: 0, redirects: 'resolve'
         } );
 
         return Wiki.cmp.match< CmpStrResult[] >(
@@ -27,11 +27,11 @@ export class Wiki {
             pageid: number, title: string, extract?: string, touched: string,
             lastrevid: number, pageimage?: string, pageprops?: {
                 defaultsort?: string, 'wikibase-shortdesc'?: string, wikibase_item?: string
-            }
+            }, thumbnail?: { source: string }, original?: { source: string }
         }[] } } >( {
             action: 'query', prop: 'extracts|info|pageprops|pageimages', titles: title,
             exintro: 1, explaintext: 1, exsectionformat: 'plain',
-            piprop: 'thumbnail|name|original', pilimit: '1'
+            piprop: 'thumbnail|name|original', pilimit: 1
         } );
 
         if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return false;
@@ -41,14 +41,14 @@ export class Wiki {
             pageId: Parser.number( raw.pageid ),
             refId: Parser.number( raw.lastrevid ),
             name: Parser.string( raw.title ),
-            date: Parser.date( raw.touched, 'iso' )!,
+            lastModified: Parser.date( raw.touched, 'iso' )!,
             summary: Parser.list( raw.extract ?? '', '\n' ) as string[]
         };
 
         if ( raw.pageprops?.defaultsort )
             data.sortKey = Parser.string( raw.pageprops.defaultsort );
         if ( raw.pageprops?.wikibase_item )
-            data.wikidataId = Parser.number( raw.pageprops.wikibase_item.replace( 'Q', '' ) );
+            data.wikidata = Parser.string( raw.pageprops.wikibase_item );
         if ( raw.pageprops?.[ 'wikibase-shortdesc' ] )
             data.desc = Parser.string( raw.pageprops[ 'wikibase-shortdesc' ] );
         if ( raw.pageimage )

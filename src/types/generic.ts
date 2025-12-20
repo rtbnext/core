@@ -104,10 +104,10 @@ export interface TWiki {
     pageId: number;
     refId: number;
     name: string;
-    date: string;
+    lastModified: string;
     summary: string[];
     sortKey?: string;
-    wikidataId?: number;
+    wikidata?: string;
     desc?: string;
     image?: TImage;
 }
