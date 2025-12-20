@@ -1,8 +1,10 @@
 import { Job, jobRunner } from '@/abstract/Job';
 import { Profile } from '@/collection/Profile';
 import { TArgs } from '@/types/generic';
+import { TProfileData } from '@/types/profile';
 import { ProfileMerger } from '@/utils/ProfileMerger';
 import { ProfileParser } from '@/utils/ProfileParser';
+import { Wiki } from '@/utils/Wiki';
 
 export class UpdateProfile extends Job {
 
@@ -20,16 +22,19 @@ export class UpdateProfile extends Job {
                     continue;
                 }
 
-                let profile: Profile | false;
                 const parser = new ProfileParser( row.data );
                 const uri = parser.uri();
                 const id = parser.id();
                 const aliases = parser.aliases();
-                const profileData = {
+                const profileData: Partial< TProfileData > = {
                     uri, id, info: parser.info(), bio: parser.bio(),
-                    related: parser.related(), media: parser.media()
+                    related: parser.related(), media: parser.media(),
                 };
 
+                const wiki = await Wiki.profile( profileData.info!.shortName );
+                if ( wiki ) profileData.wiki = wiki;
+
+                let profile: Profile | false;
                 if ( ( profile = Profile.find( uri ) ) && profile.verify( id ) ) {
                     // Existing profile, update data
                     this.log( `Updating profile: ${uri}` );
@@ -49,10 +54,9 @@ export class UpdateProfile extends Job {
                 } else {
                     // New profile, create entry
                     this.log( `Creating profile: ${uri}` );
-                    Profile.create( uri, {
-                        ...profileData,
-                        ...{ map: [], ranking: [], annual: [], assets: [] }
-                    }, [], aliases );
+                    Profile.create( uri, { ...profileData, ...{
+                        map: [], ranking: [], annual: [], assets: []
+                    } } as TProfileData, [], aliases );
                 }
             }
         } );
