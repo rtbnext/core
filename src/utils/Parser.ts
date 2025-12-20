@@ -18,8 +18,8 @@ export class Parser {
     public static container< T = any > ( obj: { [ K in keyof T ]: ContainerEntry } ) : T {
         return Object.fromEntries( Object.entries< ContainerEntry >( obj ).map(
             ( [ key, { value, method, strict = true, args } ] ) => [
-                key, strict ? this.strict( value, method, ...( args || [] ) )
-                    : ( this as any )[ method ]( value, ...( args || [] ) )
+                key, strict ? Parser.strict( value, method, ...( args || [] ) )
+                    : ( Parser as any )[ method ]( value, ...( args || [] ) )
             ]
         ) ) as T;
     }
@@ -28,19 +28,19 @@ export class Parser {
         value: any, method: keyof typeof Parser, ...args: any
     ) : T | undefined {
         return value === null || value === undefined ? undefined
-            : ( this as any )[ method ]( value, ...args ) as T;
+            : ( Parser as any )[ method ]( value, ...args ) as T;
     }
 
     public static primitive ( value: any ) : Primitive {
         return value === null || value === undefined ? value
             : typeof value === 'boolean' ? value
-            : ! isNaN( Number( value ) ) && value !== '' ? this.number( value )
-            : this.string( value );
+            : ! isNaN( Number( value ) ) && value !== '' ? Parser.number( value )
+            : Parser.string( value );
     }
 
     public static list ( value: any, delimiter: string = ',' ) : Primitive[] {
         const list = Array.isArray( value ) ? value : value.split( delimiter );
-        return list.map( this.primitive ).filter( Boolean );
+        return list.map( Parser.primitive ).filter( Boolean );
     }
 
     public static map<
@@ -50,9 +50,9 @@ export class Parser {
         value: any, list: L, fb: T | undefined = undefined,
         exactMatch: boolean = false, useKey: boolean = true
     ) : T | undefined {
-        value = this.string( value ).toLowerCase();
+        value = Parser.string( value ).toLowerCase();
         return Object.entries( list ).find( ( [ k, v ] ) => {
-            const test = this.string( useKey ? k : v ).toLowerCase();
+            const test = Parser.string( useKey ? k : v ).toLowerCase();
             return exactMatch ? value === test : (
                 value.includes( test ) || test.includes( value )
             )
@@ -69,7 +69,7 @@ export class Parser {
         const truthyValues = [ '1', 'true', 'yes', 'y' ];
         return value !== null && value !== undefined && (
             typeof value === 'boolean' ? value : truthyValues.includes(
-                this.string( value ).toLowerCase()
+                Parser.string( value ).toLowerCase()
             )
         );
     }
@@ -79,7 +79,7 @@ export class Parser {
     }
 
     public static money ( value: any ) : number {
-        return this.number( value, 3 );
+        return Parser.number( value, 3 );
     }
 
     public static date ( value: any, format: 'ymd' | 'iso' = 'ymd' ) : string | undefined {
@@ -90,8 +90,8 @@ export class Parser {
     }
 
     public static latLng ( lat: any, lng: any ) : [ number, number ] | undefined {
-        const latitude = this.number( lat, 6 );
-        const longitude = this.number( lng, 6 );
+        const latitude = Parser.number( lat, 6 );
+        const longitude = Parser.number( lng, 6 );
         return isNaN( latitude ) || isNaN( longitude ) ? undefined
             : [ latitude, longitude ];
     }
@@ -106,14 +106,14 @@ export class Parser {
         lastName: string, firstName: string,
         family: boolean
     } {
-        const clean = this.string( value ).replace( /&\s*family/i, '' ).trim();
+        const clean = Parser.string( value ).replace( /&\s*family/i, '' ).trim();
         const family = /&\s*family/i.test( value );
         const parts = clean.split( /\s+/ ).filter( Boolean );
 
-        const fN = firstName ? this.string( firstName ) : (
+        const fN = firstName ? Parser.string( firstName ) : (
             asianFormat ? parts.slice( 1 ).join( ' ' ) : parts.slice( 0, -1 ).join( ' ' )
         );
-        const lN = lastName ? this.string( lastName ) : (
+        const lN = lastName ? Parser.string( lastName ) : (
             asianFormat ? parts[ 0 ] || '' : parts.pop() || ''
         );
 
@@ -131,33 +131,33 @@ export class Parser {
     }
 
     public static gender ( value: any ) : Gender | undefined {
-        return this.map< Gender, typeof Gender >( value, Gender );
+        return Parser.map< Gender, typeof Gender >( value, Gender );
     }
 
     public static maritalStatus ( value: any ) : MaritalStatus | undefined {
-        return this.map< MaritalStatus, typeof MaritalStatus >( value, MaritalStatus );
+        return Parser.map< MaritalStatus, typeof MaritalStatus >( value, MaritalStatus );
     }
 
     public static industry ( value: any ) : Industry {
-        return this.map< Industry, typeof Industry >( value, Industry, 'diversified' )!;
+        return Parser.map< Industry, typeof Industry >( value, Industry, 'diversified' )!;
     }
 
     public static country ( value: any ) : string | undefined {
-        const code = getAlpha2Code( this.string( value ), 'en' );
+        const code = getAlpha2Code( Parser.string( value ), 'en' );
         return code ? code.toLowerCase() : undefined;
     }
 
     public static state ( value: any ) : string | undefined {
-        return value ? abbr( this.string( value ) ).toLowerCase() : undefined;
+        return value ? abbr( Parser.string( value ) ).toLowerCase() : undefined;
     }
 
     public static location (
         value: { country: any, state?: any, city?: any }
     ) : TLocation | undefined {
-        const country = this.country( value.country );
+        const country = Parser.country( value.country );
         return country ? {
-            country, state: this.state( value.state ),
-            city: this.strict( value.city, 'string' )
+            country, state: Parser.state( value.state ),
+            city: Parser.strict( value.city, 'string' )
         } : undefined;
     }
 

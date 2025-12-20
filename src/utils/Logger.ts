@@ -19,7 +19,7 @@ export class Logger {
         const { root, logging } = Config.getInstance();
         this.config = logging;
         this.path = join( root, 'logs' );
-        mkdirSync( this.path );
+        mkdirSync( this.path, { recursive: true } );
     }
 
     private logDate () : string {

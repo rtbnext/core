@@ -33,7 +33,7 @@ export class ProfileMerger {
     public static mergeProfiles (
         target: Profile, source: Profile, force: boolean = false, makeAlias: boolean = true
     ) : void {
-        if ( ! force && ! this.mergeableProfiles( target.getData(), source.getData() ) ) return;
+        if ( ! force && ! ProfileMerger.mergeableProfiles( target.getData(), source.getData() ) ) return;
 
         const aliases = makeAlias ? [ source.getUri() ] : [];
         target.updateData( source.getData(), aliases, 'unique' );
@@ -48,7 +48,7 @@ export class ProfileMerger {
 
         for ( const uri of ProfileMerger.similarURIs( data.uri ) ) {
             const profile = Profile.get( uri );
-            if ( profile && this.mergeableProfiles(
+            if ( profile && ProfileMerger.mergeableProfiles(
                 profile.getData(), data as TProfileData
             ) ) return profile;
         }

@@ -139,7 +139,9 @@ export class Storage {
     }
 
     public initDB () : void {
-        [ 'profile', 'list', 'filter', 'mover', 'stats' ].forEach( this.ensurePath );
+        [ 'profile', 'list', 'filter', 'mover', 'stats' ].forEach(
+            path => this.ensurePath( path )
+        );
     }
 
     public static getInstance () : Storage {

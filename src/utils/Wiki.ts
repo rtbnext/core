@@ -74,14 +74,14 @@ export class Wiki {
         if ( raw.pageprops?.wikibase_item )
             data.wikidata = Parser.string( raw.pageprops.wikibase_item );
         if ( raw.pageimage )
-            data.image = await this.getImage( raw.pageimage, raw.thumbnail?.source );
+            data.image = await Wiki.getImage( raw.pageimage, raw.thumbnail?.source );
 
         return data;
     }
 
     public static async profile ( name: string ) : Promise< TWiki | false > {
-        const title = await this.search( name );
-        return title ? await this.getPage( title ) : false;
+        const title = await Wiki.search( name );
+        return title ? await Wiki.getPage( title ) : false;
     }
 
 }

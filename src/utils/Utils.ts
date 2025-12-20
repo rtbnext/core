@@ -15,7 +15,7 @@ export class Utils {
     }
 
     public static verifyHash ( value: any, hash: string ) : boolean {
-        return this.hash( value ) === hash;
+        return Utils.hash( value ) === hash;
     }
 
     public static sort< L extends ListLike > (
@@ -46,7 +46,7 @@ export class Utils {
         switch ( mode ) {
             case 'concat': return [ ...target, ...source ];
             case 'replace': return source;
-            case 'unique': return this.unique< T >( [ ...target, ...source ] );
+            case 'unique': return Utils.unique< T >( [ ...target, ...source ] );
         }
     }
 
@@ -87,7 +87,7 @@ export class Utils {
     }
 
     public static search ( text: string, query: string, exactMatch: boolean = false ) : boolean {
-        text = this.sanitize( text ), query = this.sanitize( query );
+        text = Utils.sanitize( text ), query = Utils.sanitize( query );
         return exactMatch ? text.includes( query )
             : query.split( '-' ).every( q => text.includes( q ) );
     }
