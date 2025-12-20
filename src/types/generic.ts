@@ -101,14 +101,13 @@ export interface TAsset {
 }
 
 export interface TWiki {
-    uri: string;
     pageId: number;
-    wikidataId: number;
     refId: number;
     name: string;
-    sortKey: string;
     date: string;
     summary: string[];
+    sortKey?: string;
+    wikidataId?: number;
     desc?: string;
     image?: TImage;
 }
