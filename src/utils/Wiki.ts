@@ -1,5 +1,6 @@
 import { Fetch } from '@/core/Fetch';
 import { TImage, TWiki } from '@/types/generic';
+import { Parser } from '@/utils/Parser';
 import { CmpStr, CmpStrResult } from 'cmpstr';
 
 export class Wiki {
@@ -17,7 +18,7 @@ export class Wiki {
         )[ 0 ]?.source || false;
     }
 
-    private static async getImage ( title: string ) : Promise< TImage | undefined > {
+    private static async getImage ( uri: string ) : Promise< TImage | undefined > {
         return;
     }
 
@@ -37,14 +38,21 @@ export class Wiki {
 
         const raw = res.data.query.pages[ 0 ];
         const data: TWiki = {
-            pageId: raw.pageid, refId: raw.lastrevid, name: raw.title, date: raw.touched,
-            summary: ( raw.extract ?? '' ) .split( '\n' )
+            pageId: Parser.number( raw.pageid ),
+            refId: Parser.number( raw.lastrevid ),
+            name: Parser.string( raw.title ),
+            date: Parser.date( raw.touched, 'iso' )!,
+            summary: Parser.list( raw.extract ?? '', '\n' ) as string[]
         };
 
-        if ( raw.pageprops?.defaultsort ) data.sortKey = raw.pageprops.defaultsort;
-        if ( raw.pageprops?.wikibase_item ) data.wikidataId = parseInt( raw.pageprops.wikibase_item );
-        if ( raw.pageprops?.[ 'wikibase-shortdesc' ] ) data.desc = raw.pageprops[ 'wikibase-shortdesc' ];
-        if ( raw.pageimage ) data.image = await this.getImage( raw.pageimage );
+        if ( raw.pageprops?.defaultsort )
+            data.sortKey = Parser.string( raw.pageprops.defaultsort );
+        if ( raw.pageprops?.wikibase_item )
+            data.wikidataId = Parser.number( raw.pageprops.wikibase_item.replace( 'Q', '' ) );
+        if ( raw.pageprops?.[ 'wikibase-shortdesc' ] )
+            data.desc = Parser.string( raw.pageprops[ 'wikibase-shortdesc' ] );
+        if ( raw.pageimage )
+            data.image = await this.getImage( raw.pageimage );
 
         return data;
     }
