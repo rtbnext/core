@@ -15,7 +15,7 @@ export class Utils {
     }
 
     public static verifyHash ( value: any, hash: string ) : boolean {
-        return Utils.hash( value ) === hash;
+        return value === hash || Utils.hash( value ) === hash;
     }
 
     public static sort< L extends ListLike > (
