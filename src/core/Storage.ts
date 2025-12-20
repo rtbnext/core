@@ -2,7 +2,6 @@ import { TStorageConfig } from '@/types/config';
 import { Logger } from '@/utils/Logger';
 import { Config } from '@/core/Config';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
-import { EOL } from 'node:os';
 import { dirname, extname, join } from 'node:path';
 import { parse, stringify } from 'csv-string';
 
@@ -56,12 +55,12 @@ export class Storage {
         try {
             this.ensurePath( path = this.resolvePath( path ) );
             switch ( type ?? this.fileExt( path ) ) {
-                case 'csv': content = stringify( content );
+                case 'csv': content = stringify( content ); break;
                 case 'json': content = JSON.stringify(
                     content, null, this.config.compressing ? 2 : undefined
-                );
+                ); break;
             }
-            if ( options.nl ) content += EOL;
+            if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
             if ( options.append ) appendFileSync( path, content, 'utf8' );
             else writeFileSync( path, content, 'utf8' );
         } catch ( err ) {

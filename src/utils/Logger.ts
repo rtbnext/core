@@ -1,7 +1,6 @@
 import { TLoggingConfig } from '@/types/config';
 import { Config } from '@/core/Config';
 import { appendFileSync, mkdirSync } from 'node:fs';
-import { EOL } from 'node:os';
 import { join } from 'node:path';
 import { exit } from 'node:process';
 
@@ -43,7 +42,7 @@ export class Logger {
 
     private log2File ( entry: string ) : void {
         const path = join( this.path, `${ this.logDate() }.log` );
-        appendFileSync( path, entry + EOL, 'utf8' );
+        appendFileSync( path, entry + '\n', 'utf8' );
     }
 
     private log ( level: TLoggingConfig[ 'level' ], msg: string, meta?: any ) : void {
