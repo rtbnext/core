@@ -76,6 +76,13 @@ export class Fetch {
         return results;
     }
 
+    public async list ( uriLike: string, year: string ) : Promise< TResponse< TListResponse > > {
+        return this.single< TListResponse >( this.config.endpoints.list
+            .replace( '{URI}', Utils.sanitize( uriLike ) )
+            .replace( '{YEAR}', year )
+        );
+    }
+
     public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
         const url = this.config.endpoints.profile;
         return this.batch< TProfileResponse >( uriLike.map(
@@ -83,10 +90,10 @@ export class Fetch {
         ) );
     }
 
-    public async list ( uriLike: string, year: string ) : Promise< TResponse< TListResponse > > {
-        return this.single< TListResponse >( this.config.endpoints.list
-            .replace( '{URI}', Utils.sanitize( uriLike ) )
-            .replace( '{YEAR}', year )
+    public async wiki ( query: Record< string, any >, lang: string = 'en' ) : Promise< TResponse< any > > {
+        return this.single< any >( this.config.endpoints.wiki
+            .replace( '{QUERY}', Utils.queryStr( query ) )
+            .replace( '{LANG}', lang )
         );
     }
 
