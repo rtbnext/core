@@ -6,7 +6,7 @@ import { CmpStr, CmpStrResult } from 'cmpstr';
 export class Wiki {
 
     private static readonly fetch = Fetch.getInstance();
-    private static readonly cmp = CmpStr.create( { metric: 'dice' } );
+    private static readonly cmp = CmpStr.create( { metric: 'dice', safeEmpty: true } );
 
     private static async search ( query: string ) : Promise< string | false > {
         const res = await Wiki.fetch.wiki< [ string, string[], string[], string[] ] >( {

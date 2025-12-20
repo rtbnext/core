@@ -9,7 +9,7 @@ CmpStr.filter.add( 'input', 'normalizeUri', ( uri: string ) : string =>
 
 export class ProfileMerger {
 
-    private static readonly cmp = CmpStr.create( { metric: 'dice' } );
+    private static readonly cmp = CmpStr.create( { metric: 'dice', safeEmpty: true } );
     private static readonly index = ProfileIndex.getInstance();
 
     private static similarURIs ( uri: string ) : string[] {
