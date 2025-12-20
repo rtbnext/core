@@ -1,4 +1,4 @@
-import { AssetType, Relationship } from '@/utils/Const';
+import { AssetType, Flag, Relationship } from '@/utils/Const';
 
 export type TArgs = Record< string, string | boolean >;
 
@@ -53,6 +53,23 @@ export interface TRanking {
     networth?: number;
     prev?: string;
     next?: string;
+}
+
+export interface TAnnual {
+    year: number,
+    rank: TAnnualRecord;
+    networth: TAnnualRecord;
+}
+
+export interface TAnnualRecord {
+    first: number;
+    last: number;
+    diff: number;
+    flag: Flag;
+    average: number;
+    max: number;
+    min: number;
+    range: number;
 }
 
 export interface TAsset {

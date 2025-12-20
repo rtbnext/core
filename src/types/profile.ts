@@ -52,6 +52,7 @@ export interface TProfileData< T extends string = string > {
     media: Generic.TImage[];
     map: Generic.TMap[];
     ranking: Generic.TRanking[];
+    annual: Generic.TAnnual[];
     assets: Generic.TAsset[];
 };
 
