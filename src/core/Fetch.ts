@@ -1,4 +1,4 @@
-import { ConfigLoader } from '@/core/ConfigLoader';
+import { Config } from '@/core/Config';
 import { TFetchConfig } from '@/types/config';
 import { TListResponse, TProfileResponse, TResponse } from '@/types/response';
 import { Utils } from '@/utils/Utils';
@@ -14,7 +14,7 @@ export class Fetch {
 
     private constructor () {
         this.logger = Logger.getInstance();
-        this.config = ConfigLoader.getInstance().fetch;
+        this.config = Config.getInstance().fetch;
         this.httpClient = this.setupHttpClient();
     }
 

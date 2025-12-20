@@ -1,4 +1,4 @@
-import { ConfigLoader } from '@/core/ConfigLoader';
+import { Config } from '@/core/Config';
 import { Fetch } from '@/core/Fetch';
 import { Queue } from '@/core/Queue';
 import { TConfigObject, TLoggingConfig } from '@/types/config';
@@ -17,7 +17,7 @@ export abstract class Job {
     constructor ( silent: boolean, safeMode: boolean ) {
         this.silent = silent;
         this.safeMode = safeMode;
-        this.config = ConfigLoader.getInstance();
+        this.config = Config.getInstance();
         this.queue = Queue.getInstance();
         this.fetch = Fetch.getInstance();
 

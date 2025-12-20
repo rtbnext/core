@@ -1,14 +1,14 @@
-import { ConfigLoader } from '@/core/ConfigLoader';
+import { Config } from '@/core/Config';
 import { Fetch } from '@/core/Fetch';
 import { Queue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
 
 const service = {
-    config: ConfigLoader.getInstance,
+    config: Config.getInstance,
     fetch: Fetch.getInstance,
     queue: Queue.getInstance,
     storage: Storage.getInstance
 } as const;
 
-export { ConfigLoader, Fetch, Queue, Storage };
+export { Config as ConfigLoader, Fetch, Queue, Storage };
 export default service;

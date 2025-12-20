@@ -1,4 +1,4 @@
-import { ConfigLoader } from '@/core/ConfigLoader';
+import { Config } from '@/core/Config';
 import { Storage } from '@/core/Storage';
 import { TQueueConfig } from '@/types/config';
 import { QueueType, TQueue, TQueueItem, TQueueStorage } from '@/types/queue';
@@ -13,7 +13,7 @@ export class Queue {
 
     private constructor () {
         this.storage = Storage.getInstance();
-        this.config = ConfigLoader.getInstance().queue;
+        this.config = Config.getInstance().queue;
         this.queue = this.loadQueue();
     }
 

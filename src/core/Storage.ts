@@ -1,6 +1,6 @@
 import { TStorageConfig } from '@/types/config';
 import { Logger } from '@/utils/Logger';
-import { ConfigLoader } from '@/core/ConfigLoader';
+import { Config } from '@/core/Config';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join, extname } from 'node:path';
@@ -15,7 +15,7 @@ export class Storage {
 
     private constructor () {
         this.logger = Logger.getInstance();
-        const { root, storage } = ConfigLoader.getInstance();
+        const { root, storage } = Config.getInstance();
         this.config = storage;
         this.path = join( root, this.config.baseDir );
         this.initDB();

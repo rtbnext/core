@@ -1,5 +1,5 @@
 import { TLoggingConfig } from '@/types/config';
-import { ConfigLoader } from '@/core/ConfigLoader';
+import { Config } from '@/core/Config';
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join } from 'node:path';
@@ -16,7 +16,7 @@ export class Logger {
     private readonly path: string;
 
     private constructor () {
-        const { root, logging } = ConfigLoader.getInstance();
+        const { root, logging } = Config.getInstance();
         this.config = logging;
         this.path = join( root, 'logs' );
         mkdirSync( this.path );

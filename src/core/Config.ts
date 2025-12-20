@@ -6,9 +6,9 @@ import { cwd } from 'node:process';
 import deepmerge from 'deepmerge';
 import { parse } from 'yaml';
 
-export class ConfigLoader {
+export class Config {
 
-    private static instance: ConfigLoader;
+    private static instance: Config;
     private readonly cwd: string;
     private readonly path: string;
     private readonly env: string;
@@ -42,8 +42,8 @@ export class ConfigLoader {
     public get fetch () : config.TFetchConfig { return this.cfg.fetch }
     public get queue () : config.TQueueConfig { return this.cfg.queue }
 
-    public static getInstance () : ConfigLoader {
-        return ConfigLoader.instance ||= new ConfigLoader();
+    public static getInstance () : Config {
+        return Config.instance ||= new Config();
     }
 
 }
