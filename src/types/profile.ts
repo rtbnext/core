@@ -51,9 +51,11 @@ export interface TProfileData< T extends string = string > {
     related: Generic.TRelation[];
     media: Generic.TImage[];
     map: Generic.TMap[];
+    realtime?: Generic.TRealtime;
     ranking: Generic.TRanking[];
     annual: Generic.TAnnual[];
     assets: Generic.TAsset[];
+    wiki?: Generic.TWiki;
 };
 
 export type TProfileHistory = TProfileHistoryItem[];

@@ -55,6 +55,20 @@ export interface TRanking {
     next?: string;
 }
 
+export interface TRealtime {
+    date: string;
+    rank?: number;
+    networth: number;
+    today?: {
+        value: number;
+        pct: number;
+    };
+    ytd?: {
+        value: number;
+        pct: number;
+    };
+}
+
 export interface TAnnual {
     year: number,
     rank: TAnnualRecord;
@@ -84,4 +98,11 @@ export interface TAsset {
         currency: string;
         exRate: number;
     };
+}
+
+export interface TWiki {
+    uri: string;
+    id: number;
+    summary: string[];
+    image?: TImage;
 }
