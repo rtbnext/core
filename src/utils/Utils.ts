@@ -92,6 +92,10 @@ export class Utils {
             : query.split( '-' ).every( q => text.includes( q ) );
     }
 
+    public static queryStr ( query: Record< string, any > ) : string {
+        return new URLSearchParams( query ).toString();
+    }
+
     public static parseArgs ( args: readonly string[] ) : TArgs {
         return args.reduce( ( res, a, i ) => {
             if ( a.startsWith( '--' ) ) {
