@@ -7,14 +7,15 @@ import helper, { Utils } from '@/utils';
 
 export abstract class Job {
 
-    protected readonly job!: string;
+    protected readonly job: string;
     protected readonly silent: boolean;
     protected readonly safeMode: boolean;
     protected config: TConfigObject;
     protected queue: Queue;
     protected fetch: Fetch;
 
-    constructor ( silent: boolean, safeMode: boolean ) {
+    constructor ( silent: boolean, safeMode: boolean, job: string ) {
+        this.job = job;
         this.silent = silent;
         this.safeMode = safeMode;
         this.config = Config.getInstance();

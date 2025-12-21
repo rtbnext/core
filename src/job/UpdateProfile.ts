@@ -8,7 +8,9 @@ import { Wiki } from '@/utils/Wiki';
 
 export class UpdateProfile extends Job {
 
-    protected override readonly job = 'UpdateProfile';
+    constructor ( silent: boolean, safeMode: boolean ) {
+        super( silent, safeMode, 'UpdateProfile' );
+    }
 
     public async run ( args: TArgs ) : Promise< void > {
         await this.protect( async () => {
