@@ -9,18 +9,15 @@ export class Wiki {
     private static readonly fetch = Fetch.getInstance();
 
     private static scoreWDItem ( item: TWikiDataResponseItem, data: Partial< TProfileData > ) : number {
-        const { shortName, gender, birthDate, citizenship } = data.info!;
+        const { shortName, birthDate, citizenship } = data.info!;
         let score = 0;
 
-        if ( item.itemLabel.value === shortName ) score += 0.3;
+        if ( item.itemLabel.value.trim() === shortName ) score += 0.3;
         else if ( item.itemLabel.xmlLang === 'en' ) score += 0.2;
         else score += 0.10;
 
         if ( birthDate && item.birthdate?.value.startsWith( birthDate ) ) score += 0.3;
         if ( citizenship && item.iso2?.value === citizenship.toUpperCase() ) score += 0.2;
-        if ( gender && item.gender ) score += item.gender.value.endsWith(
-            gender === 'm' ? 'Q6581097' : 'Q6581072'
-        ) ? 0.1 : -0.1;
 
         if ( item.article ) score += 0.1;
         if ( item.image ) score += 0.05;
