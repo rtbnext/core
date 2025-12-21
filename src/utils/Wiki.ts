@@ -25,7 +25,7 @@ export class Wiki {
     }
 
     public static async queryWikiData ( data: Partial< TProfileData > ) : Promise< {
-        qid: string, wikipedia?: string, image?: string, score: number
+        qid: string, article?: string, image?: string, score: number
     } | false > {
         const { shortName, gender, birthDate } = data.info!;
         if ( ! shortName ) return false;
@@ -56,8 +56,8 @@ export class Wiki {
 
         return ( ! best || best.score < 50 ) ? false : {
             qid: best.item.item.value.split( '/' ).pop()!,
-            wikipedia: best.item.article?.value,
-            image: best.item.image?.value,
+            article: best.item.article?.value.split( '/' ).pop(),
+            image: best.item.image?.value.split( '/' ).pop(),
             score: best.score
         };
     }
