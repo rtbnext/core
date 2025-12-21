@@ -13,7 +13,9 @@ export interface TFetchConfig {
     endpoints: {
         list: string;
         profile: string;
-        wiki: string;
+        wikipedia: string;
+        commons: string;
+        wikidata: string;
     };
     headers: Record< string, string >;
     agentPool: string[];
