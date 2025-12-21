@@ -1,6 +1,7 @@
 import { Fetch } from '@/core/Fetch';
+import { TImage, TWiki, TWikiData } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
-import { TWikidataResponseItem, TWikidataResponse } from '@/types/response';
+import { TWikiDataResponse, TWikiDataResponseItem, TWikipediaResponse } from '@/types/response';
 import { Gender } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 
@@ -9,7 +10,7 @@ export class Wiki {
     private static readonly fetch = Fetch.getInstance();
 
     private static scoreWDItem (
-        item: TWikidataResponseItem, name: string, birth?: string, gender?: Gender
+        item: TWikiDataResponseItem, name: string, birth?: string, gender?: Gender
     ) : number {
         let score = 0;
 
@@ -25,9 +26,7 @@ export class Wiki {
         return score;
     }
 
-    public static async queryWikiData ( data: Partial< TProfileData > ) : Promise< {
-        qid: string, article?: string, image?: string, score: number
-    } | false > {
+    public static async queryWikiData ( data: Partial< TProfileData > ) : Promise< TWikiData | false > {
         const { shortName, gender, birthDate } = data.info!;
         if ( ! shortName ) return false;
 
@@ -47,20 +46,46 @@ export class Wiki {
             `SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }` +
         `} LIMIT 10`;
 
-        const res = await Wiki.fetch.wikidata< TWikidataResponse >( sparql );
-        let best: { score: number, item: TWikidataResponseItem } | undefined;
+        const res = await Wiki.fetch.wikidata< TWikiDataResponse >( sparql );
+        let best: { score: number, item: TWikiDataResponseItem } | undefined;
 
         for ( const item of res.data?.results.bindings ?? [] ) {
             const score = Wiki.scoreWDItem( item, shortName, birthDate, gender );
             if ( ! best || score > best.score ) best = { score, item };
         }
 
-        return ( ! best || best.score < 0.5 ) ? false : {
-            qid: Parser.string( best.item.item.value.split( '/' ).pop()! ),
-            article: Parser.strict( best.item.article?.value.split( '/' ).pop(), 'decodeURI' ),
-            image: Parser.strict( best.item.image?.value.split( '/' ).pop(), 'decodeURI' ),
-            score: best.score
-        };
+        return ( ! best || best.score < 0.5 ) ? false : Parser.container< TWikiData >( {
+            qid: { value: best.item.item.value.split( '/' ).pop()!, method: 'string' },
+            article: { value: best.item.article?.value.split( '/' ).pop(), method: 'decodeURI' },
+            image: { value: best.item.image?.value.split( '/' ).pop(), method: 'decodeURI' },
+            score: { value: best.score, method: 'number', args: [ 1 ] }
+        } );
+    }
+
+    public static async queryWikiPage ( title: string, qid?: string ) : Promise< TWiki | false > {
+        const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
+            action: 'query', prop: 'extracts|info|pageprops', titles: title, redirects: 1,
+            exintro: 1, explaintext: 1, exsectionformat: 'plain'
+        } );
+
+        if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return false;
+        const raw = res.data.query.pages[ 0 ];
+
+        return Parser.container< TWiki >( {
+            uri: { value: title, method: 'string' },
+            pageId: { value: raw.pageid, method: 'number' },
+            refId: { value: raw.lastrevid, method: 'number' },
+            name: { value: raw.title, method: 'string' },
+            lastModified: { value: raw.touched, method: 'date', args: [ 'iso' ] },
+            summary: { value: raw.extract ?? '', method: 'list', args: [ '\n' ], strict: false },
+            sortKey: { value: raw.pageprops?.defaultsort, method: 'string' },
+            wikidata: { value: qid, method: 'string' },
+            desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], method: 'string' }
+        } );
+    }
+
+    public static async queryCommonsImage ( title: string ) : Promise< TImage | false > {
+        return false;
     }
 
 }

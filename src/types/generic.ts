@@ -100,7 +100,15 @@ export interface TAsset {
     };
 }
 
+export interface TWikiData {
+    qid: string;
+    article?: string;
+    image?: string;
+    score: number;
+}
+
 export interface TWiki {
+    uri: string;
     pageId: number;
     refId: number;
     name: string;

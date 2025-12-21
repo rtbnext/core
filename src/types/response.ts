@@ -91,14 +91,31 @@ export interface TProfileResponse {
 
 export interface TListResponse {}
 
-export interface TWikidataResponse {
-    results: { bindings: TWikidataResponseItem[] };
+export interface TWikiDataResponse {
+    results: { bindings: TWikiDataResponseItem[] };
 }
 
-export interface TWikidataResponseItem {
+export interface TWikiDataResponseItem {
     item: { value: string };
     itemLabel: { value: string };
     birthdate?: { value: string };
     article?: { value: string };
     image?: { value: string };
 };
+
+export interface TWikipediaResponse {
+    query: {
+        pages: {
+            pageid: number;
+            title: string;
+            extract?: string;
+            touched: string;
+            lastrevid: number;
+            pageimage?: string;
+            pageprops?: {
+                defaultsort?: string;
+                'wikibase-shortdesc'?: string;
+            };
+        }[];
+    };
+}
