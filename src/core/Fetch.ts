@@ -90,11 +90,17 @@ export class Fetch {
         ) );
     }
 
-    public async wiki< T > ( query: Record< string, any >, lang: string = 'en' ) : Promise< TResponse< T > > {
-        return this.single< T >( this.config.endpoints.wiki
+    public async wikipedia< T > ( query: Record< string, any >, lang: string = 'en' ) : Promise< TResponse< T > > {
+        return this.single< T >( this.config.endpoints.wikipedia
             .replace( '{QUERY}', Utils.queryStr( { ...{ format: 'json', formatversion: 2 }, ...query } ) )
             .replace( '{LANG}', lang )
         );
+    }
+
+    public async wikidata< T > ( sparql: string ) : Promise< TResponse< T > > {
+        return this.single< T >( this.config.endpoints.wikidata.replace( '{SPARQL}',
+            encodeURIComponent( sparql.replace( /\s+/g, ' ' ).trim() )
+        ) );
     }
 
     public static getInstance () {
