@@ -131,7 +131,7 @@ export class Wiki {
     }
 
     public static async profile ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
-        const { qid, article, image, score } = await Wiki.queryWikiData( data ) || {};
+        const { qid, article, image, score } = await Wiki.queryWikiData( data ) ?? {};
         helper.log.debug( `Query WikiData for ${ data.info?.shortName }: ${ qid || 'no match' } (score: ${ score || 0 })` );
 
         const articleData = article ? await this.queryWikiPage( article, qid ) : undefined;
