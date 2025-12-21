@@ -95,13 +95,15 @@ export interface TWikiDataResponse {
     results: { bindings: TWikiDataResponseItem[] };
 }
 
-export interface TWikiDataResponseItem {
+export type TWikiDataResponseItem = {
     item: { value: string };
     itemLabel: { value: string, xmlLang: string };
-    birthdate?: { value: string };
-    article?: { value: string };
-    image?: { value: string };
-};
+} & { [ K in (
+    | 'birthdate' | 'article' | 'image' | 'iso2' | 'occupation'
+    | 'employer' | 'ownerOf' | 'netWorth'
+) ]?: {
+    value: string;
+} };
 
 export interface TWikipediaResponse {
     query: {
