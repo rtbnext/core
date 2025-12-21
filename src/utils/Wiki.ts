@@ -2,7 +2,7 @@ import { Fetch } from '@/core/Fetch';
 import { TImage, TWiki, TWikiData } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TCommonsResponse, TWikiDataResponse, TWikiDataResponseItem, TWikipediaResponse } from '@/types/response';
-import { Parser } from '@/utils/Parser';
+import helper, { Parser } from '@/utils';
 
 export class Wiki {
     
@@ -29,9 +29,9 @@ export class Wiki {
         return Math.min( 1, Math.max( 0, score ) );
     }
 
-    public static async queryWikiData ( data: Partial< TProfileData > ) : Promise< TWikiData | false > {
+    public static async queryWikiData ( data: Partial< TProfileData > ) : Promise< TWikiData | undefined > {
         const { shortName, gender, birthDate } = data.info!;
-        if ( ! shortName ) return false;
+        if ( ! shortName ) return;
 
         const genderQ = gender === 'm' ? 'wd:Q6581097' : gender === 'f' ? 'wd:Q6581072' : undefined;
         const [ first, ...rest ] = shortName.split( ' ' ); const last = rest.pop();
@@ -72,7 +72,7 @@ export class Wiki {
             if ( ! best || score > best.score ) best = { score, item };
         }
 
-        return ( ! best || best.score < 0.65 ) ? false : Parser.container< TWikiData >( {
+        if ( best && best.score >= 0.65 ) return Parser.container< TWikiData >( {
             qid: { value: best.item.item.value.split( '/' ).pop()!, method: 'string' },
             article: { value: best.item.article?.value.split( '/' ).pop(), method: 'decodeURI' },
             image: { value: best.item.image?.value.split( '/' ).pop(), method: 'decodeURI' },
@@ -80,13 +80,13 @@ export class Wiki {
         } );
     }
 
-    public static async queryWikiPage ( title: string, qid?: string ) : Promise< TWiki | false > {
+    public static async queryWikiPage ( title: string, qid?: string ) : Promise< TWiki | undefined > {
         const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
             action: 'query', prop: 'extracts|info|pageprops', titles: title, redirects: 1,
             exintro: 1, explaintext: 1, exsectionformat: 'plain'
         } );
 
-        if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return false;
+        if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return;
         const raw = res.data.query.pages[ 0 ];
 
         return Parser.container< TWiki >( {
@@ -102,14 +102,14 @@ export class Wiki {
         } );
     }
 
-    public static async queryCommonsImage ( title: string ) : Promise< TImage | false > {
+    public static async queryCommonsImage ( title: string ) : Promise< TImage | undefined > {
         const res = await Wiki.fetch.commons< TCommonsResponse >( {
             action: 'query', titles: `File:${title}`, prop: 'imageinfo', redirects: 1,
             iiprop: 'url|extmetadata', iiurlwidth: 400
         } );
 
         const info = res.data?.query.pages?.[ 0 ]?.imageinfo?.[ 0 ];
-        if ( ! info ) return false;
+        if ( ! info ) return;
 
         const meta = info.extmetadata ?? {};
         const thumbUrl = info.thumburl ?? Object.values( info.responsiveUrls ?? {} )[ 0 ];
@@ -128,6 +128,16 @@ export class Wiki {
             date: { value: dateTime, method: 'date', args: [ 'iso' ] },
             credits: { value: credits, method: 'cleanStr' }
         } );
+    }
+
+    public static async profile ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
+        const { qid, article, image, score } = await Wiki.queryWikiData( data ) || {};
+        helper.log.debug( `Query WikiData for ${ data.info?.shortName }: ${ qid || 'no match' } (score: ${ score || 0 })` );
+
+        const articleData = article ? await this.queryWikiPage( article, qid ) : undefined;
+        const imageData = image ? await this.queryCommonsImage( image ) : undefined;
+
+        if ( articleData ) return { ...articleData, image: imageData };
     }
 
 }
