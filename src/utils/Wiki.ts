@@ -15,7 +15,8 @@ export class Wiki {
         let score = 0;
 
         if ( item.itemLabel.value === name ) score += 0.4;
-        else if ( item.itemLabel?.value ) score += 0.25;
+        else if ( item.itemLabel?.xmlLang === 'en' ) score += 0.25;
+        else score += 0.15;
 
         if ( birth && item.birthdate?.value.startsWith( birth ) ) score += 0.3;
         if ( gender ) score += 0.1;
@@ -30,16 +31,21 @@ export class Wiki {
         const { shortName, gender, birthDate } = data.info!;
         if ( ! shortName ) return false;
 
+        const [ first, ...rest ] = shortName.split( ' ' ); const last = rest.pop();
+        const nameVariants = [ shortName, `${first[ 0 ]}. ${last}`, `${first} ${last}` ]
+            .filter( Boolean ).map( n => `"${n}"@en "${n}"@de` ).join( ' ' );
+
         const genderQ = gender === 'm' ? 'wd:Q6581097' : gender === 'f' ? 'wd:Q6581072' : undefined;
         const genderFilter = genderQ ? `?item wdt:P21 ${genderQ} .` : '';
         const birthDateFilter = birthDate
             ? `?item wdt:P569 ?birthdate . FILTER( STRSTARTS( STR(?birthdate), "${birthDate}" ) )`
             : `OPTIONAL { ?item wdt:P569 ?birthdate . }`;
 
-        const sparql = `SELECT ?item ?itemLabel ?birthdate ?article ?image WHERE {` +
+        const sparql = `SELECT DISTINCT ?item ?itemLabel ?birthdate ?article ?image WHERE {` +
+            `VALUES ?name { ${nameVariants} }` +
             `?item wdt:P31 wd:Q5 . {` +
-                `{ ?item rdfs:label "${shortName}"@en . }` +
-                `UNION { ?item skos:altLabel "${shortName}"@en . }` +
+                `{ ?item rdfs:label ?name . }` +
+                `UNION { ?item skos:altLabel ?name . }` +
             `}` + genderFilter + birthDateFilter +
             `OPTIONAL { ?item wdt:P18 ?image . }` +
             `OPTIONAL { ?article schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> . }` +

@@ -97,7 +97,7 @@ export interface TWikiDataResponse {
 
 export interface TWikiDataResponseItem {
     item: { value: string };
-    itemLabel: { value: string };
+    itemLabel: { value: string, xmlLang: string };
     birthdate?: { value: string };
     article?: { value: string };
     image?: { value: string };
