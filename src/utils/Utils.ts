@@ -88,15 +88,17 @@ export class Utils {
 
     public static buildSearchText ( value: any ) : string {
         return Array.from( new Set( String( value )
-            .normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' ).toLowerCase()
-            .replace( /[^a-z0-9]+/g, ' ' ).split( ' ' ).filter( w => w.length > 3 )
+            .normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' )
+            .toLowerCase().replace( /[^a-z0-9]+/g, ' ' ).split( ' ' )
+            .filter( w => w.length > 3 ).filter( Boolean )
         ) ).join( ' ' );
     }
 
-    public static search ( text: string, query: string, exactMatch: boolean = false ) : boolean {
-        text = Utils.sanitize( text ), query = Utils.sanitize( query );
-        return exactMatch ? text.includes( query )
-            : query.split( '-' ).every( q => text.includes( q ) );
+    public static search ( text: string, query: string, looseMatch: boolean = false ) : boolean {
+        if ( ! text || ! query ) return false;
+        const tokens = Utils.buildSearchText( query ).split( ' ' ).filter( Boolean );
+        if ( ! tokens.length ) return false;
+        return tokens[ looseMatch ? 'some' : 'every' ]( t => text.includes( t ) );
     }
 
     public static queryStr ( query: Record< string, any > ) : string {
