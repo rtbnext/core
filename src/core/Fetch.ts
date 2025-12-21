@@ -103,6 +103,12 @@ export class Fetch {
         ) );
     }
 
+    public async commons< T > ( query: Record< string, any > ) : Promise< TResponse< T > > {
+        return this.single< T >( this.config.endpoints.commons
+            .replace( '{QUERY}', Utils.queryStr( { ...{ format: 'json', formatversion: 2 }, ...query } ) )
+        );
+    }
+
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
     }
