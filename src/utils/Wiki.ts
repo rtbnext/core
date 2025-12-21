@@ -1,7 +1,7 @@
 import { Fetch } from '@/core/Fetch';
 import { TImage, TWiki, TWikiData } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
-import { TWikiDataResponse, TWikiDataResponseItem, TWikipediaResponse } from '@/types/response';
+import { TCommonsResponse, TWikiDataResponse, TWikiDataResponseItem, TWikipediaResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
 
 export class Wiki {
@@ -103,7 +103,10 @@ export class Wiki {
     }
 
     public static async queryCommonsImage ( title: string ) : Promise< TImage | false > {
-        return false;
+        const res = await Wiki.fetch.commons< TCommonsResponse >( {
+            action: 'query', titles: `File:${title}`, prop: 'imageinfo', redirects: 1,
+            iiprop: 'url|extmetadata', iiurlwidth: 400
+        } );
     }
 
 }
