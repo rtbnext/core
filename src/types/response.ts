@@ -92,10 +92,10 @@ export interface TProfileResponse {
 export interface TListResponse {}
 
 export interface TWikidataResponse {
-    results: { bindings: TWikidataBinding[] };
+    results: { bindings: TWikidataResponseItem[] };
 }
 
-export interface TWikidataBinding {
+export interface TWikidataResponseItem {
     item: { value: string };
     itemLabel: { value: string };
     birthdate?: { value: string };

@@ -1,6 +1,6 @@
 import { Fetch } from '@/core/Fetch';
 import { TProfileData } from '@/types/profile';
-import { TWikidataBinding, TWikidataResponse } from '@/types/response';
+import { TWikidataResponseItem, TWikidataResponse } from '@/types/response';
 import { Gender } from '@/utils/Const';
 
 export class Wiki {
@@ -8,7 +8,7 @@ export class Wiki {
     private static readonly fetch = Fetch.getInstance();
 
     private static scoreWDItem (
-        item: TWikidataBinding, name: string, birth?: string, gender?: Gender
+        item: TWikidataResponseItem, name: string, birth?: string, gender?: Gender
     ) : number {
         let score = 0;
 
@@ -47,7 +47,7 @@ export class Wiki {
         `} LIMIT 10`;
 
         const res = await Wiki.fetch.wikidata< TWikidataResponse >( sparql );
-        let best: { score: number, item: TWikidataBinding } | undefined;
+        let best: { score: number, item: TWikidataResponseItem } | undefined;
 
         for ( const item of res.data?.results.bindings ?? [] ) {
             const score = Wiki.scoreWDItem( item, shortName, birthDate, gender );
