@@ -82,6 +82,7 @@ export class Wiki {
         for ( const item of res.data?.results.bindings ?? [] ) {
             const score = Wiki.scoreWDItem( item, data );
             if ( ! best || score > best.score ) best = { score, item };
+            if ( best.score === 1 ) break;
         }
 
         if ( best && best.score >= 0.65 ) return Parser.container< TWikidata >( {
@@ -90,28 +91,6 @@ export class Wiki {
             image: { value: best.item.image?.value.split( '/' ).pop(), method: 'decodeURI' },
             score: { value: best.score, method: 'number', args: [ 1 ] }
         } );
-    }
-
-    public static async queryWikiPage ( title: string, qid?: string, image?: TImage ) : Promise< TWiki | undefined > {
-        const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
-            action: 'query', prop: 'extracts|info|pageprops', titles: title, redirects: 1,
-            exintro: 1, explaintext: 1, exsectionformat: 'plain'
-        } );
-
-        if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return;
-        const raw = res.data.query.pages[ 0 ];
-
-        return { ...Parser.container< TWiki >( {
-            uri: { value: title, method: 'string' },
-            pageId: { value: raw.pageid, method: 'number' },
-            refId: { value: raw.lastrevid, method: 'number' },
-            name: { value: raw.title, method: 'string' },
-            lastModified: { value: raw.touched, method: 'date', args: [ 'iso' ] },
-            summary: { value: raw.extract ?? '', method: 'list', args: [ '\n' ], strict: false },
-            sortKey: { value: raw.pageprops?.defaultsort, method: 'string' },
-            wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], method: 'string' },
-            desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], method: 'cleanStr' }
-        } ), image };
     }
 
     public static async queryCommonsImage ( title: string ) : Promise< TImage | undefined > {
@@ -140,6 +119,30 @@ export class Wiki {
             date: { value: dateTime, method: 'date', args: [ 'iso' ] },
             credits: { value: credits, method: 'cleanStr' }
         } );
+    }
+
+    public static async queryWikiPage ( title: string, qid?: string, image?: TImage ) : Promise< TWiki | undefined > {
+        const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
+            action: 'query', prop: 'extracts|info|pageprops|pageimages', titles: title, redirects: 1,
+            exintro: 1, explaintext: 1, exsectionformat: 'plain', piprop: 'name', pilimit: 1
+        } );
+
+        if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return;
+        const raw = res.data.query.pages[ 0 ];
+
+        if ( ! image && raw.pageimage ) image = await this.queryCommonsImage( raw.pageimage );
+
+        return { ...Parser.container< TWiki >( {
+            uri: { value: title, method: 'string' },
+            pageId: { value: raw.pageid, method: 'number' },
+            refId: { value: raw.lastrevid, method: 'number' },
+            name: { value: raw.title, method: 'string' },
+            lastModified: { value: raw.touched, method: 'date', args: [ 'iso' ] },
+            summary: { value: raw.extract ?? '', method: 'list', args: [ '\n' ], strict: false },
+            sortKey: { value: raw.pageprops?.defaultsort, method: 'string' },
+            wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], method: 'string' },
+            desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], method: 'cleanStr' }
+        } ), image };
     }
 
 }
