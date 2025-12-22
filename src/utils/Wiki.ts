@@ -1,7 +1,7 @@
 import { Fetch } from '@/core/Fetch';
-import { TWikidata } from '@/types/generic';
+import { TImage, TWikidata, TWiki } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
-import { TWikidataResponse, TWikidataResponseItem } from '@/types/response';
+import { TWikidataResponse, TWikidataResponseItem, TWikipediaResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
 
 export class Wiki {
@@ -90,6 +90,28 @@ export class Wiki {
             image: { value: best.item.image?.value.split( '/' ).pop(), method: 'decodeURI' },
             score: { value: best.score, method: 'number', args: [ 1 ] }
         } );
+    }
+
+    public static async queryWikiPage ( title: string, qid?: string, image?: TImage ) : Promise< TWiki | undefined > {
+        const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
+            action: 'query', prop: 'extracts|info|pageprops', titles: title, redirects: 1,
+            exintro: 1, explaintext: 1, exsectionformat: 'plain'
+        } );
+
+        if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return;
+        const raw = res.data.query.pages[ 0 ];
+
+        return { ...Parser.container< TWiki >( {
+            uri: { value: title, method: 'string' },
+            pageId: { value: raw.pageid, method: 'number' },
+            refId: { value: raw.lastrevid, method: 'number' },
+            name: { value: raw.title, method: 'string' },
+            lastModified: { value: raw.touched, method: 'date', args: [ 'iso' ] },
+            summary: { value: raw.extract ?? '', method: 'list', args: [ '\n' ], strict: false },
+            sortKey: { value: raw.pageprops?.defaultsort, method: 'string' },
+            wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], method: 'string' },
+            desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], method: 'cleanStr' }
+        } ), image };
     }
 
 }
