@@ -1,4 +1,5 @@
 import { Fetch } from '@/core/Fetch';
+import { log } from '@/core/Logger';
 import { TImage, TWikidata, TWiki } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TCommonsResponse, TWikidataResponse, TWikidataResponseItem, TWikipediaResponse } from '@/types/response';
@@ -143,6 +144,15 @@ export class Wiki {
             wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], method: 'string' },
             desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], method: 'cleanStr' }
         } ), image };
+    }
+
+    public static async fromProfileData ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
+        const { qid, article, image, score } = await Wiki.queryWikidata( data ) ?? {};
+        log.debug( `Query Wikidata for ${ data.info?.shortName }: ${ qid || 'no match' } (score: ${ score || 0 })` );
+
+        return article ? await Wiki.queryWikiPage( article, qid,
+            image ? await this.queryCommonsImage( image ) : undefined
+        ) : undefined;
     }
 
 }
