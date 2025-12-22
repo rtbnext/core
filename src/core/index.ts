@@ -10,5 +10,5 @@ const service = {
     storage: Storage.getInstance
 } as const;
 
-export { Config as ConfigLoader, Fetch, Queue, Storage };
+export { Config, Fetch, Queue, Storage };
 export default service;

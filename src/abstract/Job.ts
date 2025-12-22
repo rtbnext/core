@@ -1,6 +1,4 @@
-import { Config } from '@/core/Config';
-import { Fetch } from '@/core/Fetch';
-import { Queue } from '@/core/Queue';
+import { Config, Fetch, Queue } from '@/core';
 import { TConfigObject, TLoggingConfig } from '@/types/config';
 import { TArgs } from '@/types/generic';
 import helper, { Parser, Utils } from '@/utils';
