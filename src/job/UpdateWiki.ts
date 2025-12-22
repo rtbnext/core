@@ -1,3 +1,14 @@
+/**
+ * UpdateWiki Job
+ * 
+ * node ./dist/job/UpdateWiki.ts [silent?] [safeMode?] --profile=uri [--check] [--update] [--assign=title]
+ * @arg silent Whether to suppress log output
+ * @arg safeMode Whether to enable safe mode
+ * @arg profile Profile URI to update
+ * @arg check|update Whether to check for wiki updates
+ * @arg assign Title of wiki page to assign
+ */
+
 import { Job, jobRunner } from '@/abstract/Job';
 import { Profile } from '@/collection/Profile';
 import { TArgs } from '@/types/generic';
@@ -40,13 +51,4 @@ export class UpdateWiki extends Job {
 
 }
 
-/**
- * UpdateWiki Job
- * node ./dist/job/UpdateWiki.ts [silent?] [safeMode?] --profile=uri [--check] [--update] [--assign=title]
- * @param silent Whether to suppress log output
- * @param safeMode Whether to enable safe mode
- * @param profile Profile URI to update
- * @param check|update Whether to check for wiki updates
- * @param assign Title of wiki page to assign
- */
 jobRunner( UpdateWiki );

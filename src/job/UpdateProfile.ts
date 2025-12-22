@@ -1,3 +1,13 @@
+/**
+ * UpdateProfile Job
+ * 
+ * node ./dist/job/UpdateProfile.ts [silent?] [safeMode?] [--profile=uri1,uri2,...] [--skipWiki]
+ * @arg silent Whether to suppress log output
+ * @arg safeMode Whether to enable safe mode
+ * @arg profile Comma-separated list of profile URIs to update
+ * @arg skipWiki Whether to skip fetching wiki data
+ */
+
 import { Job, jobRunner } from '@/abstract/Job';
 import { Profile } from '@/collection/Profile';
 import { TArgs } from '@/types/generic';
@@ -74,12 +84,4 @@ export class UpdateProfile extends Job {
 
 }
 
-/**
- * UpdateProfile Job
- * node ./dist/job/UpdateProfile.ts [silent?] [safeMode?] [--profile=uri1,uri2,...] [--skipWiki]
- * @param silent Whether to suppress log output
- * @param safeMode Whether to enable safe mode
- * @param profile Comma-separated list of profile URIs to update
- * @param skipWiki Whether to skip fetching wiki data
- */
 jobRunner( UpdateProfile );
