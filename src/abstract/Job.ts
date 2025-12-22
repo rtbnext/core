@@ -1,9 +1,9 @@
 import { Config } from '@/core/Config';
 import { Fetch } from '@/core/Fetch';
+import { log } from '@/core/Logger';
 import { Queue } from '@/core/Queue';
 import { TConfigObject, TLoggingConfig } from '@/types/config';
 import { TArgs } from '@/types/generic';
-import { log } from '@/utils/Logger';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
 

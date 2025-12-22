@@ -1,8 +1,8 @@
 import { Fetch } from '@/core/Fetch';
+import { log } from '@/core/Logger';
 import { TImage, TWiki, TWikiData } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TCommonsResponse, TWikiDataResponse, TWikiDataResponseItem, TWikipediaResponse } from '@/types/response';
-import { log } from '@/utils/Logger';
 import { Parser } from '@/utils';
 
 export class Wiki {

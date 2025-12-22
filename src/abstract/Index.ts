@@ -1,3 +1,4 @@
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/utils/Utils';
 import deepmerge from 'deepmerge';
@@ -19,6 +20,7 @@ export abstract class Index<
 
     protected loadIndex () : T {
         const raw = this.storage.readJSON< Record< string, I > > ( this.path ) ?? {};
+        log.debug( `Index loaded: ${ Object.keys( raw ).length } items from ${this.path}` );
         return new Map( Object.entries( raw ) ) as T;
     }
 
@@ -44,6 +46,7 @@ export abstract class Index<
     }
 
     public update ( uriLike: string, data: Partial< I >, allowUpdate: boolean = true ) : I | false {
+        log.debug( `Updating index item: ${uriLike}` );
         const uri = Utils.sanitize( uriLike );
         if ( ! allowUpdate && this.index.has( uri ) ) return false;
 
@@ -58,10 +61,12 @@ export abstract class Index<
     }
 
     public add ( uriLike: string, data: I ) : I | false {
+        log.debug( `Adding index item: ${uriLike}` );
         return this.update( uriLike, data, false );
     }
 
     public delete ( uriLike: string ) : void {
+        log.debug( `Deleting index item: ${uriLike}` );
         this.index.delete( Utils.sanitize( uriLike ) );
         this.saveIndex();
     }

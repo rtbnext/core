@@ -1,5 +1,5 @@
 import * as Const from '@/utils/Const';
-import { log, Logger } from '@/utils/Logger';
+import { log, Logger } from '@/core/Logger';
 import { Parser } from '@/utils/Parser';
 import { ProfileMerger } from '@/utils/ProfileMerger';
 import { ProfileParser } from '@/utils/ProfileParser';

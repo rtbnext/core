@@ -1,6 +1,6 @@
 import { Config } from '@/core/Config';
+import { log } from '@/core/Logger';
 import { TStorageConfig } from '@/types/config';
-import { log } from '@/utils/Logger';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { parse, stringify } from 'csv-string';
