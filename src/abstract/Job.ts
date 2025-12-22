@@ -3,7 +3,7 @@ import { Fetch } from '@/core/Fetch';
 import { Queue } from '@/core/Queue';
 import { TConfigObject, TLoggingConfig } from '@/types/config';
 import { TArgs } from '@/types/generic';
-import helper, { Utils } from '@/utils';
+import helper, { Parser, Utils } from '@/utils';
 
 export abstract class Job {
 
@@ -56,11 +56,15 @@ export function jobRunner< T extends typeof Job > (
     options: { silent?: boolean, safeMode?: boolean } = {}
 ) : void {
     if ( ! process.argv.includes( trigger ) ) return;
-    const { silent = false, safeMode = false } = options;
+
+    const args = Utils.parseArgs( process.argv );
+    const {
+        silent = args.silent ? Parser.boolean( args.silent ) : false, 
+        safeMode = args.safeMode ? Parser.boolean( args.safeMode ) : false
+    } = options;
 
     try {
         const job = new ( cls as any )( silent, safeMode );
-        const args = Utils.parseArgs( process.argv );
         ( job[ method ] as Function )( args );
     } catch ( err ) {
         if ( ! silent ) helper.log.error(
