@@ -1,8 +1,7 @@
-import { Config } from '@/core/Config';
-import { Storage } from '@/core/Storage';
+import { Config, Storage } from '@/core';
 import { TQueueConfig } from '@/types/config';
-import { QueueType, TQueue, TQueueItem, TQueueStorage } from '@/types/queue';
-import { Utils } from '@/utils/Utils';
+import { TQueue, TQueueItem, TQueueStorage } from '@/types/queue';
+import { Const, Utils } from '@/utils';
 
 export class Queue {
 
@@ -19,7 +18,7 @@ export class Queue {
 
     private loadQueue () : TQueue {
         const raw = this.storage.readJSON< TQueueStorage >( 'queue.json' ) || {};
-        return QueueType.reduce( ( acc, t ) => {
+        return Const.QueueType.reduce( ( acc, t ) => {
             acc[ t ] = new Map( ( ( raw as any )[ t ] || [] ).map(
                 ( i: TQueueItem ) => [ i.uri, i ]
             ) );
@@ -30,25 +29,25 @@ export class Queue {
     private saveQueue () : void {
         const { defaultPrio } = this.config;
         this.storage.writeJSON< TQueueStorage >( 'queue.json', Object.fromEntries(
-            QueueType.map( t => [ t, Array.from( this.queue[ t ].values() ).sort(
+            Const.QueueType.map( t => [ t, Array.from( this.queue[ t ].values() ).sort(
                 ( a, b ) => ( b.prio ?? defaultPrio ) - ( a.prio ?? defaultPrio )
             ) ] )
         ) as TQueueStorage );
     }
 
-    public getQueue ( type: QueueType ) : TQueueItem[] {
+    public getQueue ( type: Const.QueueType ) : TQueueItem[] {
         return Array.from( this.queue[ type ].values() );
     }
 
-    public size ( type: QueueType ) : number {
+    public size ( type: Const.QueueType ) : number {
         return this.queue[ type ].size;
     }
 
-    public has ( type: QueueType, uriLike: string ) : boolean {
+    public has ( type: Const.QueueType, uriLike: string ) : boolean {
         return this.queue[ type ].has( Utils.sanitize( uriLike ) );
     }
 
-    public add ( type: QueueType, uriLike: string, prio?: number ) : boolean {
+    public add ( type: Const.QueueType, uriLike: string, prio?: number ) : boolean {
         if ( this.queue[ type ].size > this.config.maxSize ) return false;
         const uri = Utils.sanitize( uriLike );
         this.queue[ type ].set( uri, { uri, prio, ts: new Date().toISOString() } );
@@ -56,7 +55,7 @@ export class Queue {
         return true;
     }
 
-    public next ( type: QueueType, n: number = 1 ) : TQueueItem[] {
+    public next ( type: Const.QueueType, n: number = 1 ) : TQueueItem[] {
         const items: TQueueItem[] = [];
 
         for ( const [ k, item ] of this.queue[ type ] ) {
@@ -70,11 +69,11 @@ export class Queue {
         return items;
     }
 
-    public nextUri ( type: QueueType, n: number = 1 ) : string[] {
+    public nextUri ( type: Const.QueueType, n: number = 1 ) : string[] {
         return this.next( type, n ).filter( Boolean ).map( i => i.uri );
     }
 
-    public clear ( type: QueueType ) {
+    public clear ( type: Const.QueueType ) {
         this.queue[ type ].clear();
         this.saveQueue();
     }

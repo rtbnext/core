@@ -1,5 +1,4 @@
-export const QueueType = [ 'profile', 'list' ] as const;
-export type QueueType = ( typeof QueueType )[ number ];
+import { QueueType } from '@/utils/Const';
 
 export interface TQueueItem {
     uri: string;

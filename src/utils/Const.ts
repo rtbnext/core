@@ -55,3 +55,6 @@ export const Flag = [ 'up', 'down', 'unchanged' ] as const;
 
 export type AssetType = ( typeof AssetType )[ number ];
 export const AssetType = [ 'private', 'public', 'unknown' ] as const;
+
+export const QueueType = [ 'profile', 'list' ] as const;
+export type QueueType = ( typeof QueueType )[ number ];
