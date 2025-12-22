@@ -25,7 +25,7 @@ export abstract class Index<
     }
 
     protected saveIndex () : void {
-        const content = Object.fromEntries( Utils.sort< T >( this.index ) );
+        const content = Object.fromEntries( this.index );
         this.storage.writeJSON< Record< string, I > >( this.path, content );
     }
 
