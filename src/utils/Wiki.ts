@@ -3,7 +3,7 @@ import { log } from '@/core/Logger';
 import { TImage, TWiki, TWikiData } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TCommonsResponse, TWikiDataResponse, TWikiDataResponseItem, TWikipediaResponse } from '@/types/response';
-import { Parser } from '@/utils';
+import { Parser } from '@/utils/Parser';
 
 export class Wiki {
     
