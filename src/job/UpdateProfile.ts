@@ -6,6 +6,7 @@
  * @arg safeMode Whether to enable safe mode
  * @arg profile Comma-separated list of profile URIs to update
  * @arg skipWiki Whether to skip fetching wiki data
+ * @arg replace Whether to replace profile data instead of merging
  */
 
 import { Job, jobRunner } from '@/abstract/Job';
@@ -25,6 +26,7 @@ export class UpdateProfile extends Job {
 
     public async run ( args: TArgs ) : Promise< void > {
         await this.protect( async () => {
+            const method = Parser.boolean( args.replace ) ? 'setData' : 'updateData';
             const batch = 'profile' in args && typeof args.profile === 'string'
                 ? args.profile.split( ',' ).filter( Boolean )
                 : this.queue.nextUri( 'profile', this.config.fetch.rateLimit.maxBatchSize );
@@ -55,7 +57,7 @@ export class UpdateProfile extends Job {
 
                 if ( isExisting && profile ) {
                     this.log( `Updating profile: ${uri}` );
-                    profile.updateData( profileData, aliases );
+                    profile[ method ]( profileData as any, aliases );
                     profile.save();
 
                     if ( uri !== profile.getUri() ) {
@@ -64,7 +66,7 @@ export class UpdateProfile extends Job {
                     }
                 } else if ( isSimilar && profile ) {
                     this.log( `Merging new data into existing profile: ${ profile.getUri() }` );
-                    profile.updateData( profileData, aliases );
+                    profile[ method ]( profileData as any, aliases );
                     profile.move( uri, true );
                 } else {
                     this.log( `Creating profile: ${uri}` );
