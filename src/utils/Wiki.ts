@@ -112,7 +112,7 @@ export class Wiki {
             lastModified: { value: raw.touched, method: 'date', args: [ 'iso' ] },
             summary: { value: raw.extract ?? '', method: 'list', args: [ '\n' ], strict: false },
             sortKey: { value: raw.pageprops?.defaultsort, method: 'string' },
-            wikidata: { value: qid, method: 'string' },
+            wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], method: 'string' },
             desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], method: 'string' }
         } );
     }
@@ -145,12 +145,22 @@ export class Wiki {
         } );
     }
 
+    public static async queryWikiImage ( pageTitle: string ) : Promise< TImage | undefined > {
+        const res = await Wiki.fetch.wikipedia< { query: { pages: { pageimage?: string }[] } } >( {
+            action: 'query', prop: 'pageimages', titles: pageTitle, redirects: 1, pilimit: 1
+        } );
+
+        const image = res.data?.query.pages?.[ 0 ]?.pageimage;
+        return image ? await this.queryCommonsImage( image ) : undefined;
+    }
+
     public static async profile ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
         const { qid, article, image, score } = await Wiki.queryWikiData( data ) ?? {};
         helper.log.debug( `Query WikiData for ${ data.info?.shortName }: ${ qid || 'no match' } (score: ${ score || 0 })` );
 
         const articleData = article ? await this.queryWikiPage( article, qid ) : undefined;
-        const imageData = image ? await this.queryCommonsImage( image ) : undefined;
+        const imageData = image ? await this.queryCommonsImage( image )
+            : article ? await this.queryWikiImage( article ) : undefined;
 
         if ( articleData ) return { ...articleData, image: imageData };
     }

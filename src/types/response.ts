@@ -117,6 +117,7 @@ export interface TWikipediaResponse {
             pageprops?: {
                 defaultsort?: string;
                 'wikibase-shortdesc'?: string;
+                'wikibase_item'?: string;
             };
         }[];
     };
