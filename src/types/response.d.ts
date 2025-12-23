@@ -49,11 +49,11 @@ export interface TProfileResponse {
         asianFormat?: 'N' | 'Y';
         personLists: {
             listUri: string;
-            rank: number;
+            rank?: number;
             bio?: string;
-            finalWorth: number;
-            timestamp: string;
-            financialAssets: {
+            finalWorth?: number;
+            timestamp: number | string;
+            financialAssets?: {
                 exchange: string;
                 ticker: string;
                 companyName: string;
@@ -62,11 +62,11 @@ export interface TProfileResponse {
                 exchangeRate?: number;
                 currentPrice?: number;
             }[];
-            date: number;
-            estWorthPrev: number;
-            privateAssetsWorth: number;
-            familyList: boolean;
-            archivedWorth: number;
+            date?: number | string;
+            estWorthPrev?: number;
+            privateAssetsWorth?: number;
+            familyList?: boolean;
+            archivedWorth?: number;
             bios?: string[];
             abouts?: string[];
             philanthropyScore?: number;
