@@ -57,7 +57,7 @@ export class Queue {
         this.queue[ type ].set( uri, { uri, prio, ts: new Date().toISOString() } );
         this.saveQueue();
 
-        log.info( `Added to queue [${type}]: ${uri} (prio: ${prio ?? this.config.defaultPrio})` );
+        log.debug( `Added to queue [${type}]: ${uri} (prio: ${prio ?? this.config.defaultPrio})` );
         return true;
     }
 
