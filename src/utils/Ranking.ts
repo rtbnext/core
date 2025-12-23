@@ -75,11 +75,11 @@ export class Ranking {
             result.push( ranking );
 
             // Queue list for future processing if needed
-            if ( queue ) {
+            if ( queue && main.rank && main.networth ) {
                 const indexItem = Ranking.index.get( listUri );
-                if ( ! indexItem || indexItem.date !== main.date ) Ranking.queue.add(
-                    'list', listUri, { year: main.date.split( '-' )[ 0 ] }
-                );
+                if ( ! indexItem || indexItem.date !== main.date ) Ranking.queue.add( 'list', listUri, {
+                    date: main.date, year: main.date.split( '-' )[ 0 ]
+                } );
             }
         }
 
