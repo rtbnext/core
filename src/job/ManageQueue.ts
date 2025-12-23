@@ -1,5 +1,7 @@
 import { Job, jobRunner } from '@/abstract/Job';
 import { TArgs } from '@/types/generic';
+import { Parser } from '@/utils/Parser';
+import { QueueType } from '@/utils/Const';
 
 export class ManageQueue extends Job {
 
@@ -8,7 +10,16 @@ export class ManageQueue extends Job {
     }
 
     public async run ( args: TArgs ) : Promise< void > {
-        await this.protect( async () => {} );
+        await this.protect( async () => {
+            const type = args.queue as QueueType;
+            if ( QueueType.includes( type ) ) throw new Error( `Invalid queue type provided: ${ type }` );
+
+            if ( Parser.boolean( args.clear ) ) this.queue.clear( type );
+            else if ( typeof args.add === 'string' ) this.queue.add(
+                type, args.add, typeof args.args === 'string' ? JSON.parse( args.args ) : undefined,
+                Parser.strict( args.prio, 'number' )
+            )
+        } );
     }
 
 }
