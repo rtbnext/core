@@ -46,19 +46,21 @@ export interface TMap {
     polygon?: number[][];
 }
 
-export interface TRanking {
-    list: string;
+export interface TRankingItem {
     date: string;
-    rank: number;
+    rank?: number;
     networth?: number;
     prev?: string;
     next?: string;
 }
 
-export interface TRealtime {
-    date: string;
-    rank?: number;
-    networth: number;
+export type TRanking< T = string > = TRankingItem & {
+    list: T;
+    name: string;
+    history?: TRankingItem[];
+}
+
+export type TRealtime = TRankingItem & {
     today?: {
         value: number;
         pct: number;
@@ -67,7 +69,7 @@ export interface TRealtime {
         value: number;
         pct: number;
     };
-}
+};
 
 export interface TAnnual {
     year: number,
