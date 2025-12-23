@@ -22,7 +22,10 @@ export class Ranking {
             if ( [ 'rtb', 'rtrl' ].includes( listUri ) ) continue;
 
             const date = Parser.date( _date ?? timestamp, 'ymd' )!;
-            const item: TRankingItem = { date, rank: Parser.strict( rank, 'number' ), networth: Parser.strict( finalWorth, 'money' ) };
+            const item: TRankingItem = {
+                date, rank: Parser.strict( rank, 'number' ),
+                networth: Parser.strict( finalWorth, 'money' )
+            };
 
             if ( ! entries.has( listUri ) ) entries.set( listUri, [] );
             entries.get( listUri )!.push( item );
@@ -42,8 +45,7 @@ export class Ranking {
             // Add existing entry
             if ( existing ) {
                 allItems.push( {
-                    date: existing.date, rank: existing.rank,
-                    networth: existing.networth,
+                    date: existing.date, rank: existing.rank, networth: existing.networth,
                     prev: existing.prev, next: existing.next
                 } );
                 if ( existing.history ) allItems.push( ...existing.history );
@@ -64,8 +66,8 @@ export class Ranking {
             // Create final ranking entry
             const name = existing?.name || names.get( listUri ) || listUri;
             const ranking: TRanking = {
-                list: listUri, name, date: main.date, rank: main.rank, networth: main.networth,
-                history: historyItems.length > 0 ? historyItems : undefined
+                list: listUri, name, date: main.date, rank: main.rank, prev: main.prev,
+                next: main.next, networth: main.networth, history: historyItems
             };
 
             result.push( ranking );
@@ -73,7 +75,9 @@ export class Ranking {
             // Queue list for future processing if needed
             if ( queue ) {
                 const indexItem = Ranking.index.get( listUri );
-                if ( ! indexItem || indexItem.date !== main.date ) Ranking.queue.add( 'list', listUri );
+                if ( ! indexItem || indexItem.date !== main.date ) {
+                    Ranking.queue.add( 'list', listUri );
+                }
             }
         }
 
