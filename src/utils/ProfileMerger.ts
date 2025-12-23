@@ -18,7 +18,7 @@ export class ProfileMerger {
         ).map( i => i.source );
     }
 
-    private static mergeableProfiles ( target: TProfileData, source: TProfileData ) : boolean {
+    public static mergeableProfiles ( target: TProfileData, source: TProfileData ) : boolean {
         if ( target.id === source.id ) return true;
 
         for ( const test of [ 'gender', 'birthDate', 'birthPlace', 'citizenship' ] ) if (
@@ -32,15 +32,15 @@ export class ProfileMerger {
 
     public static mergeProfiles (
         target: Profile, source: Profile, force: boolean = false, makeAlias: boolean = true
-    ) : void {
-        if ( ! force && ! ProfileMerger.mergeableProfiles( target.getData(), source.getData() ) ) return;
+    ) : boolean {
+        if ( ! force && ! ProfileMerger.mergeableProfiles( target.getData(), source.getData() ) ) return false;
 
         const aliases = makeAlias ? [ source.getUri() ] : [];
         target.updateData( source.getData(), aliases, 'unique' );
         target.mergeHistory( source.getHistory() );
         target.save();
 
-        Profile.delete( source.getUri() );
+        return Profile.delete( source.getUri() );
     }
 
     public static findMatching ( data: Partial< TProfileData > ) : Profile[] {
