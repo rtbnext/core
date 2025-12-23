@@ -66,6 +66,12 @@ export class Parser {
         return String( value ).trim().replace( /\s+/g, ' ' );
     }
 
+    public static cleanStr ( value: any, allowedTags?: string[] ) : string {
+        return Parser.string( value ).replace( new RegExp( allowedTags?.length
+            ? `<\\/?(?!(${ allowedTags.join( '|' ) })\\b)(\\w+)([^>]*)>` : '<[^>]*>', 'gi'
+        ), '' ).replace( /\s+/g, ' ' ).trim();
+    }
+
     public static boolean ( value: any ) : boolean {
         const truthyValues = [ '1', 'true', 'yes', 'y' ];
         return value !== null && value !== undefined && (
@@ -95,12 +101,6 @@ export class Parser {
         const longitude = Parser.number( lng, 6 );
         return isNaN( latitude ) || isNaN( longitude ) ? undefined
             : [ latitude, longitude ];
-    }
-
-    public static cleanStr ( value: any, allowedTags?: string[] ) : string {
-        return Parser.string( value ).replace( new RegExp( allowedTags?.length
-            ? `<\\/?(?!(${ allowedTags.join( '|' ) })\\b)(\\w+)([^>]*)>` : '<[^>]*>', 'gi'
-        ), '' ).replace( /\s+/g, ' ' ).trim();
     }
 
     public static decodeURI ( value: any ) : string {
