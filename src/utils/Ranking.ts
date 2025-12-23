@@ -13,7 +13,7 @@ export class Ranking {
         sortedLists: TProfileResponse[ 'person' ][ 'personLists' ], rankingData: TRanking[] = [],
         history: boolean = true, queue: boolean = true
     ) : TRanking[] {
-        const lists = new Map( Object.entries( rankingData ) );
+        const lists = new Map( rankingData.map( r => [ r.list, r ] ) );
         const entries = new Map< string, TRankingItem[] >();
         const names = new Map< string, string >();
 
