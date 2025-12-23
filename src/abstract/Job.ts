@@ -24,7 +24,7 @@ export abstract class Job {
         this.queue = Queue.getInstance();
         this.fetch = Fetch.getInstance();
 
-        this.log( `Starting job: ${this.job}` );
+        this.log( `Starting job [${this.job}] (args: ${ JSON.stringify( process.argv ) })` );
     }
 
     protected async protect<
@@ -47,6 +47,10 @@ export abstract class Job {
             `Job [${this.job}] failed: ${ msg ?? ( err as Error ).message }`,
             err as Error
         );
+    }
+
+    public getJobName () : string {
+        return this.job;
     }
 
     public abstract run ( args: TArgs ) : void | Promise< void >;
