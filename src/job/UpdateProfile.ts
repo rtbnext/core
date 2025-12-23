@@ -53,12 +53,12 @@ export class UpdateProfile extends Job {
                 const isSimilar = ! isExisting && ( profile = ProfileMerger.findMatching( profileData )[ 0 ] );
                 const wiki = profile && profile.getData().wiki;
 
+                if ( ! Parser.boolean( args.skipRanking ) ) profileData.ranking =
+                    Ranking.generateProfileRanking( parser.sortedLists(), profileData.ranking );
+
                 if ( ! Parser.boolean( args.skipWiki ) ) profileData.wiki = wiki
                     ? await Wiki.queryWikiPage( wiki.uri )
                     : await Wiki.fromProfileData( profileData );
-
-                if ( ! Parser.boolean( args.skipRanking ) ) profileData.ranking =
-                    Ranking.generateProfileRanking( parser.sortedLists(), profileData.ranking );
 
                 if ( isExisting && profile ) {
                     this.log( `Updating profile: ${uri}` );
