@@ -18,13 +18,15 @@ export class Ranking {
         const names = new Map< string, string >();
 
         // Prepare new entries from sorted lists
-        for ( const { listUri, name, date: _date, timestamp, rank, finalWorth } of sortedLists ) {
+        for ( const { listUri, name, date: _date, timestamp, rank: _rank, finalWorth } of sortedLists ) {
             if ( [ 'rtb', 'rtrl' ].includes( listUri ) ) continue;
 
             const date = Parser.date( _date ?? timestamp, 'ymd' )!;
+            const rank = Parser.strict( _rank, 'number' );
+            const networth = Parser.strict( finalWorth, 'money' );
             const item: TRankingItem = {
-                date, rank: Parser.strict( rank, 'number' ),
-                networth: Parser.strict( finalWorth, 'money' )
+                date, rank: rank && rank > 0 ? rank : undefined,
+                networth: networth && networth > 0 ? networth : undefined
             };
 
             if ( ! entries.has( listUri ) ) entries.set( listUri, [] );
