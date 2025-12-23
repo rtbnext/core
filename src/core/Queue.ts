@@ -32,8 +32,9 @@ export class Queue {
     private saveQueue () : void {
         const { defaultPrio } = this.config;
         this.storage.writeJSON< TQueueStorage >( 'queue.json', Object.fromEntries(
-            QueueType.map( t => [ t, Array.from( this.queue[ t ].values() ).sort(
-                ( a, b ) => ( b.prio ?? defaultPrio ) - ( a.prio ?? defaultPrio )
+            QueueType.map( t => [ t, Array.from( this.queue[ t ].values() ).sort( ( a, b ) =>
+                ( b.prio ?? defaultPrio ) - ( a.prio ?? defaultPrio ) || 
+                ( new Date( a.ts ).getTime() - new Date( b.ts ).getTime() )
             ) ] )
         ) as TQueueStorage );
     }
@@ -50,14 +51,20 @@ export class Queue {
         return this.queue[ type ].has( Utils.sanitize( uriLike ) );
     }
 
-    public add ( type: QueueType, uriLike: string, prio?: number ) : boolean {
+    public add ( type: QueueType, uriLike: string, args?: Record< string, any >, prio?: number ) : boolean {
         if ( this.queue[ type ].size > this.config.maxSize ) return false;
 
         const uri = Utils.sanitize( uriLike );
-        this.queue[ type ].set( uri, { uri, prio, ts: new Date().toISOString() } );
+        const item = this.queue[ type ].get( uri );
+        const ts = item?.ts || new Date().toISOString();
+        const data: TQueueItem = { uri, ts, args, prio };
+
+        if ( JSON.stringify( item ) === JSON.stringify( data ) ) return false;
+
+        log.debug( `Add to queue [${type}]: ${uri} (prio: ${ prio ?? this.config.defaultPrio })` );
+        this.queue[ type ].set( uri, data );
         this.saveQueue();
 
-        log.debug( `Added to queue [${type}]: ${uri} (prio: ${prio ?? this.config.defaultPrio})` );
         return true;
     }
 
