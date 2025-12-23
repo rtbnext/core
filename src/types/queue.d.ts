@@ -3,6 +3,7 @@ import { QueueType } from '@/utils/Const';
 export interface TQueueItem {
     uri: string;
     ts: string;
+    args?: Record< string, any >;
     prio?: number;
 }
 
