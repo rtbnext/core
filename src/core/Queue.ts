@@ -1,4 +1,5 @@
 import { Config } from '@/core/Config';
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { TQueueConfig } from '@/types/config';
 import { TQueue, TQueueItem, TQueueStorage } from '@/types/queue';
@@ -51,9 +52,12 @@ export class Queue {
 
     public add ( type: QueueType, uriLike: string, prio?: number ) : boolean {
         if ( this.queue[ type ].size > this.config.maxSize ) return false;
+
         const uri = Utils.sanitize( uriLike );
         this.queue[ type ].set( uri, { uri, prio, ts: new Date().toISOString() } );
         this.saveQueue();
+
+        log.debug( `Added to queue [${type}]: ${uri} (prio: ${prio ?? this.config.defaultPrio})` );
         return true;
     }
 
