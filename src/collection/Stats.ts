@@ -1,23 +1,23 @@
 import { Storage } from '@/core/Storage';
-import { TGlobalStats } from '@/types/stats';
+import { TRealtimeStats } from '@/types/stats';
 
 export class Stats {
 
     private static instance: Stats;
     private readonly storage: Storage;
-    private globalStats: TGlobalStats;
+    private realtime: TRealtimeStats;
 
     private constructor () {
         this.storage = Storage.getInstance();
-        this.globalStats = this.loadGlobalStats();
+        this.realtime = this.loadRealtimeStats();
     }
 
-    private loadGlobalStats () : TGlobalStats {
-        return this.storage.readJSON< TGlobalStats >( 'stats/global.json' ) || {} as TGlobalStats;
+    private loadRealtimeStats () : TRealtimeStats {
+        return this.storage.readJSON< TRealtimeStats >( 'stats/rt.json' ) || {} as TRealtimeStats;
     }
 
-    public global () : TGlobalStats {
-        return this.globalStats;
+    public rt () : TRealtimeStats {
+        return this.realtime;
     }
 
     public static getInstance () : Stats {

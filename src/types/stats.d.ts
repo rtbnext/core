@@ -1,6 +1,5 @@
-export interface TGlobalStats {
-    latestDate: string;
-    profiles: number;
+export interface TRealtimeStats {
+    date: string;
     count: number;
     totalWealth: number;
     womanCount: number;
