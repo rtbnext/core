@@ -56,7 +56,7 @@ export class Storage {
             switch ( type ?? this.fileExt( path ) ) {
                 case 'csv': content = stringify( content ); break;
                 case 'json': content = JSON.stringify(
-                    content, null, this.config.compressing ? 2 : undefined
+                    content, null, this.config.compressing ? undefined : 2
                 ); break;
             }
             if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';

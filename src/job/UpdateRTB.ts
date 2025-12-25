@@ -32,7 +32,9 @@ export class UpdateRTB extends Job {
 
             this.log( `Processing RTB list dated ${listDate} (${raw.length} items)` );
             const th = Date.now() - this.config.queue.profileAge;
-            const entries = raw.filter( i => i.rank && i.finalWorth ).filter( Boolean );
+            const entries = raw.filter( i => i.rank && i.finalWorth ).filter( Boolean ).sort(
+                ( a, b ) => a.rank! - b.rank!
+            );
 
             let count = 0, woman = 0, total = 0;
             const items: TRTBItem[] = [];
