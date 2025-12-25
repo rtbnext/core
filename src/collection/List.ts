@@ -86,15 +86,13 @@ export class List {
 
     public saveSnapshot< T extends TListSnapshot > ( snapshot: T, force: boolean = false ) : boolean {
         if ( ! force && this.availableDate( snapshot.date ) ) return false;
-        // renew list index item
+        if ( ! List.index.update( this.uri, { date: snapshot.date, count: snapshot.stats.count } ) ) return false;
         return List.storage.writeJSON< T >( join( this.path, `${snapshot.date}.json` ), snapshot );
     }
 
     public static create ( uriLike: any, data: TListIndexItem, snapshot?: TListSnapshot ) : List | false {
-        const item = List.index.add( uriLike, data );
-        if ( ! item ) return false;
-        const list = new List( item );
-        if ( ! list ) return false;
+        const item = List.index.add( uriLike, data ); if ( ! item ) return false;
+        const list = new List( item ); if ( ! list ) return false;
         if ( snapshot ) list.saveSnapshot( snapshot );
         return list;
     }
