@@ -1,5 +1,5 @@
 import { TMetaData } from '@/types/generic';
-import { Industry } from '@/utils/Const';
+import { Gender, Industry } from '@/utils/Const';
 
 export type TListIndex< T extends string = string > = Map< T, TListIndexItem< T > >;
 
