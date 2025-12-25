@@ -29,20 +29,19 @@ export class UpdateRTB extends Job {
             const items: TRTBSnapshot[ 'items' ] = [];
 
             for ( const row of raw ) {
-                const profileData = {
-                    uri: Utils.sanitize( row.uri ),
-                    info: {
-                        ...Parser.name( row.personName, row.lastName ),
-                        ...Parser.container< Partial< TProfileData[ 'info' ] > >( {
-                            dropOff: { value: row.finalWorth < 1e3, method: 'boolean' },
-                            gender: { value: row.gender, method: 'gender' },
-                            birthDate: { value: row.birthDate, method: 'date' },
-                            citizenship: { value: row.countryOfCitizenship, method: 'country' },
-                            industry: { value: row.industries[ 0 ], method: 'industry' },
-                            source: { value: row.source, method: 'list' }
-                        } )
-                    }
-                };
+                const uri = Utils.sanitize( row.uri );
+                const id = Utils.hash( row.naturalId );
+                const profileData = { uri, id, info: {
+                    ...Parser.name( row.personName, row.lastName ),
+                    ...Parser.container< Partial< TProfileData[ 'info' ] > >( {
+                        dropOff: { value: row.finalWorth < 1e3, method: 'boolean' },
+                        gender: { value: row.gender, method: 'gender' },
+                        birthDate: { value: row.birthDate, method: 'date' },
+                        citizenship: { value: row.countryOfCitizenship, method: 'country' },
+                        industry: { value: row.industries[ 0 ], method: 'industry' },
+                        source: { value: row.source, method: 'list' }
+                    } )
+                } };
 
                 const data: TRTBSnapshot[ 'items' ][ number ] = {
                     uri: row.uri,
