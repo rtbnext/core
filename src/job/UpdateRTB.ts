@@ -24,12 +24,17 @@ export class UpdateRTB extends Job {
             const listDate = Parser.date( raw[ 0 ].date || raw[ 0 ].timestamp, 'ymd' )!;
             if ( rtStats.date === listDate ) throw new Error( 'RTB list is already up to date' );
 
-            rtStats.date = listDate;
             const items: TRTBSnapshot[ 'items' ] = [];
+            const count = 0, total = 0, woman = 0;
 
             for ( const row of raw ) {
                 const parser = new ListParser( row );
             }
+
+            rtStats.date = listDate;
+            rtStats.count = Parser.number( count );
+            rtStats.totalWealth = Parser.money( total );
+            rtStats.womanCount = Parser.number( woman );
         } );
     }
 
