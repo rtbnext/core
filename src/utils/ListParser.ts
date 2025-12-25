@@ -1,3 +1,4 @@
+import { TAsset } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TListResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
@@ -36,6 +37,26 @@ export class ListParser {
             facts: { value: this.raw.abouts, method: 'list' },
             quotes: { value: [], method: 'list' }
         } );
+    }
+
+    public assets () : TAsset[] {
+        return ( this.raw.financialAssets ?? [] ).map( a => ( {
+            ...Parser.container< TAsset >( {
+                type: { value: 'public', method: 'string' },
+                label: { value: a.companyName, method: 'string' },
+                value: { value: a.numberOfShares && a.currentPrice
+                    ? a.numberOfShares * a.currentPrice
+                    : undefined, method: 'money' }
+            } ),
+            info: Parser.container< TAsset[ 'info' ] >( {
+                exchange: { value: a.exchange, method: 'string' },
+                ticker: { value: a.ticker, method: 'string' },
+                shares: { value: a.numberOfShares, method: 'number' },
+                price: { value: a.currentPrice ?? a.sharePrice, method: 'number', args: [ 6 ] },
+                currency: { value: a.currencyCode, method: 'string' },
+                exRate: { value: a.exchangeRate, method: 'number', args: [ 6 ] }
+            } )
+        } ) );
     }
 
 }

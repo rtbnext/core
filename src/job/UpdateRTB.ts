@@ -28,6 +28,8 @@ export class UpdateRTB extends Job {
 
             for ( const row of raw ) {
                 const parser = new ListParser( row );
+                const uri = parser.uri();
+                const id = parser.id();
                 const profileData = {};
             }
 
