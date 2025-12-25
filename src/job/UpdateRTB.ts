@@ -2,8 +2,10 @@ import { Job, jobRunner } from '@/abstract/Job';
 import { Stats } from '@/collection/Stats';
 import { TArgs } from '@/types/generic';
 import { TRTBSnapshot } from '@/types/list';
+import { TProfileData } from '@/types/profile';
 import { TRTBResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
+import { Utils } from '@/utils/Utils';
 
 export class UpdateRTB extends Job {
 
@@ -27,6 +29,21 @@ export class UpdateRTB extends Job {
             const items: TRTBSnapshot[ 'items' ] = [];
 
             for ( const row of raw ) {
+                const profileData = {
+                    uri: Utils.sanitize( row.uri ),
+                    info: {
+                        ...Parser.name( row.personName, row.lastName ),
+                        ...Parser.container< Partial< TProfileData[ 'info' ] > >( {
+                            dropOff: { value: row.finalWorth < 1e3, method: 'boolean' },
+                            gender: { value: row.gender, method: 'gender' },
+                            birthDate: { value: row.birthDate, method: 'date' },
+                            citizenship: { value: row.countryOfCitizenship, method: 'country' },
+                            industry: { value: row.industries[ 0 ], method: 'industry' },
+                            source: { value: row.source, method: 'list' }
+                        } )
+                    }
+                };
+
                 const data: TRTBSnapshot[ 'items' ][ number ] = {
                     uri: row.uri,
                     name: row.person?.name ?? row.personName,
