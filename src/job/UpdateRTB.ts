@@ -24,13 +24,37 @@ export class UpdateRTB extends Job {
             if ( rtStats.date === listDate ) throw new Error( 'RTB list is already up to date' );
 
             const items: TRTBItem[] = [];
-            const count = 0, total = 0, woman = 0;
+            let count = 0, woman = 0, total = 0;
 
             for ( const row of raw ) {
                 const parser = new ListParser( row );
+
+                const rank = parser.rank();
+                const networth = parser.networth();
+                if ( ! rank || ! networth ) continue;
+
                 const uri = parser.uri();
                 const id = parser.id();
-                const profileData = {};
+                const profileData = {
+                    uri, id, info: parser.info(), bio: parser.bio(),
+                    assets: parser.assets()
+                };
+
+                // process profiles ...
+
+                items.push( {
+                    uri, rank, networth,
+                    name: '',
+                    gender: profileData.info.gender,
+                    age: parser.age(),
+                    citizenship: profileData.info.citizenship,
+                    industry: profileData.info.industry!,
+                    source: profileData.info.source!
+                } );
+
+                count++;
+                woman += +( profileData.info.gender === 'f' );
+                total += networth;
             }
 
             rtStats.date = listDate;
