@@ -1,14 +1,16 @@
 import { Job, jobRunner } from '@/abstract/Job';
+import { List } from '@/collection/List';
 import { Profile } from '@/collection/Profile';
 import { Stats } from '@/collection/Stats';
 import { TRTBItem } from '@/types/list';
+import { TMover } from '@/types/mover';
 import { TProfileData } from '@/types/profile';
 import { TListResponse } from '@/types/response';
 import { ListParser } from '@/utils/ListParser';
 import { ProfileMerger } from '@/utils/ProfileMerger';
 import { Parser } from '@/utils/Parser';
+import { Utils } from '@/utils/Utils';
 import deepmerge from 'deepmerge';
-import { TMover } from '@/types/mover';
 
 export class UpdateRTB extends Job {
 
@@ -130,7 +132,24 @@ export class UpdateRTB extends Job {
                 total += networth;
             }
 
-            // (create) + save list & movers
+            const list = List.get( 'rtb' ) || List.create( 'rtb', {
+                uri: 'rtb',
+                name: 'The World’s Real-Time Billionaires',
+                shortName: 'Real-Time Billionaires',
+                desc: 'Today’s richest people in the world',
+                text: 'todays richest people world',
+                date: listDate, count,
+                columns: [ 'rank', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
+                filters: [ 'gender', 'industry', 'citizenship' ]
+            } );
+
+            if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
+            this.log( `Saving RTB list dated ${listDate} (${items.length} items)` );
+            list.saveSnapshot( { ...Utils.metaData(), date: listDate, items, stats: {
+                count, total, woman, quote: woman / count * 100
+            } } );
+
+            // save movers ...
 
             rtStats.date = listDate;
             rtStats.count = Parser.number( count );
