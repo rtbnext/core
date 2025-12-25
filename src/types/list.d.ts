@@ -26,30 +26,34 @@ export interface TListSnapshot {
         woman?: number;
         quote?: number;
     }
-    items: {
-        uri: string;
-        name: string;
-        rank: number;
-        networth: number;
-        gender?: Gender;
-        age?: number;
-        citizenship?: string;
-    }[];
-};
+    items: TListItem[];
+}
 
-export type TRTBSnapshot = TListSnapshot & {
-    items: {
-        today?: {
-            value: number;
-            pct: number;
-        };
-        ytd?: {
-            value: number;
-            pct: number;
-        };
-        industry: Industry;
-        source: string[];
-    }[];
+export interface TListItem {
+    uri: string;
+    name: string;
+    rank: number;
+    networth: number;
+    gender?: Gender;
+    age?: number;
+    citizenship?: string;
+}
+
+export interface TRTBSnapshot extends TListSnapshot {
+    items: TRTBItem;
+}
+
+export interface TRTBItem extends TListItem {
+    today?: {
+        value: number;
+        pct: number;
+    };
+    ytd?: {
+        value: number;
+        pct: number;
+    };
+    industry: Industry;
+    source: string[];
 }
 
 export interface TListCollection {

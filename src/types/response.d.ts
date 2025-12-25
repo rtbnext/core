@@ -98,18 +98,8 @@ export interface TListResponse {
             year: number;
             listUri: string;
             uri: string;
-            csfDisplayFields: string[];
-            bios?: string[];
-            abouts?: string[];
-        }[];
-    };
-}
-
-export type TRTBResponse = TListResponse & {
-    personList: {
-        personsLists: {
-            rank: number;
-            finalWorth: number;
+            rank?: number;
+            finalWorth?: number;
             person?: {
                 name?: string;
                 uri?: string;
@@ -117,14 +107,14 @@ export type TRTBResponse = TListResponse & {
             personName: string;
             state?: string;
             city?: string;
-            source: string;
-            industries: string[];
+            source?: string;
+            industries?: string[];
             countryOfCitizenship?: string;
             timestamp: number;
             gender?: 'M' | 'F';
             birthDate?: number;
             lastName?: string;
-            financialAssets: {
+            financialAssets?: {
                 exchange: string;
                 ticker: string;
                 companyName: string;
@@ -135,12 +125,15 @@ export type TRTBResponse = TListResponse & {
                 currentPrice?: number;
             }[];
             date?: number;
-            estWorthPrev: number;
+            estWorthPrev?: number;
             privateAssetsWorth?: number;
             archivedWorth?: number;
+            csfDisplayFields: string[];
+            bios?: string[];
+            abouts?: string[];
         }[];
     };
-};
+}
 
 export interface TWikidataResponse {
     results: { bindings: TWikidataResponseItem[] };
