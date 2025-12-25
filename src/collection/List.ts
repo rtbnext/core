@@ -22,6 +22,7 @@ export class List {
         this.path = join( 'list', item.uri );
         this.data = item;
         this.dates = Utils.sort( List.storage.scanDir( this.path ) );
+        List.storage.ensurePath( this.path );
     }
 
     public getUri () : string {
@@ -87,6 +88,14 @@ export class List {
         if ( ! force && this.availableDate( snapshot.date ) ) return false;
         // renew list index item
         return List.storage.writeJSON< T >( join( this.path, `${snapshot.date}.json` ), snapshot );
+    }
+
+    public static create ( uriLike: any, data: TListIndexItem, snapshot?: TListSnapshot ) : List | false {
+        const item = List.index.add( uriLike, data );
+        if ( ! item ) return false;
+        const list = new List( item );
+        if ( snapshot ) list.saveSnapshot( snapshot );
+        return list;
     }
 
 }
