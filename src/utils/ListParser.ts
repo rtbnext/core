@@ -8,6 +8,14 @@ export class ListParser {
 
     constructor ( private readonly raw: TListResponse[ 'personList' ][ 'personsLists' ][ number ] ) {}
 
+    public rank () : number | undefined {
+        return Parser.strict( this.raw.rank, 'number' );
+    }
+
+    public networth () : number | undefined {
+        return Parser.strict( this.raw.finalWorth, 'money' );
+    }
+
     public uri () : string {
         return Utils.sanitize( this.raw.uri );
     }
@@ -37,6 +45,10 @@ export class ListParser {
             facts: { value: this.raw.abouts, method: 'list' },
             quotes: { value: [], method: 'list' }
         } );
+    }
+
+    public age () : number | undefined {
+        return Parser.strict( this.raw.birthDate, 'age' );
     }
 
     public assets () : TAsset[] {
