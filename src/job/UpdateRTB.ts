@@ -74,13 +74,24 @@ export class UpdateRTB extends Job {
                     this.queue.add( 'profile', uri, undefined, 10 );
                 }
 
-                // prev, next & realtime data
-                // history data
+                const prev = entries[ Number( i ) - 1 ]?.uri;
+                const next = entries[ Number( i ) + 1 ]?.uri;
+                const realtime = parser.realtime( profileData as any, prev, next );
+                const { value = 0, pct = 0 } = realtime?.today ?? {};
 
-                if ( profile ) profileData = profile.getData();
+                if ( profile ) {
+                    profile.updateData( { realtime } );
+                    profile.addHistory( [ listDate, rank, networth, value, pct ] );
+                    profile.save();
+                    profileData = profile.getData();
+                } else {
+                    this.log( `Missing profile after creation/merging: ${uri}`, undefined, 'warn' );
+                }
 
                 items.push( {
                     uri, rank, networth,
+                    today: realtime?.today,
+                    ytd: realtime?.ytd,
                     name: profileData.info.shortName!,
                     gender: profileData.info.gender,
                     age: parser.age(),
@@ -93,6 +104,8 @@ export class UpdateRTB extends Job {
                 woman += +( profileData.info.gender === 'f' );
                 total += networth;
             }
+
+            // save list & movers
 
             rtStats.date = listDate;
             rtStats.count = Parser.number( count );
