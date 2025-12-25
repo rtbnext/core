@@ -9,8 +9,13 @@ export interface TMoverSubject {
     loser: MoverEntry[];
 }
 
-export interface TMover {
-    date: string;
+export interface TMoverItem {
     networth: TMoverSubject;
     percent: TMoverSubject;
+}
+
+export interface TMover {
+    date: string;
+    today: TMoverItem;
+    ytd: TMoverItem;
 }
