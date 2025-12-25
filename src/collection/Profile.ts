@@ -159,7 +159,10 @@ export class Profile {
         if ( ! item ) return false;
 
         const profile = new Profile( item );
-        profile.setData( { ...{ map: [], ranking: [], annual: [], assets: [] }, ...data } );
+        profile.setData( { ...{
+            info: {}, bio: {}, related: [], media: [], map: [],
+            ranking: [], annual: [], assets: []
+        }, ...data } );
         profile.setHistory( history ?? [] );
         profile.save();
 
