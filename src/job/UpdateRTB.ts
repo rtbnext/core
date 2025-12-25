@@ -8,6 +8,7 @@ import { ListParser } from '@/utils/ListParser';
 import { ProfileMerger } from '@/utils/ProfileMerger';
 import { Parser } from '@/utils/Parser';
 import deepmerge from 'deepmerge';
+import { TMover } from '@/types/mover';
 
 export class UpdateRTB extends Job {
 
@@ -30,8 +31,14 @@ export class UpdateRTB extends Job {
             this.log( `Processing RTB list dated ${listDate} (${raw.length} items)` );
             const th = Date.now() - this.config.queue.profileAge;
             const entries = raw.filter( i => i.rank && i.finalWorth ).filter( Boolean );
-            const items: TRTBItem[] = [];
+
             let count = 0, woman = 0, total = 0;
+            const items: TRTBItem[] = [];
+            const movers: TMover = {
+                date: listDate,
+                today: { networth: { winner: [], loser: [] }, percent: { winner: [], loser: [] } },
+                ytd: { networth: { winner: [], loser: [] }, percent: { winner: [], loser: [] } }
+            };
 
             for ( const [ i, row ] of Object.entries( entries ) ) {
                 const parser = new ListParser( row );
@@ -78,6 +85,24 @@ export class UpdateRTB extends Job {
                 const next = entries[ Number( i ) + 1 ]?.uri;
                 const realtime = parser.realtime( profileData as any, prev, next );
                 const { value = 0, pct = 0 } = realtime?.today ?? {};
+
+                if ( realtime?.today?.value ) {
+                    movers.today.networth[ realtime.today.value > 0 ? 'winner' : 'loser' ].push( {
+                        uri, name: profileData.info.shortName!, value
+                    } );
+                    movers.today.percent[ realtime.today.pct > 0 ? 'winner' : 'loser' ].push( {
+                        uri, name: profileData.info.shortName!, value: pct
+                    } );
+                }
+
+                if ( realtime?.ytd?.value ) {
+                    movers.ytd.networth[ realtime.ytd.value > 0 ? 'winner' : 'loser' ].push( {
+                        uri, name: profileData.info.shortName!, value: realtime.ytd.value
+                    } );
+                    movers.ytd.percent[ realtime.ytd.pct > 0 ? 'winner' : 'loser' ].push( {
+                        uri, name: profileData.info.shortName!, value: realtime.ytd.pct
+                    } );
+                }
 
                 if ( profile ) {
                     profile.updateData( { realtime } );
