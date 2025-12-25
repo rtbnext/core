@@ -1,4 +1,4 @@
-import { TAsset } from '@/types/generic';
+import { TAsset, TRealtime } from '@/types/generic';
 import { TProfileData } from '@/types/profile';
 import { TListResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
@@ -8,12 +8,20 @@ export class ListParser {
 
     constructor ( private readonly raw: TListResponse[ 'personList' ][ 'personsLists' ][ number ] ) {}
 
+    public date () : string {
+        return Parser.date( this.raw.date || this.raw.timestamp, 'ymd' )!
+    }
+
     public rank () : number | undefined {
         return Parser.strict( this.raw.rank, 'number' );
     }
 
     public networth () : number | undefined {
         return Parser.strict( this.raw.finalWorth, 'money' );
+    }
+
+    public dropOff () : boolean | undefined {
+        return this.raw.finalWorth ? this.raw.finalWorth < 1e3 : undefined;
     }
 
     public uri () : string {
@@ -30,7 +38,7 @@ export class ListParser {
 
     public info () : Partial< TProfileData[ 'info' ] > {
         return Parser.container< Partial< TProfileData[ 'info' ] > >( {
-            dropOff: { value: this.raw.finalWorth ? this.raw.finalWorth < 1e3 : undefined, method: 'boolean' },
+            dropOff: { value: this.dropOff(), method: 'boolean' },
             gender: { value: this.raw.gender, method: 'gender' },
             birthDate: { value: this.raw.birthDate, method: 'date' },
             citizenship: { value: this.raw.countryOfCitizenship, method: 'country' },
@@ -69,6 +77,26 @@ export class ListParser {
                 exRate: { value: a.exchangeRate, method: 'number', args: [ 6 ] }
             } )
         } ) );
+    }
+
+    public realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined {
+        if ( ! this.raw.finalWorth ) return;
+        const dailyChange = this.raw.finalWorth - ( data?.realtime?.networth ?? 0 );
+        const ytdChange = this.raw.finalWorth - ( data?.annual?.sort(
+            ( a, b ) => b.year - a.year
+        )[ 0 ].networth.last ?? 0 );
+
+        return {
+            date: this.date(), rank: this.rank(), networth: this.networth(), prev, next,
+            today: data && data.realtime ? {
+                value: Parser.money( dailyChange ),
+                pct: Parser.number( dailyChange / this.raw.finalWorth * 100, 3 )
+            } : undefined,
+            ytd: data && data.annual?.length ? {
+                value: Parser.money( ytdChange ),
+                pct: Parser.number( ytdChange / this.raw.finalWorth * 100, 3 )
+            } : undefined
+        };
     }
 
 }
