@@ -30,4 +30,12 @@ export class ListParser {
         } );
     }
 
+    public bio () : TProfileData[ 'bio' ] {
+        return Parser.container< TProfileData[ 'bio' ] >( {
+            cv: { value: this.raw.bios, method: 'list' },
+            facts: { value: this.raw.abouts, method: 'list' },
+            quotes: { value: [], method: 'list' }
+        } );
+    }
+
 }
