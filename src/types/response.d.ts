@@ -50,8 +50,8 @@ export interface TProfileResponse {
         personLists: {
             listUri: string;
             name: string;
+            listDescription?: string;
             rank?: number;
-            bio?: string;
             finalWorth?: number;
             timestamp: number | string;
             financialAssets?: {

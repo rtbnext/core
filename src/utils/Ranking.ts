@@ -15,10 +15,10 @@ export class Ranking {
     ) : TRanking[] {
         const lists = new Map( rankingData.map( r => [ r.list, r ] ) );
         const entries = new Map< string, TRankingItem[] >();
-        const names = new Map< string, string >();
+        const names = new Map< string, { name: string, desc?: string } >();
 
         // Prepare new entries from sorted lists
-        for ( const { listUri, name, date: _date, timestamp, rank: _rank, finalWorth } of sortedLists ) {
+        for ( const { listUri, name, listDescription, date: _date, timestamp, rank: _rank, finalWorth } of sortedLists ) {
             if ( [ 'rtb', 'rtrl' ].includes( listUri ) ) continue;
 
             const date = Parser.date( _date ?? timestamp, 'ymd' )!;
@@ -31,7 +31,7 @@ export class Ranking {
 
             if ( ! entries.has( listUri ) ) entries.set( listUri, [] );
             entries.get( listUri )!.push( item );
-            names.set( listUri, name );
+            names.set( listUri, { name, desc: listDescription } );
         }
 
         // Merge existing and new entries
@@ -66,7 +66,7 @@ export class Ranking {
             historyItems.sort( ( a, b ) => b.date.localeCompare( a.date ) );
 
             // Create final ranking entry
-            const name = existing?.name || names.get( listUri ) || listUri;
+            const name = existing?.name || names.get( listUri )?.name || listUri;
             const ranking: TRanking = {
                 list: listUri, name, date: main.date, rank: main.rank, prev: main.prev,
                 next: main.next, networth: main.networth, history: historyItems
@@ -78,7 +78,7 @@ export class Ranking {
             if ( queue && main.rank && main.networth ) {
                 const indexItem = Ranking.index.get( listUri );
                 if ( ! indexItem || indexItem.date !== main.date ) Ranking.queue.add( 'list', listUri, {
-                    date: main.date, year: main.date.split( '-' )[ 0 ]
+                    name, desc: names.get( listUri )?.desc, year: main.date.split( '-' )[ 0 ]
                 } );
             }
         }
