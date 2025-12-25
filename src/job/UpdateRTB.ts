@@ -1,9 +1,13 @@
 import { Job, jobRunner } from '@/abstract/Job';
+import { Profile } from '@/collection/Profile';
 import { Stats } from '@/collection/Stats';
 import { TRTBItem } from '@/types/list';
+import { TProfileData } from '@/types/profile';
 import { TListResponse } from '@/types/response';
 import { ListParser } from '@/utils/ListParser';
+import { ProfileMerger } from '@/utils/ProfileMerger';
 import { Parser } from '@/utils/Parser';
+import deepmerge from 'deepmerge';
 
 export class UpdateRTB extends Job {
 
@@ -25,6 +29,7 @@ export class UpdateRTB extends Job {
 
             const items: TRTBItem[] = [];
             let count = 0, woman = 0, total = 0;
+            let prev: string, next: string;
 
             for ( const row of raw ) {
                 const parser = new ListParser( row );
@@ -40,7 +45,24 @@ export class UpdateRTB extends Job {
                     assets: parser.assets()
                 };
 
-                // process profiles ...
+                let profile = Profile.find( uri ), named: TProfileData;
+                const isExisting = profile && profile.verify( id );
+                const isSimilar = ! isExisting && ( profile = ProfileMerger.findMatching(
+                    named = deepmerge< TProfileData >(
+                        profileData as TProfileData,
+                        { info: { ...parser.name() } } as TProfileData
+                    )
+                )[ 0 ] );
+
+                if ( isExisting && profile ) {
+                    // update profile data + test age (queue)
+                } else if ( isSimilar && profile ) {
+                    // merge profile + add to queue (5)
+                } else {
+                    // create profile + add to queue (10)
+                }
+
+                // prev, next & realtime data
 
                 items.push( {
                     uri, rank, networth,
