@@ -94,6 +94,7 @@ export class List {
         const item = List.index.add( uriLike, data );
         if ( ! item ) return false;
         const list = new List( item );
+        if ( ! list ) return false;
         if ( snapshot ) list.saveSnapshot( snapshot );
         return list;
     }
