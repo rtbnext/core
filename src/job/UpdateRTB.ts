@@ -16,7 +16,7 @@ export class UpdateRTB extends Job {
 
     public async run ( args: TArgs ) : Promise< void > {
         await this.protect( async () => {
-            const rtStats = this.stats.rt();
+            const rtStats = this.stats.getRealtime();
             const res = await this.fetch.list< TRTBResponse >( 'rtb', '0' );
             if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
@@ -35,6 +35,7 @@ export class UpdateRTB extends Job {
             rtStats.count = Parser.number( count );
             rtStats.totalWealth = Parser.money( total );
             rtStats.womanCount = Parser.number( woman );
+            this.stats.setRealtime( rtStats );
         } );
     }
 

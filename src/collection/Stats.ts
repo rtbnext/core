@@ -11,8 +11,12 @@ export class Stats {
         this.storage = Storage.getInstance();
     }
 
-    public rt () : TRealtimeStats {
+    public getRealtime () : TRealtimeStats {
         return this.data.rt ||= this.storage.readJSON< TRealtimeStats >( 'stats/rt.json' ) || {};
+    }
+
+    public setRealtime ( rt: TRealtimeStats ) : boolean {
+        return this.storage.writeJSON< TRealtimeStats >( 'stats/rt.json', rt );
     }
 
     public static getInstance () : Stats {
