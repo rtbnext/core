@@ -67,6 +67,10 @@ export class Profile {
         return this.meta.lastModified;
     }
 
+    public modifiedTime () : number {
+        return new Date( this.meta.lastModified ).getTime();
+    }
+
     public getData () : TProfileData {
         return this.data ||= Profile.storage.readJSON< TProfileData >(
             join( this.path, 'profile.json' )

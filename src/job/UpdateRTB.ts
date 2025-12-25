@@ -28,6 +28,7 @@ export class UpdateRTB extends Job {
             if ( rtStats.date === listDate ) throw new Error( 'RTB list is already up to date' );
 
             this.log( `Processing RTB list dated ${listDate} (${raw.length} items)` );
+            const th = Date.now() - this.config.queue.profileAge;
             const items: TRTBItem[] = [];
             let count = 0, woman = 0, total = 0;
             let prev: string, next: string;
@@ -55,9 +56,20 @@ export class UpdateRTB extends Job {
                 )[ 0 ] );
 
                 if ( isExisting && profile ) {
-                    // update profile data + test age (queue)
+                    this.log( `Updating profile: ${uri}` );
+                    if ( profile.modifiedTime() < th ) this.queue.add( 'profile', uri );
+                    profile.updateData( profileData as any );
+                    profile.save();
+
+                    if ( uri !== profile.getUri() ) {
+                        this.log( `Renaming profile from ${ profile.getUri() } to ${uri}` );
+                        profile.move( uri, true );
+                    }
                 } else if ( isSimilar && profile ) {
-                    // merge profile + add to queue (5)
+                    this.log( `Merging data into existing profile: ${ profile.getUri() }` );
+                    profile.updateData( profileData as any );
+                    profile.move( uri, true );
+                    this.queue.add( 'profile', uri, undefined, 5 );
                 } else {
                     this.log( `Creating profile: ${uri}` );
                     profile = Profile.create( uri, profileData as TProfileData, [] );
@@ -65,6 +77,7 @@ export class UpdateRTB extends Job {
                 }
 
                 // prev, next & realtime data
+                // history data
 
                 if ( profile ) profileData = profile.getData();
 

@@ -31,6 +31,7 @@ export interface TFetchConfig {
 }
 
 export interface TQueueConfig {
+    profileAge: number;
     maxSize: number;
     defaultPrio: number;
 }
