@@ -1,6 +1,3 @@
-export interface TRealtimeStats {
-    date: string;
-    count: number;
-    totalWealth: number;
-    womanCount: number;
-}
+import { TListStats } from '@/types/list';
+
+export type TRealtimeStats = TListStats;

@@ -1,4 +1,4 @@
-import { TMetaData } from '@/types/generic';
+import { TChange, TMetaData } from '@/types/generic';
 import { Gender, Industry } from '@/utils/Const';
 
 export type TListIndex< T extends string = string > = Map< T, TListIndexItem< T > >;
@@ -17,15 +17,18 @@ export interface TListIndexItem< T extends string = string > {
 
 export type TList = Record< string, TListSnapshot >;
 
+export type TListStats = TChange & {
+    date: string;
+    count: number;
+    totalWealth: number;
+    womanCount: number;
+    quota: number;
+};
+
 export interface TListSnapshot {
     '@metadata': TMetaData;
     date: string;
-    stats: {
-        count: number;
-        total: number;
-        woman?: number;
-        quote?: number;
-    }
+    stats: TListStats;
     items: TListItem[];
 }
 
