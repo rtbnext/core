@@ -38,6 +38,7 @@ export class UpdateRTB extends Job {
 
             let count = 0, woman = 0, total = 0;
             const items: TRTBItem[] = [];
+            const queue: { type: 'profile', uriLike: string, prio?: number }[] = [];
             const movers: TMover = {
                 date: listDate,
                 today: { networth: { winner: [], loser: [] }, percent: { winner: [], loser: [] } },
@@ -67,7 +68,7 @@ export class UpdateRTB extends Job {
 
                 if ( isExisting && profile ) {
                     this.log( `Updating profile: ${uri}` );
-                    if ( profile.modifiedTime() < th ) this.queue.add( 'profile', uri );
+                    if ( profile.modifiedTime() < th ) queue.push( { type: 'profile', uriLike: uri } );
                     profile.updateData( profileData as any );
                     profile.save();
 
@@ -79,11 +80,11 @@ export class UpdateRTB extends Job {
                     this.log( `Merging data into existing profile: ${ profile.getUri() }` );
                     profile.updateData( profileData as any );
                     profile.move( uri, true );
-                    this.queue.add( 'profile', uri, undefined, 5 );
+                    queue.push( { type: 'profile', uriLike: uri, prio: 5 } );
                 } else {
                     this.log( `Creating profile: ${uri}` );
                     profile = Profile.create( uri, profileData as TProfileData, [] );
-                    this.queue.add( 'profile', uri, undefined, 10 );
+                    queue.push( { type: 'profile', uriLike: uri, prio: 10 } );
                 }
 
                 const prev = entries[ Number( i ) - 1 ]?.uri;
@@ -165,6 +166,7 @@ export class UpdateRTB extends Job {
             rtStats.totalWealth = Parser.money( total );
             rtStats.womanCount = Parser.number( woman );
             this.stats.setRealtime( rtStats );
+            this.queue.addMany( queue );
         } );
     }
 
