@@ -89,6 +89,10 @@ export class Parser {
         return Parser.number( value, 3 );
     }
 
+    public static pct ( value: any, digits: number = 3 ) : number {
+        return Parser.number( value, digits );
+    }
+
     public static date ( value: any, format: 'ymd' | 'iso' = 'ymd' ) : string | undefined {
         const date = new Date( value );
         return isNaN( date.getTime() ) ? undefined
