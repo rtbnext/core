@@ -2,9 +2,10 @@ import { Job, jobRunner } from '@/abstract/Job';
 import { List } from '@/collection/List';
 import { Profile } from '@/collection/Profile';
 import { Stats } from '@/collection/Stats';
-import { TRTBItem, TRTBSnapshot } from '@/types/list';
+import { TRTBItem } from '@/types/list';
 import { TMover } from '@/types/mover';
 import { TProfileData } from '@/types/profile';
+import { TQueueOptions } from '@/types/queue';
 import { TListResponse } from '@/types/response';
 import { ListParser } from '@/utils/ListParser';
 import { ProfileMerger } from '@/utils/ProfileMerger';
@@ -36,9 +37,9 @@ export class UpdateRTB extends Job {
                 ( a, b ) => a.rank! - b.rank!
             );
 
-            let count = 0, woman = 0, total = 0;
+            let count = 0, woman = 0, total = 0, change = 0, ytd = 0;
             const items: TRTBItem[] = [];
-            const queue: { type: 'profile', uriLike: string, prio?: number }[] = [];
+            const queue: TQueueOptions[] = [];
             const movers: TMover = {
                 date: listDate,
                 today: { networth: { winner: [], loser: [] }, percent: { winner: [], loser: [] } },
@@ -93,6 +94,7 @@ export class UpdateRTB extends Job {
                 const { value = 0, pct = 0 } = realtime?.today ?? {};
 
                 if ( realtime?.today?.value ) {
+                    change += realtime.today.value;
                     movers.today.networth[ realtime.today.value > 0 ? 'winner' : 'loser' ].push( {
                         uri, name: profileData.info.shortName!, value
                     } );
@@ -102,6 +104,7 @@ export class UpdateRTB extends Job {
                 }
 
                 if ( realtime?.ytd?.value ) {
+                    ytd += realtime.ytd.value;
                     movers.ytd.networth[ realtime.ytd.value > 0 ? 'winner' : 'loser' ].push( {
                         uri, name: profileData.info.shortName!, value: realtime.ytd.value
                     } );
@@ -149,24 +152,20 @@ export class UpdateRTB extends Job {
 
             if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
             this.log( `Saving RTB list dated ${listDate} (${items.length} items)` );
-            list.saveSnapshot( {
-                ...Utils.metaData(), date: listDate, items,
-                stats: Parser.container< TRTBSnapshot[ 'stats' ] >( {
-                    count: { value: count, method: 'number' },
-                    total: { value: total, method: 'money' },
-                    woman: { value: woman, method: 'number' },
-                    quote: { value: woman / count * 100, method: 'number', args: [ 3 ] }
-                } )
-            } );
-
-            // save movers ...
 
             rtStats.date = listDate;
             rtStats.count = Parser.number( count );
             rtStats.totalWealth = Parser.money( total );
             rtStats.womanCount = Parser.number( woman );
+            rtStats.quota = Parser.number( woman / count * 100, 3 );
+            rtStats.today = { value: Parser.money( change ), pct: Parser.pct( change / total * 100 ) };
+            rtStats.ytd = { value: Parser.money( ytd ), pct: Parser.pct( ytd / total * 100 ) };
+
+            list.saveSnapshot( { ...Utils.metaData(), date: listDate, items, stats: rtStats } );
             this.stats.setRealtime( rtStats );
             this.queue.addMany( queue );
+
+            // save movers ...
         } );
     }
 
