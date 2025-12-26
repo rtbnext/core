@@ -1,6 +1,7 @@
 import { ListIndex } from '@/collection/ListIndex';
 import { Queue } from '@/core/Queue';
 import { TRanking, TRankingItem } from '@/types/generic';
+import { TQueueOptions } from '@/types/queue';
 import { TProfileResponse } from '@/types/response';
 import { Parser } from '@/utils/Parser';
 
@@ -11,11 +12,12 @@ export class Ranking {
 
     public static generateProfileRanking (
         sortedLists: TProfileResponse[ 'person' ][ 'personLists' ], rankingData: TRanking[] = [],
-        history: boolean = true, queue: boolean = true
+        history: boolean = true, addQueue: boolean = true
     ) : TRanking[] {
         const lists = new Map( rankingData.map( r => [ r.list, r ] ) );
         const entries = new Map< string, TRankingItem[] >();
         const names = new Map< string, { name: string, desc?: string } >();
+        const queue: TQueueOptions[] = [];
 
         // Prepare new entries from sorted lists
         for ( const { listUri, name, listDescription, date: _date, timestamp, rank: _rank, finalWorth } of sortedLists ) {
@@ -75,14 +77,18 @@ export class Ranking {
             result.push( ranking );
 
             // Queue list for future processing if needed
-            if ( queue && main.rank && main.networth ) {
+            if ( addQueue && main.rank && main.networth ) {
                 const indexItem = Ranking.index.get( listUri );
-                if ( ! indexItem || indexItem.date !== main.date ) Ranking.queue.add( 'list', listUri, {
-                    name, desc: names.get( listUri )?.desc, year: main.date.split( '-' )[ 0 ]
+                if ( ! indexItem || indexItem.date !== main.date ) queue.push( {
+                    type: 'list', uriLike: listUri, args: {
+                        name, desc: names.get( listUri )?.desc,
+                        year: main.date.split( '-' )[ 0 ]
+                    }
                 } );
             }
         }
 
+        if ( addQueue && queue.length ) this.queue.addMany( queue );
         return result;
     }
 
