@@ -12,9 +12,9 @@ export abstract class Job {
     protected readonly job: string;
     protected readonly silent: boolean;
     protected readonly safeMode: boolean;
-    protected config: TConfigObject;
-    protected queue: Queue;
-    protected fetch: Fetch;
+    protected readonly config: TConfigObject;
+    protected readonly queue: Queue;
+    protected readonly fetch: Fetch;
 
     constructor ( silent: boolean, safeMode: boolean, job: string ) {
         this.job = job;
