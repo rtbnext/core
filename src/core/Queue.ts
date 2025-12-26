@@ -51,10 +51,8 @@ export class Queue {
         return this.queue[ type ].has( Utils.sanitize( uriLike ) );
     }
 
-    public add (
-        type: QueueType, uriLike: string, args?: Record< string, any >,
-        prio?: number, save: boolean = true
-    ) : boolean {
+    public add ( opt: TQueueOptions, save: boolean = true ) : boolean {
+        const { type, uriLike, args, prio } = opt;
         try {
             if ( ! QueueType.includes( type ) ) throw new Error( `Invalid queue type provided: ${ type }` );
             if ( this.queue[ type ].size > this.config.maxSize ) throw new Error( `Queue size limit reached for type: ${ type }` );
@@ -78,10 +76,7 @@ export class Queue {
     }
 
     public addMany ( items: TQueueOptions[] ) : number {
-        let added = 0;
-        for ( const item of items ) added += +this.add(
-            item.type, item.uriLike, item.args, item.prio, false
-        );
+        const added = items.reduce( ( acc, item ) => acc + +this.add( item, false ), 0 );
         this.saveQueue();
         return added;
     }
