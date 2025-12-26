@@ -28,9 +28,11 @@ export class ManageQueue extends Job {
             if ( ! QueueType.includes( type ) ) throw new Error( `Invalid queue type provided: ${ type }` );
 
             if ( Parser.boolean( args.clear ) ) this.queue.clear( type );
-            else Parser.string( args.add ).split( ',' ).filter( Boolean ).map( uri => this.queue.add(
-                type, uri, typeof args.args === 'string' ? JSON.parse( args.args ) : undefined,
-                Parser.strict( args.prio, 'number' )
+            else this.queue.addMany( Parser.string( args.add ).split( ',' ).filter( Boolean ).map(
+                uriLike => ( {
+                    type, uriLike, prio: Parser.strict( args.prio, 'number' ),
+                    args: typeof args.args === 'string' ? JSON.parse( args.args ) : undefined
+                } )
             ) );
         } );
     }
