@@ -90,11 +90,11 @@ export class ListParser {
             date: this.date(), rank: this.rank(), networth: this.networth(), prev, next,
             today: data && data.realtime ? {
                 value: Parser.money( dailyChange ),
-                pct: Parser.number( dailyChange / this.raw.finalWorth * 100, 3 )
+                pct: Parser.pct( dailyChange / this.raw.finalWorth * 100 )
             } : undefined,
             ytd: data && data.annual?.length ? {
                 value: Parser.money( ytdChange ),
-                pct: Parser.number( ytdChange / this.raw.finalWorth * 100, 3 )
+                pct: Parser.pct( ytdChange / this.raw.finalWorth * 100 )
             } : undefined
         };
     }
