@@ -2,7 +2,7 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { TQueueConfig } from '@/types/config';
-import { TQueue, TQueueItem, TQueueStorage } from '@/types/queue';
+import { TQueue, TQueueItem, TQueueOptions, TQueueStorage } from '@/types/queue';
 import { QueueType } from '@/utils/Const';
 import { Utils } from '@/utils/Utils';
 
@@ -77,9 +77,7 @@ export class Queue {
         }
     }
 
-    public addMany (
-        items: { type: QueueType, uriLike: string, args?: Record< string, any >, prio?: number }[]
-    ) : number {
+    public addMany ( items: TQueueOptions[] ) : number {
         let added = 0;
         for ( const item of items ) added += +this.add(
             item.type, item.uriLike, item.args, item.prio, false

@@ -1,5 +1,12 @@
 import { QueueType } from '@/utils/Const';
 
+export interface TQueueOptions {
+    type: QueueType;
+    uriLike: string;
+    args?: Record< string, any >;
+    prio?: number;
+}
+
 export interface TQueueItem {
     uri: string;
     ts: string;
