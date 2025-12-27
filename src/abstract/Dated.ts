@@ -3,7 +3,7 @@ import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
 import { join } from 'node:path';
 
-export abstract class Dated< T > {
+export abstract class Dated< T extends { date: string } > {
 
     protected readonly storage: Storage;
     protected dates: string[];
@@ -69,9 +69,9 @@ export abstract class Dated< T > {
         return this.dates.length ? this.getSnapshot( this.latestDate()! ) : false;
     }
 
-    public saveSnapshot ( date: string, snapshot: T, force: boolean = false ) : boolean {
-        if ( ! force && this.hasDate( date ) ) return false;
-        if ( ! this.storage.writeJSON< T >( this.datedPath( date ), snapshot ) ) return false;
+    public saveSnapshot ( snapshot: T, force: boolean = false ) : boolean {
+        if ( ! force && this.hasDate( snapshot.date ) ) return false;
+        if ( ! this.storage.writeJSON< T >( this.datedPath( snapshot.date ), snapshot ) ) return false;
         this.dates = this.scanDates();
         return true;
     }
