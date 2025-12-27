@@ -13,7 +13,7 @@ export abstract class Dated< T extends { date: string } > {
         protected readonly ext: 'json' | 'csv' = 'json'
     ) {
         this.storage = Storage.getInstance();
-        this.storage.ensurePath( this.path );
+        this.storage.ensurePath( this.path, true );
         this.dates = this.scanDates();
     }
 
