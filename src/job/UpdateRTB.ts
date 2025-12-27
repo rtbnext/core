@@ -1,5 +1,6 @@
 import { Job, jobRunner } from '@/abstract/Job';
 import { List } from '@/collection/List';
+import { Mover } from '@/collection/Mover';
 import { Profile } from '@/collection/Profile';
 import { Stats } from '@/collection/Stats';
 import { TListStats, TRTBItem } from '@/types/list';
@@ -166,10 +167,9 @@ export class UpdateRTB extends Job {
             stats.ytd = { value: Parser.money( ytd ), pct: Parser.pct( ytd / total * 100 ) };
 
             list.saveSnapshot( { ...Utils.metaData(), date: listDate, items, stats } );
+            Mover.getInstance().saveSnapshot( movers );
             this.stats.setRealtime( stats );
             this.queue.addMany( queue );
-
-            // save movers ...
         } );
     }
 
