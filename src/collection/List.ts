@@ -23,7 +23,11 @@ export class List {
         List.storage.ensurePath( this.path, true );
 
         this.data = item;
-        this.dates = Utils.sort( List.storage.scanDir( this.path ) );
+        this.dates = this.scanDates();
+    }
+
+    private scanDates () : string[] {
+        return Utils.sort( List.storage.scanDir( this.path ) );
     }
 
     public getUri () : string {
@@ -88,7 +92,13 @@ export class List {
     public saveSnapshot< T extends TListSnapshot > ( snapshot: T, force: boolean = false ) : boolean {
         if ( ! force && this.availableDate( snapshot.date ) ) return false;
         if ( ! List.index.update( this.uri, { date: snapshot.date, count: snapshot.stats.count } ) ) return false;
-        return List.storage.writeJSON< T >( join( this.path, `${snapshot.date}.json` ), snapshot );
+        if ( ! List.storage.writeJSON< T >( join( this.path, `${snapshot.date}.json` ), snapshot ) ) return false;
+
+        this.data.date = snapshot.date;
+        this.data.count = snapshot.stats.count;
+        this.dates = this.scanDates();
+
+        return true;
     }
 
     public static create ( uriLike: any, data: TListIndexItem, snapshot?: TListSnapshot ) : List | false {
