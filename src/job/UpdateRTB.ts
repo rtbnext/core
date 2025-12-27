@@ -92,7 +92,7 @@ export class UpdateRTB extends Job {
 
                 const prev = entries[ Number( i ) - 1 ]?.uri;
                 const next = entries[ Number( i ) + 1 ]?.uri;
-                const realtime = parser.realtime( profileData as any, prev, next );
+                const realtime = parser.realtime( profile ? profile.getData() : undefined, prev, next );
                 const { value = 0, pct = 0 } = realtime?.today ?? {};
 
                 if ( realtime?.today?.value ) {
