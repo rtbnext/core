@@ -1,3 +1,12 @@
+/**
+ * UpdateRTB Job
+ * 
+ * node ./dist/job/UpdateRTB.ts [silent?] [safeMode?] [--date=yyyy-mm-dd]
+ * @arg silent Whether to suppress log output
+ * @arg safeMode Whether to enable safe mode
+ * @arg date Date of the RTB list to fetch (default: latest)
+ */
+
 import { Job, jobRunner } from '@/abstract/Job';
 import { List } from '@/collection/List';
 import { Mover } from '@/collection/Mover';
