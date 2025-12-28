@@ -94,7 +94,7 @@ export class Fetch {
     }
 
     public async list< T extends TListResponse > (
-        uriLike: string, year: string, ts: string
+        uriLike: string, year: string, ts?: string
     ) : Promise< TResponse< T > > {
         const url: string = this.config.endpoints.list
             .replace( '{URI}', Utils.sanitize( uriLike ) )
