@@ -75,7 +75,7 @@ export class Fetch {
         return results;
     }
 
-    public async wayback< T > ( url: string, ts: string ) : Promise< TResponse< T > > {
+    public async wayback< T > ( url: string, ts: any ) : Promise< TResponse< T > > {
         const timestamp = Parser.date( ts, 'ymd' )!.replaceAll( /[^\d]/g, '' );
         const res = await this.single< { archived_snapshots: {
             closest?: { status: string, available: boolean, url: string, timestamp: string }
@@ -94,7 +94,7 @@ export class Fetch {
     }
 
     public async list< T extends TListResponse > (
-        uriLike: string, year: string, ts?: string
+        uriLike: string, year: string, ts?: any
     ) : Promise< TResponse< T > > {
         const url: string = this.config.endpoints.list
             .replace( '{URI}', Utils.sanitize( uriLike ) )

@@ -34,9 +34,7 @@ export class UpdateRTB extends Job {
 
     public async run ( args: TArgs ) : Promise< void > {
         await this.protect( async () => {
-            const res = args.date
-                ? await this.fetch.wayback< TListResponse >( '', args.date as string )
-                : await this.fetch.list< TListResponse >( 'rtb', '0' );
+            const res = await this.fetch.list< TListResponse >( 'rtb', '0', args.date );
             if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
             const { date } = this.stats.getRealtime();
