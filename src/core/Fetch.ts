@@ -2,6 +2,7 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { TFetchConfig } from '@/types/config';
 import { TListResponse, TProfileResponse, TResponse } from '@/types/response';
+import { Parser } from '@/utils';
 import { Utils } from '@/utils/Utils';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
@@ -74,11 +75,32 @@ export class Fetch {
         return results;
     }
 
-    public async list< T extends TListResponse > ( uriLike: string, year: string ) : Promise< TResponse< T > > {
-        return this.single< T >( this.config.endpoints.list
-            .replace( '{URI}', Utils.sanitize( uriLike ) )
-            .replace( '{YEAR}', year )
+    public async wayback< T > ( url: string, ts: string ) : Promise< TResponse< T > > {
+        const timestamp = Parser.date( ts, 'ymd' )!.replaceAll( /[^\d]/g, '' );
+        const res = await this.single< { archived_snapshots: {
+            closest?: { status: string, available: boolean, url: string, timestamp: string }
+        } } >( this.config.endpoints.wbTest
+            .replace( '{URL}', encodeURIComponent( url ) )
+            .replace( '{TS}', timestamp )
         );
+
+        if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
+            success: false, error: 'No archived snapshot found',
+            duration: res.duration, retries: res.retries
+        };
+
+        const snapshotUrl = res.data.archived_snapshots.closest.url;
+        return this.single< T >( this.config.endpoints.wayback.replace( '{URL}', snapshotUrl ) );
+    }
+
+    public async list< T extends TListResponse > (
+        uriLike: string, year: string, ts: string
+    ) : Promise< TResponse< T > > {
+        const url: string = this.config.endpoints.list
+            .replace( '{URI}', Utils.sanitize( uriLike ) )
+            .replace( '{YEAR}', year );
+
+        return ts ? this.wayback< T >( url, ts ) : this.single< T >( url );
     }
 
     public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
@@ -105,23 +127,6 @@ export class Fetch {
         return this.single< T >( this.config.endpoints.commons
             .replace( '{QUERY}', Utils.queryStr( { ...{ format: 'json', formatversion: 2 }, ...query } ) )
         );
-    }
-
-    public async wayback< T > ( url: string, ts: string ) : Promise< TResponse< T > > {
-        const res = await this.single< { archived_snapshots: {
-            closest?: { status: string, available: boolean, url: string, timestamp: string }
-        } } >( this.config.endpoints.wbTest
-            .replace( '{URL}', encodeURIComponent( url ) )
-            .replace( '{TS}', ts.replaceAll( /[^\d]/g, '' ) )
-        );
-
-        if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
-            success: false, error: 'No archived snapshot found',
-            duration: res.duration, retries: res.retries
-        };
-
-        const snapshotUrl = res.data.archived_snapshots.closest.url;
-        return this.single< T >( this.config.endpoints.wayback.replace( '{URL}', snapshotUrl ) );
     }
 
     public static getInstance () {
