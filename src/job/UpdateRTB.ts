@@ -33,6 +33,7 @@ export class UpdateRTB extends Job {
 
     public async run () : Promise< void > {
         await this.protect( async () => {
+            // date => archive.org
             const res = await this.fetch.list< TListResponse >( 'rtb', '0' );
             if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 

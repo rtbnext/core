@@ -107,6 +107,11 @@ export class Fetch {
         );
     }
 
+    public async archive< T > ( ts: string ) : Promise< TResponse< T > > {
+        const url = ''; // get snapshot url
+        return this.single< T >( this.config.endpoints.archive.replace( '{URL}', url ) );
+    }
+
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
     }
