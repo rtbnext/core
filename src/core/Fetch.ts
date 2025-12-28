@@ -107,9 +107,21 @@ export class Fetch {
         );
     }
 
-    public async archive< T > ( ts: string ) : Promise< TResponse< T > > {
-        const url = ''; // get snapshot url
-        return this.single< T >( this.config.endpoints.archive.replace( '{URL}', url ) );
+    public async wayback< T > ( url: string, ts: string ) : Promise< TResponse< T > > {
+        const res = await this.single< { archived_snapshots: {
+            closest?: { status: string, available: boolean, url: string, timestamp: string }
+        } } >( this.config.endpoints.wbTest
+            .replace( '{URL}', encodeURIComponent( url ) )
+            .replace( '{TS}', ts.replaceAll( /[^\d]/g, '' ) )
+        );
+
+        if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
+            success: false, error: 'No archived snapshot found',
+            duration: res.duration, retries: res.retries
+        };
+
+        const snapshotUrl = res.data.archived_snapshots.closest.url;
+        return this.single< T >( this.config.endpoints.wayback.replace( '{URL}', snapshotUrl ) );
     }
 
     public static getInstance () {
