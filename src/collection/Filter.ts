@@ -11,7 +11,7 @@ export class Filter {
     private data: Partial< TFilterCollection > = {};
 
     private constructor () {
-        for ( const group of FilterGroup ) Filter.storage.ensurePath( `filter/${group}`, true );
+        FilterGroup.forEach( group => Filter.storage.ensurePath( `filter/${group}`, true ) );
     }
 
     private resolvePath ( path: string ) : [ FilterGroup | 'special', string ] | undefined {
@@ -27,10 +27,7 @@ export class Filter {
 
     private setFilterData ( path: string, items: TFilter[] ) : void {
         const [ group, key ] = this.resolvePath( path ) ?? [];
-        if ( ! group || ! key ) return;
-
-        if ( group === 'special' ) ( this.data.special ??= {} as Record< FilterSpecial, TFilter[] > )[ key as FilterSpecial ] = items;
-        else ( this.data[ group as FilterGroup ] ??= {} as Record< string, TFilter[] > )[ key ] = items;
+        if ( group && key ) ( this.data[ group ] ??= {} as any )[ key ] = items;
     }
 
     private loadFilter ( path: string ) : void {
@@ -47,7 +44,7 @@ export class Filter {
     }
 
     private saveGroup ( group: FilterGroup, data: Record< string | number, TFilter[] > ) : void {
-        for ( const [ k, list ] of Object.entries( data ) ) this.saveFilter( `${group}/${k}`, list );
+        Object.entries( data ).forEach( ( [ k, list ] ) => this.saveFilter( `${group}/${k}`, list ) );
     }
 
     private saveSpecial ( special: FilterSpecial, data: TFilter[] ) : void {
@@ -58,44 +55,38 @@ export class Filter {
         const [ group, key ] = this.resolvePath( path ) ?? [];
         if ( ! group || ! key ) return false;
 
-        if ( ! this.data[ group ] || ! ( this.data[ group ] as any )![ key ] ) {
-            this.loadFilter( `${group}/${key}` );
-        }
-
-        return this.data[ group ] ? ( this.data[ group ] as any )[ key ] ?? [] : [];
+        const filter = ( this.data[ group ] as any )?.[ key ] as TFilter[];
+        if ( ! filter ) this.loadFilter( `${group}/${key}` );
+        return filter ?? [];
     }
 
     public getGroup ( group: FilterGroup ) : Record< string, TFilter[] > {
-        for ( const file of Filter.storage.scanDir( `filter/${group}` ) ) {
+        Filter.storage.scanDir( `filter/${group}` ).forEach( file => {
             const key = file.replace( '.json', '' ).split( '/' ).pop();
-            if ( key && ( ! this.data[ group ] || ! ( this.data[ group ] as any )![ key ] ) ) {
-                this.loadFilter( `${group}/${key}` );
-            }
-        }
+            if ( key && ! ( this.data[ group ] as any )?.[ key ] ) this.loadFilter( `${group}/${key}` );
+        } );
+
         return this.data[ group ] || {};
     }
 
     public getSpecial ( special: FilterSpecial ) : TFilter[] {
-        for ( const file of Filter.storage.scanDir( `filter/special` ) ) {
+        Filter.storage.scanDir( `filter/special` ).forEach( file => {
             const key = file.replace( '.json', '' ).split( '/' ).pop();
-            if ( key === special && ( ! this.data.special || ! this.data.special[ special ] ) ) {
-                this.loadFilter( `special/${special}` );
-            }
-        }
+            if ( key && ! this.data.special?.[ special ] ) this.loadFilter( `special/${special}` );
+        } );
+
         return this.data.special?.[ special ] || [];
     }
 
     public has ( path: string, uriLike: string ) : boolean {
-        const list = this.getFilter( path );
-        if ( ! list ) return false;
-        return list.some( i => i.uri === uriLike );
+        return ( this.getFilter( path ) || [] ).some( i => i.uri === uriLike );
     }
 
     public save ( collection: Partial< TFilterCollection > ) : void {
-        for ( const group of FilterGroup ) if ( collection[ group ] )
-            this.saveGroup( group, collection[ group ] );
-        for ( const special of FilterSpecial ) if ( collection.special?.[ special ] )
-            this.saveSpecial( special, collection.special[ special ] );
+        FilterGroup.forEach( group => collection[ group ] && this.saveGroup( group, collection[ group ] ) );
+        FilterSpecial.forEach( special => collection.special?.[ special ] && this.saveSpecial(
+            special, collection.special[ special ]
+        ) );
     }
 
     public static getInstance () : Filter {
