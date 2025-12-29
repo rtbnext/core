@@ -1,5 +1,6 @@
 import { TMetaData } from '@/types/generic';
 import { TListStats } from '@/types/list';
+import { Gender } from '@/utils/Const';
 
 export type TStatsItem = TListStats & {
     first: {
@@ -9,6 +10,10 @@ export type TStatsItem = TListStats & {
         networth: number;
     };
 };
+
+export type TStatsHistory = TStatsHistoryItem[];
+
+export type TStatsHistoryItem = [ string, number, number, number, number, number, number ];
 
 export interface TStats< T extends string > {
     index: { '@metadata': TMetaData; } & { [ K in T ]: TStatsItem };
