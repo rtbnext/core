@@ -67,3 +67,6 @@ export const FilterGroup = [
 
 export type FilterSpecial = ( typeof FilterSpecial )[ number ];
 export const FilterSpecial = [ 'deceased', 'dropOff', 'family', 'selfMade' ] as const;
+
+export type StatsGroup = ( typeof StatsGroup )[ number ];
+export const StatsGroup = [ 'industry', 'citizenship' ] as const;
