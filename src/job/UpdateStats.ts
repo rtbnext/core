@@ -4,7 +4,7 @@ import { Profile } from '@/collection/Profile';
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { TFilter, TFilterCollection } from '@/types/filter';
 import { TArgs } from '@/types/generic';
-import { TScatter, TStatsCollection, TStatsItem } from '@/types/stats';
+import { TScatter } from '@/types/stats';
 import { Parser } from '@/utils/Parser';
 
 export class UpdateStats extends Job {
