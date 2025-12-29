@@ -1,5 +1,5 @@
 import { Storage } from '@/core/Storage';
-import { TScatter, TStats, TStatsItem } from '@/types/stats';
+import { TScatter, TStats, TStatsHistoryItem, TStatsItem } from '@/types/stats';
 import { StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
@@ -15,16 +15,21 @@ export class Stats {
 
     public setGroupStats< T extends string = string > ( group: StatsGroup, raw: Record< T, TStatsItem > ) : void {
         const data = Object.fromEntries( Object.entries< TStatsItem >( raw ).map( ( [ k, i ] ) => {
-            i.total = Parser.money( i.total ); i.quota = Parser.pct( i.quota );
+            i.total = Parser.money( i.total );
+            i.quota = Parser.pct( i.quota );
             i.today = { value: Parser.money( i.today?.value ), pct: Parser.pct( i.today?.pct ) };
             i.ytd = { value: Parser.money( i.ytd?.value ), pct: Parser.pct( i.ytd?.pct ) };
+
+            Stats.storage.appendCSV< TStatsHistoryItem >( `stats/${group}/${k}.csv`, [
+                i.date, i.count, i.total, i.woman, i.quota, i.today?.value ?? 0, i.today?.pct ?? 0
+            ] );
+
             return [ k, i ];
-        } ) ) as TStats< T >[ 'index' ];
+        } ) ) as Record< T, TStatsItem >;
 
         Stats.storage.writeJSON< TStats< T >[ 'index' ] >( `stats/${group}/index.json`, {
             ...Utils.metaData(), ...data
         } );
-        // generate history entries
     }
 
     public getScatter () : TScatter {

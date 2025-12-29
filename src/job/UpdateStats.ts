@@ -66,9 +66,9 @@ export class UpdateStats extends Job {
                         stats[ key ][ k ].woman += +woman;
                         stats[ key ][ k ].quota = stats[ key ][ k ].woman / stats[ key ][ k ].count * 100;
                         if ( rank! < stats[ key ][ k ].first.rank ) stats[ key ][ k ].first = nItem;
-                        stats[ key ][ k ].today.change += realtime.today?.value ?? 0;
+                        stats[ key ][ k ].today.value += realtime.today?.value ?? 0;
                         stats[ key ][ k ].today.pct += realtime.today?.pct ?? 0;
-                        stats[ key ][ k ].ytd.change += realtime.ytd?.value ?? 0;
+                        stats[ key ][ k ].ytd.value += realtime.ytd?.value ?? 0;
                         stats[ key ][ k ].ytd.pct += realtime.ytd?.pct ?? 0;
                     }
                 } );
