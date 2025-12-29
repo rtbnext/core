@@ -61,8 +61,8 @@ export type QueueType = ( typeof QueueType )[ number ];
 
 export type FilterGroup = ( typeof FilterGroup )[ number ];
 export const FilterGroup = [
-    'industry', 'citizenship', 'country', 'state', 'gender', 'age',
-    'maritalStatus', 'special'
+    'industry', 'citizenship', 'country', 'state',
+    'gender', 'age', 'maritalStatus'
 ] as const;
 
 export type FilterSpecial = ( typeof FilterSpecial )[ number ];

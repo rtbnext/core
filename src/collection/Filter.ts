@@ -14,11 +14,20 @@ export class Filter {
         for ( const group of FilterGroup ) Filter.storage.ensurePath( `filter/${group}`, true );
     }
 
+    private setFilterData ( path: string, items: TFilter[] ) : void {
+        const [ group, key ] = path.split( '/' );
+        if ( ! group || ! key ) return;
+
+        if ( group === 'special' ) ( this.data.special ??= {} as Record< FilterSpecial, TFilter[] > )[ key as FilterSpecial ] = items;
+        else ( this.data[ group as FilterGroup ] ??= {} as Record< string, TFilter[] > )[ key ] = items;
+    }
+
     private saveFilter ( path: string, list: TFilter[] ) : void {
         const items = [ ...new Map( list.map( i => [ i.uri, i ] ) ).values() ].sort(
             ( a, b ) => a.uri.localeCompare( b.uri )
         );
 
+        this.setFilterData( path, items );
         Filter.storage.writeJSON< TFilterList >( `filter/${path}.json`, {
             ...Utils.metaData(), items, count: items.length
         } );
