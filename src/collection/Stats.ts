@@ -1,5 +1,5 @@
 import { Storage } from '@/core/Storage';
-import { TScatter, TStats, TStatsHistoryItem, TStatsItem } from '@/types/stats';
+import { TRealtimeStats, TScatter, TStats, TStatsHistoryItem, TStatsItem } from '@/types/stats';
 import { StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
@@ -11,6 +11,21 @@ export class Stats {
 
     private constructor () {
         StatsGroup.forEach( group => Stats.storage.ensurePath( `stats/${group}`, true ) );
+    }
+
+    public getRealtime () : TRealtimeStats {
+        return Stats.storage.readJSON< TRealtimeStats >( 'stats/realtime.json' ) || {} as TRealtimeStats;
+    }
+
+    public setRealtime ( data: TRealtimeStats ) : void {
+        Stats.storage.writeJSON< TRealtimeStats >( 'stats/realtime.json', data );
+    }
+
+    public updateHistory ( data: TRealtimeStats ) : void {
+        Stats.storage.appendCSV< TStatsHistoryItem >( 'stats/history.csv', [
+            data.date, data.count, data.total, data.woman, data.quota,
+            data.today?.value ?? 0, data.today?.pct ?? 0
+        ] );
     }
 
     public setGroupStats< T extends string = string > ( group: StatsGroup, raw: Record< T, TStatsItem > ) : void {

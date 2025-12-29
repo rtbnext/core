@@ -179,6 +179,7 @@ export class UpdateRTB extends Job {
             list.saveSnapshot( { ...Utils.metaData(), date: listDate, items, stats } );
             Mover.getInstance().saveSnapshot( movers );
             this.stats.setRealtime( stats );
+            this.stats.updateHistory( stats );
             this.queue.addMany( queue );
         } );
     }
