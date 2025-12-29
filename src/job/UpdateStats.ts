@@ -4,7 +4,6 @@ import { Profile } from '@/collection/Profile';
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { Stats } from '@/collection/Stats';
 import { TFilter, TFilterCollection } from '@/types/filter';
-import { TArgs } from '@/types/generic';
 import { TScatter } from '@/types/stats';
 import { StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
@@ -18,7 +17,7 @@ export class UpdateStats extends Job {
         super( silent, safeMode, 'UpdateStats' );
     }
 
-    public async run ( args: TArgs ) : Promise< void > {
+    public async run () : Promise< void > {
         await this.protect( async () => {
             const date = new Date().toISOString().split( 'T' )[ 0 ];
             const stats: any = { industry: {}, citizenship: {} };
