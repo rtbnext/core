@@ -145,6 +145,13 @@ export class Parser {
             : new Date( Date.now() - date.getTime() ).getUTCFullYear() - 1970;
     }
 
+    public static ageDecade ( value: any ) : number | undefined {
+        const age = Parser.age( value );
+        return age === undefined ? undefined : Math.max( 30, Math.min( 100,
+            Math.floor( age / 10 ) * 10
+        ) );
+    }
+
     public static gender ( value: any ) : Const.Gender | undefined {
         return Parser.map< Const.Gender, typeof Const.Gender >( value, Const.Gender );
     }
