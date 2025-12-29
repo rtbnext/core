@@ -2,6 +2,8 @@ import { TMetaData } from '@/types/generic';
 import { TListStats } from '@/types/list';
 import { Gender } from '@/utils/Const';
 
+export type TRealtimeStats = TListStats;
+
 export type TStatsItem = TListStats & {
     first: {
         readonly uri: string;
