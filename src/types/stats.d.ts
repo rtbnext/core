@@ -1,3 +1,4 @@
+import { TMetaData } from '@/types/generic';
 import { TListStats } from '@/types/list';
 
 export type TStatsItem = TListStats & {
@@ -10,7 +11,7 @@ export type TStatsItem = TListStats & {
 };
 
 export interface TStats< T extends string > {
-    index: TMetaData & { [ K in T ]: TStatsItem };
+    index: { '@metadata': TMetaData; } & { [ K in T ]: TStatsItem };
     history: { [ K in T ]: TStatsHistory };
 }
 
