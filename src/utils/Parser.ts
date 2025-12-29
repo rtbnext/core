@@ -147,7 +147,7 @@ export class Parser {
 
     public static ageDecade ( value: any ) : number | undefined {
         const age = Parser.age( value );
-        return age === undefined ? undefined : Math.max( 30, Math.min( 100,
+        return age === undefined ? undefined : Math.max( 30, Math.min( 90,
             Math.floor( age / 10 ) * 10
         ) );
     }
