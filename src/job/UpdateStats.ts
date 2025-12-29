@@ -1,4 +1,5 @@
 import { Job, jobRunner } from '@/abstract/Job';
+import { Filter } from '@/collection/Filter';
 import { Profile } from '@/collection/Profile';
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { TFilter, TFilterCollection } from '@/types/filter';
@@ -37,6 +38,8 @@ export class UpdateStats extends Job {
                 if ( info.family ) filter.special.family.push( fItem );
                 if ( info.selfMade?.is ) filter.special.selfMade.push( fItem );
             }
+
+            Filter.getInstance().save( filter );
         } );
     }
 
