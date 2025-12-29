@@ -168,8 +168,8 @@ export class UpdateRTB extends Job {
             const stats: TListStats = Parser.container< TListStats >( {
                 date: { value: listDate, method: 'string' },
                 count: { value: count, method: 'number' },
-                totalWealth: { value: total, method: 'money' },
-                womanCount: { value: woman, method: 'number' },
+                total: { value: total, method: 'money' },
+                woman: { value: woman, method: 'number' },
                 quota: { value: woman / count * 100, method: 'pct' }
             } );
 

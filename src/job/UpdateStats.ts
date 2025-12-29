@@ -4,7 +4,7 @@ import { Profile } from '@/collection/Profile';
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { TFilter, TFilterCollection } from '@/types/filter';
 import { TArgs } from '@/types/generic';
-import { TScatter } from '@/types/stats';
+import { TScatter, TStatsCollection, TStatsItem } from '@/types/stats';
 import { Parser } from '@/utils/Parser';
 
 export class UpdateStats extends Job {
@@ -15,6 +15,7 @@ export class UpdateStats extends Job {
 
     public async run ( args: TArgs ) : Promise< void > {
         await this.protect( async () => {
+            const stats: any = { industry: {}, citizenship: {} };
             const scatter: TScatter = [];
             const filter: TFilterCollection = {
                 industry: {}, citizenship: {}, country: {}, state: {}, gender: {}, age: {}, maritalStatus: {},
@@ -26,7 +27,12 @@ export class UpdateStats extends Job {
                 if ( ! profile ) continue;
 
                 const { uri, info, realtime } = profile.getData();
+                const networth = realtime?.networth;
+                const rank = realtime?.rank;
+                const age = Parser.age( info.birthDate );
+                const woman = info.gender === 'f';
                 const fItem: TFilter = { uri, name: info.shortName ?? info.name };
+                const sItem = { ...fItem, gender: info.gender, age, networth };
                 
                 if ( info.industry ) ( filter.industry[ info.industry ] ??= [] ).push( fItem );
                 if ( info.citizenship ) ( filter.citizenship[ info.citizenship ] ??= [] ).push( fItem );
@@ -40,10 +46,18 @@ export class UpdateStats extends Job {
                 if ( info.family ) filter.special.family.push( fItem );
                 if ( info.selfMade?.is ) filter.special.selfMade.push( fItem );
 
-                if ( info.gender && info.birthDate ) scatter.push( {
-                    ...fItem, gender: info.gender, age: Parser.age( info.birthDate )!,
-                    networth: realtime?.networth ?? 0
+                if ( info.gender && age && networth ) scatter.push( sItem as any );
+
+                [ 'industry', 'citizenship' ].forEach( key => {
+                    const k = ( info as any )[ key ];
+                    if ( k && networth ) {
+                        let s = stats[ key ][ k ];
+                        s = s || { count: 0, total: 0, woman: 0, first: { ...sItem, rank } };
+                        s.count++; s.total += networth; s.woman += +woman;
+                        if ( rank! < s.first.rank ) s.first = { ...sItem, rank };
+                    }
                 } );
+
             }
 
             Filter.getInstance().save( filter );
