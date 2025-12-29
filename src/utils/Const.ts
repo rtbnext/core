@@ -66,4 +66,4 @@ export const FilterGroup = [
 ] as const;
 
 export type FilterSpecial = ( typeof FilterSpecial )[ number ];
-export const FilterSpecial = [ 'deceased', 'dropOff', 'family', 'selfMade:' ] as const;
+export const FilterSpecial = [ 'deceased', 'dropOff', 'family', 'selfMade' ] as const;

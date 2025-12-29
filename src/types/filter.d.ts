@@ -17,9 +17,9 @@ export interface TFilterCollection {
     citizenship: Record< string, TFilter[] >;
     country: Record< string, TFilter[] >;
     state: Record< string, TFilter[] >;
-    gender: Partial< Record< Gender, TFilter[] > >;
-    age: Partial< Record< number, TFilter[] > >;
-    maritalStatus: Partial< Record< MaritalStatus, TFilter[] > >;
+    gender: { [ K in Gender ]?: TFilter[] };
+    age: Record< number, TFilter[] >;
+    maritalStatus: { [ K in MaritalStatus ]?: TFilter[] };
     special: {
         deceased: TFilter[];
         dropOff: TFilter[];
