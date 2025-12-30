@@ -28,9 +28,9 @@ export class UpdateStats extends Job {
                 gender: {}, maritalStatus: {}, selfMade: {}, philanthropyScore: {},
                 children: { full: {}, short: {} },
                 agePyramid: {
-                    m: { count: 0, groups: {}, min: Infinity, max: -Infinity, avg: 0 },
-                    f: { count: 0, groups: {}, min: Infinity, max: -Infinity, avg: 0 },
-                    d: { count: 0, groups: {}, min: Infinity, max: -Infinity, avg: 0 }
+                    m: { count: 0, groups: {}, min: Infinity, max: -Infinity, mean: 0 },
+                    f: { count: 0, groups: {}, min: Infinity, max: -Infinity, mean: 0 },
+                    d: { count: 0, groups: {}, min: Infinity, max: -Infinity, mean: 0 }
                 }
             };
 
@@ -73,7 +73,7 @@ export class UpdateStats extends Job {
                         pStats.agePyramid[ info.gender ].count++;
                         pStats.agePyramid[ info.gender ].max = Math.max( pStats.agePyramid[ info.gender ].max, age );
                         pStats.agePyramid[ info.gender ].min = Math.min( pStats.agePyramid[ info.gender ].min, age );
-                        pStats.agePyramid[ info.gender ].avg += age;
+                        pStats.agePyramid[ info.gender ].mean += age;
 
                         if ( decade ) pStats.agePyramid[ info.gender ].groups[ decade ] = (
                             pStats.agePyramid[ info.gender ].groups[ decade ] || 0
@@ -121,7 +121,7 @@ export class UpdateStats extends Job {
             }
 
             for ( const [ g, i ] of Object.entries( pStats.agePyramid ) ) {
-                if ( i.count ) pStats.agePyramid[ g as Gender ].avg = Parser.number( i.avg / i.count );
+                if ( i.count ) pStats.agePyramid[ g as Gender ].mean = Parser.number( i.mean / i.count );
             }
 
             this.filter.save( filter );

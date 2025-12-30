@@ -34,7 +34,7 @@ export type TAgePyramid = Record< Gender, {
     groups: TStatsList< string >;
     max: number;
     min: number;
-    avg: number;
+    mean: number;
 } >;
 
 export interface TProfileStats {
@@ -48,6 +48,10 @@ export interface TProfileStats {
     };
     selfMade: TStatsList< string >;
     philanthropyScore: TStatsList< string >;
+}
+
+export interface TWealthStats {
+    '@metadata': TMetaData;
 }
 
 export interface TScatterItem {

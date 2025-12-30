@@ -71,7 +71,7 @@ export class Utils {
         K extends keyof T = keyof T, R = unknown
     > (
         arr: readonly T[], key: K, aggregator:
-            | 'first' | 'last' | 'all' | 'sum' | 'min' | 'max' | 'avg'
+            | 'first' | 'last' | 'all' | 'sum' | 'min' | 'max' | 'mean'
             | ( ( values: readonly T[ K ][] ) => R ) = 'first'
     ) : T[ K ] | T[ K ][] | number | R | undefined {
         const values = arr.map( item => item[ key ] ).filter(
@@ -96,7 +96,7 @@ export class Utils {
             case 'max': return values.reduce< T[ K ] | undefined >( ( acc, val ) => (
                 acc === undefined || val > acc! ? val : acc
             ), -Infinity as unknown as T[ K ] );
-            case 'avg':
+            case 'mean':
                 const s = values.reduce< number | undefined >( sum, 0 );
                 return s === undefined ? undefined : s / values.length;
         }
