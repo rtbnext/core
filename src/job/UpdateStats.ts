@@ -4,7 +4,7 @@ import { Profile } from '@/collection/Profile';
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { Stats } from '@/collection/Stats';
 import { TFilter, TFilterCollection } from '@/types/filter';
-import { TAgePyramid, TScatter } from '@/types/stats';
+import { TProfileStats, TScatter } from '@/types/stats';
 import { StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 
@@ -22,8 +22,17 @@ export class UpdateStats extends Job {
             const date = this.stats.getRealtime().date;
             if ( ! date ) throw new Error( `Needs to run after UpdateRTB job` );
 
-            const agePyramid: TAgePyramid = { m: {}, f: {}, d: {} };
             const groups: any = { industry: {}, citizenship: {} };
+            const pStats: TProfileStats = {
+                gender: {}, maritalStatus: {}, selfMade: {}, philanthropyScore: {},
+                children: { full: {}, short: {} },
+                agePyramid: {
+                    m: { groups: {}, min: Infinity, max: -Infinity, avg: 0 },
+                    f: { groups: {}, min: Infinity, max: -Infinity, avg: 0 },
+                    d: { groups: {}, min: Infinity, max: -Infinity, avg: 0 }
+                }
+            };
+
             const scatter: TScatter = [];
             const filter: TFilterCollection = {
                 industry: {}, citizenship: {}, country: {}, state: {}, gender: {}, age: {}, maritalStatus: {},
@@ -56,7 +65,29 @@ export class UpdateStats extends Job {
                 if ( info.family ) filter.special.family.push( fItem );
                 if ( info.selfMade?.is ) filter.special.selfMade.push( fItem );
 
-                if ( info.gender && decade ) agePyramid[ info.gender ][ decade ]++;
+                if ( info.gender ) {
+                    pStats.gender[ info.gender ]!++;
+
+                    if ( age ) {
+                        pStats.agePyramid[ info.gender ].max = Math.max( pStats.agePyramid[ info.gender ].max, age );
+                        pStats.agePyramid[ info.gender ].min = Math.min( pStats.agePyramid[ info.gender ].min, age );
+                        if ( decade ) pStats.agePyramid[ info.gender ].groups[ decade ]!++;
+                    }
+                }
+
+                if ( info.maritalStatus ) pStats.maritalStatus[ info.maritalStatus ]!++;
+                if ( info.selfMade?.rank ) pStats.selfMade[ info.selfMade.rank ]!++;
+                if ( info.philanthropyScore ) pStats.philanthropyScore[ info.philanthropyScore ]!++;
+
+                if ( info.children ) {
+                    pStats.children.full[ info.children ]!++;
+                    const shortKey = info.children >= 10 ? 'over-10' : info.children >= 5 ? '5-to-10'
+                        : info.children === 4 ? 'four' : info.children === 3 ? 'three' : info.children === 2 ? 'two'
+                        : info.children === 1 ? 'one' : 'none';
+                    pStats.children.short[ shortKey ]!++;
+                } else {
+                    pStats.children.short.none!++;
+                }
 
                 // The following stats only consider profiles updated in the same RTB run
                 if ( realtime?.date !== date ) continue;
