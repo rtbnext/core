@@ -66,29 +66,32 @@ export class UpdateStats extends Job {
                 if ( info.selfMade?.is ) filter.special.selfMade.push( fItem );
 
                 if ( info.gender ) {
-                    pStats.gender[ info.gender ]!++;
+                    pStats.gender[ info.gender ] = ( pStats.gender[ info.gender ] || 0 ) + 1;
 
                     if ( age ) {
                         pStats.agePyramid[ info.gender ].count++;
                         pStats.agePyramid[ info.gender ].max = Math.max( pStats.agePyramid[ info.gender ].max, age );
                         pStats.agePyramid[ info.gender ].min = Math.min( pStats.agePyramid[ info.gender ].min, age );
                         pStats.agePyramid[ info.gender ].avg += age;
-                        if ( decade ) pStats.agePyramid[ info.gender ].groups[ decade ]!++;
+
+                        if ( decade ) pStats.agePyramid[ info.gender ].groups[ decade ] = (
+                            pStats.agePyramid[ info.gender ].groups[ decade ] || 0
+                        ) + 1;
                     }
                 }
 
-                if ( info.maritalStatus ) pStats.maritalStatus[ info.maritalStatus ]!++;
-                if ( info.selfMade?.rank ) pStats.selfMade[ info.selfMade.rank ]!++;
-                if ( info.philanthropyScore ) pStats.philanthropyScore[ info.philanthropyScore ]!++;
+                if ( info.maritalStatus ) pStats.maritalStatus[ info.maritalStatus ] = ( pStats.maritalStatus[ info.maritalStatus ] || 0 ) + 1;
+                if ( info.selfMade?.rank ) pStats.selfMade[ info.selfMade.rank ] = ( pStats.selfMade[ info.selfMade.rank ] || 0 ) + 1;
+                if ( info.philanthropyScore ) pStats.philanthropyScore[ info.philanthropyScore ] = ( pStats.philanthropyScore[ info.philanthropyScore ] || 0 ) + 1;
 
                 if ( info.children ) {
-                    pStats.children.full[ info.children ]!++;
+                    pStats.children.full[ info.children ] = ( pStats.children.full[ info.children ] || 0 ) + 1;
                     const shortKey = info.children >= 10 ? 'over-10' : info.children >= 5 ? '5-to-10'
                         : info.children === 4 ? 'four' : info.children === 3 ? 'three' : info.children === 2 ? 'two'
                         : info.children === 1 ? 'one' : 'none';
-                    pStats.children.short[ shortKey ]!++;
+                    pStats.children.short[ shortKey ] = ( pStats.children.short[ shortKey ] || 0 ) + 1;
                 } else {
-                    pStats.children.short.none!++;
+                    pStats.children.short.none = ( pStats.children.short.none || 0 ) + 1;
                 }
 
                 // The following stats only consider profiles updated in the same RTB run
