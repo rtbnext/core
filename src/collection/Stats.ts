@@ -1,6 +1,6 @@
 import { Storage } from '@/core/Storage';
-import { TProfileStats, TRealtimeStats, TScatter, TStats, TStatsHistoryItem, TStatsItem, TWealthStats } from '@/types/stats';
-import { StatsGroup } from '@/utils/Const';
+import { TProfileStats, TRealtimeStats, TScatter, TScatterItem, TStats, TStatsHistoryItem, TStatsItem, TWealthStats } from '@/types/stats';
+import { Percentiles, StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
 
@@ -61,6 +61,53 @@ export class Stats {
 
     public setWealthStats ( data: TWealthStats ) : void {
         Stats.storage.writeJSON< TWealthStats >( 'stats/wealth.json', data );
+    }
+
+    public generateWealthStats ( scatter: TScatterItem[] ) : void {
+        if ( ! scatter || ! scatter.length ) return;
+        scatter.sort( ( a, b ) => a.networth - b.networth );
+
+        const count = scatter.length;
+        const total = Parser.money( scatter.reduce( ( acc, i ) => acc + i.networth, 0 ) );
+        const medianIndex = Math.floor( count / 2 );
+        const median = Parser.money( count % 2 === 0 ? (
+            scatter[ medianIndex - 1 ].networth + scatter[ medianIndex ].networth
+        ) / 2 : scatter[ medianIndex ].networth );
+        const mean = Parser.money( total / count );
+        const variance = Parser.number( scatter.reduce( ( acc, i ) => {
+            const diff = i.networth - mean; return acc + diff * diff;
+        }, 0 ) / count );
+        const stdDev = Parser.number( Math.sqrt( variance ) );
+
+        const percentiles: TWealthStats[ 'percentiles' ] = {};
+        Percentiles.forEach( p => {
+            const idx = Math.ceil( ( parseInt( p ) / 100 ) * count ) - 1;
+            percentiles[ p ] = scatter[ idx ].networth;
+        } );
+
+        const quartiles: TWealthStats[ 'quartiles' ] = [
+            scatter[ Math.floor( count * 0.25 ) ].networth,
+            scatter[ Math.floor( count * 0.5 ) ].networth,
+            scatter[ Math.floor( count * 0.75 ) ].networth
+        ];
+
+        const decades: TWealthStats[ 'decades' ] = {};
+        const gender: TWealthStats[ 'gender' ] = {};
+        const spread: TWealthStats[ 'spread' ] = {};
+
+        scatter.forEach( item => {
+            const decade = Math.max( 30, Math.min( 90, Math.floor( item.age / 10 ) * 10 ) );
+            decades[ decade ] = Parser.money( ( decades[ decade ] || 0 ) + item.networth );
+            gender[ item.gender ] = Parser.money( ( gender[ item.gender ] || 0 ) + item.networth );
+            const spreadKey = item.networth <= 1000 ? '1' : item.networth <= 5000 ? '5' : item.networth <= 10000 ? '10' :
+                item.networth <= 25000 ? '25' : item.networth <= 50000 ? '50' : item.networth <= 100000 ? '100' : '250';
+            spread[ spreadKey ] = ( spread[ spreadKey ] || 0 ) + 1;
+        } );
+
+        this.setWealthStats( {
+            ...Utils.metaData(), max: scatter.at( -1 )!.networth, min: scatter[ 0 ].networth,
+            total, median, mean, stdDev, percentiles, quartiles, decades, gender, spread
+        } );
     }
 
     public getScatter () : TScatter {

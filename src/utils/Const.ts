@@ -70,3 +70,6 @@ export const FilterSpecial = [ 'deceased', 'dropOff', 'family', 'selfMade' ] as 
 
 export type StatsGroup = ( typeof StatsGroup )[ number ];
 export const StatsGroup = [ 'industry', 'citizenship' ] as const;
+
+export type Percentiles = ( typeof Percentiles )[ number ];
+export const Percentiles = [ '10th', '25th', '50th', '75th', '90th', '95th', '99th' ] as const;
