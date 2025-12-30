@@ -79,7 +79,7 @@ export class Fetch {
         const timestamp = Parser.date( ts, 'ymd' )!.replaceAll( /[^\d]/g, '' );
         const res = await this.single< { archived_snapshots: {
             closest?: { status: string, available: boolean, url: string, timestamp: string }
-        } } >( this.config.endpoints.wbTest
+        } } >( this.config.endpoints.wayback
             .replace( '{URL}', encodeURIComponent( url ) )
             .replace( '{TS}', timestamp )
         );
@@ -90,7 +90,7 @@ export class Fetch {
         };
 
         const snapshotUrl = res.data.archived_snapshots.closest.url;
-        return this.single< T >( this.config.endpoints.wayback.replace( '{URL}', snapshotUrl ) );
+        return this.single< T >( snapshotUrl );
     }
 
     public async list< T extends TListResponse > (

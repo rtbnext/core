@@ -17,7 +17,6 @@ export interface TFetchConfig {
         commons: string;
         wikidata: string;
         wayback: string;
-        wbTest: string;
     };
     headers: Record< string, string >;
     agentPool: string[];
