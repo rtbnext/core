@@ -25,7 +25,7 @@ export class Stats {
         Stats.storage.datedCSV< TStatsHistoryItem >( 'stats/history.csv', [
             data.date, data.count, data.total, data.woman, data.quota,
             data.today?.value ?? 0, data.today?.pct ?? 0
-        ] );
+        ], true );
     }
 
     public setGroupStats< T extends string = string > ( group: StatsGroup, raw: Record< T, TStatsItem > ) : void {
@@ -37,7 +37,7 @@ export class Stats {
 
             Stats.storage.datedCSV< TStatsHistoryItem >( `stats/${group}/${k}.csv`, [
                 i.date, i.count, i.total, i.woman, i.quota, i.today?.value ?? 0, i.today?.pct ?? 0
-            ] );
+            ], true );
 
             return [ k, i ];
         } ) ) as Record< T, TStatsItem >;
