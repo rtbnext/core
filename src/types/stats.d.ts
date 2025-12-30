@@ -27,6 +27,8 @@ export interface TStatsCollection {
     citizenship: TStats< string >;
 }
 
+export type TAgePyramid = Record< Gender, Record< number, number > >;
+
 export interface TScatterItem {
     readonly uri: string;
     name: string;

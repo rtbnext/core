@@ -4,7 +4,7 @@ import { Profile } from '@/collection/Profile';
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { Stats } from '@/collection/Stats';
 import { TFilter, TFilterCollection } from '@/types/filter';
-import { TScatter } from '@/types/stats';
+import { TAgePyramid, TScatter } from '@/types/stats';
 import { StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 
@@ -22,6 +22,7 @@ export class UpdateStats extends Job {
             const date = this.stats.getRealtime().date;
             if ( ! date ) throw new Error( `Needs to run after UpdateRTB job` );
 
+            const agePyramid: TAgePyramid = { m: {}, f: {}, d: {} };
             const groups: any = { industry: {}, citizenship: {} };
             const scatter: TScatter = [];
             const filter: TFilterCollection = {
@@ -58,6 +59,7 @@ export class UpdateStats extends Job {
                 if ( realtime?.date !== date ) continue;
 
                 if ( info.gender && age && networth ) scatter.push( sItem as any );
+                if ( info.gender && decade ) agePyramid[ info.gender ][ decade ]++;
 
                 StatsGroup.forEach( key => {
                     const k = ( info as any )[ key ];
