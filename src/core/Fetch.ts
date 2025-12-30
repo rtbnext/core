@@ -90,7 +90,7 @@ export class Fetch {
         };
 
         const snapshotUrl = res.data.archived_snapshots.closest.url;
-        return this.single< T >( snapshotUrl );
+        return this.single< T >( snapshotUrl.replace( '/http', 'if_/http' ) );
     }
 
     public async list< T extends TListResponse > (
