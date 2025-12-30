@@ -4,7 +4,7 @@ import { Profile } from '@/collection/Profile';
 import { ProfileIndex } from '@/collection/ProfileIndex';
 import { Stats } from '@/collection/Stats';
 import { TFilter, TFilterCollection } from '@/types/filter';
-import { TProfileStats, TScatterItem, TWealthStats } from '@/types/stats';
+import { TProfileStats, TScatterItem } from '@/types/stats';
 import { Gender, StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 import { Utils } from '@/utils/Utils';
@@ -39,12 +39,6 @@ export class UpdateStats extends Job {
                     f: { count: 0, decades: {}, min: Infinity, max: -Infinity, mean: 0 },
                     d: { count: 0, decades: {}, min: Infinity, max: -Infinity, mean: 0 }
                 }
-            };
-
-            const wStats: TWealthStats = { ...meta,
-                percentiles: {}, quartiles: [ 0, 0, 0 ], total: 0,
-                max: -Infinity, min: Infinity, mean: 0, median: 0,
-                stdDev: 0, decades: {}, gender: {}, spread: {}
             };
 
             for ( const item of ProfileIndex.getInstance().getIndex().values() ) {
@@ -103,13 +97,13 @@ export class UpdateStats extends Job {
                 }
 
                 // The following stats only consider profiles updated in the same RTB run
-                if ( realtime?.date !== date ) continue;
+                if ( realtime?.date !== date || ! networth ) continue;
 
-                if ( info.gender && age && networth ) scatter.push( sItem as any );
+                if ( info.gender && age ) scatter.push( sItem as any );
 
+                let k: any;
                 StatsGroup.forEach( key => {
-                    const k = ( info as any )[ key ];
-                    if ( k && networth ) {
+                    if ( k = ( info as any )[ key ] ) {
                         groups[ key ][ k ] ||= {
                             date, count: 0, total: 0, woman: 0, quota: 0, first: nItem,
                             today: { value: 0, pct: 0 }, ytd: { value: 0, pct: 0 }
@@ -135,6 +129,7 @@ export class UpdateStats extends Job {
             this.stats.setGroupStats( 'industry', groups.industry );
             this.stats.setGroupStats( 'citizenship', groups.citizenship );
             this.stats.setProfileStats( pStats );
+            this.stats.generateWealthStats( scatter );
             this.stats.setScatter( { ...meta, items: scatter } );
         } );
     }
