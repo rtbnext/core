@@ -28,9 +28,9 @@ export class UpdateStats extends Job {
                 gender: {}, maritalStatus: {}, selfMade: {}, philanthropyScore: {},
                 children: { full: {}, short: {} },
                 agePyramid: {
-                    m: { count: 0, groups: {}, min: Infinity, max: -Infinity, mean: 0 },
-                    f: { count: 0, groups: {}, min: Infinity, max: -Infinity, mean: 0 },
-                    d: { count: 0, groups: {}, min: Infinity, max: -Infinity, mean: 0 }
+                    m: { count: 0, decades: {}, min: Infinity, max: -Infinity, mean: 0 },
+                    f: { count: 0, decades: {}, min: Infinity, max: -Infinity, mean: 0 },
+                    d: { count: 0, decades: {}, min: Infinity, max: -Infinity, mean: 0 }
                 }
             };
 
@@ -75,8 +75,8 @@ export class UpdateStats extends Job {
                         pStats.agePyramid[ info.gender ].min = Math.min( pStats.agePyramid[ info.gender ].min, age );
                         pStats.agePyramid[ info.gender ].mean += age;
 
-                        if ( decade ) pStats.agePyramid[ info.gender ].groups[ decade ] = (
-                            pStats.agePyramid[ info.gender ].groups[ decade ] || 0
+                        if ( decade ) pStats.agePyramid[ info.gender ].decades[ decade ] = (
+                            pStats.agePyramid[ info.gender ].decades[ decade ] || 0
                         ) + 1;
                     }
                 }

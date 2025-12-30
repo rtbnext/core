@@ -31,7 +31,7 @@ export type TStatsList< T extends string > = { [ K in T ]?: number };
 
 export type TAgePyramid = Record< Gender, {
     count: number;
-    groups: TStatsList< string >;
+    decades: TStatsList< string >;
     max: number;
     min: number;
     mean: number;
@@ -52,6 +52,17 @@ export interface TProfileStats {
 
 export interface TWealthStats {
     '@metadata': TMetaData;
+    percentiles: TStatsList< '10th' | '25th' | '50th' | '75th' | '90th' | '95th' | '99th' >;
+    quartiles: [ number, number, number ];
+    total: number;
+    max: number;
+    min: number;
+    mean: number;
+    median: number;
+    stdDev: number;
+    decades: TStatsList< string >;
+    gender: TStatsList< Gender >;
+    spread: TStatsList< '1' | '5' | '10' | '25' | '50' | '100' | '250' >;
 }
 
 export interface TScatterItem {
