@@ -112,6 +112,15 @@ export class Storage {
         catch { return false }
     }
 
+    public datedCSV< T extends any[] > ( path: string, content: T, force: boolean = false ) : boolean {
+        const raw = this.readCSV< T >( path ) || [];
+        const filtered = raw.filter( r => r[ 0 ] !== content[ 0 ] );
+        if ( ! force && raw.length !== filtered.length ) return false;
+        return this.writeCSV< T >( path, [ ...filtered, content ].sort(
+            ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] )
+        ) as T );
+    }
+
     public move ( from: string, to: string, force: boolean = false ) : boolean {
         try {
             this.assertPath( from = this.resolvePath( from ) );
