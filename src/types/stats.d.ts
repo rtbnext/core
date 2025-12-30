@@ -30,6 +30,7 @@ export interface TStatsCollection {
 export type TStatsList< T extends string > = { [ K in T ]?: number };
 
 export type TAgePyramid = Record< Gender, {
+    count: number;
     groups: TStatsList< string >;
     max: number;
     min: number;

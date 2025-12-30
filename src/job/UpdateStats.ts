@@ -5,7 +5,7 @@ import { ProfileIndex } from '@/collection/ProfileIndex';
 import { Stats } from '@/collection/Stats';
 import { TFilter, TFilterCollection } from '@/types/filter';
 import { TProfileStats, TScatter } from '@/types/stats';
-import { StatsGroup } from '@/utils/Const';
+import { Gender, StatsGroup } from '@/utils/Const';
 import { Parser } from '@/utils/Parser';
 
 export class UpdateStats extends Job {
@@ -27,9 +27,9 @@ export class UpdateStats extends Job {
                 gender: {}, maritalStatus: {}, selfMade: {}, philanthropyScore: {},
                 children: { full: {}, short: {} },
                 agePyramid: {
-                    m: { groups: {}, min: Infinity, max: -Infinity, avg: 0 },
-                    f: { groups: {}, min: Infinity, max: -Infinity, avg: 0 },
-                    d: { groups: {}, min: Infinity, max: -Infinity, avg: 0 }
+                    m: { count: 0, groups: {}, min: Infinity, max: -Infinity, avg: 0 },
+                    f: { count: 0, groups: {}, min: Infinity, max: -Infinity, avg: 0 },
+                    d: { count: 0, groups: {}, min: Infinity, max: -Infinity, avg: 0 }
                 }
             };
 
@@ -69,8 +69,10 @@ export class UpdateStats extends Job {
                     pStats.gender[ info.gender ]!++;
 
                     if ( age ) {
+                        pStats.agePyramid[ info.gender ].count++;
                         pStats.agePyramid[ info.gender ].max = Math.max( pStats.agePyramid[ info.gender ].max, age );
                         pStats.agePyramid[ info.gender ].min = Math.min( pStats.agePyramid[ info.gender ].min, age );
+                        pStats.agePyramid[ info.gender ].avg += age;
                         if ( decade ) pStats.agePyramid[ info.gender ].groups[ decade ]!++;
                     }
                 }
@@ -112,6 +114,10 @@ export class UpdateStats extends Job {
                         groups[ key ][ k ].ytd.pct += realtime.ytd?.pct ?? 0;
                     }
                 } );
+            }
+
+            for ( const [ g, i ] of Object.entries( pStats.agePyramid ) ) {
+                if ( i.count ) pStats.agePyramid[ g as Gender ].avg = Parser.number( i.avg / i.count );
             }
 
             this.filter.save( filter );
