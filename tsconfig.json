@@ -12,13 +12,9 @@
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "@/*": [ "*" ],
-      "@/abstract/*": [ "abstract/*" ],
-      "@/collection/*": [ "collection/*" ],
       "@/core/*": [ "core/*" ],
       "@/job/*": [ "job/*" ],
-      "@/types/*": [ "types/*" ],
-      "@/utils/*": [ "utils/*" ]
+      "@/model/*": [ "model/*" ]
     }
   },
   "tsc-alias": {
