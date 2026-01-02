@@ -15,6 +15,7 @@
       "@/core/*": [ "core/*" ],
       "@/job/*": [ "job/*" ],
       "@/model/*": [ "model/*" ],
+      "@/parser/*": [ "parser/*" ],
       "@/types/*": [ "types/*" ]
     }
   },
