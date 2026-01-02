@@ -30,7 +30,22 @@ export const AssetType: Const.TAssetType[] = [
     'public', 'private', 'misc'
 ] as const;
 
+// Filter
+
+export const FilterGroup: Const.TFilterGroup[] = [
+    'industry', 'citizenship', 'country', 'state',
+    'gender', 'age', 'maritalStatus'
+] as const;
+
+export const FilterSpecial: Const.TFilterSpecial[] = [
+    'deceased', 'dropOff', 'family', 'selfMade'
+] as const;
+
 // Stats
+
+export const StatsGroup: Const.TStatsGroup[] = [
+    'industry', 'citizenship'
+] as const;
 
 export const ChildrenGroup: Const.TChildrenGroup[] = [
     'none', 'one', 'two', 'three', 'four', '5-to-10', 'over-10'
