@@ -80,4 +80,21 @@ export class Parser {
             : date.toISOString().split( 'T' )[ 0 ];
     }
 
+    // Special
+
+    public static age ( value: any ) : number | undefined {
+        const date = new Date( value );
+        return isNaN( date.getTime() ) ? undefined
+            : new Date( Date.now() - date.getTime() ).getUTCFullYear() - 1970;
+    }
+
+    public static ageDecade (
+        value: any, min: number = 30, max: number = 90
+    ) : number | undefined {
+        const age = Parser.age( value );
+        return age === undefined ? undefined : Math.max(
+            min, Math.min( max, Math.floor( age / 10 ) * 10 )
+        );
+    }
+
 }
