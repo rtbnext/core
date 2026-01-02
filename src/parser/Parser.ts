@@ -1,5 +1,6 @@
-import { Gender } from '@/core/Const';
-import { TGender } from '@rtbnext/schema/src/abstract/const';
+import { Gender, IndustryResolver, MaritalStatusResolver } from '@/core/Const';
+import { TIndustryResolver, TMaritalStatusResolver } from '@/types/generic';
+import { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/abstract/const';
 import { Primitive } from 'devtypes/types/primitives';
 
 export class Parser {
@@ -101,6 +102,18 @@ export class Parser {
 
     public static gender ( value: any ) : TGender | undefined {
         return Parser.map( value, Gender );
+    }
+
+    public static maritalStatus ( value: any ) : TMaritalStatus | undefined {
+        return Parser.map< TMaritalStatus, TMaritalStatusResolver >(
+            value, MaritalStatusResolver
+        );
+    }
+
+    public static industry ( value: any ) : TIndustry {
+        return Parser.map< TIndustry, TIndustryResolver >(
+            value, IndustryResolver, 'diversified'
+        )!;
     }
 
 }
