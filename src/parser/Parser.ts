@@ -42,4 +42,11 @@ export class Parser {
         return Parser.number( value, digits );
     }
 
+    public static date ( value: any, format: 'ymd' | 'iso' = 'ymd' ) : string | undefined {
+        const date = new Date( value );
+        return isNaN( date.getTime() ) ? undefined
+            : format === 'iso' ? date.toISOString()
+            : date.toISOString().split( 'T' )[ 0 ];
+    }
+
 }
