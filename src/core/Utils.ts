@@ -1,14 +1,19 @@
-import { TAggregator, TArgs } from '@/types/generic';
+import { TAggregator, TArgs, TMeasuredResult } from '@/types/generic';
 import { TMetaData } from '@rtbnext/schema/src/abstract/generic';
+import { hrtime } from 'node:process';
 import { ListLike } from 'devtypes/types/lists';
 import { sha256 } from 'js-sha256';
 
 export class Utils {
 
+    // Sanitize IDs and URIs
+
     public static sanitize ( value: any, delimiter: string ) : string {
         return String( value ).toLowerCase().trim().replace( /[^a-z0-9]/g, delimiter )
             .replace( new RegExp( `[${delimiter}]{2,}`, 'g' ), delimiter );
     }
+
+    // Hashing
 
     public static hash ( value: any ) : string {
         return sha256( String( value.split( '/' ).pop() ) );
@@ -17,6 +22,23 @@ export class Utils {
     public static verifyHash ( value: any, hash: string ) : boolean {
         return value === hash || Utils.hash( value ) === hash;
     }
+
+    // Measurement
+
+    public static async measure<
+        F extends ( ...args: any[] ) => any,
+        R = Awaited< ReturnType< F > >
+    > ( fn: F ) : Promise< TMeasuredResult< R > > {
+        if ( typeof fn !== 'function' ) throw new TypeError( 'Parameter must be a function' );
+
+        const now = hrtime.bigint();
+        const diff = () => Number( hrtime.bigint() - now ) / 1e6;
+
+        try { return { result: await fn() as R, ms: diff() } }
+        catch ( err ) { throw Object.assign( err ?? {}, { ms: diff() } ) }
+    }
+
+    // Meta data
 
     public static metaData () : TMetaData {
         return { '@metadata': { schemaVersion: 2, lastModified: new Date().toISOString() } };
