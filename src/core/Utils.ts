@@ -35,4 +35,21 @@ export class Utils {
         }
     }
 
+    // Search index
+
+    public static buildSearchText ( value: any, minLength: number = 4 ) : string {
+        return Array.from( new Set( String( value )
+            .normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' )
+            .toLowerCase().replace( /[^a-z0-9]+/g, ' ' ).split( ' ' )
+            .filter( w => w.length >= minLength ).filter( Boolean )
+        ) ).join( ' ' );
+    }
+
+    public static tokenSearch (
+        text: string, tokens: string[], looseMatch: boolean = false
+    ) : boolean {
+        if ( ! text || ! tokens.length ) return false;
+        return tokens[ looseMatch ? 'some' : 'every' ]( t => text.includes( t ) );
+    }
+
 }
