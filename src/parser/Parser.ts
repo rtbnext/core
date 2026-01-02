@@ -18,6 +18,11 @@ export class Parser {
             : clean ? Parser.safeStr( value ) : Parser.string( value );
     }
 
+    public static list ( value: any, delimiter: string = ',' ) : Primitive[] {
+        const list = Array.isArray( value ) ? value : value.split( delimiter );
+        return list.map( Parser.primitive ).filter( Boolean );
+    }
+
     // Primitive
 
     public static string ( value: any ) : string {
