@@ -1,14 +1,16 @@
 import { TIndustryResolver, TMaritalStatusResolver } from '@/types/generic';
-import { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/abstract/const';
+import * as Const from '@rtbnext/schema/src/abstract/const';
 
-export const Gender: TGender[] = [ 'm', 'f', 'd' ] as const;
+export const Gender: Const.TGender[] = [
+    'm', 'f', 'd'
+] as const;
 
-export const MaritalStatus: TMaritalStatus[] = [
+export const MaritalStatus: Const.TMaritalStatus[] = [
     'single', 'relationship', 'married', 'remarried', 'engaged',
     'separated', 'divorced', 'widowed'
 ] as const;
 
-export const Industry: TIndustry[] = [
+export const Industry: Const.TIndustry[] = [
     'automotive', 'diversified', 'energy', 'engineering', 'finance', 'foodstuff',
     'gambling', 'healthcare', 'logistics', 'manufacturing', 'media', 'mining',
     'property', 'retail', 'service', 'sports', 'technology', 'telecom'
@@ -44,3 +46,27 @@ export const IndustryResolver: TIndustryResolver = {
     'real-estate': 'property',
     'service': 'service'
 } as const;
+
+export const ChangeFlag: Const.TChangeFlag[] = [
+    'up', 'down', 'unchanged'
+] as const;
+
+export const RelationType: Const.TRelationType[] = [
+    'person', 'organization', 'place', 'unknown'
+] as const;
+
+export const AssetType: Const.TAssetType[] = [
+    'public', 'private', 'misc'
+] as const;
+
+export const ChildrenGroup: Const.TChildrenGroup[] = [
+    'none', 'one', 'two', 'three', 'four', '5-to-10', 'over-10'
+] as const;
+
+export const Percentiles: Const.TPercentiles[] = [
+    '10th', '25th', '50th', '75th', '90th', '95th', '99th'
+] as const;
+
+export const WealthSpread: Const.TWealthSpread[] = [
+    '1', '2', '5', '10', '20', '50', '100', '200', '500'
+] as const;
