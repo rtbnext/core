@@ -14,7 +14,8 @@
     "paths": {
       "@/core/*": [ "core/*" ],
       "@/job/*": [ "job/*" ],
-      "@/model/*": [ "model/*" ]
+      "@/model/*": [ "model/*" ],
+      "@/types/*": [ "types/*" ]
     }
   },
   "tsc-alias": {
