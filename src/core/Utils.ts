@@ -11,7 +11,7 @@ export class Utils {
 
     // Sanitize IDs and URIs
 
-    public static sanitize ( value: any, delimiter: string ) : string {
+    public static sanitize ( value: any, delimiter: string = '-' ) : string {
         return Parser.string( value ).toLowerCase().replace( /[^a-z0-9]/g, delimiter )
             .replace( new RegExp( `[${delimiter}]{2,}`, 'g' ), delimiter );
     }
