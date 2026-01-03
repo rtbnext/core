@@ -34,4 +34,8 @@ export class Config {
         );
     }
 
+    public static getInstance () : Config {
+        return Config.instance ||= new Config();
+    }
+
 }
