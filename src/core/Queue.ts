@@ -6,12 +6,12 @@ import { sha256 } from 'js-sha256';
 
 abstract class Queue {
 
-    private static readonly config: TQueueConfig = Config.getInstance().queue;
-
+    private readonly config: TQueueConfig;
     private readonly queueType: TQueueType;
     private queue: TQueue;
 
     protected constructor ( type: TQueueType ) {
+        this.config = Config.getInstance().queue;
         this.queueType = type;
         this.queue = new Map();
     }
