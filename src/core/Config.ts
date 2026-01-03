@@ -1,6 +1,10 @@
+import { Utils } from '@/core/Utils';
 import { TConfigObject } from '@/types/config';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
+import deepmerge from 'deepmerge';
+import { parse } from 'yaml';
 
 export class Config {
 
@@ -14,6 +18,20 @@ export class Config {
         this.cwd = cwd();
         this.path = join( this.cwd, 'config' );
         this.env = process.env.NODE_ENV || 'production';
+        this.config = this.loadConfig();
+    }
+
+    private loadConfigFile ( path: string ) : Partial< TConfigObject > {
+        if ( ! existsSync( path = join( this.path, path ) ) ) return {};
+        try { return parse( readFileSync( path, 'utf8' ) ) as Partial< TConfigObject > }
+        catch { return {} }
+    }
+
+    private loadConfig () : TConfigObject {
+        return deepmerge< TConfigObject >(
+            this.loadConfigFile( 'default.yml' ), this.loadConfigFile( `${this.env}.yml` ),
+            { arrayMerge: ( t, s ) => Utils.mergeArray( t, s, 'replace' ) }
+        );
     }
 
 }
