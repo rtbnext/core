@@ -1,5 +1,5 @@
 import { Utils } from '@/core/Utils';
-import { TConfigObject } from '@/types/config';
+import { TConfigObject, TFetchConfig, TLoggingConfig, TQueueConfig, TStorageConfig } from '@/types/config';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import process, { cwd } from 'node:process';
@@ -37,6 +37,10 @@ export class Config {
     public get root () : string { return this.cwd }
     public get environment () : string { return this.env }
     public get config () : TConfigObject { return this.cfg }
+    public get logging () : TLoggingConfig { return this.cfg.logging }
+    public get storage () : TStorageConfig { return this.cfg.storage }
+    public get fetch () : TFetchConfig { return this.cfg.fetch }
+    public get queue () : TQueueConfig { return this.cfg.queue }
 
     public static getInstance () : Config {
         return Config.instance ||= new Config();
