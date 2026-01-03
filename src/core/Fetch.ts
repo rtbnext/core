@@ -1,5 +1,7 @@
 import { Config } from '@/core/Config';
+import { Utils } from '@/core/Utils';
 import { TFetchConfig } from '@/types/config';
+import { TResponse } from '@/types/response';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 export class Fetch {
@@ -28,6 +30,32 @@ export class Fetch {
         const { max, min } = this.config.rateLimit.requestDelay;
         const delay = Math.round( Math.random() * ( max - min ) + min );
         return new Promise( resolve => setTimeout( resolve, delay ) );
+    }
+
+    private async fetch< T > (
+        url: string, method: 'get' | 'post' = 'get'
+    ) : Promise< TResponse< T > > {
+        const { result: res, ms } = await Utils.measure( async () => {
+            let res: AxiosResponse< T, any, {} >;
+            let retries = 0;
+
+            do {
+                const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent() };
+                res = await this.httpClient[ method ]< T >( url, { headers } );
+                if ( res.status === 200 && res.data ) break;
+
+                await this.getRandomDelay();
+            } while ( ++retries < this.config.rateLimit.retries );
+
+            return { ...res, retries };
+        } );
+
+        return Object.assign( { duration: ms, retries: res.retries },
+            res.status === 200 && res.data ? { success: true, data: res.data } : {
+                success: false, error: `Invalid response status: ${ res.status }`,
+                statusCode: res.status
+            }
+        );
     }
 
     public static getInstance () {
