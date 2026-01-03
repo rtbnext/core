@@ -2,7 +2,7 @@ import { Config } from '@/core/Config';
 import { Utils } from '@/core/Utils';
 import { Parser } from '@/parser/Parser';
 import { TFetchConfig } from '@/types/config';
-import * as Response from '@/types/response';
+import * as Resp from '@/types/response';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 export class Fetch {
@@ -36,7 +36,7 @@ export class Fetch {
 
     private async fetch< T > (
         url: string, method: 'get' | 'post' = 'get'
-    ) : Promise< Response.TResponse< T > > {
+    ) : Promise< Resp.TResponse< T > > {
         const { result: res, ms } = await Utils.measure( async () => {
             let res: AxiosResponse< T, any, {} >;
             let retries = 0;
@@ -66,14 +66,14 @@ export class Fetch {
 
     public async single< T > (
         url: string, method: 'get' | 'post' = 'get'
-    ) : Promise< Response.TResponse< T > > {
+    ) : Promise< Resp.TResponse< T > > {
         return this.fetch< T >( url, method );
     }
 
     public async batch< T > (
         urls: string[], method: 'get' | 'post' = 'get'
-    ) : Promise< Response.TResponse< T >[] > {
-        const results: Response.TResponse< T >[] = []; let url;
+    ) : Promise< Resp.TResponse< T >[] > {
+        const results: Resp.TResponse< T >[] = []; let url;
 
         while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize ) {
             results.push( await this.fetch< T >( url, method ) );
@@ -87,9 +87,9 @@ export class Fetch {
         return results;
     }
 
-    public async wayback< T > ( url: string, ts: any ) : Promise< Response.TResponse< T > > {
+    public async wayback< T > ( url: string, ts: any ) : Promise< Resp.TResponse< T > > {
         const timestamp = Parser.date( ts, 'ymd' )!.replaceAll( /[^\d]/g, '' );
-        const res = await this.single< Response.TWaybackResponse >(
+        const res = await this.single< Resp.TWaybackResponse >(
             this.config.endpoints.wayback
                 .replace( '{URL}', encodeURIComponent( url ) )
                 .replace( '{TS}', timestamp )
@@ -104,9 +104,9 @@ export class Fetch {
         return this.single< T >( snapshotUrl.replace( '/http', 'if_/http' ) );
     }
 
-    public async list< T extends Response.TListResponse > (
+    public async list< T extends Resp.TListResponse > (
         uriLike: string, year: string, ts?: any
-    ) : Promise< Response.TResponse< T > > {
+    ) : Promise< Resp.TResponse< T > > {
         const url: string = this.config.endpoints.list
             .replace( '{URI}', Utils.sanitize( uriLike ) )
             .replace( '{YEAR}', year );
@@ -115,25 +115,15 @@ export class Fetch {
     }
 
     public async profile ( ...uriLike: string[] ) : Promise<
-        Response.TResponse< Response.TProfileResponse >[]
+        Resp.TResponse< Resp.TProfileResponse >[]
     > {
         const url = this.config.endpoints.profile;
-        return this.batch< Response.TProfileResponse >( uriLike.map(
+        return this.batch< Resp.TProfileResponse >( uriLike.map(
             uri => url.replace( '{URI}', Utils.sanitize( uri ) )
         ) );
     }
 
-    public async wikipedia< T > (
-        query: Record< string, any >, lang: string = 'en'
-    ) : Promise< Response.TResponse< T > > {
-        return this.single< T >(
-            this.config.endpoints.wikipedia
-                .replace( '{QUERY}', Utils.queryStr( { ...this.wikiQuery, ...query } ) )
-                .replace( '{LANG}', lang )
-        );
-    }
-
-    public async wikidata< T > ( sparql: string ) : Promise< Response.TResponse< T > > {
+    public async wikidata< T > ( sparql: string ) : Promise< Resp.TResponse< T > > {
         return this.single< T >(
             this.config.endpoints.wikidata.replace( '{SPARQL}',
                 encodeURIComponent( sparql.replace( /\s+/g, ' ' ).trim() )
@@ -141,9 +131,17 @@ export class Fetch {
         );
     }
 
-    public async commons< T > (
-        query: Record< string, any >
-    ) : Promise< Response.TResponse< T > > {
+    public async wikipedia< T > (
+        query: Record< string, any >, lang: string = 'en'
+    ) : Promise< Resp.TResponse< T > > {
+        return this.single< T >(
+            this.config.endpoints.wikipedia
+                .replace( '{QUERY}', Utils.queryStr( { ...this.wikiQuery, ...query } ) )
+                .replace( '{LANG}', lang )
+        );
+    }
+
+    public async commons< T > ( query: Record< string, any > ) : Promise< Resp.TResponse< T > > {
         return this.single< T >(
             this.config.endpoints.commons
                 .replace( '{QUERY}', Utils.queryStr( { ...this.wikiQuery, ...query } ) )
