@@ -24,7 +24,11 @@ export interface TFetchConfig {
     };
 }
 
-export interface TQueueConfig {}
+export interface TQueueConfig {
+    tsThreshold: number;
+    maxSize: number;
+    defaultPrio: number;
+}
 
 export interface TConfigObject {
     logging: TLoggingConfig;
