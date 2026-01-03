@@ -1,11 +1,17 @@
-import { TQueueType } from '@/types/queue';
+import { TQueueConfig } from '@/types/config';
+import { TQueue, TQueueType } from '@/types/queue';
+import { Config } from './Config';
 
 abstract class Queue {
 
+    private static readonly config: TQueueConfig = Config.getInstance().queue;
+
     private readonly queueType: TQueueType;
+    private queue: TQueue;
 
     protected constructor ( type: TQueueType ) {
         this.queueType = type;
+        this.queue = new Map();
     }
 
 }
