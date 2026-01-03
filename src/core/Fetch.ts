@@ -58,6 +58,26 @@ export class Fetch {
         );
     }
 
+    public async single< T > (
+        url: string, method: 'get' | 'post' = 'get'
+    ) : Promise< TResponse< T > > {
+        return this.fetch< T >( url, method );
+    }
+
+    public async batch< T > (
+        urls: string[], method: 'get' | 'post' = 'get'
+    ) : Promise< TResponse< T >[] > {
+        const results: TResponse< T >[] = []; let url;
+
+        while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize ) {
+            results.push( await this.fetch< T >( url, method ) );
+            await this.getRandomDelay();
+        }
+
+        if ( urls.length ) console.warn( `Batch limit reached. ${ urls.length } URLs remaining.` );
+        return results;
+    }
+
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
     }
