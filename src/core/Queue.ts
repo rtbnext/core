@@ -2,12 +2,13 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
+import { IQueue } from '@/interfaces/queue';
 import { TQueueConfig } from '@/types/config';
 import { TQueue, TQueueItem, TQueueOptions, TQueueStorage, TQueueType } from '@/types/queue';
 import { join } from 'node:path';
 import { sha256 } from 'js-sha256';
 
-abstract class Queue {
+abstract class Queue implements IQueue {
 
     private static readonly storage = Storage.getInstance();
 
@@ -129,7 +130,7 @@ abstract class Queue {
 
 }
 
-export class ProfileQueue extends Queue {
+export class ProfileQueue extends Queue implements IQueue {
 
     private static instance: ProfileQueue;
 
@@ -143,7 +144,7 @@ export class ProfileQueue extends Queue {
 
 }
 
-export class ListQueue extends Queue {
+export class ListQueue extends Queue implements IQueue {
 
     private static instance: ListQueue;
 

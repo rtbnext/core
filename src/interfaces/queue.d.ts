@@ -1,4 +1,4 @@
-export interface Queue {
+export interface IQueue {
     getQueue () : TQueueItem[];
     size () : number;
     getByKey ( key: string ) : TQueueItem | undefined;
