@@ -1,4 +1,5 @@
 import { Config } from '@/core/Config';
+import { Utils } from '@/core/Utils';
 import { TLoggingConfig } from '@/types/config';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -26,6 +27,13 @@ export class Logger {
 
     private shouldLog ( level: TLoggingConfig[ 'level' ] ) : boolean {
         return Logger.level[ level ] <= Logger.level[ this.config.level ];
+    }
+
+    private format ( level: TLoggingConfig[ 'level' ], msg: string, meta?: any ) : string {
+        const entry = `[${ Utils.date( 'iso' ) }] ${ level.toUpperCase() } ${msg}`;
+        if ( meta instanceof Error ) entry.concat( `: ${ meta.stack?.replaceAll( '\n', ' // ' ) }` );
+        else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
+        return entry;
     }
 
 }
