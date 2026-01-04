@@ -19,6 +19,8 @@ export class Storage {
         this.path = join( root, this.config.baseDir );
     }
 
+    // Private helper methods
+
     private resolvePath ( path: string ) : string {
         return path.includes( this.path ) ? path : join( this.path, path );
     }
@@ -58,6 +60,8 @@ export class Storage {
         }, `Failed to write ${path}` );
     }
 
+    // Basic path operations
+
     public exists ( path: string ) : boolean {
         return existsSync( this.resolvePath( path ) );
     }
@@ -78,6 +82,8 @@ export class Storage {
         }, `Failed to scan ${path}` ) ?? [];
     }
 
+    // JSON files
+
     public readJSON< T > ( path: string ) : T | false {
         try { return this.read( path, 'json' ) as T }
         catch { return false }
@@ -86,6 +92,34 @@ export class Storage {
     public writeJSON< T > ( path: string, content: T ) : boolean {
         try { this.write( path, Utils.sortKeysDeep( content ), 'json' ); return true }
         catch { return false }
+    }
+
+    // CSV files
+
+    public readCSV< T extends any[] > ( path: string ) : T | false {
+        try { return this.read( path, 'csv' ) as T }
+        catch { return false }
+    }
+
+    public writeCSV< T extends any[] > ( path: string, content: T ) : boolean {
+        try { this.write( path, content, 'csv' ); return true }
+        catch { return false }
+    }
+
+    public appendCSV< T extends any[] > ( path: string, content: T, nl: boolean = true ) : boolean {
+        try { this.write( path, content, 'csv', { append: true, nl } ); return true }
+        catch { return false }
+    }
+
+    public datedCSV< T extends any[] > (
+        path: string, content: T, force: boolean = false
+    ) : boolean {
+        const raw = this.readCSV< T >( path ) || [];
+        const filtered = raw.filter( r => r[ 0 ] !== content[ 0 ] );
+        if ( ! force && raw.length !== filtered.length ) return false;
+        return this.writeCSV< T >( path, [ ...filtered, content ].sort(
+            ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] )
+        ) as T );
     }
 
     public static getInstance () : Storage {
