@@ -1,5 +1,5 @@
 import { Utils } from '@/core/Utils';
-import { TConfigObject, TFetchConfig, TLoggingConfig, TQueueConfig, TStorageConfig } from '@/types/config';
+import * as Conf from '@/types/config';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import process, { cwd } from 'node:process';
@@ -12,7 +12,7 @@ export class Config {
     private readonly cwd: string;
     private readonly path: string;
     private readonly env: string;
-    private readonly cfg: TConfigObject;
+    private readonly cfg: Conf.TConfigObject;
 
     private constructor () {
         this.cwd = cwd();
@@ -23,14 +23,14 @@ export class Config {
 
     // Load config
 
-    private loadConfigFile ( path: string ) : Partial< TConfigObject > {
+    private loadConfigFile ( path: string ) : Partial< Conf.TConfigObject > {
         if ( ! existsSync( path = join( this.path, path ) ) ) return {};
-        try { return parse( readFileSync( path, 'utf8' ) ) as Partial< TConfigObject > }
+        try { return parse( readFileSync( path, 'utf8' ) ) as Partial< Conf.TConfigObject > }
         catch { return {} }
     }
 
-    private loadConfig () : TConfigObject {
-        return deepmerge< TConfigObject >(
+    private loadConfig () : Conf.TConfigObject {
+        return deepmerge< Conf.TConfigObject >(
             this.loadConfigFile( 'default.yml' ), this.loadConfigFile( `${this.env}.yml` ),
             { arrayMerge: ( t, s ) => Utils.mergeArray( t, s, 'replace' ) }
         );
@@ -40,11 +40,11 @@ export class Config {
 
     public get root () : string { return this.cwd }
     public get environment () : string { return this.env }
-    public get config () : TConfigObject { return this.cfg }
-    public get logging () : TLoggingConfig { return this.cfg.logging }
-    public get storage () : TStorageConfig { return this.cfg.storage }
-    public get fetch () : TFetchConfig { return this.cfg.fetch }
-    public get queue () : TQueueConfig { return this.cfg.queue }
+    public get config () : Conf.TConfigObject { return this.cfg }
+    public get logging () : Conf.TLoggingConfig { return this.cfg.logging }
+    public get storage () : Conf.TStorageConfig { return this.cfg.storage }
+    public get fetch () : Conf.TFetchConfig { return this.cfg.fetch }
+    public get queue () : Conf.TQueueConfig { return this.cfg.queue }
 
     // Instantiate
 
