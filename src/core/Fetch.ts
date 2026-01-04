@@ -17,6 +17,8 @@ export class Fetch {
         this.httpClient = this.setupHttpClient();
     }
 
+    // Set up axios
+
     private setupHttpClient () : AxiosInstance {
         const { headers, rateLimit: { timeout } } = this.config;
         return axios.create( { headers, timeout } );
@@ -33,6 +35,8 @@ export class Fetch {
         const delay = Math.round( Math.random() * ( max - min ) + min );
         return new Promise( resolve => setTimeout( resolve, delay ) );
     }
+
+    // Fetch helper
 
     private async fetch< T > (
         url: string, method: 'get' | 'post' = 'get'
@@ -64,6 +68,8 @@ export class Fetch {
         );
     }
 
+    // Basic fetch methods
+
     public async single< T > (
         url: string, method: 'get' | 'post' = 'get'
     ) : Promise< Resp.TResponse< T > > {
@@ -86,6 +92,8 @@ export class Fetch {
 
         return results;
     }
+
+    // Special fetch methods
 
     public async wayback< T > ( url: string, ts: any ) : Promise< Resp.TResponse< T > > {
         const timestamp = Parser.date( ts, 'ymd' )!.replaceAll( /[^\d]/g, '' );
@@ -147,6 +155,8 @@ export class Fetch {
                 .replace( '{QUERY}', Utils.queryStr( { ...this.wikiQuery, ...query } ) )
         );
     }
+
+    // Instantiate
 
     public static getInstance () {
         return Fetch.instance ||= new Fetch();
