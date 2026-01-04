@@ -117,4 +117,5 @@ export class Logger {
 
 }
 
+// Singleton instance
 export const log = Logger.getInstance();

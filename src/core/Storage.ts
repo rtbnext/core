@@ -17,6 +17,7 @@ export class Storage {
         const { root, storage } = Config.getInstance();
         this.config = storage;
         this.path = join( root, this.config.baseDir );
+        this.initDB();
     }
 
     // Private helper methods
@@ -145,6 +146,18 @@ export class Storage {
             return true;
         }, `Failed to delete ${path}` );
     }
+
+    // Init DB
+
+     public initDB () : void {
+        log.info( `Initializing storage at ${this.path}` );
+        this.ensurePath( this.path );
+        [ 'profile', 'list', 'filter', 'mover', 'stats' ].forEach(
+            path => this.ensurePath( path, true )
+        );
+    }
+
+    // Instantiate
 
     public static getInstance () : Storage {
         return Storage.instance ||= new Storage();
