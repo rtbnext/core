@@ -1,7 +1,7 @@
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { TStorageConfig } from '@/types/config';
-import { existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { parse, stringify } from 'csv-string';
 
@@ -37,6 +37,24 @@ export class Storage {
             }
             throw new Error( `Unsupported file extension: ${ extname( path ) }` );
         }, `Failed to read ${path}` );
+    }
+
+    private write (
+        path: string, content: any, type?: 'raw' | 'json' | 'csv',
+        options = { append: false, nl: true }
+    ) : void {
+        return log.catch( () => {
+            this.ensurePath( path = this.resolvePath( path ) );
+            switch ( type ?? this.fileExt( path ) ) {
+                case 'csv': content = stringify( content ).trim(); break;
+                case 'json': content = JSON.stringify(
+                    content, null, this.config.compression ? undefined : 2
+                ).trim(); break;
+            }
+            if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
+            ( options.append ? appendFileSync : writeFileSync )( path, content, 'utf8' );
+            log.debug( `Wrote data to ${path}`, options );
+        }, `Failed to write ${path}` );
     }
 
     public exists ( path: string ) : boolean {
