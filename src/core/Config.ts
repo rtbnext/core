@@ -21,6 +21,8 @@ export class Config {
         this.cfg = this.loadConfig();
     }
 
+    // Load config
+
     private loadConfigFile ( path: string ) : Partial< TConfigObject > {
         if ( ! existsSync( path = join( this.path, path ) ) ) return {};
         try { return parse( readFileSync( path, 'utf8' ) ) as Partial< TConfigObject > }
@@ -34,6 +36,8 @@ export class Config {
         );
     }
 
+    // Public getter
+
     public get root () : string { return this.cwd }
     public get environment () : string { return this.env }
     public get config () : TConfigObject { return this.cfg }
@@ -41,6 +45,8 @@ export class Config {
     public get storage () : TStorageConfig { return this.cfg.storage }
     public get fetch () : TFetchConfig { return this.cfg.fetch }
     public get queue () : TQueueConfig { return this.cfg.queue }
+
+    // Instantiate
 
     public static getInstance () : Config {
         return Config.instance ||= new Config();
