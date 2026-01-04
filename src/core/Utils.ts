@@ -43,9 +43,9 @@ export class Utils {
 
     // Meta data
 
-    public static date ( format: 'ymd' | 'iso' = 'ymd' ) : string {
+    public static date ( format: 'ymd' | 'iso' | 'y' | 'ym' = 'ymd' ) : string {
         const iso = new Date().toISOString();
-        return format === 'iso' ? iso : iso.split( 'T' )[ 0 ];
+        return format === 'iso' ? iso : iso.split( '-' ).slice( 0, format.length ).join( '-' );
     }
 
     public static metaData ( force: boolean = false ) : TMetaData {
