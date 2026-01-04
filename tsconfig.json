@@ -13,6 +13,7 @@
     "baseUrl": "./src",
     "paths": {
       "@/core/*": [ "core/*" ],
+      "@/interfaces/*": [ "interfaces/*" ],
       "@/job/*": [ "job/*" ],
       "@/model/*": [ "model/*" ],
       "@/parser/*": [ "parser/*" ],
