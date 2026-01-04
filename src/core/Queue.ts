@@ -30,6 +30,16 @@ abstract class Queue {
         ) );
     }
 
+    private saveQueue () : void {
+        const { defaultPrio = 0 } = this.config;
+        Queue.storage.writeJSON< TQueueStorage >( this.path,
+            Array.from( this.queue.values() ).sort( ( a: TQueueItem, b: TQueueItem ) =>
+                ( b.prio ?? defaultPrio ) - ( a.prio ?? defaultPrio ) || 
+                ( new Date( a.ts ).getTime() - new Date( b.ts ).getTime() )
+            )
+        );
+    }
+
     private key ( uri: string, args?: any ) : string {
         return sha256( uri + JSON.stringify( args ) );
     }
