@@ -3,7 +3,7 @@ import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import { TQueueConfig } from '@/types/config';
-import { TQueue, TQueueItem, TQueueStorage, TQueueType } from '@/types/queue';
+import { TQueue, TQueueItem, TQueueOptions, TQueueStorage, TQueueType } from '@/types/queue';
 import { join } from 'node:path';
 import { sha256 } from 'js-sha256';
 
@@ -76,6 +76,37 @@ abstract class Queue {
         log.debug( `Clear queue [${this.type}]` );
         this.queue.clear();
         this.saveQueue();
+    }
+
+    // Add queue items
+
+    public add ( opt: TQueueOptions, save: boolean = true ) : boolean {
+        const { uriLike, args, prio } = opt;
+        return log.catch( () => {
+            if ( this.queue.size > this.config.maxSize ) throw new Error(
+                `Queue size limit reached for type: ${this.type}`
+            );
+
+            const uri = Utils.sanitize( uriLike );
+            const key = this.key( uri, args );
+            const item = this.queue.get( key );
+            const ts = item?.ts || Utils.date( 'iso' );
+            const data: TQueueItem = { key, uri, ts, args, prio };
+
+            if ( JSON.stringify( item ) === JSON.stringify( data ) ) return false;
+
+            log.debug( `Add to queue [${this.type}]: ${uri}`, data );
+            this.queue.set( key, data );
+            if ( save ) this.saveQueue();
+
+            return true;
+        }, `Failed to add item to queue [${this.type}]: ${uriLike}` ) ?? false;
+    }
+
+    public addMany ( items: TQueueOptions[] ) : number {
+        const added = items.reduce( ( acc, item ) => acc + +this.add( item, false ), 0 );
+        this.saveQueue();
+        return added;
     }
 
     // Get items from queue (processing)
