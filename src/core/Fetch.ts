@@ -1,4 +1,5 @@
 import { Config } from '@/core/Config';
+import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import { Parser } from '@/parser/Parser';
 import { TFetchConfig } from '@/types/config';
@@ -41,24 +42,25 @@ export class Fetch {
     private async fetch< T > (
         url: string, method: 'get' | 'post' = 'get'
     ) : Promise< Resp.TResponse< T > > {
+        log.debug( `Fetching URL: ${url} via ${ method.toUpperCase() }` );
+
         const { result: res, ms } = await Utils.measure( async () => {
             let res: AxiosResponse< T, any, {} >;
             let retries = 0;
 
             do {
-                const headers = {
-                    ...this.config.headers,
-                    'User-Agent': this.getRandomUserAgent()
-                };
-
+                const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent() };
                 res = await this.httpClient[ method ]< T >( url, { headers } );
                 if ( res.status === 200 && res.data ) break;
 
+                log.warn( `Request failed with status: ${res.status}. Retrying ...` );
                 await this.getRandomDelay();
             } while ( ++retries < this.config.rateLimit.retries );
 
             return { ...res, retries };
         } );
+
+        log.debug( `Fetched URL: ${url} in ${ ms } ms` );
 
         return Object.assign( { duration: ms, retries: res.retries },
             res.status === 200 && res.data ? { success: true, data: res.data } : {
@@ -86,10 +88,7 @@ export class Fetch {
             await this.getRandomDelay();
         }
 
-        if ( urls.length ) console.warn(
-            `Batch limit reached. ${ urls.length } URLs remaining.`
-        );
-
+        if ( urls.length ) log.warn( `Batch limit reached. ${ urls.length } URLs remaining.` );
         return results;
     }
 
