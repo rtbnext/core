@@ -28,7 +28,7 @@ export class Logger {
 
     private format ( level: TLoggingConfig[ 'level' ], msg: string, meta?: any ) : string {
         const entry = `[${ Utils.date( 'iso' ) }] ${ level.toUpperCase() } ${msg}`;
-        if ( meta instanceof Error ) entry.concat( `: ${ meta.stack?.replaceAll( '\n', ' // ' ) }` );
+        if ( meta instanceof Error ) entry.concat( `: ${meta.message}` );
         else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
         return entry;
     }
