@@ -1,11 +1,12 @@
 import { Config } from '@/core/Config';
 import { Utils } from '@/core/Utils';
+import { ILogger } from '@/interfaces/logger';
 import { TLoggingConfig } from '@/types/config';
 import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { exit } from 'node:process';
 
-export class Logger {
+export class Logger implements ILogger {
 
     private static readonly level: Record< TLoggingConfig[ 'level' ], number > = {
         error: 0, warn: 1, info: 2, debug: 3
