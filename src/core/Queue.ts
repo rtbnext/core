@@ -11,15 +11,15 @@ abstract class Queue {
     private static readonly storage = Storage.getInstance();
 
     private readonly config: TQueueConfig;
-    private readonly queueType: TQueueType;
+    private readonly type: TQueueType;
     private readonly path: string;
     private queue: TQueue;
 
     protected constructor ( type: TQueueType ) {
         const { root, queue } = Config.getInstance();
         this.config = queue;
-        this.queueType = type;
-        this.path = join( root, `queue/${type}.json` );
+        this.type = type;
+        this.path = join( root, `queue/${this.type}.json` );
         Queue.storage.ensurePath( this.path );
         this.queue = this.loadQueue();
     }
@@ -69,6 +69,23 @@ abstract class Queue {
 
     public hasUri ( uriLike: string ) : boolean {
         return this.getByUri( uriLike ).length !== 0;
+    }
+
+    // Get items from queue (processing)
+
+    public next ( n: number = 1 ) : TQueueItem[] {
+        const items: TQueueItem[] = [];
+
+        for ( const [ k, item ] of this.queue ) if ( items.length < n ) {
+            items.push( item ); this.queue.delete( k );
+        } else break;
+
+        this.saveQueue();
+        return items;
+    }
+
+    public nextUri ( n: number = 1 ) : string[] {
+        return this.next( n ).filter( Boolean ).map( i => i.uri );
     }
 
 }
