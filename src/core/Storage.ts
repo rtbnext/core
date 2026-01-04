@@ -71,8 +71,10 @@ export class Storage {
     }
 
     public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ] ) : string[] {
-        this.assertPath( path = this.resolvePath( path ) );
-        return readdirSync( path ).filter( f => ext.includes( this.fileExt( f ) ) );
+        return log.catch( () => {
+            this.assertPath( path = this.resolvePath( path ) );
+            return readdirSync( path ).filter( f => ext.includes( this.fileExt( f ) ) );
+        }, `Failed to scan ${path}` ) ?? [];
     }
 
     public static getInstance () : Storage {
