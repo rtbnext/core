@@ -150,7 +150,7 @@ export class Storage {
     // Init DB
 
      public initDB () : void {
-        log.info( `Initializing storage at ${this.path}` );
+        log.debug( `Initializing storage at ${this.path}` );
         this.ensurePath( this.path );
         [ 'profile', 'list', 'filter', 'mover', 'stats' ].forEach(
             path => this.ensurePath( path, true )
