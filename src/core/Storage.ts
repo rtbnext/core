@@ -2,7 +2,7 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import { TStorageConfig } from '@/types/config';
-import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { parse, stringify } from 'csv-string';
 
@@ -120,6 +120,30 @@ export class Storage {
         return this.writeCSV< T >( path, [ ...filtered, content ].sort(
             ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] )
         ) as T );
+    }
+
+    // Special file operations
+
+    public move ( from: string, to: string, force: boolean = false ) : boolean {
+        return !! log.catch( () => {
+            this.assertPath( from = this.resolvePath( from ) );
+            if ( this.exists( to = this.resolvePath( to ) ) ) {
+                if ( force ) this.remove( to, true );
+                else throw new Error( `Destination path ${to} already exists` );
+            }
+            renameSync( from, to );
+            log.debug( `Moved ${from} to ${to}` );
+            return true;
+        }, `Failed to move ${from} to ${to}` );
+    }
+
+    public remove ( path: string, force: boolean = true ) : boolean {
+        return !! log.catch( () => {
+            this.assertPath( path = this.resolvePath( path ) );
+            rmSync( path, { recursive: true, force } );
+            log.debug( `Removed ${path}` );
+            return true;
+        }, `Failed to delete ${path}` );
     }
 
     public static getInstance () : Storage {
