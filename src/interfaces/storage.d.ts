@@ -1,4 +1,4 @@
-export interface Storage {
+export interface IStorage {
     public exists ( path: string ) : boolean;
     public assertPath ( path: string ) : void | never;
     public ensurePath ( path: string, isDir: boolean = false ) : void;

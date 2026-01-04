@@ -1,12 +1,13 @@
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
+import { IStorage } from '@/interfaces/storage';
 import { TStorageConfig } from '@/types/config';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { parse, stringify } from 'csv-string';
 
-export class Storage {
+export class Storage implements IStorage {
 
     private static instance: Storage;
 
@@ -107,7 +108,9 @@ export class Storage {
         catch { return false }
     }
 
-    public appendCSV< T extends any[] > ( path: string, content: T, nl: boolean = true ) : boolean {
+    public appendCSV< T extends any[] > (
+        path: string, content: T, nl: boolean = true
+    ) : boolean {
         try { this.write( path, content, 'csv', { append: true, nl } ); return true }
         catch { return false }
     }
@@ -149,7 +152,7 @@ export class Storage {
 
     // Init DB
 
-     public initDB () : void {
+    public initDB () : void {
         log.debug( `Initializing storage at ${this.path}` );
         this.ensurePath( this.path );
         [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue' ].forEach(
