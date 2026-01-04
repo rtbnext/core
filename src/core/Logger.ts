@@ -22,6 +22,8 @@ export class Logger {
         mkdirSync( this.path, { recursive: true } );
     }
 
+    // Internal helper methods
+
     private shouldLog ( level: TLoggingConfig[ 'level' ] ) : boolean {
         return Logger.level[ level ] <= Logger.level[ this.config.level ];
     }
@@ -49,6 +51,8 @@ export class Logger {
         if ( this.config.file ) this.log2File( entry );
     }
 
+    // Logging methods
+
     public error ( msg: string, error?: Error ) : void {
         this.log( 'error', msg, error );
     }
@@ -73,6 +77,8 @@ export class Logger {
         this.log( 'debug', msg, meta );
     }
 
+    // Catch & log errors
+
     public catch< F extends ( ...args: any[] ) => any, R = ReturnType< F > > (
         fn: F, msg: string, level: TLoggingConfig[ 'level' ] = 'error'
     ) : R | undefined {
@@ -90,6 +96,8 @@ export class Logger {
         catch ( err ) { this.log( level, msg, err as Error ) }
     }
 
+    // Get log file
+
     public getLogFile ( date: string ) : string | undefined {
         return this.catch(
             () => readFileSync( join( this.path, `${date}.log` ), 'utf8' ),
@@ -100,6 +108,8 @@ export class Logger {
     public getCurrentLogFile () : string | undefined {
         return this.getLogFile( Utils.date( 'ym' ) );
     }
+
+    // Instantiate
 
     public static getInstance () : Logger {
         return Logger.instance ||= new Logger();
