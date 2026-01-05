@@ -115,6 +115,17 @@ export class Filter implements IFilter {
         return this.data.special?.[ special ] || [];
     }
 
+    // Has filter
+
+    public has ( path: string, uriLike: string ) : boolean {
+        const [ group, key ] = this.splitPath( path ) ?? [];
+        return !! group && !! key && (
+            ( this.getFilter( group, key ) || [] ).some( i => i.uri === uriLike )
+        );
+    }
+
+    // Save (partial) filter collection
+
     // Init DB
 
     public initDB () : void {
