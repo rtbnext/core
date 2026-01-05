@@ -34,7 +34,7 @@ export const AssetType: Const.TAssetType[] = [
 
 export const FilterGroup: Const.TFilterGroup[] = [
     'industry', 'citizenship', 'country', 'state',
-    'gender', 'age', 'maritalStatus'
+    'gender', 'age', 'maritalStatus', 'special'
 ] as const;
 
 export const FilterSpecial: Const.TFilterSpecial[] = [
