@@ -1,4 +1,4 @@
-import { FilterGroup } from '@/core/Const';
+import { FilterGroup, FilterSpecial } from '@/core/Const';
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
@@ -125,6 +125,16 @@ export class Filter implements IFilter {
     }
 
     // Save (partial) filter collection
+
+    public save ( collection: Partial< TFilterCollection > ) : void {
+        FilterGroup.forEach( g => g !== 'special' && collection[ g ] &&
+            this.saveGroup( g, collection[ g ] )
+        );
+
+        FilterSpecial.forEach( s => collection.special?.[ s ] &&
+            this.saveSpecial( s, collection.special[ s ] )
+        );
+    }
 
     // Init DB
 
