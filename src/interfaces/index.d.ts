@@ -1,4 +1,6 @@
-export interface IIndex< I extends { readonly uri: string, text: string }, T extends Map< string, I > > {
+import { TIndex } from '@rtbnext/schema/src/abstract/generic';
+
+export interface IIndex< I extends TIndex, T extends Map< string, I > > {
     getIndex () : T;
     size () : number;
     has ( uriLike: string ) : boolean;
