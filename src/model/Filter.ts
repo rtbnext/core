@@ -4,7 +4,7 @@ import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { IFilter } from '@/interfaces/filter';
 import { TFilterGroup, TFilterSpecial } from '@rtbnext/schema/src/abstract/const';
-import { TFilterCollection } from '@rtbnext/schema/src/model/filter';
+import { TFilter, TFilterCollection } from '@rtbnext/schema/src/model/filter';
 import { join } from 'node:path';
 
 export class Filter implements IFilter {
@@ -36,11 +36,26 @@ export class Filter implements IFilter {
         return this.joinPath( ...( this.splitPath( path ) ?? [] ) as any );
     }
 
+    // Helper methods
+
+    private prepFilter ( list: TFilter[] ) : TFilter[] {
+        return [ ...new Map( list.map( i => [ i.uri, i ] ) ).values() ].sort(
+            ( a, b ) => a.uri.localeCompare( b.uri )
+        );
+    }
+
+    private setFilterData ( path: string, items: TFilter[] ) : void {
+        const [ group, key ] = this.splitPath( path ) ?? [];
+        if ( group && key ) ( this.data[ group ] ??= {} as any )[ key ] = items;
+    }
+
     // Init DB
 
     public initDB () : void {
         log.debug( `Initializing filter storage at ${this.path}` );
-        FilterGroup.forEach( group => Filter.storage.ensurePath( join( this.path, group ), true ) );
+        [ ...FilterGroup, 'special' ].forEach(
+            group => Filter.storage.ensurePath( join( this.path, group ), true )
+        );
     }
 
     // Instantiate
