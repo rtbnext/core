@@ -29,7 +29,7 @@ export class Filter implements IFilter {
         return group && key ? join( 'filter', group, `${key}.json` ) : false;
     }
 
-    private resolvePath ( path: string ) : string | false {
+    public resolvePath ( path: string ) : string | false {
         return this.joinPath( ...( this.splitPath( path ) ?? [] ) as any );
     }
 
