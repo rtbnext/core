@@ -47,9 +47,9 @@ export class Filter implements IFilter {
 
     // Load & save filter
 
-    private loadFilter ( group: TFilterGroup, key: string ) : void {
+    private loadFilter ( group: TFilterGroup, key: string ) : TFilter[] | undefined {
         log.debug( `Loading filter from ${group}/${key}` );
-        log.catch( () => {
+        return log.catch( () => {
             const resolved = this.joinPath( group, key );
             if ( ! resolved ) throw new Error( `Invalid filter path: ${group}/${key}` );
 
@@ -57,6 +57,7 @@ export class Filter implements IFilter {
             if ( ! list ) throw new Error( `Filter file not found: ${resolved}` );
 
             this.setFilterData( group, key, list.items );
+            return list.items;
         }, `Failed to load filter at ${group}/${key}` );
     }
 
@@ -81,6 +82,19 @@ export class Filter implements IFilter {
 
     private saveSpecial ( special: TFilterSpecial, data: TFilter[] ) : void {
         this.saveFilter( 'special', special, data );
+    }
+
+    // Get filter
+
+    public getFilter( group: TFilterGroup, key: string ) : TFilter[] | false {
+        let filter = ( this.data[ group ] as any )?.[ key ];
+        if ( ! filter ) filter = this.loadFilter( group, key );
+        return filter ?? [];
+    }
+
+    public getFilterByPath ( path: string ) : TFilter[] | false {
+        const [ group, key ] = this.splitPath( path ) ?? [];
+        return group && key ? this.getFilter( group, key ) : false;
     }
 
     // Init DB
