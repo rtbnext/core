@@ -85,4 +85,13 @@ export abstract class Index<
         this.saveIndex();
     }
 
+    // Search index items
+
+    public search ( query: string, looseMatch: boolean = false ) : T {
+        const tokens = Utils.buildSearchText( query ).split( ' ' ).filter( Boolean );
+        return new Map( [ ...this.index ].filter( ( [ _, { text } ] ) =>
+            Utils.tokenSearch( text, tokens, looseMatch )
+        ) ) as T;
+    }
+
 }
