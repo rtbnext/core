@@ -74,6 +74,19 @@ export abstract class Index<
         }, `Failed to update index [${this.type}] item: ${uriLike}` ) ?? false;
     }
 
+    public delta (
+        items: { uriLike: string, data: Partial< I > }[],
+        allowUpdate: boolean = true
+    ) : number {
+        const updated = items.reduce( ( count, { uriLike, data } ) => count + (
+            this.update( uriLike, data, allowUpdate, false ) ? 1 : 0
+        ), 0 );
+
+        this.saveIndex();
+        log.debug( `Index [${this.type}] delta applied: ${updated} items updated` );
+        return updated;
+    }
+
     public add ( uriLike: string, data: I ) : I | false {
         log.debug( `Adding index [${this.type}] item: ${uriLike}` );
         return this.update( uriLike, data, false );
