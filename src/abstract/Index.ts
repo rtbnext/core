@@ -1,3 +1,4 @@
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { IIndex } from '@/interfaces/index';
 import { TIndex } from '@rtbnext/schema/src/abstract/generic';
@@ -18,6 +19,7 @@ export abstract class Index<
 
     protected loadIndex () : T {
         const raw = Index.storage.readJSON< Record< string, I > > ( this.path ) ?? {};
+        log.debug( `Index loaded: ${ Object.keys( raw ).length } items from ${this.path}` );
         return new Map( Object.entries( raw ) ) as T;
     }
 
