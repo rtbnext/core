@@ -75,6 +75,14 @@ export class Filter implements IFilter {
         }, `Failed to save filter at ${group}/${key}` );
     }
 
+    private saveGroup ( group: TFilterGroup, data: Record< string | number, TFilter[] > ) : void {
+        Object.entries( data ).forEach( ( [ key, list ] ) => this.saveFilter( group, key, list ) );
+    }
+
+    private saveSpecial ( special: TFilterSpecial, data: TFilter[] ) : void {
+        this.saveFilter( 'special', special, data );
+    }
+
     // Init DB
 
     public initDB () : void {
