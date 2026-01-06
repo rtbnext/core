@@ -148,17 +148,15 @@ export class Filter implements IFilter {
     // Aggregate filter data
 
     public static aggregate (
-        data: TProfileData, col: Partial< TFilterList > = { special: {
-            deceased: [], dropOff: [], family: [], selfMade: []
-        } }
+        data: TProfileData, col: Partial< TFilterList > = {}
     ) : Partial< TFilterList > {
         const { uri, info, realtime } = data;
         const item: TFilterItem = { uri, name: info.shortName ?? info.name, value: undefined };
         const decade = Parser.ageDecade( info.birthDate )?.toString();
 
-        const add = ( g: TFilterGroup, k: string | undefined, v: any = false ) : void => {
+        const add = ( g: TFilterGroup, k: string | undefined, v: any = null ) : void => {
             g && k && ( ( ( col as any )[ g ] ??= {} )[ k ] ??= [] ) &&
-            ( col as any )[ g ][ k ].push( { ...item, value: v === false ? k : v } )
+            ( col as any )[ g ][ k ].push( { ...item, value: v === null ? k : v } )
         };
 
         add( 'industry', info.industry );
