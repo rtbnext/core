@@ -13,5 +13,3 @@ export interface ISnapshot< T extends TSnapshot > {
     getLatest () : T | false;
     saveSnapshot ( snapshot: T, force: boolean = false ) : boolean;
 }
-
-export type IMover = ISnapshot< TMover >;

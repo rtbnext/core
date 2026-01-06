@@ -3,7 +3,7 @@ import { IFetch } from '@/interfaces/fetch';
 import { IFilter } from '@/interfaces/filter';
 import { IListIndex, IProfileIndex } from '@/interfaces/index';
 import { IQueue } from '@/interfaces/queue';
-import { IMover } from '@/interfaces/snapshot';
+import { IMover } from '@/interfaces/mover';
 import { IStorage } from '@/interfaces/storage';
 
 export interface TIndex {
