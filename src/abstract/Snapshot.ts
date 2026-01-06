@@ -1,7 +1,8 @@
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
+import { ISnapshot } from '@/interfaces/snapshot';
 
-export abstract class Snapshot {
+export abstract class Snapshot implements ISnapshot {
 
     protected static readonly storage = Storage.getInstance();
     protected dates: string[];
