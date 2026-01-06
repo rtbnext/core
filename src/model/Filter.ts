@@ -133,14 +133,9 @@ export class Filter implements IFilter {
 
     // Save (partial) filter collection
 
-    public save ( collection: Partial< TFilterCollection > ) : void {
-        FilterGroup.forEach( g => g !== 'special' && collection[ g ] &&
-            this.saveGroup( g, collection[ g ] )
-        );
-
-        FilterSpecial.forEach( s => collection.special?.[ s ] &&
-            this.saveSpecial( s, collection.special[ s ] )
-        );
+    public save ( col: Partial< TFilterCollection > ) : void {
+        FilterGroup.forEach( g => g !== 'special' && col[ g ] && this.saveGroup( g, col[ g ] ) );
+        FilterSpecial.forEach( s => col.special?.[ s ] && this.saveSpecial( s, col.special[ s ] ) );
     }
 
     // Instantiate
