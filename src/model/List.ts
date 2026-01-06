@@ -28,4 +28,18 @@ export class List extends Snapshot< TListSnapshot > implements IList {
         return this.item;
     }
 
+    // Save list snapshot
+
+    public saveSnapshot ( snapshot: TListSnapshot, force: boolean = false ) : boolean {
+        const res = super.saveSnapshot( snapshot, force );
+        if ( ! res || ! List.index.update( this.uri, {
+            date: snapshot.date,
+            count: snapshot.stats.count
+        } ) ) return false;
+
+        this.item.date = snapshot.date;
+        this.item.count = snapshot.stats.count;
+        return true;
+    }
+
 }
