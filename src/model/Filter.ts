@@ -22,9 +22,7 @@ export class Filter implements IFilter {
 
     private initDB () : void {
         log.debug( 'Initializing filter storage paths' );
-        [ ...FilterGroup, 'special' ].forEach(
-            group => Filter.storage.ensurePath( join( 'filter', group ), true )
-        );
+        FilterGroup.forEach( group => Filter.storage.ensurePath( join( 'filter', group ), true ) );
     }
 
     // Path helper
