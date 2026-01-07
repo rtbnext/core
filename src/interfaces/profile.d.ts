@@ -1,5 +1,5 @@
 import { TMetaData } from '@rtbnext/schema/src/abstract/generic';
-import { TProfileData, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
+import { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
 
 export interface IProfile {
     getUri () : string;
@@ -14,4 +14,8 @@ export interface IProfile {
         data: Partial< TProfileData >, aliases?: string[],
         mode: 'concat' | 'replace' | 'unique' = 'replace'
     ) : void;
+    getHistory () : TProfileHistory;
+    setHistory ( history: TProfileHistory ) : void;
+    addHistory ( row: TProfileHistoryItem ) : void;
+    mergeHistory ( history: TProfileHistory ) : void;
 }
