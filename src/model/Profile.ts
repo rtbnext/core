@@ -42,6 +42,19 @@ export class Profile implements IProfile {
         this.meta.lastModified = new Date().toISOString();
     }
 
+    private updateIndex ( aliases: string[] = [] ) : void {
+        const {
+            uri, info: { shortName: name }, bio: { cv },
+            wiki: { desc, image: { file, thumb } = {} } = {}
+        } = this.getData();
+
+        this.item = {
+            uri, name, desc, image: thumb ?? file,
+            aliases: Utils.mergeArray( this.item.aliases, aliases, 'unique' ),
+            text: Utils.buildSearchText( cv )
+        };
+    }
+
     // Basic getters
 
     public getUri () : string {
@@ -78,6 +91,7 @@ export class Profile implements IProfile {
 
     public setData ( data: TProfileData, aliases?: string[] ) : void {
         this.data = data;
+        this.updateIndex( aliases );
         this.touch();
     }
 
@@ -88,6 +102,7 @@ export class Profile implements IProfile {
         this.data = deepmerge< TProfileData >( this.getData(), data, {
             arrayMerge: ( t, s ) => Utils.mergeArray( t, s, mode )
         } );
+        this.updateIndex( aliases );
         this.touch();
     }
 
