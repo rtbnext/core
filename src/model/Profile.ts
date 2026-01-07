@@ -1,11 +1,12 @@
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import { IProfile } from '@/interfaces/profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { TMetaData } from '@rtbnext/schema/src/abstract/generic';
 import { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
-import deepmerge from 'deepmerge';
 import { join } from 'node:path';
+import deepmerge from 'deepmerge';
 
 export class Profile implements IProfile {
 
@@ -133,6 +134,25 @@ export class Profile implements IProfile {
             new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values()
         ).sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
         this.touch();
+    }
+
+    // Save profile data
+
+    public save () : void {
+        log.debug( `Saving profile: ${ this.uri }` );
+        Profile.index.update( this.uri, this.item );
+
+        this.data && Profile.storage.writeJSON< TProfileData >(
+            this.resolvePath( 'profile.json' ), this.data
+        );
+
+        this.history && Profile.storage.writeCSV< TProfileHistory >(
+            this.resolvePath( 'history.csv' ), this.history
+        );
+
+        this.meta && Profile.storage.writeJSON< TMetaData >(
+            this.resolvePath( 'meta.json' ), { '@metadata': this.meta }
+        );
     }
 
 }

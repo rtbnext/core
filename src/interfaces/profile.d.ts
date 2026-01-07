@@ -22,4 +22,5 @@ export interface IProfile {
     setHistory ( history: TProfileHistory ) : void;
     addHistory ( row: TProfileHistoryItem ) : void;
     mergeHistory ( history: TProfileHistory ) : void;
+    save () : void;
 }
