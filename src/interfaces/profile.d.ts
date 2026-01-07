@@ -24,4 +24,5 @@ export interface IProfile {
     addHistory ( row: TProfileHistoryItem ) : void;
     mergeHistory ( history: TProfileHistory ) : void;
     save () : void;
+    move ( uriLike: string, makeAlias: boolean = true ) : boolean;
 }
