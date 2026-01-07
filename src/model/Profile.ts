@@ -212,4 +212,28 @@ export class Profile implements IProfile {
         ) ?? false;
     }
 
+    // Create profile
+
+    public static create (
+        uriLike: string, data: TProfileData, history?: TProfileHistory, aliases: string[] = []
+    ) : Profile | false {
+        const uri = Utils.sanitize( uriLike );
+        const item = Profile.index.add( uri, {
+            uri, name: data.info.shortName ?? data.info.shortName, aliases,
+            desc: data.wiki?.desc, image: data.wiki?.image?.thumb ?? data.wiki?.image?.file,
+            text: Utils.buildSearchText( data.bio.cv )
+        } );
+        if ( ! item ) return false;
+
+        const profile = new Profile( item );
+        profile.setData( { ...{
+            info: {}, bio: {}, related: [], media: [], map: [],
+            ranking: [], annual: [], assets: []
+        }, ...data } );
+        profile.setHistory( history ?? [] );
+        profile.save();
+
+        return profile;
+    }
+
 }
