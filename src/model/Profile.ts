@@ -170,6 +170,7 @@ export class Profile implements IProfile {
     public move ( uriLike: string, makeAlias: boolean = true ) : boolean {
         const uri = Utils.sanitize( uriLike );
         log.debug( `Moving profile: ${this.uri} -> ${uri}` );
+
         return log.catch( () => {
             const item = Profile.index.move( this.uri, uri, makeAlias );
             if ( ! item ) throw new Error( `Failed to move profile index item` );
@@ -218,34 +219,48 @@ export class Profile implements IProfile {
         uriLike: string, data: TProfileData, history?: TProfileHistory, aliases: string[] = []
     ) : Profile | false {
         const uri = Utils.sanitize( uriLike );
-        const item = Profile.index.add( uri, {
-            uri, name: data.info.shortName ?? data.info.shortName, aliases,
-            desc: data.wiki?.desc, image: data.wiki?.image?.thumb ?? data.wiki?.image?.file,
-            text: Utils.buildSearchText( data.bio.cv )
-        } );
-        if ( ! item ) return false;
+        log.debug( `Creating profile: ${uri}` );
 
-        const profile = new Profile( item );
-        profile.setData( { ...{
-            info: {}, bio: {}, related: [], media: [], map: [],
-            ranking: [], annual: [], assets: []
-        }, ...data } );
-        profile.setHistory( history ?? [] );
-        profile.save();
+        return log.catch( () => {
+            const item = Profile.index.add( uri, {
+                uri, name: data.info.shortName ?? data.info.shortName, aliases,
+                desc: data.wiki?.desc, image: data.wiki?.image?.thumb ?? data.wiki?.image?.file,
+                text: Utils.buildSearchText( data.bio.cv )
+            } );
 
-        return profile;
+            if ( ! item ) throw new Error( `Failed to add profile to index` );
+
+            const profile = new Profile( item );
+            profile.setData( { ...{
+                info: {}, bio: {}, related: [], media: [], map: [],
+                ranking: [], annual: [], assets: []
+            }, ...data } );
+            profile.setHistory( history ?? [] );
+            profile.save();
+
+            log.debug( `Profile created: ${uri}` );
+            return profile;
+        }, `Failed to create profile: ${uri}` ) ?? false;
     }
 
     // Delete profile
 
     public static delete ( uriLike: string ) : boolean {
         const uri = Utils.sanitize( uriLike );
-        const path = join( 'profile', uri );
+        log.debug( `Deleting profile: ${uri}` );
 
-        try {
-            if ( ! Profile.storage.remove( path ) ) return false;
-            Profile.index.delete( uri ); return true;
-        } catch { return false }
+        return log.catch( () => {
+            const path = join( 'profile', uri );
+
+            if ( ! Profile.storage.remove( path ) ) {
+                throw new Error( `Failed to remove profile storage` );
+            }
+
+            Profile.index.delete( uri );
+
+            log.debug( `Profile deleted: ${uri}` );
+            return true;
+        }, `Failed to delete profile: ${uri}` ) ?? false;
     }
 
 }
