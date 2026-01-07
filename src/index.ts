@@ -11,6 +11,7 @@ import { TIndex, TModel, TServices } from '@/types/index';
 export * as Const from '@/core/Const';
 export { log } from '@/core/Logger';
 export { List } from '@/model/List';
+export { Profile } from '@/model/Profile';
 
 export const services: TServices = {
     config: Config.getInstance(),
