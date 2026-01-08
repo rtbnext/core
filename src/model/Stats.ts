@@ -71,6 +71,14 @@ export class Stats implements IStats {
 
     // Get grouped stats
 
+    public getGroupedStatsIndex ( group: TStatsGroup ) : S.TStatsGroup< string >[ 'index' ] {
+        return this.getStats< S.TStatsGroup< string >[ 'index' ] >( `${group}/index.json`, 'json' );
+    }
+
+    public getGroupedStatsHistory ( group: TStatsGroup, key: string ) : S.THistory {
+        return this.getStats< S.THistory >( `${group}/${key}.csv`, 'csv' );
+    }
+
     // Stats setter
 
     public setGlobalStats ( data: Partial< S.TGlobalStats > ) : boolean {
