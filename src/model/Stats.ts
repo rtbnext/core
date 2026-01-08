@@ -98,6 +98,15 @@ export class Stats implements IStats {
         }, `Failed to generate DB stats` ) ?? false;
     }
 
+    // Update history (add new line)
+
+    public updateHistory ( data: S.TGlobalStats ) : boolean {
+        return Stats.storage.datedCSV< S.THistoryItem >( this.resolvePath( 'history.csv' ), [
+            data.date, data.count, data.total, data.woman, data.quota,
+            data.today?.value ?? 0, data.today?.pct ?? 0
+        ], true );
+    }
+
     // Instantiate
 
     public static getInstance () : Stats {
