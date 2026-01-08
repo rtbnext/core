@@ -10,6 +10,7 @@ export interface IStats {
     getDBStats () : S.TDBStats;
     getGroupedStatsIndex ( group: TStatsGroup ) : S.TStatsGroup< string >[ 'index' ];
     getGroupedStatsHistory ( group: TStatsGroup, key: string ) : S.THistory;
+    getGroupedStats ( group: TStatsGroup ) : S.TStatsGroup< string >;
     setGlobalStats ( data: Partial< S.TGlobalStats > ) : boolean;
     setProfileStats ( data: Partial< S.TProfileStats > ) : boolean;
     setWealthStats ( data: Partial< S.TWealthStats > ) : boolean;
