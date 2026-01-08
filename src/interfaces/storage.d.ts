@@ -1,4 +1,5 @@
 export interface IStorage {
+    getRoot () : string;
     exists ( path: string ) : boolean;
     assertPath ( path: string ) : void | never;
     ensurePath ( path: string, isDir: boolean = false ) : void;

@@ -72,6 +72,10 @@ export class Storage implements IStorage {
 
     // Basic path operations
 
+    public getRoot () : string {
+        return this.path;
+    }
+
     public exists ( path: string ) : boolean {
         return existsSync( this.resolvePath( path ) );
     }
