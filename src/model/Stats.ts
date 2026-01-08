@@ -189,9 +189,21 @@ export class Stats implements IStats {
     // Aggregate stats data
 
     public static aggregate (
-        data: TProfileData, col: TStatsAggregator = {}
-    ) : TStatsAggregator {
-        return {};
+        data: TProfileData, col: Partial< TStatsAggregator > = {}
+    ) : Partial< TStatsAggregator > {
+        const { uri, info, realtime } = data;
+        const networth = realtime?.networth;
+        const rank = realtime?.rank;
+        const age = Parser.age( info.birthDate );
+        const decade = Parser.ageDecade( info.birthDate );
+        const woman = info.gender === 'f';
+        const item = { uri, name: info.shortName ?? info.name };
+
+        if ( info.gender && age && networth ) ( col.scatter ??= [] ).push( {
+            ...item, gender: info.gender, age, networth
+        } );
+
+        return col;
     }
 
 }
