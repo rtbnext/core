@@ -1,8 +1,10 @@
 import { StatsGroup } from '@/core/Const';
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
+import { Utils } from '@/core/Utils';
 import { IStats } from '@/interfaces/stats';
 import * as S from '@rtbnext/schema/src/model/stats';
+import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 export class Stats implements IStats {
@@ -23,6 +25,10 @@ export class Stats implements IStats {
 
     private resolvePath ( path: string ) : string {
         return join( 'stats', path );
+    }
+
+    private prepStats< T >( data: Partial< T > ) : T {
+        return { ...data, ...Utils.metaData() } as T;
     }
 
     private getStats< T > ( path: string, format: 'json' | 'csv' ) : T {
@@ -59,6 +65,28 @@ export class Stats implements IStats {
 
     public getScatter () : S.TScatter {
         return this.getStats< S.TScatter >( 'scatter.json', 'json' );
+    }
+
+    // generate DB stats
+
+    public generateDBStats () : boolean {
+        const stats = { files: 0, size: 0 };
+
+        const scan = ( path: string ) : void => {
+            readdirSync( path, { recursive: true } ).forEach( p => {
+                if ( p === '.' || p === '..' || typeof p !== 'string' ) return;
+                const fullPath = join( path, p );
+                const stat = Stats.storage.stat( fullPath );
+                if ( stat ) stat.isDirectory() ? scan( fullPath ) : (
+                    stats.files++, stats.size += stat.size
+                );
+            } );
+        };
+
+        scan( Stats.storage.getRoot() );
+        return this.saveStats< S.TDBStats >(
+            'db.json', 'json', this.prepStats< S.TDBStats >( stats )
+        );
     }
 
     // Instantiate
