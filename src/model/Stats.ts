@@ -48,10 +48,6 @@ export class Stats implements IStats {
         return this.getStats< S.TGlobalStats >( 'global.json', 'json' );
     }
 
-    public getHistory () : S.THistory {
-        return this.getStats< S.THistory >( 'history.csv', 'csv' );
-    }
-
     public getProfileStats () : S.TProfileStats {
         return this.getStats< S.TProfileStats >( 'profile.json', 'json' );
     }
@@ -64,6 +60,10 @@ export class Stats implements IStats {
         return this.getStats< S.TScatter >( 'scatter.json', 'json' );
     }
 
+    public getHistory () : S.THistory {
+        return this.getStats< S.THistory >( 'history.csv', 'csv' );
+    }
+
     public getDBStats () : S.TDBStats {
         return this.getStats< S.TDBStats >( 'db.json', 'json' );
     }
@@ -72,6 +72,18 @@ export class Stats implements IStats {
 
     public setGlobalStats ( data: Partial< S.TGlobalStats > ) : boolean {
         return this.saveStats( 'global.json', 'json', this.prepStats( data ) );
+    }
+
+    public setProfileStats ( data: Partial< S.TProfileStats > ) : boolean {
+        return this.saveStats( 'profile.json', 'json', this.prepStats( data ) );
+    }
+
+    public setWealthStats ( data: Partial< S.TWealthStats > ) : boolean {
+        return this.saveStats( 'wealth.json', 'json', this.prepStats( data ) );
+    }
+
+    public setScatter ( data: Partial< S.TScatter > ) : boolean {
+        return this.saveStats( 'scatter.json', 'json', this.prepStats( data ) );
     }
 
     // Update history (add new line)
