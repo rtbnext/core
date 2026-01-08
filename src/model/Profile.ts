@@ -4,7 +4,7 @@ import { Utils } from '@/core/Utils';
 import { IProfile } from '@/interfaces/profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { TMetaData } from '@rtbnext/schema/src/abstract/generic';
-import { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
+import * as P from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 import deepmerge from 'deepmerge';
 
@@ -15,12 +15,12 @@ export class Profile implements IProfile {
 
     private uri: string;
     private path: string;
-    private item: TProfileIndexItem;
-    private data?: TProfileData;
-    private history?: TProfileHistory;
+    private item: P.TProfileIndexItem;
+    private data?: P.TProfileData;
+    private history?: P.TProfileHistory;
     private meta: TMetaData;
 
-    private constructor ( item?: TProfileIndexItem ) {
+    private constructor ( item?: P.TProfileIndexItem ) {
         if ( ! item ) throw new Error( `Profile index item not given` );
 
         this.uri = item.uri;
@@ -62,7 +62,7 @@ export class Profile implements IProfile {
         return this.uri;
     }
 
-    public getItem () : TProfileIndexItem {
+    public getItem () : P.TProfileIndexItem {
         return this.item;
     }
 
@@ -90,14 +90,14 @@ export class Profile implements IProfile {
 
     // Manage profile data
 
-    public getData () : TProfileData {
-        return this.data ||= Profile.storage.readJSON< TProfileData >(
+    public getData () : P.TProfileData {
+        return this.data ||= Profile.storage.readJSON< P.TProfileData >(
             join( this.path, 'profile.json' )
-        ) || {} as TProfileData;
+        ) || {} as P.TProfileData;
     }
 
     public setData (
-        data: TProfileData, aliases?: string[],
+        data: P.TProfileData, aliases?: string[],
         aliasMode: 'replace' | 'unique' = 'unique'
     ) : void {
         this.data = data;
@@ -106,11 +106,11 @@ export class Profile implements IProfile {
     }
 
     public updateData (
-        data: Partial< TProfileData >, aliases?: string[],
+        data: Partial< P.TProfileData >, aliases?: string[],
         mode: 'concat' | 'replace' | 'unique' = 'replace',
         aliasMode: 'replace' | 'unique' = 'unique'
     ) : void {
-        this.data = deepmerge< TProfileData >( this.getData(), data, {
+        this.data = deepmerge< P.TProfileData >( this.getData(), data, {
             arrayMerge: ( t, s ) => Utils.mergeArray( t, s, mode )
         } );
         this.updateIndex( aliases, aliasMode );
@@ -119,23 +119,23 @@ export class Profile implements IProfile {
 
     // Manage profile history data
 
-    public getHistory () : TProfileHistory {
-        return this.history ||= Profile.storage.readCSV< TProfileHistory >(
+    public getHistory () : P.TProfileHistory {
+        return this.history ||= Profile.storage.readCSV< P.TProfileHistory >(
             join( this.path, 'history.csv' )
-        ) || [] as TProfileHistory;
+        ) || [] as P.TProfileHistory;
     }
 
-    public setHistory ( history: TProfileHistory ) : void {
+    public setHistory ( history: P.TProfileHistory ) : void {
         this.history = history;
         this.touch();
     }
 
-    public addHistory ( row: TProfileHistoryItem ) : void {
+    public addHistory ( row: P.TProfileHistoryItem ) : void {
         this.history = [ ...this.getHistory(), row ];
         this.touch();
     }
 
-    public mergeHistory ( history: TProfileHistory ) : void {
+    public mergeHistory ( history: P.TProfileHistory ) : void {
         this.history = Array.from(
             new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values()
         ).sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
@@ -151,11 +151,11 @@ export class Profile implements IProfile {
                 throw new Error( `Failed to update profile index` );
             }
 
-            if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
+            if ( this.data && ! Profile.storage.writeJSON< P.TProfileData >(
                 this.resolvePath( 'profile.json' ), this.data
             ) ) throw new Error( `Failed to write profile data` );
 
-            if ( this.history && ! Profile.storage.writeCSV< TProfileHistory >(
+            if ( this.history && ! Profile.storage.writeCSV< P.TProfileHistory >(
                 this.resolvePath( 'history.csv' ), this.history
             ) ) throw new Error( `Failed to write profile history` );
 
@@ -199,7 +199,7 @@ export class Profile implements IProfile {
         ) ?? false;
     }
 
-    public static getByItem ( item: TProfileIndexItem ) : Profile | false {
+    public static getByItem ( item: P.TProfileIndexItem ) : Profile | false {
         return log.catch(
             () => new Profile( item ),
             `Failed to get profile by item: ${item.uri}`
@@ -216,7 +216,7 @@ export class Profile implements IProfile {
     // Create profile
 
     public static create (
-        uriLike: string, data: TProfileData, history?: TProfileHistory, aliases: string[] = []
+        uriLike: string, data: P.TProfileData, history?: P.TProfileHistory, aliases: string[] = []
     ) : Profile | false {
         const uri = Utils.sanitize( uriLike );
         log.debug( `Creating profile: ${uri}` );
