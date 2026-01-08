@@ -8,4 +8,5 @@ export interface IStats {
     getWealthStats () : S.TWealthStats;
     getScatter () : S.TScatter;
     generateDBStats () : boolean;
+    updateHistory ( data: S.TGlobalStats ) : boolean;
 }
