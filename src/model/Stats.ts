@@ -2,7 +2,7 @@ import { StatsGroup } from '@/core/Const';
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { IStats } from '@/interfaces/stats';
-import { TDBStats, TGlobalStats, THistory, TProfileStats, TScatter, TWealthStats } from '@rtbnext/schema/src/model/stats';
+import * as S from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
 export class Stats implements IStats {
@@ -32,28 +32,28 @@ export class Stats implements IStats {
 
     // Stats getter
 
-    public getGlobalStats () : TGlobalStats {
-        return this.getStats< TGlobalStats >( 'global.json', 'json' );
+    public getGlobalStats () : S.TGlobalStats {
+        return this.getStats< S.TGlobalStats >( 'global.json', 'json' );
     }
 
-    public getDBStats () : TDBStats {
-        return this.getStats< TDBStats >( 'db.json', 'json' );
+    public getDBStats () : S.TDBStats {
+        return this.getStats< S.TDBStats >( 'db.json', 'json' );
     }
 
-    public getHistory () : THistory {
-        return this.getStats< THistory >( 'history.csv', 'csv' );
+    public getHistory () : S.THistory {
+        return this.getStats< S.THistory >( 'history.csv', 'csv' );
     }
 
-    public getProfileStats () : TProfileStats {
-        return this.getStats< TProfileStats >( 'profile.json', 'json' );
+    public getProfileStats () : S.TProfileStats {
+        return this.getStats< S.TProfileStats >( 'profile.json', 'json' );
     }
 
-    public getWealthStats () : TWealthStats {
-        return this.getStats< TWealthStats >( 'wealth.json', 'json' );
+    public getWealthStats () : S.TWealthStats {
+        return this.getStats< S.TWealthStats >( 'wealth.json', 'json' );
     }
 
-    public getScatter () : TScatter {
-        return this.getStats< TScatter >( 'scatter.json', 'json' );
+    public getScatter () : S.TScatter {
+        return this.getStats< S.TScatter >( 'scatter.json', 'json' );
     }
 
     // Instantiate
