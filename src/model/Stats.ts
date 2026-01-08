@@ -29,7 +29,7 @@ export class Stats implements IStats {
     }
 
     private prepStats< T >( data: Partial< T > ) : T {
-        return { ...data, ...Utils.metaData() } as T;
+        return { ...Utils.metaData(), ...data } as T;
     }
 
     private getStats< T > ( path: string, format: 'json' | 'csv' ) : T {
