@@ -1,9 +1,12 @@
+import { Stats } from 'node:fs';
+
 export interface IStorage {
     getRoot () : string;
     exists ( path: string ) : boolean;
     assertPath ( path: string ) : void | never;
     ensurePath ( path: string, isDir: boolean = false ) : void;
     scanDir ( path: string, ext: string[] = [ 'json', 'csv' ] ) : string[];
+    stat ( path: string ) : Stats | false;
     readJSON< T > ( path: string ) : T | false;
     writeJSON< T > ( path: string, content: T ) : boolean;
     readCSV< T extends any[] > ( path: string ) : T | false;
