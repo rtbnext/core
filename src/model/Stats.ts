@@ -81,12 +81,9 @@ export class Stats implements IStats {
 
     public getGroupedStats ( group: TStatsGroup ) : S.TStatsGroup< string > {
         const index = this.getGroupedStatsIndex( group );
-        const history = {};
-
-        for ( const key of Object.keys( index.items ) ) {
-            ( history as any )[ key ] = this.getGroupedStatsHistory( group, key );
-        }
-
+        const history = Object.fromEntries( Object.keys( index.items ).map(
+            k => [ k, this.getGroupedStatsHistory( group, k ) ]
+        ) );
         return { index, history };
     }
 
