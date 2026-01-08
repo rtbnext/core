@@ -3,7 +3,7 @@ import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import { IStorage } from '@/interfaces/storage';
 import { TStorageConfig } from '@/types/config';
-import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import fs from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { parse, stringify } from 'csv-string';
 
@@ -42,7 +42,7 @@ export class Storage implements IStorage {
     private read ( path: string, type?: 'raw' | 'json' | 'csv' ) : any {
         return log.catch( () => {
             this.assertPath( path = this.resolvePath( path ) );
-            const content = readFileSync( path, 'utf8' );
+            const content = fs.readFileSync( path, 'utf8' );
             switch ( type ?? this.fileExt( path ) ) {
                 case 'raw': return content;
                 case 'json': return JSON.parse( content );
@@ -65,7 +65,7 @@ export class Storage implements IStorage {
                 ).trim(); break;
             }
             if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
-            ( options.append ? appendFileSync : writeFileSync )( path, content, 'utf8' );
+            ( options.append ? fs.appendFileSync : fs.writeFileSync )( path, content, 'utf8' );
             log.debug( `Wrote data to ${path}`, options );
         }, `Failed to write ${path}` );
     }
@@ -77,7 +77,7 @@ export class Storage implements IStorage {
     }
 
     public exists ( path: string ) : boolean {
-        return existsSync( this.resolvePath( path ) );
+        return fs.existsSync( this.resolvePath( path ) );
     }
 
     public assertPath ( path: string ) : void | never {
@@ -86,14 +86,21 @@ export class Storage implements IStorage {
 
     public ensurePath ( path: string, isDir: boolean = false ) : void {
         path = this.resolvePath( path );
-        mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
+        fs.mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
     }
 
     public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ] ) : string[] {
         return log.catch( () => {
             this.assertPath( path = this.resolvePath( path ) );
-            return readdirSync( path ).filter( f => ext.includes( this.fileExt( f ) ) );
+            return fs.readdirSync( path ).filter( f => ext.includes( this.fileExt( f ) ) );
         }, `Failed to scan ${path}` ) ?? [];
+    }
+
+    public stat ( path: string ) : fs.Stats | false {
+        return log.catch( () => {
+            this.assertPath( path = this.resolvePath( path ) );
+            return fs.statSync( path );
+        }, `Failed to stat ${path}` ) ?? false;
     }
 
     // JSON files
@@ -147,7 +154,7 @@ export class Storage implements IStorage {
                 if ( force ) this.remove( to, true );
                 else throw new Error( `Destination path ${to} already exists` );
             }
-            renameSync( from, to );
+            fs.renameSync( from, to );
             log.debug( `Moved ${from} to ${to}` );
             return true;
         }, `Failed to move ${from} to ${to}` );
@@ -156,7 +163,7 @@ export class Storage implements IStorage {
     public remove ( path: string, force: boolean = true ) : boolean {
         return !! log.catch( () => {
             this.assertPath( path = this.resolvePath( path ) );
-            rmSync( path, { recursive: true, force } );
+            fs.rmSync( path, { recursive: true, force } );
             log.debug( `Removed ${path}` );
             return true;
         }, `Failed to delete ${path}` );
