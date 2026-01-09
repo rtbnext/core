@@ -253,9 +253,9 @@ export class Stats implements IStats {
         const age = Parser.age( info.birthDate );
         const item = { uri, name: info.shortName ?? info.name };
 
-        const inc = ( path: string, k?: any, v?: number ) : void => path.split( '.' ).reduce(
-            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1 && k
-                ? ( curr[ p ][ k ] = ( curr[ p ][ k ] || 0 ) + ( v ?? 1 ) )
+        const inc = ( path: string, n?: number ) : void => path.split( '.' ).reduce(
+            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1
+                ? ( curr[ p ] = ( curr[ p ] || 0 ) + ( n ?? 1 ) )
                 : ( curr = curr[ p ] ), curr ), col );
 
         const max = ( path: string, n: number ) : void => path.split( '.' ).reduce(
@@ -275,23 +275,25 @@ export class Stats implements IStats {
             ...item, gender: info.gender, age, networth
         } );
 
-        if ( info.gender ) inc( 'profile.gender', info.gender );
-        if ( info.maritalStatus ) inc( 'profile.maritalStatus', info.maritalStatus );
-        if ( info.selfMade?.rank ) inc( 'profile.selfMade', info.selfMade.rank );
-        if ( info.philanthropyScore ) inc( 'profile.philanthropyScore', info.philanthropyScore );
+        if ( info.gender ) inc( `profile.gender.${info.gender}` );
+        if ( info.maritalStatus ) inc( `profile.maritalStatus.${info.maritalStatus}` );
+        if ( info.selfMade?.rank ) inc( `profile.selfMade.${info.selfMade.rank}` );
+        if ( info.philanthropyScore ) inc( `profile.philanthropyScore.${info.philanthropyScore}` );
 
         if ( info.gender && age ) {
-            inc( `profile.agePyramid.${info.gender}`, 'count' );
-            inc( `profile.agePyramid.${info.gender}.decades`, Parser.ageDecade( info.birthDate ) );
+            inc( `profile.agePyramid.${info.gender}.count` );
             max( `profile.agePyramid.${info.gender}.max`, age );
             min( `profile.agePyramid.${info.gender}.min`, age );
+            inc( `profile.agePyramid.${info.gender}.decades.${
+                Parser.ageDecade( info.birthDate )
+            }` );
         }
 
         if ( info.children ) {
-            inc( 'profile.children.full', info.children );
-            inc( 'profile.children.short', short( info.children ) );
+            inc( `profile.children.full.${info.children}` );
+            inc( `profile.children.short.${short( info.children )}` );
         } else {
-            inc( 'profile.children.short', 'none' );
+            inc( 'profile.children.short.none' );
         }
 
         return col;
