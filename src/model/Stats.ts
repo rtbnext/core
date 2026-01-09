@@ -271,10 +271,6 @@ export class Stats implements IStats {
         const short = ( n: number ) => n >= 10 ? 'over-10' : n >= 5 ? '5-to-10' : n === 4
             ? 'four' : n === 3 ? 'three' : n === 2 ? 'two' : n === 1 ? 'one' : 'none';
 
-        if ( info.gender && age && networth ) ( col.scatter ??= [] ).push( {
-            ...item, gender: info.gender, age, networth
-        } );
-
         if ( info.gender ) inc( `profile.gender.${info.gender}` );
         if ( info.maritalStatus ) inc( `profile.maritalStatus.${info.maritalStatus}` );
         if ( info.selfMade?.rank ) inc( `profile.selfMade.${info.selfMade.rank}` );
@@ -296,6 +292,14 @@ export class Stats implements IStats {
         } else {
             inc( 'profile.children.short.none' );
         }
+
+        if ( ! networth || realtime?.date !== date ) return col;
+
+        if ( info.gender && age && networth ) ( col.scatter ??= [] ).push( {
+            ...item, gender: info.gender, age, networth
+        } );
+
+        //
 
         return col;
     }
