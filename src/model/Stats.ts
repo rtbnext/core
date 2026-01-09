@@ -251,6 +251,11 @@ export class Stats implements IStats {
                 ) + 1;
             } );
         } );
+
+        return {
+            total, median, mean, stdDev, percentiles, quartiles, decades, gender, spread,
+            max: scatter.at( -1 )!.networth, min: scatter[ 0 ].networth
+        };
     }
 
 }
