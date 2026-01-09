@@ -249,6 +249,12 @@ export class Stats implements IStats {
     // Aggregate stats data
 
     public static aggregate ( data: TProfileData, date: string, col: any = {} ) : any {
+        const inc = ( path: string, key?: string ) : void => path.split( '.' ).reduce(
+            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1 && key
+                ? ( curr[ p ][ key ] = ( curr[ p ][ key ] || 0 ) + 1 )
+                : ( curr = curr[ p ] ), curr ), col
+        );
+
         const { uri, info, realtime } = data;
         const networth = realtime?.networth;
         const rank = realtime?.rank;
@@ -258,6 +264,8 @@ export class Stats implements IStats {
         if ( info.gender && age ) ( col.scatter ??= [] ).push( {
             ...item, gender: info.gender, age, networth
         } );
+
+        if ( info.gender ) inc( 'profile.gender', info.gender );
 
         return col;
     }
