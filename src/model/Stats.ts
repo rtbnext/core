@@ -169,8 +169,9 @@ export class Stats implements IStats {
     public updateHistory ( data: Partial< S.TGlobalStats > ) : boolean {
         return log.catch(
             () => Stats.storage.datedCSV< S.THistoryItem >( this.resolvePath( 'history.csv' ), [
-                data.date!, data.count!, data.total!, data.woman!, data.quota!,
-                data.today?.value ?? 0, data.today?.pct ?? 0
+                Parser.date( data.date, 'ymd' )!, Parser.number( data.count ),
+                Parser.money( data.total ), Parser.number( data.woman ), Parser.pct( data.quota ),
+                Parser.money( data.today?.value ), Parser.pct( data.today?.pct )
             ], true ),
             `Failed to update history`
         ) ?? false;
