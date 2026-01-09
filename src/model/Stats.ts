@@ -1,4 +1,4 @@
-import { Percentiles, StatsGroup } from '@/core/Const';
+import { Percentiles, StatsGroup, WealthSpread } from '@/core/Const';
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
@@ -235,6 +235,22 @@ export class Stats implements IStats {
             scatter[ Math.floor( count * 0.5 ) ].networth,
             scatter[ Math.floor( count * 0.75 ) ].networth
         ];
+
+        const decades: S.TWealthStats[ 'decades' ] = {};
+        const gender: S.TWealthStats[ 'gender' ] = {};
+        const spread: S.TWealthStats[ 'spread' ] = {};
+
+        scatter.forEach( item => {
+            const decade = Math.max( 30, Math.min( 90, Math.floor( item.age / 10 ) * 10 ) );
+            decades[ decade ] = Parser.money( ( decades[ decade ] || 0 ) + item.networth );
+            gender[ item.gender ] = Parser.money( ( gender[ item.gender ] || 0 ) + item.networth );
+
+            WealthSpread.forEach( n => {
+                if ( item.networth >= Number( n ) * 1000 ) ( spread as any )[ n ] = (
+                    ( spread as any )[ n ] || 0
+                ) + 1;
+            } );
+        } );
     }
 
 }
