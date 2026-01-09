@@ -206,4 +206,11 @@ export class Stats implements IStats {
         return col;
     }
 
+    public static calcWealthStats ( scatter: S.TScatterItem[] ) : any {
+        if ( ! scatter || ! scatter.length ) return;
+        scatter.sort( ( a, b ) => a.networth - b.networth );
+
+        //
+    }
+
 }
