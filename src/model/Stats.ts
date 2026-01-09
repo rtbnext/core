@@ -253,24 +253,19 @@ export class Stats implements IStats {
         const age = Parser.age( info.birthDate );
         const item = { uri, name: info.shortName ?? info.name };
 
-        const set = ( path: string, n: any ) : void => path.split( '.' ).reduce(
-            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1
-                ? ( curr[ p ] = n ) : ( curr = curr[ p ] ), curr ), col );
+        const upd = ( op: 'set' | 'inc' | 'max' | 'min', path: string, n?: any ) : void =>
+            path.split( '.' ).reduce( ( curr, p, i, arr ) => (
+                curr[ p ] ??= {}, i === arr.length - 1 ? ( op === 'set' ? ( curr[ p ] = n )
+                    : op === 'inc' ? ( curr[ p ] = ( curr[ p ] || 0 ) + ( n ?? 1 ) )
+                    : op === 'max' ? ( curr[ p ] = Math.max( curr[ p ] || -Infinity, n ) )
+                    : ( curr[ p ] = Math.min( curr[ p ] || Infinity, n ) )
+                ) : ( curr = curr[ p ] ), curr ), col
+            );
 
-        const inc = ( path: string, n?: number ) : void => path.split( '.' ).reduce(
-            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1
-                ? ( curr[ p ] = ( curr[ p ] || 0 ) + ( n ?? 1 ) )
-                : ( curr = curr[ p ] ), curr ), col );
-
-        const max = ( path: string, n: number ) : void => path.split( '.' ).reduce(
-            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1
-                ? ( curr[ p ] = Math.max( curr[ p ] || -Infinity, n ) )
-                : ( curr = curr[ p ] ), curr ), col );
-
-        const min = ( path: string, n: number ) : void => path.split( '.' ).reduce(
-            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1
-                ? ( curr[ p ] = Math.min( curr[ p ] || Infinity, n ) )
-                : ( curr = curr[ p ] ), curr ), col );
+        const set = ( path: string, n: any ) : void => upd( 'set', path, n );
+        const inc = ( path: string, n?: number ) : void => upd( 'inc', path, n );
+        const max = ( path: string, n: number ) : void => upd( 'max', path, n );
+        const min = ( path: string, n: number ) : void => upd( 'min', path, n );
 
         const short = ( n: number ) => n >= 10 ? 'over-10' : n >= 5 ? '5-to-10' : n === 4
             ? 'four' : n === 3 ? 'three' : n === 2 ? 'two' : n === 1 ? 'one' : 'none';
