@@ -282,6 +282,7 @@ export class Stats implements IStats {
 
         if ( info.gender && age ) {
             inc( `profile.agePyramid.${info.gender}.count` );
+            inc( `profile.agePyramid.${info.gender}.total`, age );
             max( `profile.agePyramid.${info.gender}.max`, age );
             min( `profile.agePyramid.${info.gender}.min`, age );
             inc( `profile.agePyramid.${info.gender}.decades.${
@@ -291,7 +292,7 @@ export class Stats implements IStats {
 
         if ( info.children ) {
             inc( `profile.children.full.${info.children}` );
-            inc( `profile.children.short.${short( info.children )}` );
+            inc( `profile.children.short.${ short( info.children ) }` );
         } else {
             inc( 'profile.children.short.none' );
         }
