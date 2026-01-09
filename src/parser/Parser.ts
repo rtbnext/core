@@ -52,6 +52,17 @@ export class Parser {
         ).filter( Boolean ) as T[];
     }
 
+    public static obj< T = any > (
+        value: T, type: keyof typeof Parser = 'primitive',
+        strict: boolean = true, ...args: any
+    ) : T {
+        if ( typeof value !== 'object' || value === null ) return {} as T;
+        return Object.fromEntries( Object.entries( value ).map( ( [ k, v ] ) => [
+            k, strict ? Parser.strict( v, type, ...( args || [] ) )
+                : ( Parser as any )[ type ]( v, ...( args || [] ) )
+        ] ) ) as T;
+    }
+
     public static map<
         T extends Primitive,
         L extends readonly T[] | Record< string | number, T >
