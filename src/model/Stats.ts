@@ -271,6 +271,11 @@ export class Stats implements IStats {
             inc( `profile.agePyramid.${info.gender}.total`, age );
             max( `profile.agePyramid.${info.gender}.max`, age );
             min( `profile.agePyramid.${info.gender}.min`, age );
+
+            set( `profile.agePyramid.${info.gender}.mean`, (
+                col.profile.agePyramid[ info.gender ].total /
+                col.profile.agePyramid[ info.gender ].count
+            ) );
         }
 
         if ( info.children ) {
@@ -294,7 +299,8 @@ export class Stats implements IStats {
                 inc( `groups.${key}.${k}.woman`, +( info.gender === 'f' ) );
 
                 set( `groups.${key}.${k}.quota`, (
-                    col.groups[ key ][ k ].woman / col.groups[ key ][ k ].count * 100
+                    col.groups[ key ][ k ].woman /
+                    col.groups[ key ][ k ].count * 100
                 ) );
 
                 inc( `groups.${key}.${k}.today.value`, realtime.today?.value ?? 0 );
