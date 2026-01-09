@@ -4,6 +4,7 @@ import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import { IStats } from '@/interfaces/stats';
 import { Parser } from '@/parser/Parser';
+import { TChangeItem } from '@rtbnext/schema/src/abstract/assets';
 import { TStatsGroup } from '@rtbnext/schema/src/abstract/const';
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
 import * as S from '@rtbnext/schema/src/model/stats';
@@ -100,11 +101,11 @@ export class Stats implements IStats {
                 total: { value: data.total, type: 'money' },
                 woman: { value: data.woman, type: 'number' },
                 quota: { value: data.quota, type: 'pct' },
-                today: { value: Parser.container< S.TGlobalStats[ 'today' ] >( {
+                today: { value: Parser.container< TChangeItem >( {
                     value: { value: data.today?.value, type: 'money' },
                     pct: { value: data.today?.pct, type: 'pct' }
                 } ), type: 'container' },
-                ytd: { value: Parser.container< S.TGlobalStats[ 'ytd' ] >( {
+                ytd: { value: Parser.container< TChangeItem >( {
                     value: { value: data.ytd?.value, type: 'money' },
                     pct: { value: data.ytd?.pct, type: 'pct' }
                 } ), type: 'container' },
@@ -269,16 +270,21 @@ export class Stats implements IStats {
         return log.catch( () => {
             const items = Object.fromEntries(
                 Object.entries< S.TStatsGroupItem >( raw ).map( ( [ key, item ] ) => {
-                    item.total = Parser.money( item.total );
-                    item.quota = Parser.pct( item.quota );
-                    item.today = {
-                        value: Parser.money( item.today?.value ),
-                        pct: Parser.pct( item.today?.pct )
-                    };
-                    item.ytd = {
-                        value: Parser.money( item.ytd?.value ),
-                        pct: Parser.pct( item.ytd?.pct )
-                    };
+                    item = { first: item.first, ...Parser.container( {
+                        date: { value: item.date, type: 'date', args: [ 'ymd' ] },
+                        count: { value: item.count, type: 'number' },
+                        total: { value: item.total, type: 'money' },
+                        woman: { value: item.woman, type: 'number' },
+                        quota: { value: item.quota, type: 'pct' },
+                        today: { value: Parser.container< TChangeItem >( {
+                            value: { value: item.today?.value, type: 'money' },
+                            pct: { value: item.today?.pct, type: 'pct' }
+                        } ), type: 'container' },
+                        ytd: { value: Parser.container< TChangeItem >( {
+                            value: { value: item.ytd?.value, type: 'money' },
+                            pct: { value: item.ytd?.pct, type: 'pct' }
+                        } ), type: 'container' }
+                    } ) } as S.TStatsGroupItem;
 
                     Stats.storage.datedCSV< S.THistoryItem >(
                         this.resolvePath( `${group}/${key}.csv` ),
