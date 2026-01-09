@@ -93,7 +93,27 @@ export class Stats implements IStats {
     // Stats setter
 
     public setGlobalStats ( data: Partial< S.TGlobalStats > ) : boolean {
-        return this.saveStats( 'global.json', 'json', this.prepStats( data ) );
+        return this.saveStats( 'global.json', 'json', this.prepStats(
+            Parser.container< Partial< S.TGlobalStats > >( {
+                date: { value: data.date, type: 'date', args: [ 'ymd' ] },
+                count: { value: data.count, type: 'number' },
+                total: { value: data.total, type: 'money' },
+                woman: { value: data.woman, type: 'number' },
+                quota: { value: data.quota, type: 'pct' },
+                today: { value: Parser.container< S.TGlobalStats[ 'today' ] >( {
+                    value: { value: data.today?.value, type: 'money' },
+                    pct: { value: data.today?.pct, type: 'pct' }
+                } ), type: 'container' },
+                ytd: { value: Parser.container< S.TGlobalStats[ 'ytd' ] >( {
+                    value: { value: data.ytd?.value, type: 'money' },
+                    pct: { value: data.ytd?.pct, type: 'pct' }
+                } ), type: 'container' },
+                stats: { value: Parser.container< S.TGlobalStats[ 'stats' ] >( {
+                    profiles: { value: data.stats?.profiles, type: 'number' },
+                    days: { value: data.stats?.days, type: 'number' }
+                } ), type: 'container' }
+            } )
+        ) );
     }
 
     public setProfileStats ( data: Partial< S.TProfileStats > ) : boolean {
