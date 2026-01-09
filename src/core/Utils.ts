@@ -92,6 +92,26 @@ export class Utils {
         }
     }
 
+    // Deep object updates
+
+    public static update (
+        operator:
+            | 'set' | 'inc' | 'max' | 'min' | 'append' | 'prepend'
+            | ( ( curr: any, p: string ) => any ),
+        obj: any, path: string, n?: any
+    ) : void {
+        return path.split( '.' ).reduce( ( curr, p, i, arr ) => (
+            curr[ p ] ??= {}, i === arr.length - 1 ? ( operator === 'set' ? ( curr[ p ] = n )
+                : operator === 'inc' ? ( curr[ p ] = ( curr[ p ] || 0 ) + ( n ?? 1 ) )
+                : operator === 'max' ? ( curr[ p ] = Math.max( curr[ p ] || -Infinity, n ) )
+                : operator === 'min' ? ( curr[ p ] = Math.min( curr[ p ] || Infinity, n ) )
+                : operator === 'append' ? ( curr[ p ] = [ ...( curr[ p ] || [] ), n ] )
+                : operator === 'prepend' ? ( curr[ p ] = [ n, ...( curr[ p ] || [] ) ] )
+                : operator( curr[ p ], p )
+            ) : ( curr = curr[ p ] ), curr ), obj
+        );
+    }
+
     // Sorting arrays and objects
 
     public static sort< L extends ListLike > (
