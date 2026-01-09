@@ -249,11 +249,10 @@ export class Stats implements IStats {
     // Aggregate stats data
 
     public static aggregate ( data: TProfileData, date: string, col: any = {} ) : any {
-        const inc = ( path: string, key?: string ) : void => path.split( '.' ).reduce(
-            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1 && key
-                ? ( curr[ p ][ key ] = ( curr[ p ][ key ] || 0 ) + 1 )
-                : ( curr = curr[ p ] ), curr ), col
-        );
+        const inc = ( path: string, k?: any, v?: number ) : void => path.split( '.' ).reduce(
+            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1 && k
+                ? ( curr[ p ][ k ] = ( curr[ p ][ k ] || 0 ) + ( v ?? 1 ) )
+                : ( curr = curr[ p ] ), curr ), col );
 
         const { uri, info, realtime } = data;
         const networth = realtime?.networth;
@@ -266,6 +265,9 @@ export class Stats implements IStats {
         } );
 
         if ( info.gender ) inc( 'profile.gender', info.gender );
+        if ( info.maritalStatus ) inc( 'profile.maritalStatus', info.maritalStatus );
+        if ( info.selfMade?.rank ) inc( 'profile.selfMade', info.selfMade.rank );
+        if ( info.philanthropyScore ) inc( 'profile.philanthropyScore', info.philanthropyScore );
 
         return col;
     }
