@@ -249,18 +249,21 @@ export class Stats implements IStats {
     // Aggregate stats data
 
     public static aggregate ( data: TProfileData, date: string, col: any = {} ) : any {
-        const inc = ( path: string, k?: any, v?: number ) : void => path.split( '.' ).reduce(
-            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1 && k
-                ? ( curr[ p ][ k ] = ( curr[ p ][ k ] || 0 ) + ( v ?? 1 ) )
-                : ( curr = curr[ p ] ), curr ), col );
-
         const { uri, info, realtime } = data;
         const networth = realtime?.networth;
         const rank = realtime?.rank;
         const age = Parser.age( info.birthDate );
         const item = { uri, name: info.shortName ?? info.name };
 
-        if ( info.gender && age ) ( col.scatter ??= [] ).push( {
+        const inc = ( path: string, k?: any, v?: number ) : void => path.split( '.' ).reduce(
+            ( curr, p, i, arr ) => ( curr[ p ] ??= {}, i === arr.length - 1 && k
+                ? ( curr[ p ][ k ] = ( curr[ p ][ k ] || 0 ) + ( v ?? 1 ) )
+                : ( curr = curr[ p ] ), curr ), col );
+
+        const short = ( n: number ) => n >= 10 ? 'over-10' : n >= 5 ? '5-to-10' : n === 4
+            ? 'four' : n === 3 ? 'three' : n === 2 ? 'two' : n === 1 ? 'one' : 'none';
+
+        if ( info.gender && age && networth ) ( col.scatter ??= [] ).push( {
             ...item, gender: info.gender, age, networth
         } );
 
@@ -268,6 +271,13 @@ export class Stats implements IStats {
         if ( info.maritalStatus ) inc( 'profile.maritalStatus', info.maritalStatus );
         if ( info.selfMade?.rank ) inc( 'profile.selfMade', info.selfMade.rank );
         if ( info.philanthropyScore ) inc( 'profile.philanthropyScore', info.philanthropyScore );
+
+        if ( info.children ) {
+            inc( 'profile.children.full', info.children );
+            inc( 'profile.children.short', short( info.children ) );
+        } else {
+            inc( 'profile.children.short', 'none' );
+        }
 
         return col;
     }
