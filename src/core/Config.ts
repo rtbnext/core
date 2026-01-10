@@ -43,6 +43,7 @@ export class Config implements IConfig {
     public get environment () : string { return this.env }
     public get config () : Conf.TConfigObject { return this.cfg }
     public get logging () : Conf.TLoggingConfig { return this.cfg.logging }
+    public get job () : Conf.TJobConfig { return this.cfg.job }
     public get storage () : Conf.TStorageConfig { return this.cfg.storage }
     public get fetch () : Conf.TFetchConfig { return this.cfg.fetch }
     public get queue () : Conf.TQueueConfig { return this.cfg.queue }
