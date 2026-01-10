@@ -40,4 +40,26 @@ export abstract class Job implements IJob {
         if ( ! this.silent ) log.errMsg( err, msg );
     }
 
+    // Job getter
+
+    public getJobName () : string {
+        return this.job;
+    }
+
+    public getArgs () : TArgs {
+        return this.args;
+    }
+
+    public isSilent () : boolean {
+        return this.silent;
+    }
+
+    public isSafeMode () : boolean {
+        return this.safeMode;
+    }
+
+    // Abstract job runner
+
+    public abstract run ( ...args: any[] ) : void | Promise< void >;
+
 }
