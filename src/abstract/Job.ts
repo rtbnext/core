@@ -17,10 +17,15 @@ export abstract class Job implements IJob {
 
     protected readonly job: string;
     protected readonly args: TArgs = {};
+    protected readonly silent: boolean;
+    protected readonly safeMode: boolean;
 
     constructor ( job: string ) {
         this.job = job;
         this.args = Utils.parseArgs( process.argv.slice( 2 ) );
+        this.silent = !! this.args.silent;
+        this.safeMode = !! this.args.safeMode;
+
         log.info( `Run job: ${job}`, this.args );
     }
 
