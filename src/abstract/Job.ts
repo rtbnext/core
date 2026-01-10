@@ -63,3 +63,5 @@ export abstract class Job implements IJob {
     public abstract run ( ...args: any[] ) : void | Promise< void >;
 
 }
+
+export function jobRunner< T extends typeof Job > () {}
