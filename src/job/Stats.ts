@@ -1,4 +1,5 @@
 import { Job, jobRunner } from '@/abstract/Job';
+import { StatsGroup } from '@/core/Const';
 import { IJob } from '@/interfaces/job';
 import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
@@ -20,6 +21,7 @@ export class StatsJob extends Job implements IJob {
             const index = ProfileIndex.getInstance().getIndex();
             if ( ! date || ! index.size ) throw new Error( `No data available` );
 
+            this.log( `Generating stats for ${date} with ${index.size} profiles` );
             let filter: any = {}, stats: any = {};
 
             for ( const item of index.values() ) {
@@ -31,9 +33,14 @@ export class StatsJob extends Job implements IJob {
                 Filter.aggregate( data, filter );
             }
 
+            this.log( `Saving stats for ${date}` );
             this.filter.save( filter );
             this.stats.setProfileStats( stats.profile );
+            this.stats.generateWealthStats( stats.scatter );
+            StatsGroup.forEach( g => this.stats.setGroupedStats( g, stats.groups[ g ] ) );
             this.stats.setScatter( stats.scatter );
+
+            this.log( `Stats generation completed` );
         } );
     }
 
