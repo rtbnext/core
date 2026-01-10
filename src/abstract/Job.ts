@@ -5,6 +5,7 @@ import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import { IJob } from '@/interfaces/job';
+import { Stats } from '@/model/Stats';
 import { TLoggingLevel } from '@/types/config';
 import { TArgs } from '@/types/generic';
 
@@ -15,6 +16,7 @@ export abstract class Job implements IJob {
     protected static readonly fetch = Fetch.getInstance();
     protected static readonly profileQueue = ProfileQueue.getInstance();
     protected static readonly listQueue = ListQueue.getInstance();
+    protected static readonly stats = Stats.getInstance();
 
     protected readonly job: string;
     protected readonly args: TArgs = {};
