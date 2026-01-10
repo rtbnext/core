@@ -7,13 +7,16 @@ import { Stats } from '@/model/Stats';
 
 export class StatsJob extends Job implements IJob {
 
+    private readonly filter = Filter.getInstance();
+    private readonly stats = Stats.getInstance();
+
     constructor ( args: string[] ) {
         super( args, 'Stats' );
     }
 
     public async run () : Promise< void > {
         await this.protect( async () => {
-            const date = Job.stats.getGlobalStats().date;
+            const date = this.stats.getGlobalStats().date;
             const index = ProfileIndex.getInstance().getIndex();
             if ( ! date || ! index.size ) throw new Error( `No data available` );
 
@@ -27,6 +30,8 @@ export class StatsJob extends Job implements IJob {
                 Stats.aggregate( data, date, stats );
                 Filter.aggregate( data, filter );
             }
+
+            this.filter.save( filter );
         } );
     }
 
