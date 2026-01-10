@@ -21,11 +21,13 @@ export abstract class Job implements IJob {
     protected readonly silent: boolean;
     protected readonly safeMode: boolean;
 
-    constructor ( job: string ) {
+    constructor ( job: string, args: string[] ) {
         this.job = job;
-        this.args = Utils.parseArgs( process.argv.slice( 2 ) );
-        this.silent = !! this.args.silent;
-        this.safeMode = !! this.args.safeMode;
+        this.args = Utils.parseArgs( args );
+
+        const { silent, safeMode } = Job.config.job;
+        this.silent = !! ( this.args.silent ?? silent );
+        this.safeMode = !! ( this.args.safeMode ?? safeMode );
 
         this.log( `Run job`, this.args );
     }
@@ -64,4 +66,7 @@ export abstract class Job implements IJob {
 
 }
 
-export function jobRunner< T extends typeof Job > () {}
+export function jobRunner< T extends typeof Job > (
+    cls: T, method: keyof InstanceType< T > = 'run',
+    trigger: string = '--run', ...args: string[]
+) : void {}
