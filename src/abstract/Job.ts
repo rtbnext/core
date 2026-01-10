@@ -77,16 +77,14 @@ export abstract class Job implements IJob {
 
 }
 
-export function jobRunner< T extends typeof Job > (
+export async function jobRunner< T extends typeof Job > (
     cls: T, method: keyof InstanceType< T > = 'run',
     trigger: string = '--run', ...opt: string[]
-) : void {
+) : Promise< void > {
     if ( ! process.argv.includes( trigger ) ) return;
 
-    try {
+    await log.catchAsync( async () => {
         const args = [ ...new Set( [ ...opt, ...process.argv.slice( 2 ) ] ) ];
         const job = new ( cls as any )( args ); ( job[ method ] as any )();
-    } catch ( err ) {
-        log.errMsg( err, `Failed to run job ${cls.name}` );
-    }
+    }, `Failed to run job ${cls.name}` );
 }
