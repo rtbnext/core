@@ -29,8 +29,8 @@ export class StatsJob extends Job implements IJob {
                 if ( ! profile ) continue;
 
                 const data = profile.getData();
-                Stats.aggregate( data, date, stats );
-                Filter.aggregate( data, filter );
+                stats = Stats.aggregate( data, date, stats );
+                filter = Filter.aggregate( data, filter );
             }
 
             this.log( `Saving stats for ${date}` );
