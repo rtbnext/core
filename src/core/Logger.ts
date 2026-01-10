@@ -1,14 +1,14 @@
 import { Config } from '@/core/Config';
 import { Utils } from '@/core/Utils';
 import { ILogger } from '@/interfaces/logger';
-import { TLoggingConfig } from '@/types/config';
+import { TLoggingConfig, TLoggingLevel } from '@/types/config';
 import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { exit } from 'node:process';
 
 export class Logger implements ILogger {
 
-    private static readonly level: Record< TLoggingConfig[ 'level' ], number > = {
+    private static readonly level: Record< TLoggingLevel, number > = {
         error: 0, warn: 1, info: 2, debug: 3
     };
 
@@ -25,18 +25,18 @@ export class Logger implements ILogger {
 
     // Internal helper methods
 
-    private shouldLog ( level: TLoggingConfig[ 'level' ] ) : boolean {
+    private shouldLog ( level: TLoggingLevel ) : boolean {
         return Logger.level[ level ] <= Logger.level[ this.config.level ];
     }
 
-    private format ( level: TLoggingConfig[ 'level' ], msg: string, meta?: any ) : string {
+    private format ( level: TLoggingLevel, msg: string, meta?: any ) : string {
         const entry = `[${ Utils.date( 'iso' ) }] ${ level.toUpperCase() } ${msg}`;
         if ( meta instanceof Error ) entry.concat( `: ${meta.message}` );
         else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
         return entry;
     }
 
-    private log2Console ( level: TLoggingConfig[ 'level' ], entry: string ) : void {
+    private log2Console ( level: TLoggingLevel, entry: string ) : void {
         ( console[ level ] ?? console.log )( entry );
     }
 
@@ -45,7 +45,7 @@ export class Logger implements ILogger {
         appendFileSync( path, entry + '\n', 'utf8' );
     }
 
-    private log ( level: TLoggingConfig[ 'level' ], msg: string, meta?: any ) : void {
+    private log ( level: TLoggingLevel, msg: string, meta?: any ) : void {
         if ( ! this.shouldLog( level ) ) return;
         const entry = this.format( level, msg, meta );
         if ( this.config.console ) this.log2Console( level, entry );
@@ -81,7 +81,7 @@ export class Logger implements ILogger {
     // Catch & log errors
 
     public catch< F extends ( ...args: any[] ) => any, R = ReturnType< F > > (
-        fn: F, msg: string, level: TLoggingConfig[ 'level' ] = 'error'
+        fn: F, msg: string, level: TLoggingLevel = 'error'
     ) : R | undefined {
         try { return fn() }
         catch ( err ) { this.log( level, msg, err as Error ) }
@@ -91,7 +91,7 @@ export class Logger implements ILogger {
         F extends ( ...args: any[] ) => Promise< any >,
         R = Awaited< ReturnType< F > >
     > (
-        fn: F, msg: string, level: TLoggingConfig[ 'level' ] = 'error'
+        fn: F, msg: string, level: TLoggingLevel = 'error'
     ) : Promise< R | undefined > {
         try { return await fn() }
         catch ( err ) { this.log( level, msg, err as Error ) }

@@ -1,4 +1,4 @@
-import { TLoggingConfig } from '@/types/config';
+import { TLoggingConfig, TLoggingLevel } from '@/types/config';
 
 export interface ILogger {
     error ( msg: string, error?: Error ) : void;
@@ -8,10 +8,10 @@ export interface ILogger {
     info ( msg: string, meta?: any ) : void;
     debug ( msg: string, meta?: any ) : void;
     catch< F extends ( ...args: any[] ) => any, R = ReturnType< F > > (
-        fn: F, msg: string, level: TLoggingConfig[ 'level' ] = 'error'
+        fn: F, msg: string, level: TLoggingLevel = 'error'
     ) : R | undefined;
     catchAsync< F extends ( ...args: any[] ) => Promise< any >, R = Awaited< ReturnType< F > > > (
-        fn: F, msg: string, level: TLoggingConfig[ 'level' ] = 'error'
+        fn: F, msg: string, level: TLoggingLevel = 'error'
     ) : Promise< R | undefined >;
     getLogFile ( date: string ) : string | undefined;
     getCurrentLogFile () : string | undefined;

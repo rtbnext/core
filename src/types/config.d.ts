@@ -1,5 +1,7 @@
+export type TLoggingLevel = 'error' | 'warn' | 'info' | 'debug';
+
 export interface TLoggingConfig {
-    level: 'error' | 'warn' | 'info' | 'debug';
+    level: TLoggingLevel;
     console?: boolean;
     file?: boolean;
 }
