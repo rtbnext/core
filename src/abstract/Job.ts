@@ -1,4 +1,5 @@
 import { Config } from '@/core/Config';
+import { Fetch } from '@/core/Fetch';
 import { log } from '@/core/Logger';
 import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
@@ -10,6 +11,7 @@ export abstract class Job implements IJob {
 
     protected static readonly config = Config.getInstance();
     protected static readonly storage = Storage.getInstance();
+    protected static readonly fetch = Fetch.getInstance();
     protected static readonly profileQueue = ProfileQueue.getInstance();
     protected static readonly listQueue = ListQueue.getInstance();
 
