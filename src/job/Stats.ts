@@ -39,6 +39,7 @@ export class StatsJob extends Job implements IJob {
             this.stats.generateWealthStats( stats.scatter );
             StatsGroup.forEach( g => this.stats.setGroupedStats( g, stats.groups[ g ] ) );
             this.stats.setScatter( stats.scatter );
+            this.stats.generateDBStats();
 
             this.log( `Stats generation completed` );
         } );
