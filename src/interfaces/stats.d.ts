@@ -6,8 +6,8 @@ export interface IStats {
     getProfileStats () : S.TProfileStats;
     getWealthStats () : S.TWealthStats;
     getScatter () : S.TScatter;
-    getHistory () : S.THistory;
     getDBStats () : S.TDBStats;
+    getHistory () : S.THistory;
     getGroupedStatsIndex ( group: TStatsGroup ) : S.TStatsGroup< string >[ 'index' ];
     getGroupedStatsHistory ( group: TStatsGroup, key: string ) : S.THistory;
     getGroupedStats ( group: TStatsGroup ) : S.TStatsGroup< string >;
@@ -15,6 +15,7 @@ export interface IStats {
     setProfileStats ( data: Partial< S.TProfileStats > ) : boolean;
     setWealthStats ( data: Partial< S.TWealthStats > ) : boolean;
     setScatter ( data: Partial< S.TScatter > ) : boolean;
+    setDBStats ( data: Partial< S.TDBStats > ) : boolean;
     updateHistory ( data: Partial< S.TGlobalStats > ) : boolean;
     generateWealthStats ( scatter: S.TScatterItem[] ) : boolean;
     generateDBStats () : boolean;
