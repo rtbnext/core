@@ -21,7 +21,7 @@ export abstract class Job implements IJob {
     protected readonly silent: boolean;
     protected readonly safeMode: boolean;
 
-    constructor ( job: string, args: string[] ) {
+    constructor ( args: string[], job: string ) {
         this.job = job;
         this.args = Utils.parseArgs( args );
 
@@ -68,5 +68,14 @@ export abstract class Job implements IJob {
 
 export function jobRunner< T extends typeof Job > (
     cls: T, method: keyof InstanceType< T > = 'run',
-    trigger: string = '--run', ...args: string[]
-) : void {}
+    trigger: string = '--run', ...opt: string[]
+) : void {
+    if ( ! process.argv.includes( trigger ) ) return;
+
+    try {
+        const args = [ ...new Set( [ ...opt, ...process.argv.slice( 2 ) ] ) ];
+        const job = new ( cls as any )( args ); ( job[ method ] as any )();
+    } catch ( err ) {
+        log.errMsg( err, `Failed to run job ${cls.name}` );
+    }
+}
