@@ -14,17 +14,16 @@ export class QueueJob extends Job implements IJob {
         await this.protect( async () => {
             const { type, clear, add, remove, prio, args } = this.args;
             const queue: IQueue | undefined = type === 'profile' ? ProfileQueue.getInstance()
-                : type === 'list' ? ListQueue.getInstance()
-                : undefined;
+                : type === 'list' ? ListQueue.getInstance() : undefined;
 
             if ( ! queue ) throw new Error( `Unknown queue type: ${type}` );
-
-            if ( Parser.boolean( clear ) ) queue.clear();
+            else if ( this.truthy( clear ) ) queue.clear();
             else if ( add ) queue.addMany( this.split( add ).map( uriLike => ( {
                 uriLike, prio: Parser.strict( prio, 'number' ),
                 args: typeof args === 'string' ? JSON.parse( args ) : undefined
             } ) ) );
             else if ( remove ) queue.remove( ...this.split( remove ) );
+            else throw new Error( `No valid action provided for queue job` );
         } );
     }
 
