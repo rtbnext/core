@@ -154,7 +154,10 @@ export interface TCommonsResponse {
                 descriptionurl: string;
                 thumburl?: string;
                 responsiveUrls?: Record< string, string >;
-                extmetadata?: Record< string, { value?: string } >;
+                extmetadata?: { [ K in
+                    | 'Artist' | 'Attribution' | 'Credit' | 'DateTime' | 'DateTimeOriginal'
+                    | 'ImageDescription' | 'LicenseShortName' | 'UsageTerms'
+                ]?: { value?: string } };
             }[];
         }[];
     };
