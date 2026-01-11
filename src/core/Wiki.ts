@@ -186,4 +186,18 @@ export class Wiki {
         }, `Failed to query Wikipedia page: ${title}` );
     }
 
+    public static async fromProfileData (
+        data: Partial< TProfileData >
+    ) : Promise< TWiki | undefined > {
+        const { qid, confidence, article, image } = await Wiki.queryWikidata( data ) ?? {};
+        log.debug(
+            `Query Wikidata for ${ data.info?.shortName }: ${ qid || 'no match' } ` +
+            `(score: ${ confidence || 0 })`
+        );
+
+        return article ? await Wiki.queryWikiPage( article, qid,
+            image ? await this.queryCommonsImage( image ) : undefined
+        ) : undefined;
+    }
+
 }
