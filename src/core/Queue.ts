@@ -110,6 +110,28 @@ abstract class Queue implements IQueue {
         return added;
     }
 
+    // Remove queue items
+
+    public removeByKey ( key: string ) : boolean {
+        if ( this.queue.delete( key ) ) {
+            log.debug( `Remove from queue [${this.type}] by key: ${key}` );
+            this.saveQueue();
+            return true;
+        }
+        return false;
+    }
+
+    public remove ( uriLike: string ) : number {
+        const keys = this.getByUri( uriLike ).map( i => i.key );
+
+        if ( keys.length ) {
+            keys.forEach( this.queue.delete.bind( this.queue ) );
+            log.debug( `Remove from queue [${this.type}] by URI: ${uriLike}`, keys );
+            this.saveQueue();
+        }
+        return keys.length;
+    }
+
     // Get items from queue (processing)
 
     public next ( n: number = 1 ) : TQueueItem[] {
