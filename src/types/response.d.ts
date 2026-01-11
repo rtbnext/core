@@ -146,6 +146,20 @@ export interface TListResponse {
     };
 }
 
+export interface TWikidataResponse {
+    results: { bindings: TWikidataResponseItem[] };
+}
+
+export type TWikidataResponseItem = {
+    item: { value: string };
+    itemLabel: { value: string, xmlLang: string };
+} & { [ K in (
+    | 'gender' | 'birthdate' | 'article' | 'image' | 'iso2'
+    | 'occupation' | 'employer' | 'ownerOf' | 'netWorth'
+) ]?: {
+    value: string;
+} };
+
 export interface TWikipediaResponse {
     query: {
         pages: {
@@ -156,7 +170,9 @@ export interface TWikipediaResponse {
             lastrevid: number;
             pageimage?: string;
             pageprops?: {
-                [ K in 'defaultsort' | 'wikibase-shortdesc' | 'wikibase_item' ]?: string;
+                [ K in (
+                    | 'defaultsort' | 'wikibase-shortdesc' | 'wikibase_item'
+                ) ]?: string;
             };
         }[];
     };
@@ -170,10 +186,13 @@ export interface TCommonsResponse {
                 descriptionurl: string;
                 thumburl?: string;
                 responsiveUrls?: Record< string, string >;
-                extmetadata?: { [ K in
-                    | 'Artist' | 'Attribution' | 'Credit' | 'DateTime' | 'DateTimeOriginal'
-                    | 'ImageDescription' | 'LicenseShortName' | 'UsageTerms'
-                ]?: { value?: string } };
+                extmetadata?: {
+                    [ K in (
+                        | 'Artist' | 'Attribution' | 'Credit' | 'DateTime'
+                        | 'DateTimeOriginal' | 'ImageDescription'
+                        | 'LicenseShortName' | 'UsageTerms'
+                    ) ]?: { value?: string };
+                };
             }[];
         }[];
     };
