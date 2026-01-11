@@ -98,9 +98,9 @@ export class Wiki {
 
         if ( best && best.score >= 0.65 ) return Parser.container< TWikidata >( {
             qid: { value: best.item.item.value.split( '/' ).pop()!, type: 'string' },
+            confidence: { value: best.score, type: 'number', args: [ 3 ] },
             article: { value: best.item.article?.value.split( '/' ).pop(), type: 'decodeURI' },
-            image: { value: best.item.image?.value.split( '/' ).pop(), type: 'decodeURI' },
-            score: { value: best.score, type: 'number', args: [ 1 ] }
+            image: { value: best.item.image?.value.split( '/' ).pop(), type: 'decodeURI' }
         } );
     }
 
