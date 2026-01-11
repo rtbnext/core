@@ -43,6 +43,7 @@ export class Wiki {
     public static async queryWikiPage (
         title: string, qid?: string, image?: TImage, confidence: number = 1
     ) : Promise< TWiki | undefined > {
+        log.debug( `Querying Wikipedia page: ${title}` );
         return await log.catchAsync( async () => {
             const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
                 action: 'query', prop: 'extracts|info|pageprops|pageimages',
@@ -50,7 +51,11 @@ export class Wiki {
                 exsectionformat: 'plain', piprop: 'name', pilimit: 1
             } );
 
-            if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) return;
+            if ( ! res?.success || ! res.data || ! res.data.query.pages.length ) {
+                throw new Error( `No Wikipedia page found for: ${title}` );
+            }
+
+            log.debug( `Wikipedia page info received for: ${title}` );
             const raw = res.data.query.pages[ 0 ];
 
             if ( ! image && raw.pageimage ) image = await this.queryCommonsImage( raw.pageimage );
@@ -62,12 +67,15 @@ export class Wiki {
                 confidence: { value: confidence, type: 'number', args: [ 3 ] },
                 name: { value: raw.title, type: 'string' },
                 lastModified: { value: raw.touched, type: 'date', args: [ 'iso' ] },
-                summary: { value: raw.extract ?? '', type: 'list', args: [ '\n' ], strict: false },
-                sortKey: { value: raw.pageprops?.defaultsort, type: 'string' },
+                summary: {
+                    value: raw.extract ?? '', type: 'list',
+                    args: [ 'safeStr', '\n' ], strict: false
+                },
+                sortKey: { value: raw.pageprops?.[ 'defaultsort' ], type: 'string' },
                 wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], type: 'string' },
                 desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], type: 'safeStr' }
             } ) };
-        } );
+        }, `Failed to query Wikipedia page: ${title}` );
     }
 
 }
