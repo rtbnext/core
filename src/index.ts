@@ -2,13 +2,14 @@ import { Config } from '@/core/Config';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
+import { QueueJob } from '@/job/Queue';
+import { StatsJob } from '@/job/Stats';
 import { Filter } from '@/model/Filter';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { ListIndex } from '@/model/ListIndex';
 import { Mover } from '@/model/Mover';
 import { Stats } from '@/model/Stats';
 import { TIndex, TJobs, TModel, TServices } from '@/types/index';
-import { StatsJob } from './job/Stats';
 
 export * as Const from '@/core/Const';
 export { log } from '@/core/Logger';
@@ -35,5 +36,6 @@ export const services: TServices = {
 };
 
 export const jobs: TJobs = {
-    stats: StatsJob
+    stats: StatsJob,
+    queue: QueueJob
 };
