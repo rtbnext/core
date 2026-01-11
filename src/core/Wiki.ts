@@ -1,12 +1,64 @@
 import { Fetch } from '@/core/Fetch';
 import { log } from '@/core/Logger';
 import { Parser } from '@/parser/Parser';
-import { TCommonsResponse, TWikipediaResponse } from '@/types/response';
-import { TImage, TWiki } from '@rtbnext/schema/src/abstract/generic';
+import { TCommonsResponse, TWikidataResponse, TWikidataResponseItem, TWikipediaResponse } from '@/types/response';
+import { TImage, TWiki, TWikidata } from '@rtbnext/schema/src/abstract/generic';
+import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 export class Wiki {
 
     private static readonly fetch = Fetch.getInstance();
+
+    public static async queryWikidata (
+        data: Partial< TProfileData >
+    ) : Promise< TWikidata | undefined > {
+        const shortName = data.info?.shortName;
+        if ( ! shortName ) return;
+
+        const [ first, ...rest ] = shortName.split( ' ' ); const last = rest.pop();
+        const nameVariants = [ shortName, `${first[ 0 ]}. ${last}`, `${first} ${last}` ]
+            .filter( Boolean ).map( n => `"${n}"@en "${n}"@de` ).join( ' ' );
+
+        const sparql = `
+            SELECT DISTINCT
+                ?item ?itemLabel ?gender ?birthdate ?article ?image ?iso2
+                ?occupation ?employer ?ownerOf ?netWorth
+            WHERE {
+                VALUES ?name { ${nameVariants} }
+                ?item wdt:P31 wd:Q5 .
+                { { ?item rdfs:label ?name . } UNION { ?item skos:altLabel ?name . } }
+                OPTIONAL { ?item wdt:P21 ?gender . }
+                OPTIONAL { ?item wdt:P569 ?birthdate . }
+                OPTIONAL { ?article schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> . }
+                OPTIONAL { ?item wdt:P18 ?image . }
+                OPTIONAL { ?item wdt:P27 ?country . ?country wdt:P297 ?iso2 . }
+                OPTIONAL { ?item wdt:P106 ?occupation . }
+                OPTIONAL { ?item wdt:P108 ?employer . }
+                OPTIONAL { ?item wdt:P169 ?employer . }
+                OPTIONAL { ?item wdt:P127 ?ownerOf . }
+                OPTIONAL { ?item wdt:P1830 ?ownerOf . }
+                OPTIONAL { ?item wdt:P2218 ?netWorth . }
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en,de" . }
+            }
+            LIMIT 20
+        `;
+
+        const res = await Wiki.fetch.wikidata< TWikidataResponse >( sparql );
+        let best: { score: number, item: TWikidataResponseItem } | undefined;
+
+        for ( const item of res.data?.results.bindings ?? [] ) {
+            const score = Wiki.scoreWDItem( item, data );
+            if ( ! best || score > best.score ) best = { score, item };
+            if ( best.score === 1 ) break;
+        }
+
+        if ( best && best.score >= 0.65 ) return Parser.container< TWikidata >( {
+            qid: { value: best.item.item.value.split( '/' ).pop()!, type: 'string' },
+            article: { value: best.item.article?.value.split( '/' ).pop(), type: 'decodeURI' },
+            image: { value: best.item.image?.value.split( '/' ).pop(), type: 'decodeURI' },
+            score: { value: best.score, type: 'number', args: [ 1 ] }
+        } );
+    }
 
     public static async queryCommonsImage ( title: string ) : Promise< TImage | undefined > {
         log.debug( `Querying Wikimedia Commons image: ${title}` );
