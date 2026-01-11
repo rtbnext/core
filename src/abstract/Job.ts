@@ -47,6 +47,10 @@ export abstract class Job implements IJob {
         }
     }
 
+    protected truthy ( value: any ) : boolean {
+        return Parser.boolean( value );
+    }
+
     protected split ( value: any ) : string[] {
         return Parser.string( value ).split( ',' ).filter( Boolean );
     }
