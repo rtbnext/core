@@ -10,6 +10,8 @@ export interface IQueue {
     clear () : void;
     add ( opt: TQueueOptions, save: boolean = true ) : boolean;
     addMany ( items: TQueueOptions[] ) : number;
+    removeByKey ( key: string ) : boolean;
+    remove ( ...uriLike: string[] ) : number;
     next ( n: number = 1 ) : TQueueItem[];
     nextUri ( n: number = 1 ) : string[];
 }
