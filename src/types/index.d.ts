@@ -6,7 +6,6 @@ import { IQueue } from '@/interfaces/queue';
 import { IMover } from '@/interfaces/mover';
 import { IStorage } from '@/interfaces/storage';
 import { IStats } from '@/interfaces/stats';
-import { IJob } from '@/interfaces/job';
 
 export interface TIndex {
     readonly profile: IProfileIndex;
@@ -26,5 +25,3 @@ export interface TServices {
     readonly listQueue: IQueue;
     readonly storage: IStorage;
 }
-
-export type TJobs = Record< 'stats' | 'queue', new ( ...args: any[] ) => IJob >;

@@ -9,7 +9,8 @@ import { ProfileIndex } from '@/model/ProfileIndex';
 import { ListIndex } from '@/model/ListIndex';
 import { Mover } from '@/model/Mover';
 import { Stats } from '@/model/Stats';
-import { TIndex, TJobs, TModel, TServices } from '@/types/index';
+import { TIndex, TModel, TServices } from '@/types/index';
+import { TJobs } from '@/types/job';
 
 export * as Const from '@/core/Const';
 export { log } from '@/core/Logger';
@@ -36,6 +37,6 @@ export const services: TServices = {
 };
 
 export const jobs: TJobs = {
-    stats: StatsJob,
-    queue: QueueJob
+    queue: QueueJob,
+    stats: StatsJob
 };
