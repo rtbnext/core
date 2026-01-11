@@ -12,20 +12,20 @@ export class QueueJob extends Job implements IJob {
 
     public async run () : Promise< void > {
         await this.protect( async () => {
-            const { type, clear, add, prio, args } = this.args;
+            const { type, clear, add, remove, prio, args } = this.args;
+            const split = ( v: any ) : string[] => Parser.string( v ).split( ',' ).filter( Boolean );
+            const queue: IQueue | undefined = type === 'profile' ? ProfileQueue.getInstance()
+                : type === 'list' ? ListQueue.getInstance()
+                : undefined;
 
-            let queue: IQueue;
-            if ( type === 'profile' ) queue = ProfileQueue.getInstance();
-            else if ( type === 'list' ) queue = ListQueue.getInstance();
-            else throw new Error( `Unknown queue type: ${type}` );
+            if ( ! queue ) throw new Error( `Unknown queue type: ${type}` );
 
             if ( Parser.boolean( clear ) ) queue.clear();
-            else if ( add ) queue.addMany( Parser.string( add ).split( ',' ).filter( Boolean ).map(
-                uriLike => ( {
-                    uriLike, prio: Parser.strict( prio, 'number' ),
-                    args: typeof args === 'string' ? JSON.parse( args ) : undefined
-                } )
-            ) );
+            else if ( add ) queue.addMany( split( add ).map( uriLike => ( {
+                uriLike, prio: Parser.strict( prio, 'number' ),
+                args: typeof args === 'string' ? JSON.parse( args ) : undefined
+            } ) ) );
+            else if ( remove ) queue.remove( ...split( remove ) );
         } );
     }
 
