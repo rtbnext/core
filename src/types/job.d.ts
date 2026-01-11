@@ -1,6 +1,6 @@
 import { IJob } from '@/interfaces/job';
 
-export type TJobNames = 'queue' | 'stats';
+export type TJobNames = 'queue' | 'stats' | 'wiki';
 
 export type TJobCtor = new ( ...args: any[] ) => IJob;
 

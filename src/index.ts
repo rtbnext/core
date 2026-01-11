@@ -4,6 +4,7 @@ import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
 import { QueueJob } from '@/job/Queue';
 import { StatsJob } from '@/job/Stats';
+import { WikiJob } from '@/job/Wiki';
 import { Filter } from '@/model/Filter';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { ListIndex } from '@/model/ListIndex';
@@ -39,5 +40,6 @@ export const services: TServices = {
 
 export const jobs: TJobs = {
     queue: QueueJob,
-    stats: StatsJob
+    stats: StatsJob,
+    wiki: WikiJob
 };
