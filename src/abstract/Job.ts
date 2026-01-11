@@ -2,6 +2,7 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import { IJob } from '@/interfaces/job';
+import { Parser } from '@/parser/Parser';
 import { TLoggingLevel } from '@/types/config';
 import { TArgs } from '@/types/generic';
 
@@ -44,6 +45,10 @@ export abstract class Job implements IJob {
             if ( ! this.silent ) this.err( err );
             if ( ! this.safeMode ) throw err;
         }
+    }
+
+    protected split ( value: any ) : string[] {
+        return Parser.string( value ).split( ',' ).filter( Boolean );
     }
 
     // Job getter

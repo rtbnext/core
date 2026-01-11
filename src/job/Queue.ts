@@ -13,7 +13,6 @@ export class QueueJob extends Job implements IJob {
     public async run () : Promise< void > {
         await this.protect( async () => {
             const { type, clear, add, remove, prio, args } = this.args;
-            const split = ( v: any ) : string[] => Parser.string( v ).split( ',' ).filter( Boolean );
             const queue: IQueue | undefined = type === 'profile' ? ProfileQueue.getInstance()
                 : type === 'list' ? ListQueue.getInstance()
                 : undefined;
@@ -21,11 +20,11 @@ export class QueueJob extends Job implements IJob {
             if ( ! queue ) throw new Error( `Unknown queue type: ${type}` );
 
             if ( Parser.boolean( clear ) ) queue.clear();
-            else if ( add ) queue.addMany( split( add ).map( uriLike => ( {
+            else if ( add ) queue.addMany( this.split( add ).map( uriLike => ( {
                 uriLike, prio: Parser.strict( prio, 'number' ),
                 args: typeof args === 'string' ? JSON.parse( args ) : undefined
             } ) ) );
-            else if ( remove ) queue.remove( ...split( remove ) );
+            else if ( remove ) queue.remove( ...this.split( remove ) );
         } );
     }
 
