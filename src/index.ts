@@ -14,6 +14,7 @@ import { TJobs } from '@/types/job';
 
 export * as Const from '@/core/Const';
 export { log } from '@/core/Logger';
+export { Wiki } from '@/core/Wiki';
 export { List } from '@/model/List';
 export { Profile } from '@/model/Profile';
 
