@@ -20,8 +20,8 @@ export abstract class Job implements IJob {
         this.args = Utils.parseArgs( args );
 
         const { silent, safeMode } = Job.config.job;
-        this.silent = !! ( this.args.silent ?? silent );
-        this.safeMode = !! ( this.args.safeMode ?? safeMode );
+        this.silent = this.args.silent !== undefined ? this.truthy( this.args.silent ) : silent;
+        this.safeMode = this.args.safeMode !== undefined ? this.truthy( this.args.safeMode ) : safeMode;
 
         this.log( `Run job`, this.args );
     }
