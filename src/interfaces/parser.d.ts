@@ -1,8 +1,11 @@
 import { TParsedProfileName } from '@/types/parser';
+import { TProfileResponse } from '@/types/response';
 import { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/abstract/generic';
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 export interface IProfileParser {
+    rawData () : TProfileResponse[ 'person' ];
+    sortedLists () : TProfileResponse[ 'person' ][ 'personLists' ];
     uri () : string;
     id () : string;
     aliases () : string[];

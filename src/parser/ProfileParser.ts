@@ -25,6 +25,14 @@ export class ProfileParser implements IProfileParser {
         return this.cachedData.get( key );
     }
 
+    public rawData () : TProfileResponse[ 'person' ] {
+        return this.raw;
+    }
+
+    public sortedLists () : TProfileResponse[ 'person' ][ 'personLists' ] {
+        return this.lists;
+    }
+
     public uri () : string {
         return this.cache( 'uri', () => Utils.sanitize( this.raw.uri ) );
     }
