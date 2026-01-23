@@ -136,8 +136,7 @@ export class ProfileParser implements IProfileParser {
 
     public bio () : TProfileBio {
         return this.cache( 'bio', () => ( {
-            quotes: Parser.list< string >( [ this.raw.quote ?? '' ] ),
-            cv: this.cv(), facts: this.facts()
+            cv: this.cv(), facts: this.facts(), quotes: this.quotes()
         } ) );
     }
 
@@ -150,6 +149,12 @@ export class ProfileParser implements IProfileParser {
     public facts () : string[] {
         return this.cache( 'facts', () => Parser.list< string >(
             Utils.aggregate( this.lists, 'abouts', 'first' ) as string[], 'safeStr'
+        ) );
+    }
+
+    public quotes () : string[] {
+        return this.cache( 'quotes', () => Parser.list< string >(
+            [ this.raw.quote ?? '' ], 'safeStr'
         ) );
     }
 

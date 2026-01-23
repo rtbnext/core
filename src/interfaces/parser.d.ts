@@ -19,6 +19,7 @@ export interface IProfileParser {
     bio () : TProfileBio;
     cv () : string[];
     facts () : string[];
+    quotes () : string[];
     related () : Generic.TRelation[];
     media () : Generic.TImage[];
 }
