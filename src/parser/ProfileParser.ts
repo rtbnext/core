@@ -5,8 +5,8 @@ import { IProfileParser } from '@/interfaces/parser';
 import { Parser } from '@/parser/Parser';
 import { TParsedProfileName } from '@/types/parser';
 import { TProfileResponse } from '@/types/response';
-import * as G from '@rtbnext/schema/src/abstract/generic';
-import { TProfileData } from '@rtbnext/schema/src/model/profile';
+import * as Generic from '@rtbnext/schema/src/abstract/generic';
+import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 export class ProfileParser implements IProfileParser {
 
@@ -60,9 +60,9 @@ export class ProfileParser implements IProfileParser {
         ) );
     }
 
-    public info () : TProfileData[ 'info' ] {
+    public info () : TProfileInfo {
         return this.cache( 'info', () => ( {
-            ...Parser.container< Partial< TProfileData[ 'info' ] > >( {
+            ...Parser.container< Partial< TProfileInfo > >( {
                 deceased: { value: this.raw.deceased, type: 'boolean' },
                 embargo: { value: this.raw.embargo, type: 'boolean' },
                 gender: { value: this.raw.gender, type: 'gender' },
@@ -88,7 +88,7 @@ export class ProfileParser implements IProfileParser {
             selfMade: this.selfMade(),
             philanthropyScore: this.philanthropyScore(),
             organization: this.organization()
-        } as TProfileData[ 'info' ] ) );
+        } as TProfileInfo ) );
     }
 
     public citizenship () : string | undefined {
@@ -99,19 +99,19 @@ export class ProfileParser implements IProfileParser {
         ) );
     }
 
-    public education () : G.TEducation[] {
+    public education () : Generic.TEducation[] {
         return this.cache( 'education', () => ( this.raw.educations ?? [] )
             .filter( Boolean )
-            .map( item => Parser.container< G.TEducation >( {
+            .map( item => Parser.container< Generic.TEducation >( {
                 school: { value: item.school, type: 'string' },
                 degree: { value: item.degree, type: 'string' }
             } )
         ) );
     }
 
-    public selfMade () : G.TSelfMade {
+    public selfMade () : Generic.TSelfMade {
         return this.cache( 'selfMade', () =>
-            Parser.container< G.TSelfMade >( {
+            Parser.container< Generic.TSelfMade >( {
                 type: { value: this.raw.selfMadeType, type: 'string' },
                 is: { value: this.raw.selfMade, type: 'boolean' },
                 rank: { value: this.raw.selfMadeRank, type: 'number' }
@@ -125,16 +125,16 @@ export class ProfileParser implements IProfileParser {
         );
     }
 
-    public organization () : G.TOrganization | undefined {
+    public organization () : Generic.TOrganization | undefined {
         return this.cache( 'organization', () => {
-            if ( this.raw.organization ) return Parser.container< G.TOrganization >( {
+            if ( this.raw.organization ) return Parser.container< Generic.TOrganization >( {
                 name: { value: this.raw.organization, type: 'string' },
                 title: { value: this.raw.title, type: 'string' }
             } );
         } );
     }
 
-    public bio () : TProfileData[ 'bio' ] {
+    public bio () : TProfileBio {
         return this.cache( 'bio', () => ( {
             quotes: Parser.list< string >( [ this.raw.quote ?? '' ] ),
             cv: this.cv(), facts: this.facts()
@@ -153,11 +153,11 @@ export class ProfileParser implements IProfileParser {
         ) );
     }
 
-    public related () : G.TRelation[] {
+    public related () : Generic.TRelation[] {
         return this.cache( 'related', () => ( this.raw.relatedEntities ?? [] )
             .filter( Boolean ).map( item => ( {
                 uri: item.uri ? Utils.sanitize( item.uri ) : undefined,
-                ...Parser.container< G.TRelation >( {
+                ...Parser.container< Generic.TRelation >( {
                     type: { value: item.type, type: 'map', args: [ RelationType ] },
                     name: { value: item.name, type: 'string' },
                     relation: { value: item.relationshipType, type: 'string' }
@@ -166,9 +166,9 @@ export class ProfileParser implements IProfileParser {
         );
     }
 
-    public media () : G.TImage[] {
+    public media () : Generic.TImage[] {
         return this.cache( 'media', () => ( this.raw.listImages ?? [] )
-            .filter( Boolean ).map( item => Parser.container< G.TImage >( {
+            .filter( Boolean ).map( item => Parser.container< Generic.TImage >( {
                 url: { value: item.uri, type: 'string' },
                 credits: { value: item.credit, type: 'string' },
                 file: { value: item.image, type: 'string' },

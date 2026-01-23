@@ -1,7 +1,7 @@
 import { TParsedProfileName } from '@/types/parser';
 import { TProfileResponse } from '@/types/response';
 import * as Generic from '@rtbnext/schema/src/abstract/generic';
-import { TProfileData } from '@rtbnext/schema/src/model/profile';
+import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 export interface IProfileParser {
     rawData () : TProfileResponse[ 'person' ];
@@ -10,13 +10,13 @@ export interface IProfileParser {
     id () : string;
     aliases () : string[];
     name () : TParsedProfileName;
-    info () : TProfileData[ 'info' ];
+    info () : TProfileInfo;
     citizenship () : string | undefined;
     education () : Generic.TEducation[];
     selfMade () : Generic.TSelfMade;
     philanthropyScore () : number | undefined;
     organization () : Generic.TOrganization | undefined;
-    bio () : TProfileData[ 'bio' ];
+    bio () : TProfileBio;
     cv () : string[];
     facts () : string[];
     related () : Generic.TRelation[];
