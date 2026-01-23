@@ -1,5 +1,6 @@
 import { Utils } from '@/core/Utils';
 import { IProfileParser } from '@/interfaces/parser';
+import { Parser } from '@/parser/Parser';
 import { TProfileResponse } from '@/types/response';
 
 export class ProfileParser implements IProfileParser {
@@ -46,6 +47,30 @@ export class ProfileParser implements IProfileParser {
         ) );
     }
 
-    public static name () {}
+    public static name (
+        value: any, lastName: any = undefined, firstName: any = undefined,
+        asianFormat: boolean = false
+    ) : {
+        name: string, shortName: string,
+        lastName: string, firstName: string,
+        family: boolean
+    } {
+        const clean = Parser.string( value ).replace( /&\s*family/i, '' ).trim();
+        const family = /&\s*family/i.test( value );
+        const parts = clean.split( /\s+/ ).filter( Boolean );
+
+        const fN = firstName ? Parser.string( firstName ) : (
+            asianFormat ? parts.slice( 1 ).join( ' ' ) : parts.slice( 0, -1 ).join( ' ' )
+        );
+        const lN = lastName ? Parser.string( lastName.replace( /&\s*family/i, '' ) ) : (
+            asianFormat ? parts[ 0 ] || '' : parts.pop() || ''
+        );
+
+        return {
+            name: clean + ( family ? ' & family' : '' ),
+            shortName: `${ fN.split( ' ' )[ 0 ] } ${lN}`.trim(),
+            lastName: lN, firstName: fN, family
+        };
+    }
 
 }
