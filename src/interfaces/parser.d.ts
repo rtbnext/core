@@ -7,4 +7,5 @@ export interface IProfileParser {
     aliases () : string[];
     name () : TParsedProfileName;
     info () : TProfileData[ 'info' ];
+    citizenship () : string | undefined;
 }

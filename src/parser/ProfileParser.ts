@@ -72,8 +72,17 @@ export class ProfileParser implements IProfileParser {
                 industry: { value: this.raw.industries, type: 'industry' },
                 source: { value: this.raw.source, type: 'list' }
             } ),
-            ...this.name()
+            ...this.name(),
+            citizenship: this.citizenship()
         } as TProfileData[ 'info' ] ) );
+    }
+
+    public citizenship () : string | undefined {
+        return this.cache( 'citizenship', () => Parser.strict(
+            this.raw.countryOfCitizenship ||
+            this.raw.countryOfResidence,
+            'country'
+        ) );
     }
 
     public static name (
