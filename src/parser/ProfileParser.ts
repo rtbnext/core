@@ -166,6 +166,18 @@ export class ProfileParser implements IProfileParser {
         );
     }
 
+    public media () : G.TImage[] {
+        return this.cache( 'media', () => ( this.raw.listImages ?? [] )
+            .filter( Boolean ).map( item => Parser.container< G.TImage >( {
+                url: { value: item.uri, type: 'string' },
+                credits: { value: item.credit, type: 'string' },
+                file: { value: item.image, type: 'string' },
+                caption: { value: item.caption, type: 'safeStr' },
+                desc: { value: item.description, type: 'safeStr' }
+            } ) )
+        );
+    }
+
     public static name (
         value: any, lastName: any = undefined, firstName: any = undefined,
         asianFormat: boolean = false
