@@ -1,10 +1,11 @@
+import { RelationType } from '@/core/Const';
 import { REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/core/RegEx';
 import { Utils } from '@/core/Utils';
 import { IProfileParser } from '@/interfaces/parser';
 import { Parser } from '@/parser/Parser';
 import { TParsedProfileName } from '@/types/parser';
 import { TProfileResponse } from '@/types/response';
-import { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/abstract/generic';
+import * as G from '@rtbnext/schema/src/abstract/generic';
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 export class ProfileParser implements IProfileParser {
@@ -98,19 +99,19 @@ export class ProfileParser implements IProfileParser {
         ) );
     }
 
-    public education () : TEducation[] {
+    public education () : G.TEducation[] {
         return this.cache( 'education', () => ( this.raw.educations ?? [] )
             .filter( Boolean )
-            .map( item => Parser.container< TEducation >( {
+            .map( item => Parser.container< G.TEducation >( {
                 school: { value: item.school, type: 'string' },
                 degree: { value: item.degree, type: 'string' }
             } )
         ) );
     }
 
-    public selfMade () : TSelfMade {
+    public selfMade () : G.TSelfMade {
         return this.cache( 'selfMade', () =>
-            Parser.container< TSelfMade >( {
+            Parser.container< G.TSelfMade >( {
                 type: { value: this.raw.selfMadeType, type: 'string' },
                 is: { value: this.raw.selfMade, type: 'boolean' },
                 rank: { value: this.raw.selfMadeRank, type: 'number' }
@@ -124,9 +125,9 @@ export class ProfileParser implements IProfileParser {
         );
     }
 
-    public organization () : TOrganization | undefined {
+    public organization () : G.TOrganization | undefined {
         return this.cache( 'organization', () => {
-            if ( this.raw.organization ) return Parser.container< TOrganization >( {
+            if ( this.raw.organization ) return Parser.container< G.TOrganization >( {
                 name: { value: this.raw.organization, type: 'string' },
                 title: { value: this.raw.title, type: 'string' }
             } );
@@ -150,6 +151,19 @@ export class ProfileParser implements IProfileParser {
         return this.cache( 'facts', () => Parser.list< string >(
             Utils.aggregate( this.lists, 'abouts', 'first' ) as string[], 'safeStr'
         ) );
+    }
+
+    public related () : G.TRelation[] {
+        return this.cache( 'related', () => ( this.raw.relatedEntities ?? [] )
+            .filter( Boolean ).map( item => ( {
+                uri: item.uri ? Utils.sanitize( item.uri ) : undefined,
+                ...Parser.container< G.TRelation >( {
+                    type: { value: item.type, type: 'map', args: [ RelationType ] },
+                    name: { value: item.name, type: 'string' },
+                    relation: { value: item.relationshipType, type: 'string' }
+                } )
+            } ) )
+        );
     }
 
     public static name (
