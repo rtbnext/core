@@ -1,6 +1,7 @@
+import { IProfileParser } from '@/interfaces/parser';
 import { TProfileResponse } from '@/types/response';
 
-export class ProfileParser {
+export class ProfileParser implements IProfileParser {
 
     private readonly raw: TProfileResponse[ 'person' ];
     private readonly lists: TProfileResponse[ 'person' ][ 'personLists' ];
