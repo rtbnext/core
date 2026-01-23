@@ -4,7 +4,7 @@ import { IProfileParser } from '@/interfaces/parser';
 import { Parser } from '@/parser/Parser';
 import { TParsedProfileName } from '@/types/parser';
 import { TProfileResponse } from '@/types/response';
-import { TEducation, TSelfMade } from '@rtbnext/schema/src/abstract/generic';
+import { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/abstract/generic';
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 export class ProfileParser implements IProfileParser {
@@ -76,7 +76,9 @@ export class ProfileParser implements IProfileParser {
             ...this.name(),
             citizenship: this.citizenship(),
             education: this.education(),
-            selfMade: this.selfMade()
+            selfMade: this.selfMade(),
+            philanthropyScore: this.philanthropyScore(),
+            organization: this.organization()
         } as TProfileData[ 'info' ] ) );
     }
 
@@ -106,6 +108,21 @@ export class ProfileParser implements IProfileParser {
                 rank: { value: this.raw.selfMadeRank, type: 'number' }
             } )
         );
+    }
+
+    public philanthropyScore () : number | undefined {
+        return this.cache( 'philanthropyScore', () =>
+            Utils.aggregate( this.lists, 'philanthropyScore', 'first' ) as number | undefined
+        );
+    }
+
+    public organization () : TOrganization | undefined {
+        return this.cache( 'organization', () => {
+            if ( this.raw.organization ) return Parser.container< TOrganization >( {
+                name: { value: this.raw.organization, type: 'string' },
+                title: { value: this.raw.title, type: 'string' }
+            } );
+        } );
     }
 
     public static name (

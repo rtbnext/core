@@ -1,5 +1,5 @@
 import { TParsedProfileName } from '@/types/parser';
-import { TEducation, TSelfMade } from '@rtbnext/schema/src/abstract/generic';
+import { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/abstract/generic';
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 export interface IProfileParser {
@@ -11,4 +11,6 @@ export interface IProfileParser {
     citizenship () : string | undefined;
     education () : TEducation[];
     selfMade () : TSelfMade;
+    philanthropyScore () : number | undefined;
+    organization () : TOrganization | undefined;
 }
