@@ -1,8 +1,8 @@
-import { ProfileParser } from '@/parser/ProfileParser';
+import { TParsedProfileName } from '@/types/parser';
 
 export interface IProfileParser {
     uri () : string;
     id () : string;
     aliases () : string[];
-    name () : ReturnType< typeof ProfileParser.name >;
+    name () : TParsedProfileName;
 }

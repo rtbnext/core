@@ -1,6 +1,7 @@
 import { Utils } from '@/core/Utils';
 import { IProfileParser } from '@/interfaces/parser';
 import { Parser } from '@/parser/Parser';
+import { TParsedProfileName } from '@/types/parser';
 import { TProfileResponse } from '@/types/response';
 
 export class ProfileParser implements IProfileParser {
@@ -40,7 +41,7 @@ export class ProfileParser implements IProfileParser {
         } );
     }
 
-    public name () : ReturnType< typeof ProfileParser.name > {
+    public name () : TParsedProfileName {
         return this.cache( 'name', () => ProfileParser.name(
             this.raw.name, this.raw.lastName, this.raw.firstName,
             Parser.boolean( this.raw.asianFormat )
@@ -50,11 +51,7 @@ export class ProfileParser implements IProfileParser {
     public static name (
         value: any, lastName: any = undefined, firstName: any = undefined,
         asianFormat: boolean = false
-    ) : {
-        name: string, shortName: string,
-        lastName: string, firstName: string,
-        family: boolean
-    } {
+    ) : TParsedProfileName {
         const clean = Parser.string( value ).replace( /&\s*family/i, '' ).trim();
         const family = /&\s*family/i.test( value );
         const parts = clean.split( /\s+/ ).filter( Boolean );
