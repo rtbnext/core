@@ -125,6 +125,25 @@ export class ProfileParser implements IProfileParser {
         } );
     }
 
+    public bio () : TProfileData[ 'bio' ] {
+        return this.cache( 'bio', () => ( {
+            quotes: Parser.list< string >( [ this.raw.quote ?? '' ] ),
+            cv: this.cv(), facts: this.facts()
+        } ) );
+    }
+
+    public cv () : string[] {
+        return this.cache( 'cv', () => Parser.list< string >(
+            Utils.aggregate( this.lists, 'bios', 'first' ) as string[], 'safeStr'
+        ) );
+    }
+
+    public facts () : string[] {
+        return this.cache( 'facts', () => Parser.list< string >(
+            Utils.aggregate( this.lists, 'abouts', 'first' ) as string[], 'safeStr'
+        ) );
+    }
+
     public static name (
         value: any, lastName: any = undefined, firstName: any = undefined,
         asianFormat: boolean = false
