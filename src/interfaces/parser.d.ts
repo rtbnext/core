@@ -33,4 +33,5 @@ export interface IListParser {
     rank () : number | undefined;
     networth () : number | undefined;
     dropOff () : boolean | undefined;
+    name () : TParsedProfileName;
 }
