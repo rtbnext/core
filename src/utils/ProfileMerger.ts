@@ -55,6 +55,23 @@ export class ProfileMerger {
         return res;
     }
 
+    // Merge profiles
+
+    public static mergeProfiles (
+        target: Profile, source: Profile, force: boolean = false, makeAlias: boolean = true
+    ) : boolean {
+        if ( ! force && ! ProfileMerger.mergeableProfiles(
+            target.getData(), source.getData()
+        ) ) return false;
+
+        const aliases = makeAlias ? [ source.getUri() ] : [];
+        target.updateData( source.getData(), aliases, 'unique' );
+        target.mergeHistory( source.getHistory() );
+        target.save();
+
+        return Profile.delete( source.getUri() );
+    }
+
     // List matching candidates
 
     public static listCandidates ( ...uriLike: any[] ) : Record< string, string[] > {
