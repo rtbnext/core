@@ -1,5 +1,5 @@
-import { TAsset } from '@rtbnext/schema/src/abstract/assets';
-import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
+import { TAsset, TRealtime } from '@rtbnext/schema/src/abstract/assets';
+import { TProfileBio, TProfileData, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
@@ -112,6 +112,32 @@ export class ListParser extends Cache implements IListParser {
                 } )
             } ) )
         );
+    }
+
+    // Realtime data
+
+    public realtime (
+        data?: Partial< TProfileData >, prev?: string, next?: string
+    ) : TRealtime | undefined {
+        return this.cache( 'realtime', () => {
+            if ( ! this.raw.finalWorth ) return;
+            const lastDay = data?.realtime?.networth ?? 0;
+            const dailyChange = this.raw.finalWorth - lastDay;
+            const lastYear = data?.annual?.sort( ( a, b ) => b.year - a.year )?.[ 0 ]?.networth?.last ?? 0;
+            const ytdChange = this.raw.finalWorth - lastYear;
+
+            return {
+                date: this.date(), rank: this.rank(), networth: this.networth(), prev, next,
+                today: data && data.realtime && lastDay ? {
+                    value: Parser.money( dailyChange ),
+                    pct: Parser.pct( dailyChange / lastDay * 100 )
+                } : undefined,
+                ytd: data && data.annual?.length && lastYear ? {
+                    value: Parser.money( ytdChange ),
+                    pct: Parser.pct( ytdChange / lastYear * 100 )
+                } : undefined
+            };
+        } );
     }
 
 }
