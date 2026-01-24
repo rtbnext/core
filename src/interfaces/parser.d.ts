@@ -35,4 +35,7 @@ export interface IListParser extends ICache {
     networth () : number | undefined;
     dropOff () : boolean | undefined;
     name () : TParsedProfileName;
+    info () : Partial< TProfileInfo >;
+    bio () : TProfileBio;
+    age () : number | undefined;
 }
