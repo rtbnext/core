@@ -1,3 +1,5 @@
+import { TProfileInfo } from '@rtbnext/schema/src/model/profile';
+
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
 import { IListParser } from '@/interfaces/parser';
@@ -60,6 +62,19 @@ export class ListParser extends Cache implements IListParser {
         return this.cache( 'name', () => ProfileParser.name(
             this.raw.person?.name ?? this.raw.personName, this.raw.lastName
         ) );
+    }
+
+    // (Partial) profile data
+
+    public info () : Partial< TProfileInfo > {
+        return this.cache( 'info', () => Parser.container< Partial< TProfileInfo > >( {
+            dropOff: { value: this.dropOff(), type: 'boolean' },
+            gender: { value: this.raw.gender, type: 'gender' },
+            birthDate: { value: this.raw.birthDate, type: 'date' },
+            citizenship: { value: this.raw.countryOfCitizenship, type: 'country' },
+            industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
+            source: { value: this.raw.source, type: 'list' }
+        } ) );
     }
 
 }
