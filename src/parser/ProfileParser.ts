@@ -1,3 +1,6 @@
+import * as Generic from '@rtbnext/schema/src/abstract/generic';
+import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
+
 import { RelationType } from '@/core/Const';
 import { REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/core/RegEx';
 import { Utils } from '@/core/Utils';
@@ -5,8 +8,6 @@ import { IProfileParser } from '@/interfaces/parser';
 import { Parser } from '@/parser/Parser';
 import { TParsedProfileName } from '@/types/parser';
 import { TProfileResponse } from '@/types/response';
-import * as Generic from '@rtbnext/schema/src/abstract/generic';
-import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 export class ProfileParser implements IProfileParser {
 

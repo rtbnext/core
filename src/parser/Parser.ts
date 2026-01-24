@@ -1,11 +1,12 @@
-import { Gender, IndustryResolver, MaritalStatusResolver } from '@/core/Const';
-import { REGEX_SPACES } from '@/core/RegEx';
-import { TIndustryResolver, TMaritalStatusResolver } from '@/types/generic';
 import { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/abstract/const';
 import { TLocation } from '@rtbnext/schema/src/abstract/generic';
 import { Primitive } from 'devtypes/types/primitives';
 import { getAlpha2Code } from 'i18n-iso-countries';
 import { abbr } from 'us-state-converter';
+
+import { Gender, IndustryResolver, MaritalStatusResolver } from '@/core/Const';
+import { REGEX_SPACES } from '@/core/RegEx';
+import { TIndustryResolver, TMaritalStatusResolver } from '@/types/generic';
 
 export type TParserMethod = keyof typeof Parser;
 
