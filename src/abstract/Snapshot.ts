@@ -1,10 +1,12 @@
+import { join } from 'node:path';
+
+import { TSnapshot } from '@rtbnext/schema/src/abstract/generic';
+
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import { ISnapshot } from '@/interfaces/snapshot';
 import { Parser } from '@/parser/Parser';
-import { TSnapshot } from '@rtbnext/schema/src/abstract/generic';
-import { join } from 'node:path';
 
 export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > {
 

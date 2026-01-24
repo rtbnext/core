@@ -1,9 +1,10 @@
+import { TIndex } from '@rtbnext/schema/src/abstract/generic';
+import deepmerge from 'deepmerge';
+
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import { IIndex } from '@/interfaces/index';
-import { TIndex } from '@rtbnext/schema/src/abstract/generic';
-import deepmerge from 'deepmerge';
 
 export abstract class Index<
     I extends TIndex, T extends Map< string, I >
