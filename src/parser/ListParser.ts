@@ -1,3 +1,4 @@
+import { TAsset } from '@rtbnext/schema/src/abstract/assets';
 import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
@@ -87,6 +88,30 @@ export class ListParser extends Cache implements IListParser {
 
     public age () : number | undefined {
         return this.cache( 'age', () => Parser.strict( this.raw.birthDate, 'age' ) );
+    }
+
+    // Financial assets
+
+    public assets () : TAsset[] {
+        return this.cache( 'assets', () => ( this.raw.financialAssets ?? [] )
+            .map( a => ( {
+                ...Parser.container< TAsset >( {
+                    type: { value: 'public', type: 'string' },
+                    label: { value: a.companyName, type: 'string' },
+                    value: { value: a.numberOfShares && ( a.currentPrice || a.sharePrice )
+                        ? a.numberOfShares * ( a.currentPrice ?? a.sharePrice )! / 1e6
+                        : undefined, type: 'money' }
+                } ),
+                info: Parser.container< TAsset[ 'info' ] >( {
+                    exchange: { value: a.exchange, type: 'string' },
+                    ticker: { value: a.ticker, type: 'string' },
+                    shares: { value: a.numberOfShares, type: 'number' },
+                    price: { value: a.currentPrice ?? a.sharePrice, type: 'number', args: [ 6 ] },
+                    currency: { value: a.currencyCode, type: 'string' },
+                    exRate: { value: a.exchangeRate, type: 'number', args: [ 6 ] }
+                } )
+            } ) )
+        );
     }
 
 }
