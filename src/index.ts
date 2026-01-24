@@ -16,11 +16,15 @@ import { TIndex, TModel, TParser, TServices, TUtils } from '@/types/index';
 import { TJobs } from '@/types/job';
 import { ProfileMerger } from '@/utils/ProfileMerger';
 
+// Direct exports
+
 export * as Const from '@/core/Const';
 export { log } from '@/core/Logger';
 export { Wiki } from '@/core/Wiki';
 export { List } from '@/model/List';
 export { Profile } from '@/model/Profile';
+
+// Grouped exports
 
 export const index: TIndex = {
     profile: ProfileIndex.getInstance(),
