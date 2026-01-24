@@ -1,6 +1,7 @@
 import * as Generic from '@rtbnext/schema/src/abstract/generic';
 import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
+import { Cache } from '@/abstract/Cache';
 import { RelationType } from '@/core/Const';
 import { REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/core/RegEx';
 import { Utils } from '@/core/Utils';
@@ -9,24 +10,18 @@ import { Parser } from '@/parser/Parser';
 import { TParsedProfileName } from '@/types/parser';
 import { TProfileResponse } from '@/types/response';
 
-export class ProfileParser implements IProfileParser {
+export class ProfileParser extends Cache implements IProfileParser {
 
     private readonly raw: TProfileResponse[ 'person' ];
     private readonly lists: TProfileResponse[ 'person' ][ 'personLists' ];
-    private cachedData: Map< string, any > = new Map();
 
     constructor ( res: TProfileResponse ) {
+        super();
+
         this.raw = res.person;
         this.lists = res.person.personLists.sort(
             ( a, b ) => Number( b.date ?? 0 ) - Number( a.date ?? 0 )
         );
-    }
-
-    // Caching
-
-    private cache< T = any > ( key: string, fn: () => T ) : T {
-        if ( ! this.cachedData.has( key ) ) this.cachedData.set( key, fn() );
-        return this.cachedData.get( key );
     }
 
     // Raw data
