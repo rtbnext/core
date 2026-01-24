@@ -1,6 +1,8 @@
 import { Utils } from '@/core/Utils';
 import { IListParser } from '@/interfaces/parser';
 import { Parser } from '@/parser/Parser';
+import { ProfileParser } from '@/parser/ProfileParser';
+import { TParsedProfileName } from '@/types/parser';
 import { TListResponseEntry } from '@/types/response';
 
 export class ListParser implements IListParser {
@@ -57,6 +59,12 @@ export class ListParser implements IListParser {
         return this.cache( 'dropOff', () =>
             this.raw.finalWorth ? this.raw.finalWorth < 1e3 : undefined
         );
+    }
+
+    public name () : TParsedProfileName {
+        return this.cache( 'name', () => ProfileParser.name(
+            this.raw.person?.name ?? this.raw.personName, this.raw.lastName
+        ) );
     }
 
 }
