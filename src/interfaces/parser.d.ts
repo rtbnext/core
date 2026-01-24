@@ -2,7 +2,7 @@ import * as Generic from '@rtbnext/schema/src/abstract/generic';
 import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 import { TParsedProfileName } from '@/types/parser';
-import { TProfileResponse } from '@/types/response';
+import { TListResponseEntry, TProfileResponse } from '@/types/response';
 
 export interface IProfileParser {
     rawData () : TProfileResponse[ 'person' ];
@@ -25,4 +25,12 @@ export interface IProfileParser {
     media () : Generic.TImage[];
 }
 
-export interface IListParser {}
+export interface IListParser {
+    rawData () : TListResponseEntry;
+    uri () : string;
+    id () : string;
+    date () : string;
+    rank () : number | undefined;
+    networth () : number | undefined;
+    dropOff () : boolean | undefined;
+}
