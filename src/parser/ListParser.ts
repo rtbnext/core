@@ -1,3 +1,4 @@
+import { Utils } from '@/core/Utils';
 import { IListParser } from '@/interfaces/parser';
 import { TListResponse } from '@/types/response';
 
@@ -23,6 +24,16 @@ export class ListParser implements IListParser {
 
     public rawData () : TListResponseEntry {
         return this.raw;
+    }
+
+    // URIs & IDs
+
+    public uri () : string {
+        return this.cache( 'uri', () => Utils.sanitize( this.raw.uri ) );
+    }
+
+    public id () : string {
+        return this.cache( 'id', () => Utils.hash( this.raw.naturalId ) );
     }
 
 }
