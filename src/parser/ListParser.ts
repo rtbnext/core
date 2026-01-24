@@ -1,4 +1,4 @@
-import { TProfileInfo } from '@rtbnext/schema/src/model/profile';
+import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
@@ -75,6 +75,18 @@ export class ListParser extends Cache implements IListParser {
             industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
             source: { value: this.raw.source, type: 'list' }
         } ) );
+    }
+
+    public bio () : TProfileBio {
+        return this.cache( 'bio', () => Parser.container< TProfileBio >( {
+            cv: { value: this.raw.bios, type: 'list', args: [ 'safeStr' ] },
+            facts: { value: this.raw.abouts, type: 'list', args: [ 'safeStr' ] },
+            quotes: { value: [], type: 'list', args: [ 'safeStr' ] }
+        } ) );
+    }
+
+    public age () : number | undefined {
+        return this.cache( 'age', () => Parser.strict( this.raw.birthDate, 'age' ) );
     }
 
 }
