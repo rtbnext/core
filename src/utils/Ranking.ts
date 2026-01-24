@@ -1,8 +1,9 @@
-import { TRanking } from '@rtbnext/schema/src/abstract/assets';
+import { TRanking, TRankingItem } from '@rtbnext/schema/src/abstract/assets';
 
 import { ListQueue } from '@/core/Queue';
 import { ListIndex } from '@/model/ListIndex';
 import { TProfileResponse } from '@/types/response';
+import { TQueueOptions } from '@/types/queue';
 
 export class Ranking {
 
@@ -12,6 +13,15 @@ export class Ranking {
     public static generateProfileRanking (
         sortedLists: TProfileResponse[ 'person' ][ 'personLists' ], rankingData: TRanking[] = [],
         history: boolean = true, addQueue: boolean = true
-    ) : TRanking[] {}
+    ) : TRanking[] {
+        const lists = new Map( rankingData.map( r => [ r.list, r ] ) );
+        const entries = new Map< string, TRankingItem[] >();
+        const names = new Map< string, { name: string, desc?: string } >();
+        const queue: TQueueOptions[] = [];
+        const result: TRanking[] = [];
+
+        if ( addQueue && queue.length ) this.queue.addMany( queue );
+        return result;
+    }
 
 }
