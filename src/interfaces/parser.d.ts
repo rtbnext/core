@@ -1,10 +1,11 @@
 import * as Generic from '@rtbnext/schema/src/abstract/generic';
 import { TProfileBio, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
+import { ICache } from '@/interfaces/cache';
 import { TParsedProfileName } from '@/types/parser';
 import { TListResponseEntry, TProfileResponse } from '@/types/response';
 
-export interface IProfileParser {
+export interface IProfileParser extends ICache {
     rawData () : TProfileResponse[ 'person' ];
     sortedLists () : TProfileResponse[ 'person' ][ 'personLists' ];
     uri () : string;
@@ -25,7 +26,7 @@ export interface IProfileParser {
     media () : Generic.TImage[];
 }
 
-export interface IListParser {
+export interface IListParser extends ICache {
     rawData () : TListResponseEntry;
     uri () : string;
     id () : string;

@@ -1,3 +1,4 @@
+import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
 import { IListParser } from '@/interfaces/parser';
 import { Parser } from '@/parser/Parser';
@@ -5,20 +6,14 @@ import { ProfileParser } from '@/parser/ProfileParser';
 import { TParsedProfileName } from '@/types/parser';
 import { TListResponseEntry } from '@/types/response';
 
-export class ListParser implements IListParser {
+export class ListParser extends Cache implements IListParser {
 
     private readonly raw: TListResponseEntry;
-    private cachedData: Map< string, any > = new Map();
 
     constructor ( raw: TListResponseEntry ) {
+        super();
+
         this.raw = raw;
-    }
-
-    // Caching
-
-    private cache< T = any > ( key: string, fn: () => T ) : T {
-        if ( ! this.cachedData.has( key ) ) this.cachedData.set( key, fn() );
-        return this.cachedData.get( key );
     }
 
     // Raw data
