@@ -4,6 +4,7 @@ import { ListQueue } from '@/core/Queue';
 import { ListIndex } from '@/model/ListIndex';
 import { TProfileResponse } from '@/types/response';
 import { TQueueOptions } from '@/types/queue';
+import { Parser } from '@/parser/Parser';
 
 export class Ranking {
 
@@ -18,6 +19,22 @@ export class Ranking {
         const entries = new Map< string, TRankingItem[] >();
         const names = new Map< string, { name: string, desc?: string } >();
         const queue: TQueueOptions[] = [];
+
+        // Prepare new entries from sorted lists
+        for ( const { listUri, name, listDescription, date, timestamp, rank, finalWorth } of sortedLists ) {
+            if ( [ 'rtb', 'rtrl' ].includes( listUri ) ) continue;
+
+            const item = Parser.container< TRankingItem >( {
+                date: { value: date ?? timestamp, type: 'date', args: [ 'ymd' ], strict: false },
+                rank: { value: rank, type: 'number' },
+                networth: { value: finalWorth, type: 'money' }
+            } );
+
+            if ( ! entries.has( listUri ) ) entries.set( listUri, [] );
+            entries.get( listUri )!.push( item );
+            names.set( listUri, { name, desc: listDescription } );
+        }
+
         const result: TRanking[] = [];
 
         if ( addQueue && queue.length ) this.queue.addMany( queue );
