@@ -53,6 +53,20 @@ export class ProfileManager {
         return lookup.isExisting ? 'update' : lookup.isSimilar ? 'merge' : 'create';
     }
 
+    // Perform profile operation
+
+    public static process (
+        uriLike: string, id: string, profileData: Partial< TProfileData >,
+        aliases: string[] = [], method: 'setData' | 'updateData' = 'updateData'
+    ) : { profile: Profile | false; action: TProfileOperation } {
+        const lookup = this.lookup( uriLike, id, profileData );
+        const action = this.determineAction( lookup );
+        const profile = this.execute( lookup, uriLike, profileData, aliases, method );
+
+        if ( profile && action !== 'create' ) this.handleURIChange( profile, uriLike );
+        return { profile, action };
+    }
+
     // Prevent instantiation
 
     private constructor () {}
