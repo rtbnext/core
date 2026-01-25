@@ -23,12 +23,12 @@ export abstract class Job implements IJob {
         this.silent = this.args.silent !== undefined ? this.truthy( this.args.silent ) : silent;
         this.safeMode = this.args.safeMode !== undefined ? this.truthy( this.args.safeMode ) : safeMode;
 
-        this.log( `Run job`, this.args );
+        this.log( `Run job`, this.args, 'info' );
     }
 
     // Job helper
 
-    protected log ( msg: string, meta?: any, as: TLoggingLevel = 'info' ) : void {
+    protected log ( msg: string, meta?: any, as: TLoggingLevel = 'debug' ) : void {
         if ( ! this.silent ) log[ as ]( `[${this.job}] ${msg}`, meta );
     }
 
