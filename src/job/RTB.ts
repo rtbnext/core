@@ -1,7 +1,5 @@
-import { TChangeItem } from '@rtbnext/schema/src/abstract/assets';
 import { TRTBListItem } from '@rtbnext/schema/src/model/list';
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
-import { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import { Job, jobRunner } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
@@ -66,14 +64,11 @@ export class RTBJob extends Job implements IJob {
                 }
 
                 let profileData: Partial< TProfileData > = {
-                    uri, id, info: parser.info(), bio: parser.bio(),
-                    assets: parser.assets()
+                    uri, id, info: parser.info(), bio: parser.bio(), assets: parser.assets()
                 } as Partial< TProfileData >;
 
                 // Process profile using ProfileManager
-                const { profile, action } = ProfileManager.process(
-                    uri, id, profileData, [], 'updateData'
-                );
+                const { profile, action } = ProfileManager.process( uri, id, profileData, [], 'updateData' );
 
                 if ( ! profile ) {
                     this.log( `Failed to process profile for ${uri}` );
@@ -130,20 +125,11 @@ export class RTBJob extends Job implements IJob {
             if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
             this.log( `Saving RTB list dated ${listDate} (${count} items)` );
 
-            const stats = Parser.container< TGenericStats >( {
-                date: { value: listDate, type: 'string' },
-                count: { value: count, type: 'number' },
-                total: { value: total, type: 'money' },
-                woman: { value: woman, type: 'number' },
-                quota: { value: ( woman / count ) * 100, type: 'pct' },
-                today: { value: Parser.container< TChangeItem >( {
-                    value: { value: mover.today.total.value, type: 'money' },
-                    pct: { value: mover.today.total.pct, type: 'pct' }
-                } ), type: 'container' },
-                ytd: { value: Parser.container< TChangeItem >( {
-                    value: { value: mover.today.total.value, type: 'money' },
-                    pct: { value: mover.today.total.pct, type: 'pct' }
-                } ), type: 'container' }
+            // Create stats
+            const stats = ListParser.stats( {
+                date: listDate, count, total, woman,
+                today: { value: mover.today.total.value, pct: mover.today.total.pct },
+                ytd: { value: mover.today.total.value, pct: mover.today.total.pct }
             } );
 
             const globalStats = { ...stats, stats: {
@@ -151,6 +137,7 @@ export class RTBJob extends Job implements IJob {
                 days: list.getDates().length
             } };
 
+            // Save data
             list.saveSnapshot( { date: listDate, count, items, stats } );
             Mover.getInstance().saveSnapshot( mover );
             RTBJob.queue.addMany( queue );

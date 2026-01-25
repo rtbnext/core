@@ -1,5 +1,6 @@
-import { TAsset, TRealtime } from '@rtbnext/schema/src/abstract/assets';
+import { TAsset, TChangeItem, TRealtime } from '@rtbnext/schema/src/abstract/assets';
 import { TProfileBio, TProfileData, TProfileInfo } from '@rtbnext/schema/src/model/profile';
+import { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
@@ -140,6 +141,26 @@ export class ListParser extends Cache implements IListParser {
                     pct: Parser.pct( ytdChange / lastYear * 100 )
                 } : undefined
             };
+        } );
+    }
+
+    // Public methods
+
+    public static stats ( data: Partial< TGenericStats > ) : TGenericStats {
+        return Parser.container< TGenericStats >( {
+            date: { value: data.date, type: 'string' },
+            count: { value: data.count, type: 'number' },
+            total: { value: data.total, type: 'money' },
+            woman: { value: data.woman, type: 'number' },
+            quota: { value: ( data.woman ?? 0 ) / ( data.count ?? 1 ) * 100, type: 'pct' },
+            today: { value: Parser.container< TChangeItem >( {
+                value: { value: data.today?.value, type: 'money' },
+                pct: { value: data.today?.pct, type: 'pct' }
+            } ), type: 'container' },
+            ytd: { value: Parser.container< TChangeItem >( {
+                value: { value: data.ytd?.value, type: 'money' },
+                pct: { value: data.ytd?.pct, type: 'pct' }
+            } ), type: 'container' }
         } );
     }
 
