@@ -1,7 +1,7 @@
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import { Profile } from '@/model/Profile';
-import { TProfileLookupResult } from '@/types/utils';
+import { TProfileLookupResult, TProfileOperation } from '@/types/utils';
 import { ProfileMerger } from '@/utils/ProfileMerger';
 
 export class ProfileManager {
@@ -14,6 +14,12 @@ export class ProfileManager {
         const isSimilar = ! isExisting && !! ( profile = ProfileMerger.findMatching( profileData )[ 0 ] );
 
         return { profile, isExisting, isSimilar };
+    }
+
+    // Determine action based on profile lookup
+
+    public static determineAction ( lookup: TProfileLookupResult ) : TProfileOperation {
+        return lookup.isExisting ? 'update' : lookup.isSimilar ? 'merge' : 'create';
     }
 
     // Prevent instantiation
