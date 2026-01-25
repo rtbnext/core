@@ -6,6 +6,29 @@ import { ProfileMerger } from '@/utils/ProfileMerger';
 
 export class ProfileManager {
 
+    // Private helper
+
+    private static execute (
+        lookup: TProfileLookupResult, uriLike: string, profileData: Partial< TProfileData >,
+        aliases: string[] = [], method: 'setData' | 'updateData' = 'updateData'
+    ) : Profile | false {
+        const { profile, isExisting, isSimilar } = lookup;
+
+        if ( isExisting && profile ) {
+            profile[ method ]( profileData as any, aliases );
+            profile.save();
+            return profile;
+        }
+
+        if ( isSimilar && profile ) {
+            profile[ method ]( profileData as any, aliases );
+            profile.move( uriLike, true );
+            return profile;
+        }
+
+        return Profile.create( uriLike, profileData as TProfileData, [], aliases );
+    }
+
     // Lookup profile by URI and ID, or find a similar matching profile
 
     public static lookup (
