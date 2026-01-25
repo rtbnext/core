@@ -12,6 +12,7 @@ import { Parser } from '@/parser/Parser';
 import { TQueueOptions } from '@/types/queue';
 import { TListResponse } from '@/types/response';
 import { ProfileManager } from '@/utils/ProfileManager';
+import { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 export class RTBJob extends Job implements IJob {
 
@@ -40,6 +41,8 @@ export class RTBJob extends Job implements IJob {
 
             this.log( `Processing RTB list dated ${listDate} (${entries.length} items)` );
 
+            // Process list data
+            let count = 0, total = 0, woman = 0;
             const items: TRTBListItem[] = [];
             const queue: TQueueOptions[] = [];
 
@@ -99,20 +102,36 @@ export class RTBJob extends Job implements IJob {
                     industry: profileData.info?.industry!,
                     source: profileData.info?.source!
                 } );
+
+                count++; total += networth;
+                woman += +( profileData.info?.gender === 'f' );
             }
 
-            // Get or create list
+            // Save list data
             const list = List.get( 'rtb' ) || List.create( 'rtb', {
                 uri: 'rtb',
                 name: 'The World’s Real-Time Billionaires',
                 shortName: 'Real-Time Billionaires',
                 desc: 'Today’s richest people in the world',
                 text: 'todays richest people world',
-                date: listDate,
-                count: items.length,
+                date: listDate, count,
                 columns: [ 'rank', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
                 filters: [ 'gender', 'industry', 'citizenship' ]
             } );
+
+            if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
+            this.log( `Saving RTB list dated ${listDate} (${count} items)` );
+
+            const stats = Parser.container< TGenericStats >( {
+                date: { value: listDate, type: 'string' },
+                count: { value: count, type: 'number' },
+                total: { value: total, type: 'money' },
+                woman: { value: woman, type: 'number' },
+                quota: { value: ( woman / count ) * 100, type: 'pct' }
+            } );
+
+            list.saveSnapshot( { date: listDate, count, items, stats } );
+            RTBJob.queue.addMany( queue );
         } );
     }
 
