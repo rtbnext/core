@@ -4,6 +4,7 @@ import { Snapshot } from '@/abstract/Snapshot';
 import { Utils } from '@/core/Utils';
 import { IMover } from '@/interfaces/mover';
 import { Parser } from '@/parser/Parser';
+import { TRealtime } from '@rtbnext/schema/src/abstract/assets';
 
 export class Mover extends Snapshot< M.TMover > implements IMover {
 
@@ -72,6 +73,27 @@ export class Mover extends Snapshot< M.TMover > implements IMover {
 
     public static getInstance () : Mover {
         return this.instance ||= new Mover();
+    }
+
+    // Aggregate mover data
+
+    public static aggregate (
+        data: TRealtime | undefined, uri: string, name: string,
+        col: Partial< M.TMover > = {}
+    ) : void {
+        const i = { uri, name };
+        col.today ||= { networth: { winner: [], loser: [] }, percent: { winner: [], loser: [] } };
+        col.ytd ||= { networth: { winner: [], loser: [] }, percent: { winner: [], loser: [] } };
+
+        if ( data?.today?.value ) {
+            col.today.networth[ data.today.value > 0 ? 'winner' : 'loser' ].push( { ...i, value: data.today.value } );
+            col.today.percent[ data.today.pct > 0 ? 'winner' : 'loser' ].push( { ...i, value: data.today.pct } );
+        }
+
+        if ( data?.ytd?.value ) {
+            col.ytd.networth[ data.ytd.value > 0 ? 'winner' : 'loser' ].push( { ...i, value: data.ytd.value } );
+            col.ytd.percent[ data.ytd.pct > 0 ? 'winner' : 'loser' ].push( { ...i, value: data.ytd.pct } );
+        }
     }
 
 }
