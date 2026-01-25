@@ -1,18 +1,20 @@
 import { TRTBListItem } from '@rtbnext/schema/src/model/list';
+import { TMover } from '@rtbnext/schema/src/model/mover';
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
+import { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import { Job, jobRunner } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
 import { IJob } from '@/interfaces/job';
 import { List } from '@/model/List';
+import { Mover } from '@/model/Mover';
 import { Stats } from '@/model/Stats';
 import { ListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
 import { TQueueOptions } from '@/types/queue';
 import { TListResponse } from '@/types/response';
 import { ProfileManager } from '@/utils/ProfileManager';
-import { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 export class RTBJob extends Job implements IJob {
 
@@ -44,6 +46,7 @@ export class RTBJob extends Job implements IJob {
             // Process list data
             let count = 0, total = 0, woman = 0;
             const items: TRTBListItem[] = [];
+            const mover: Partial< TMover > = {};
             const queue: TQueueOptions[] = [];
 
             for ( const [ i, raw ] of Object.entries( entries ) ) {
@@ -88,16 +91,20 @@ export class RTBJob extends Job implements IJob {
                 profile.updateData( { realtime } );
                 profile.addHistory( [ listDate, rank, networth, value, pct ] );
                 profile.save();
+
                 profileData = profile.getData();
+                const name = profileData.info?.shortName ?? profileData.info?.name!;
+
+                // Aggregate mover data
+                Mover.aggregate( realtime, uri, name, mover );
 
                 // Push list item
                 items.push( {
-                    uri, rank, networth,
-                    today: realtime?.today,
-                    ytd: realtime?.ytd,
-                    name: profileData.info?.shortName ?? profileData.info?.name!,
+                    uri, rank, networth, name,
                     gender: profileData.info?.gender,
                     age: parser.age(),
+                    today: realtime?.today,
+                    ytd: realtime?.ytd,
                     citizenship: profileData.info?.citizenship,
                     industry: profileData.info?.industry!,
                     source: profileData.info?.source!
@@ -131,6 +138,7 @@ export class RTBJob extends Job implements IJob {
             } );
 
             list.saveSnapshot( { date: listDate, count, items, stats } );
+            Mover.getInstance().saveSnapshot( { date: listDate, ...mover as any } );
             RTBJob.queue.addMany( queue );
         } );
     }
