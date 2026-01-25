@@ -1,10 +1,12 @@
 import { Job, jobRunner } from '@/abstract/Job';
+import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
 import { IJob } from '@/interfaces/job';
 import { Parser } from '@/parser/Parser';
 
 export class ProfileJob extends Job implements IJob {
 
+    private static readonly fetch = Fetch.getInstance();
     private static readonly queue = ProfileQueue.getInstance();
 
     constructor ( args: string[] ) {
@@ -17,6 +19,13 @@ export class ProfileJob extends Job implements IJob {
             const batch = 'profile' in this.args && typeof this.args.profile === 'string'
                 ? this.args.profile.split( ',' ).filter( Boolean )
                 : ProfileJob.queue.nextUri( Job.config.fetch.rateLimit.batchSize );
+
+            for ( const row of await ProfileJob.fetch.profile( ...batch ) ) {
+                if ( ! row?.success || ! row.data ) {
+                    this.log( 'Request failed', row, 'warn' );
+                    continue;
+                }
+            }
         } );
     }
 
