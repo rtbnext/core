@@ -6,6 +6,8 @@ import { ProfileMerger } from '@/utils/ProfileMerger';
 
 export class ProfileManager {
 
+    // Lookup profile by URI and ID, or find a similar matching profile
+
     public static lookup ( uri: string, id: string, profileData: Partial< TProfileData > ) : TProfileLookupResult {
         let profile = Profile.find( uri );
         const isExisting = profile && profile.verify( id );
@@ -13,5 +15,9 @@ export class ProfileManager {
 
         return { profile, isExisting, isSimilar };
     }
+
+    // Prevent instantiation
+
+    private constructor () {}
 
 }
