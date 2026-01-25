@@ -3,9 +3,12 @@ import { TProfileData } from '@rtbnext/schema/src/model/profile';
 import { Job, jobRunner } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
+import { Wiki } from '@/core/Wiki';
 import { IJob } from '@/interfaces/job';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
+import { Ranking } from '@/utils/Ranking';
+import { ProfileManager } from '@/utils/ProfileManager';
 
 export class ProfileJob extends Job implements IJob {
 
@@ -37,6 +40,20 @@ export class ProfileJob extends Job implements IJob {
                     uri, id, info: parser.info(), bio: parser.bio(),
                     related: parser.related(), media: parser.media()
                 };
+
+                // Enrich profile data with ranking and wiki
+                if ( ! Parser.boolean( this.args.skipRanking ) ) {
+                    profileData.ranking = Ranking.generateProfileRanking(
+                        parser.sortedLists(), profileData.ranking
+                    );
+                }
+
+                if ( ! Parser.boolean( this.args.skipWiki ) ) {
+                    const lookup = ProfileManager.lookup( uri, id, profileData );
+                    const wiki = lookup.profile && lookup.profile.getData().wiki;
+                    profileData.wiki = wiki ? await Wiki.queryWikiPage( wiki.uri )
+                        : await Wiki.fromProfileData( profileData );
+                }
             }
         } );
     }
