@@ -1,6 +1,7 @@
 import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import { Profile } from '@/model/Profile';
+import { TQueueOptions } from '@/types/queue';
 import { TProfileLookupResult, TProfileOperation } from '@/types/utils';
 import { ProfileMerger } from '@/utils/ProfileMerger';
 
@@ -65,6 +66,20 @@ export class ProfileManager {
 
         if ( profile && action !== 'create' ) this.handleURIChange( profile, uriLike );
         return { profile, action };
+    }
+
+    // Add queue item based on action
+
+    public static updateQueue (
+        queue: TQueueOptions[], profile: Profile, action: TProfileOperation, th?: number
+    ) : void {
+        const uriLike = profile.getUri();
+
+        switch ( action ) {
+            case 'update': if ( ! th || profile.modifiedTime() < th ) queue.push( { uriLike } ); break;
+            case 'merge': queue.push( { uriLike, prio: 5 } ); break;
+            case 'create': queue.push( { uriLike, prio: 10 } ); break;
+        }
     }
 
     // Prevent instantiation
