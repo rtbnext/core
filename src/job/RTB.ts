@@ -3,6 +3,7 @@ import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
 import { IJob } from '@/interfaces/job';
 import { Stats } from '@/model/Stats';
+import { Parser } from '@/parser/Parser';
 import { TListResponse } from '@/types/response';
 
 export class RTBJob extends Job implements IJob {
@@ -19,6 +20,10 @@ export class RTBJob extends Job implements IJob {
         await this.protect( async () => {
             const res = await RTBJob.fetch.list< TListResponse >( 'rtb', '0', this.args.date );
             if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
+
+            const { date } = RTBJob.stats.getGlobalStats();
+            const listDate = Parser.date( this.args.date ?? new Date(), 'ymd' )!;
+            if ( date === listDate ) throw new Error( 'RTB list is already up to date' );
         } );
     }
 
