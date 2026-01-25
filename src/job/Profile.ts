@@ -32,6 +32,7 @@ export class ProfileJob extends Job implements IJob {
                     continue;
                 }
 
+                // Parse raw profile data
                 const parser = new ProfileParser( raw.data );
                 const uri = parser.uri();
                 const id = parser.id();
