@@ -33,7 +33,7 @@ export class Stats implements IStats {
         return join( 'stats', path );
     }
 
-    private prepStats< T >( data: Partial< T > ) : T {
+    private prepStats< T >( data: Omit< T, '@metadata' > ) : T {
         return { ...Utils.metaData(), ...data } as T;
     }
 
@@ -95,9 +95,9 @@ export class Stats implements IStats {
 
     // Stats setter
 
-    public setGlobalStats ( data: Partial< S.TGlobalStats > ) : boolean {
+    public setGlobalStats ( data: Omit< S.TGlobalStats, '@metadata' > ) : boolean {
         return this.saveStats( 'global.json', 'json', this.prepStats(
-            Parser.container< Partial< S.TGlobalStats > >( {
+            Parser.container< Omit< S.TGlobalStats, '@metadata' > >( {
                 date: { value: data.date, type: 'date', args: [ 'ymd' ] },
                 count: { value: data.count, type: 'number' },
                 total: { value: data.total, type: 'money' },
@@ -119,7 +119,7 @@ export class Stats implements IStats {
         ) );
     }
 
-    public setProfileStats ( data: Partial< S.TProfileStats > ) : boolean {
+    public setProfileStats ( data: Omit< S.TProfileStats, '@metadata' > ) : boolean {
         return this.saveStats( 'profile.json', 'json', this.prepStats( {
             ...Parser.container< Partial< S.TProfileStats > >( {
                 gender: { value: data.gender, type: 'obj', args: [ 'number' ] },
@@ -131,21 +131,21 @@ export class Stats implements IStats {
                 selfMade: { value: data.selfMade, type: 'obj', args: [ 'number' ] },
                 philanthropyScore: { value: data.philanthropyScore, type: 'obj', args: [ 'number' ] }
             } ),
-            agePyramid: Object.entries( data.agePyramid! ).forEach( ( [ gender, item ] ) => 
-                ( data.agePyramid as any )[ gender ] = Parser.container< S.TAgePyramidGroup >( {
+            agePyramid: Object.fromEntries( Object.entries( data.agePyramid ).map(
+                ( [ gender, item ] ) => [ gender, Parser.container< S.TAgePyramidGroup >( {
                     count: { value: item.count, type: 'number' },
                     decades: { value: item.decades, type: 'obj', args: [ 'number' ] },
                     max: { value: item.max, type: 'number' },
                     min: { value: item.min, type: 'number' },
                     mean: { value: item.mean, type: 'number' }
-                } )
-            )
+                } ) ]
+            ) )
         } ) );
     }
 
-    public setWealthStats ( data: Partial< S.TWealthStats > ) : boolean {
+    public setWealthStats ( data: Omit< S.TWealthStats, '@metadata' > ) : boolean {
         return this.saveStats( 'wealth.json', 'json', this.prepStats(
-            Parser.container< Partial< S.TWealthStats > >( {
+            Parser.container< Omit< S.TWealthStats, '@metadata' > >( {
                 percentiles: { value: data.percentiles, type: 'obj', args: [ 'money' ] },
                 quartiles: { value: data.quartiles, type: 'list', args: [ 'money' ] },
                 total: { value: data.total, type: 'money' },
@@ -161,15 +161,15 @@ export class Stats implements IStats {
         ) );
     }
 
-    public setScatter ( data: Partial< S.TScatter > ) : boolean {
-        return this.saveStats( 'scatter.json', 'json', this.prepStats( {
+    public setScatter ( data: Omit< S.TScatter, '@metadata' > ) : boolean {
+        return this.saveStats( 'scatter.json', 'json', this.prepStats< S.TScatter >( {
             count: Parser.number( data.count ), items: data.items
         } ) );
     }
 
-    public setDBStats ( data: Partial< S.TDBStats > ) : boolean {
+    public setDBStats ( data: Omit< S.TDBStats, '@metadata' > ) : boolean {
         return this.saveStats( 'db.json', 'json', this.prepStats(
-            Parser.container< Partial< S.TDBStats > >( {
+            Parser.container< Omit< S.TDBStats, '@metadata' > >( {
                 files: { value: data.files, type: 'number' },
                 size: { value: data.size, type: 'number' }
             } )
