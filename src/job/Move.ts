@@ -2,6 +2,7 @@ import { Job, jobRunner } from '@/abstract/Job';
 import { Utils } from '@/core/Utils';
 import { IJob } from '@/interfaces/job';
 import { Profile } from '@/model/Profile';
+import { Parser } from '@/parser/Parser';
 
 export class MoveJob extends Job implements IJob {
 
@@ -17,6 +18,10 @@ export class MoveJob extends Job implements IJob {
 
             const profile = Profile.find( from );
             if ( ! profile ) throw new Error( `Profile ${from} not found` );
+
+            this.log( `Moving profile from ${from} to ${to} ...` );
+            const res = profile.move( to, Parser.boolean( this.args.makeAlias ) );
+            this.log( res ? `Profile moved successfully` : `Profile move failed` );
         } );
     }
 
