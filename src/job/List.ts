@@ -1,4 +1,5 @@
 import { TListItem } from '@rtbnext/schema/src/model/list';
+import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import { Job, jobRunner } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
@@ -8,6 +9,7 @@ import { ListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
 import { TQueueOptions } from '@/types/queue';
 import { TListResponse } from '@/types/response';
+import { ProfileManager } from '@/utils/ProfileManager';
 
 export class ListJob extends Job implements IJob {
 
@@ -31,6 +33,7 @@ export class ListJob extends Job implements IJob {
             if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
             const rawList = res.data.personList.personsLists;
+            const th = Date.now() - Job.config.queue.tsThreshold;
             const entries = rawList.filter( i => i.rank && i.finalWorth ).filter( Boolean ).sort(
                 ( a, b ) => a.rank! - b.rank!
             );
@@ -43,6 +46,9 @@ export class ListJob extends Job implements IJob {
             const queue: TQueueOptions[] = [];
 
             for ( const [ i, raw ] of Object.entries( entries ) ) {
+                raw.date = new Date( listDate ).getTime();
+
+                // Parse raw list data
                 const parser = new ListParser( raw );
                 const uri = parser.uri();
                 const id = parser.id();
@@ -53,6 +59,21 @@ export class ListJob extends Job implements IJob {
                     this.log( `Skipping invalid list entry for ${uri}` );
                     continue;
                 }
+
+                let profileData: Partial< TProfileData > = {
+                    uri, id, info: parser.info(), bio: parser.bio(), assets: parser.assets()
+                } as Partial< TProfileData >;
+
+                // Process profile using ProfileManager
+                const { profile, action } = ProfileManager.process( uri, id, profileData, [], 'updateData' );
+
+                if ( ! profile ) {
+                    this.log( `Failed to process profile for ${uri}` );
+                    continue;
+                }
+
+                ProfileManager.updateQueue( queue, profile, action, th );
+                profileData = profile.getData();
             }
         } );
     }
