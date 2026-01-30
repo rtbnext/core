@@ -4,8 +4,9 @@ import { Job, jobRunner } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
 import { IJob } from '@/interfaces/job';
-import { TListResponse } from '@/types/response';
+import { ListParser } from '@/parser/ListParser';
 import { TQueueOptions } from '@/types/queue';
+import { TListResponse } from '@/types/response';
 
 export class ListJob extends Job implements IJob {
 
@@ -37,8 +38,16 @@ export class ListJob extends Job implements IJob {
 
             const items: TListItem[] = [];
             const queue: TQueueOptions[] = [];
+            let date: string;
 
-            for ( const [ i, raw ] of Object.entries( entries ) ) {}
+            for ( const [ i, raw ] of Object.entries( entries ) ) {
+                // Parse raw list data
+                const parser = new ListParser( raw );
+                const uri = parser.uri();
+                const id = parser.id();
+                const rank = parser.rank();
+                const networth = parser.networth();
+            }
         } );
     }
 
