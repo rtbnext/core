@@ -48,6 +48,11 @@ export class ListJob extends Job implements IJob {
                 const id = parser.id();
                 const rank = parser.rank();
                 const networth = parser.networth();
+
+                if ( ! rank || ! networth ) {
+                    this.log( `Skipping invalid list entry for ${uri}` );
+                    continue;
+                }
             }
         } );
     }
