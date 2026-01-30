@@ -1,8 +1,11 @@
+import { TListItem } from '@rtbnext/schema/src/model/list';
+
 import { Job, jobRunner } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
 import { IJob } from '@/interfaces/job';
 import { TListResponse } from '@/types/response';
+import { TQueueOptions } from '@/types/queue';
 
 export class ListJob extends Job implements IJob {
 
@@ -31,6 +34,11 @@ export class ListJob extends Job implements IJob {
             );
 
             this.log( `Processing "${name}" list from ${year} (${entries.length} items)` );
+
+            const items: TListItem[] = [];
+            const queue: TQueueOptions[] = [];
+
+            for ( const [ i, raw ] of Object.entries( entries ) ) {}
         } );
     }
 
