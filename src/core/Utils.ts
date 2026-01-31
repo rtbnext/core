@@ -1,7 +1,7 @@
 import { hrtime } from 'node:process';
 
 import { TMetaData } from '@rtbnext/schema/src/abstract/generic';
-import { ListLike } from 'devtypes/types/lists';
+import { ListLike } from 'devtypes/types/list';
 import { sha256 } from 'js-sha256';
 
 import { REGEX_DIACRITICS, REGEX_NOALNUM } from '@/core/RegEx';

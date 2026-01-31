@@ -1,6 +1,6 @@
 import { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/abstract/const';
 import { TLocation } from '@rtbnext/schema/src/abstract/generic';
-import { Primitive } from 'devtypes/types/primitives';
+import { Primitive } from 'devtypes/types/primitive';
 import { getAlpha2Code } from 'i18n-iso-countries';
 import { abbr } from 'us-state-converter';
 
