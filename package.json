@@ -33,6 +33,6 @@
     "i18n-iso-countries": "^7.14.0",
     "js-sha256": "^0.11.1",
     "us-state-converter": "^1.0.8",
-    "yaml": "^2.8.2"
+    "yaml": "^2.8.3"
   }
 }
