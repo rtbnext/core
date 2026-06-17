@@ -15,7 +15,8 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "tsc && node scripts/copy-dts.mjs && tsc-alias"
+    "format": "prettier --ignore-path \"\" --write \"./dist/**/*.@(js|d.ts)\" --log-level warn",
+    "build": "tsc && node scripts/copy-dts.mjs && tsc-alias && npm run format"
   },
   "dependencies": {
     "@komed3/deepmerge": "^1.0.0",
