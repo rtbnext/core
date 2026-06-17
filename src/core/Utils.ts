@@ -1,10 +1,18 @@
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 
+import { REGEX_NOALNUM } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TParserDateType } from '@/type/parser';
 
 
 export class Utils {
+  // --- sanitize IDs and URIs ---
+
+  public static sanitize ( value: unknown, delimiter: string = '-' ) : string {
+    return Parser.string( value ).toLowerCase().replace( REGEX_NOALNUM, delimiter )
+      .replace( new RegExp( `[${ delimiter }]{2,}`, 'g' ), delimiter );
+  }
+
   public static date ( format: TParserDateType = 'ymd' ) : string {
     return Parser.date( undefined, format )!;
   }
