@@ -1,10 +1,10 @@
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import process, { cwd } from 'node:process';
+import { parse } from 'yaml';
 
 import type { IConfig } from '@/interface/config';
-import type {
-  TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueConfig, TStorageConfig
-} from '@/type/config';
+import type { TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueConfig, TStorageConfig } from '@/type/config';
 
 
 export class Config implements IConfig {
@@ -24,7 +24,11 @@ export class Config implements IConfig {
 
   // --- config loader ---
 
-  private loadConfigFile ( path: string ) : Partial< TConfigObject > {}
+  private loadConfigFile ( path: string ) : Partial< TConfigObject > {
+    if ( ! existsSync( path = join( this.path, path ) ) ) return {};
+    try { return parse( readFileSync( path, 'utf8' ) ) as Partial< TConfigObject > }
+    catch { return {} }
+  }
 
   private loadConfig () : TConfigObject {}
 
