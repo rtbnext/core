@@ -8,9 +8,8 @@ import type { IConfig } from '@/interface/config';
 import type { TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueConfig, TStorageConfig } from '@/type/config';
 
 
-const merger = new Merger( { arrayMode: ArrayMode.Replace } );
-
 export class Config implements IConfig {
+  private static merger = new Merger( { arrayMode: ArrayMode.Replace } );
   private static instance: Config;
 
   private readonly cwd: string;
@@ -34,7 +33,7 @@ export class Config implements IConfig {
   }
 
   private loadConfig () : TConfigObject {
-    return merger.merge(
+    return Config.merger.merge(
       this.loadConfigFile( 'default.yml' ) as TConfigObject,
       this.loadConfigFile( `${ this.env }.yml` )
     );
