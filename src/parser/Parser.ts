@@ -7,6 +7,13 @@ import type { TParserDateType, TParserMethod } from '@/type/parser';
 export class Parser {
   // --- primitive ---
 
+  public static primitive ( value: unknown, safe: boolean = true ) : Primitive {
+    return value === null || value === undefined ? value
+      : typeof value === 'boolean' ? value
+      : ! isNaN( Number( value ) ) && value !== '' ? Parser.number( value )
+      : safe ? Parser.safeStr( value ) : Parser.string( value );
+  }
+
   public static string ( value: unknown ) : string {
     return String( value ).trim().replace( REGEX_SPACES, ' ' );
   }
@@ -46,10 +53,13 @@ export class Parser {
     return value === null || value === undefined ? undefined : ( Parser[ method ] as any )( value, ...args ) as T;
   }
 
-  public static primitive ( value: unknown, safe: boolean = true ) : Primitive {
-    return value === null || value === undefined ? value
-      : typeof value === 'boolean' ? value
-      : ! isNaN( Number( value ) ) && value !== '' ? Parser.number( value )
-      : safe ? Parser.safeStr( value ) : Parser.string( value );
+  public static list < T extends string | ( string | number | undefined )[] > (
+    value: T | T[], type: TParserMethod = 'primitive', delimiter: string = ',',
+    strict: boolean = true, ...args: any[]
+  ) : T[] {
+    return ( Array.isArray( value ) ? value : value.split( delimiter ) ).map(
+      i => strict ? Parser.strict( value, type, ...( args || [] ) )
+        : ( Parser[ type ] as any )( i, ...( args || [] ) )
+    ).filter( Boolean ) as T[];
   }
 }
