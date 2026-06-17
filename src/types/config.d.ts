@@ -37,3 +37,9 @@ export type TFetchConfig = {
     };
   };
 };
+
+export type TQueueConfig = {
+  tsThreshold: number;
+  maxSize: number;
+  defaultPrio: number;
+};
