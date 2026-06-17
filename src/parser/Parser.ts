@@ -64,13 +64,25 @@ export class Parser {
   }
 
   public static obj < T = unknown > (
-    value: T, type: TParserMethod = 'primitive',
-    strict: boolean = true, ...args: any[]
+    value: T, type: TParserMethod = 'primitive', strict: boolean = true, ...args: any[]
   ) : T {
     if ( typeof value !== 'object' || value === null ) return {} as T;
+
     return Object.fromEntries( Object.entries( value ).map( ( [ k, v ] ) => [
       k, strict ? Parser.strict( v, type, ...( args || [] ) )
         : ( Parser[ type ] as any )( v, ...( args || [] ) )
     ] ) ) as T;
+  }
+
+  public static map < T extends Primitive, L extends readonly T[] | Record< string | number, T > > (
+    value: any, list: L, fb: T | undefined = undefined, exactMatch: boolean = false, useKey?: boolean
+  ) : T | undefined {
+    if ( useKey === undefined ) useKey = ! Array.isArray( list );
+    value = Parser.string( value ).toLowerCase();
+
+    return Object.entries( list ).find( ( [ k, v ] ) => {
+      const test = Parser.string( useKey ? k : v ).toLowerCase();
+      return exactMatch ? value === test : ( value.includes( test ) || test.includes( value ) );
+    } )?.[ 1 ] || fb;
   }
 }
