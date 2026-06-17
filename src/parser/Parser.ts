@@ -12,7 +12,7 @@ export class Parser {
   }
 
   public static safeStr ( value: unknown, allowedTags?: string[] ) : string {
-    return Parser.string( value ).replace( new RegExp( allowedTags?.length
+    return String( value ).replace( new RegExp( allowedTags?.length
       ? `<\\/?(?!(${ allowedTags.join( '|' ) })\\b)(\\w+)([^>]*)>` : '<[^>]*>', 'gi'
     ), '' ).replace( REGEX_SPACES, ' ' ).trim();
   }
