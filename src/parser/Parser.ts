@@ -10,4 +10,10 @@ export class Parser {
       ? `<\\/?(?!(${ allowedTags.join( '|' ) })\\b)(\\w+)([^>]*)>` : '<[^>]*>', 'gi'
     ), '' ).replace( REGEX_SPACES, ' ' ).trim();
   }
+
+  public static boolean ( value: any ) : boolean {
+    return value !== null && value !== undefined && ( typeof value === 'boolean' ? value :
+      [ '1', 'true', 'yes', 'y' ].includes( Parser.string( value ).toLowerCase() )
+    );
+  }
 }
