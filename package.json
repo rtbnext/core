@@ -15,6 +15,7 @@
   ],
   "type": "module",
   "dependencies": {
+    "@komed3/deepmerge": "^1.0.0",
     "@rtbnext/schema": "^2.0.0-alpha.1",
     "devtypes": "^2.2.0",
     "js-sha256": "^0.11.1"
