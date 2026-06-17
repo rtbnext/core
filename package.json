@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.3",
+    "prettier": "^3.8.4",
     "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3"
   }
