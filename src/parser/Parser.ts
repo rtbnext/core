@@ -1,10 +1,7 @@
 import type { Primitive } from 'devtypes/types/primitive';
 
 import { REGEX_SPACES } from '@/lib/regex';
-import type {
-  TParserContainer, TParserContainerObj, TParserDateType,
-  TParserMethod
-} from '@/type/parser';
+import type { TParserContainer, TParserContainerObj, TParserDateType, TParserMethod } from '@/type/parser';
 
 
 export class Parser {
