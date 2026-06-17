@@ -5,3 +5,13 @@ export type TLoggingConfig = {
   console?: boolean;
   file?: boolean;
 };
+
+export type TJobConfig = {
+  silent: boolean;
+  safeMode: boolean;
+};
+
+export type TStorageConfig = {
+  baseDir: string;
+  compression: boolean;
+};
