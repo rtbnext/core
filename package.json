@@ -14,6 +14,9 @@
     "LICENSE"
   ],
   "type": "module",
+  "scripts": {
+    "build": "tsc && tsc-alias"
+  },
   "dependencies": {
     "@komed3/deepmerge": "^1.0.0",
     "@rtbnext/schema": "^2.0.0-alpha.1",
