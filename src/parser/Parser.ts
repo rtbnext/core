@@ -1,4 +1,5 @@
 import { REGEX_SPACES } from '@/lib/regex';
+import type { TParserDateType } from '@/type/parser';
 
 export class Parser {
   public static string ( value: unknown ) : string {
@@ -27,5 +28,10 @@ export class Parser {
 
   public static pct ( value: unknown, digits: number = 2 ) : number {
     return Parser.number( value, digits );
+  }
+
+  public static date ( value?: any, format: TParserDateType = 'ymd' ) : string | undefined {
+    try { value = new Date( value ).toISOString() } catch { return undefined }
+    return format === 'iso' ? value : value.split( '-' ).slice( 0, format.length ).join( '-' );
   }
 }
