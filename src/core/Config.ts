@@ -10,7 +10,7 @@ import type { TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueCon
 
 export class Config implements IConfig {
   private static merger = new Merger( { arrayMode: ArrayMode.Replace } );
-  private static instance: Config;
+  private static instance: IConfig;
 
   private readonly cwd: string;
   private readonly path: string;
@@ -52,7 +52,7 @@ export class Config implements IConfig {
 
   // --- instantiate ---
 
-  public static getInstance () : Config {
+  public static getInstance () : IConfig {
     return Config.instance ||= new Config();
   }
 }
