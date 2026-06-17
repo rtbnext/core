@@ -3,6 +3,7 @@ import type {
   TMaritalStatus, TPercentiles, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread
 } from '@rtbnext/schema/src/base/const';
 
+
 // --- basics ---
 
 export const Industry: TIndustry[] = [
