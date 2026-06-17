@@ -43,3 +43,11 @@ export type TQueueConfig = {
   maxSize: number;
   defaultPrio: number;
 };
+
+export type TConfigObject = {
+  logging: TLoggingConfig;
+  job: TJobConfig;
+  storage: TStorageConfig;
+  fetch: TFetchConfig;
+  queue: TQueueConfig;
+};
