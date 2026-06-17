@@ -16,7 +16,8 @@
   "type": "module",
   "dependencies": {
     "@rtbnext/schema": "^2.0.0-alpha.1",
-    "devtypes": "^2.2.0"
+    "devtypes": "^2.2.0",
+    "js-sha256": "^0.11.1"
   },
   "devDependencies": {
     "@types/node": "^25.9.3",
