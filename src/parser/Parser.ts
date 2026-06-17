@@ -1,7 +1,7 @@
 import type { Primitive } from 'devtypes/types/primitive';
 
 import { REGEX_SPACES } from '@/lib/regex';
-import type { TParserDateType } from '@/type/parser';
+import type { TParserDateType, TParserMethod } from '@/type/parser';
 
 
 export class Parser {
@@ -41,6 +41,10 @@ export class Parser {
   }
 
   // --- helper ---
+
+  public static strict < T = unknown > ( value: unknown, method: TParserMethod, ...args: any[] ) : T | undefined {
+    return value === null || value === undefined ? undefined : ( Parser[ method ] as any )( value, ...args ) as T;
+  }
 
   public static primitive ( value: unknown, safe: boolean = true ) : Primitive {
     return value === null || value === undefined ? value
