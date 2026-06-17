@@ -1,6 +1,7 @@
 import { REGEX_SPACES } from '@/lib/regex';
 import type { TParserDateType } from '@/type/parser';
 
+
 export class Parser {
   public static string ( value: unknown ) : string {
     return String( value ).trim().replace( REGEX_SPACES, ' ' );

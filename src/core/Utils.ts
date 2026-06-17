@@ -1,9 +1,12 @@
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 
+import { Parser } from '@/parser/Parser';
+import type { TParserDateType } from '@/type/parser';
+
+
 export class Utils {
-  public static date ( format: 'iso' | 'ymd' | 'ym' | 'y' = 'ymd' ) : string {
-    const iso = new Date().toISOString();
-    return format === 'iso' ? iso : iso.split( '-' ).slice( 0, format.length ).join( '-' );
+  public static date ( format: TParserDateType = 'ymd' ) : string {
+    return Parser.date( undefined, format )!;
   }
 
   public static metaData < T extends Record< string, any > > ( obj?: T ) : TMetaData {
