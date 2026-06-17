@@ -19,7 +19,14 @@ export class Config implements IConfig {
     this.cwd = cwd();
     this.path = join( this.cwd, 'config' );
     this.env = process.env.NODE_ENV || 'production';
+    this.cfg = this.loadConfig();
   }
+
+  // --- config loader ---
+
+  private loadConfigFile ( path: string ) : Partial< TConfigObject > {}
+
+  private loadConfig () : TConfigObject {}
 
   // --- public getter ---
 
