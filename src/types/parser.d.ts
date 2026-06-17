@@ -1,6 +1,6 @@
 import type { Parser } from '@/parser/Parser';
 
-export type TParserMethod = keyof typeof Parser;
+export type TParserMethod = Exclude< keyof typeof Parser, 'prototype' >;
 
 export type TParserContainer = {
   value: unknown;
