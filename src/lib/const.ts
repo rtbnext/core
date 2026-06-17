@@ -3,6 +3,8 @@ import type {
   TMaritalStatus, TPercentiles, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread
 } from '@rtbnext/schema/src/base/const';
 
+import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
+
 
 // --- basics ---
 
@@ -63,3 +65,36 @@ export const FilterGroup: TFilterGroup[] = [
 export const FilterSpecial: TFilterSpecial[] = [
   'deceased', 'dropOff', 'family', 'selfMade'
 ] as const;
+
+// --- resolver ---
+
+export const MaritalStatusResolver: TMaritalStatusResolver = {
+  'single': 'single',
+  'in-relationship': 'relationship',
+  'married': 'married',
+  'remarried': 'remarried',
+  'engaged': 'engaged',
+  'separated': 'separated',
+  'divorced': 'divorced',
+  'widowed': 'widowed'
+} as const;
+
+export const IndustryResolver: TIndustryResolver = {
+  'technology': 'technology',
+  'fashion-retail': 'retail',
+  'finance-investments': 'finance',
+  'diversified': 'diversified',
+  'telecom': 'telecom',
+  'energy': 'energy',
+  'metals-mining': 'mining',
+  'gambling-casinos': 'gambling',
+  'healthcare': 'healthcare',
+  'manufacturing': 'manufacturing',
+  'logistics': 'logistics',
+  'automotive': 'automotive',
+  'media-entertainment': 'media',
+  'construction-engineering': 'engineering',
+  'sports': 'sports',
+  'real-estate': 'property',
+  'service': 'service'
+} as const;
