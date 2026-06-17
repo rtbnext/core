@@ -1,0 +1,18 @@
+{
+  "name": "@rtbnext/core",
+  "description": "Internal core package for the rtbnext project",
+  "license": "MIT",
+  "version": "2.0.0-alpha.1",
+  "author": {
+    "name": "komed3 (Paul Köhler)",
+    "email": "webmaster@komed3.de",
+    "url": "https://komed3.de"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "dependencies": {}
+}
