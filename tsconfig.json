@@ -11,14 +11,15 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "paths": {
-      "@/abstract/*": [ "abstract/*" ],
-      "@/core/*": [ "core/*" ],
-      "@/interface/*": [ "interfaces/*" ],
-      "@/job/*": [ "job/*" ],
-      "@/model/*": [ "model/*" ],
-      "@/parser/*": [ "parser/*" ],
-      "@/type/*": [ "types/*" ],
-      "@/util/*": [ "utils/*" ]
+      "@/abstract/*": [ "./src/abstract/*" ],
+      "@/core/*": [ "./src/core/*" ],
+      "@/interface/*": [ "./src/interfaces/*" ],
+      "@/job/*": [ "./src/job/*" ],
+      "@/lib/*": [ "./src/lib/*" ],
+      "@/model/*": [ "./src/model/*" ],
+      "@/parser/*": [ "./src/parser/*" ],
+      "@/type/*": [ "./src/types/*" ],
+      "@/util/*": [ "./src/utils/*" ]
     }
   },
   "tsc-alias": {
