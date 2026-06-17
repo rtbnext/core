@@ -4,7 +4,7 @@ import { hrtime } from 'node:process';
 
 import { REGEX_NOALNUM } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
-import type { TMeasuredResult } from '@/type/generic';
+import type { TAggregator, TMeasuredResult } from '@/type/generic';
 import type { TParserDateType } from '@/type/parser';
 
 
@@ -28,7 +28,7 @@ export class Utils {
 
   // --- measurement ---
 
-  public static async measure<
+  public static async measure <
     F extends ( ...args: any[] ) => any,
     R = Awaited< ReturnType< F > >
   > ( fn: F ) : Promise< TMeasuredResult< R > > {
@@ -59,5 +59,40 @@ export class Utils {
 
   public static encodeURI ( value: unknown ) : string {
     return encodeURIComponent( Parser.string( value ) );
+  }
+
+  // --- aggregate from object arrays ---
+
+  public static aggregate <
+    T extends Record< PropertyKey, unknown >,
+    K extends keyof T = keyof T,
+    R = unknown
+  > (
+    arr: readonly T[], key: K, aggregator: TAggregator = 'first'
+  ) : T[ K ] | T[ K ][] | number | R | undefined {
+    const values = arr.map( item => item[ key ] ).filter( ( v ) : v is T[ K ] => v !== undefined );
+
+    if ( ! values.length ) return undefined;
+    if ( typeof aggregator === 'function' ) return aggregator( values );
+
+    const sum = ( acc: number | undefined, val: T[ K ] ) : number | undefined => (
+      acc === undefined || typeof val !== 'number' ? undefined : acc + val
+    );
+
+    switch ( aggregator ) {
+      case 'all': return values;
+      case 'first': return values[ 0 ];
+      case 'last': return values.at( -1 );
+      case 'sum': return values.reduce< number | undefined >( sum, 0 );
+      case 'min': return values.reduce< T[ K ] | undefined >( ( acc, val ) => (
+        acc === undefined || val < acc! ? val : acc
+      ), Infinity as unknown as T[ K ] );
+      case 'max': return values.reduce< T[ K ] | undefined >( ( acc, val ) => (
+        acc === undefined || val > acc! ? val : acc
+      ), -Infinity as unknown as T[ K ] );
+      case 'mean':
+        const s = values.reduce< number | undefined >( sum, 0 );
+        return s === undefined ? undefined : s / values.length;
+    }
   }
 }
