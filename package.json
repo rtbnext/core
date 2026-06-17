@@ -15,7 +15,7 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "tsc && tsc-alias"
+    "build": "tsc && node scripts/copy-dts.mjs && tsc-alias"
   },
   "dependencies": {
     "@komed3/deepmerge": "^1.0.0",
