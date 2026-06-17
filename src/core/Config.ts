@@ -2,7 +2,9 @@ import { join } from 'node:path';
 import process, { cwd } from 'node:process';
 
 import type { IConfig } from '@/interface/config';
-import type { TConfigObject } from '@/type/config';
+import type {
+  TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueConfig, TStorageConfig
+} from '@/type/config';
 
 
 export class Config implements IConfig {
@@ -18,6 +20,17 @@ export class Config implements IConfig {
     this.path = join( this.cwd, 'config' );
     this.env = process.env.NODE_ENV || 'production';
   }
+
+  // --- public getter ---
+
+    public get root () : string { return this.cwd }
+    public get environment () : string { return this.env }
+    public get config () : TConfigObject { return this.cfg }
+    public get logging () : TLoggingConfig { return this.cfg.logging }
+    public get job () : TJobConfig { return this.cfg.job }
+    public get storage () : TStorageConfig { return this.cfg.storage }
+    public get fetch () : TFetchConfig { return this.cfg.fetch }
+    public get queue () : TQueueConfig { return this.cfg.queue }
 
   // --- instantiate ---
 
