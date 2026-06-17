@@ -1,7 +1,10 @@
 import type { Primitive } from 'devtypes/types/primitive';
 
 import { REGEX_SPACES } from '@/lib/regex';
-import type { TParserDateType, TParserMethod } from '@/type/parser';
+import type {
+  TParserContainer, TParserContainerObj, TParserDateType,
+  TParserMethod
+} from '@/type/parser';
 
 
 export class Parser {
@@ -84,5 +87,17 @@ export class Parser {
       const test = Parser.string( useKey ? k : v ).toLowerCase();
       return exactMatch ? value === test : ( value.includes( test ) || test.includes( value ) );
     } )?.[ 1 ] || fb;
+  }
+
+  // --- container ---
+
+  public static container < T = unknown > ( obj: TParserContainerObj ) : T {
+    return Object.fromEntries( Object.entries< TParserContainer >( obj ).map(
+      ( [ key, { value, type, strict = true, args } ] ) => [
+        key, type === 'container' ? value
+          : strict ? Parser.strict( value, type, ...( args || [] ) )
+          : ( Parser[ type ] as any )( value, ...( args || [] ) )
+      ]
+    ) ) as T;
   }
 }
