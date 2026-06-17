@@ -12,4 +12,12 @@ export class Utils {
   public static metaData < T extends Record< string, any > > ( obj?: T ) : TMetaData {
     return { $metadata: { schemaVersion: 2, lastModified: Utils.date( 'iso' ), ...obj } };
   }
+
+  public static decodeURI ( value: unknown ) : string {
+    return decodeURIComponent( Parser.string( value ) );
+  }
+
+  public static encodeURI ( value: unknown ) : string {
+    return encodeURIComponent( Parser.string( value ) );
+  }
 }
