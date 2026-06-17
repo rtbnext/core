@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2025",
+    "module": "esnext",
+    "types": [ "node" ],
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "paths": {
+      "@/abstract/*": [ "abstract/*" ],
+      "@/core/*": [ "core/*" ],
+      "@/interface/*": [ "interfaces/*" ],
+      "@/job/*": [ "job/*" ],
+      "@/model/*": [ "model/*" ],
+      "@/parser/*": [ "parser/*" ],
+      "@/type/*": [ "types/*" ],
+      "@/util/*": [ "utils/*" ]
+    }
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  },
+  "include": [ "src" ],
+  "exclude": [ "node_modules", "dist" ]
+}
