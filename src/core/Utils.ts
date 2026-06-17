@@ -1,4 +1,5 @@
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
+import type { ListLike } from 'devtypes/types/list';
 import { sha256 } from 'js-sha256';
 import { hrtime } from 'node:process';
 
@@ -29,8 +30,7 @@ export class Utils {
   // --- measurement ---
 
   public static async measure <
-    F extends ( ...args: any[] ) => any,
-    R = Awaited< ReturnType< F > >
+    F extends ( ...args: any[] ) => any, R = Awaited< ReturnType< F > >
   > ( fn: F ) : Promise< TMeasuredResult< R > > {
     if ( typeof fn !== 'function' ) throw new TypeError( 'Parameter must be a function' );
 
@@ -64,8 +64,7 @@ export class Utils {
   // --- aggregate from object arrays ---
 
   public static aggregate <
-    T extends Record< PropertyKey, unknown >,
-    K extends keyof T = keyof T, R = unknown
+    T extends Record< PropertyKey, unknown >, K extends keyof T = keyof T, R = unknown
   > (
     arr: readonly T[], key: K, aggregator: TAggregator = 'first'
   ) : T[ K ] | T[ K ][] | number | R | undefined {
@@ -108,5 +107,33 @@ export class Utils {
         : operator( curr[ p ], p )
       ) : ( curr = curr[ p ] ), curr ), obj
     );
+  }
+
+  // --- sorting arrays and objects ---
+
+  public static sort < L extends ListLike > (
+    value: L, compare?: ( a: any, b: any ) => number, objCompare?: ( a: any, b: any ) => number
+  ) : L {
+    compare ||= ( a, b ) => ( a > b ? 1 : a < b ? -1 : 0 );
+    objCompare ||= ( a, b ) => compare( a[ 0 ], b[ 0 ] );
+
+    return ( Array.isArray( value ) ? [ ...value ].sort( compare )
+      : value instanceof Set ? new Set( [ ...value ].sort( compare ) )
+      : value instanceof Map ? new Map( [ ...value.entries() ].sort( objCompare ) )
+      : typeof value === 'object' ? Object.fromEntries( Object.entries( value ).sort( objCompare ) )
+      : [ ...value as Iterable< any > ].sort( compare )
+    ) as L;
+  }
+
+  public static sortKeysDeep < T > ( value: T, exclude: ReadonlySet< string > = new Set() ) : T {
+    if ( value === null || typeof value !== 'object' ) return value;
+    if ( Array.isArray( value ) ) return value.map( v => Utils.sortKeysDeep( v, exclude ) ) as any;
+
+    return Object.keys( value )
+      .sort( ( a, b ) => exclude.has( a ) || exclude.has( b ) ? 0 : a.localeCompare( b ) )
+      .reduce( ( acc, k ) => {
+        acc[ k ] = Utils.sortKeysDeep( ( value as any )[ k ], exclude );
+        return acc;
+      }, {} as any );
   }
 }
