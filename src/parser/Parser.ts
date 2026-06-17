@@ -61,8 +61,8 @@ export class Parser {
     strict: boolean = true, ...args: any[]
   ) : T[] {
     return ( Array.isArray( value ) ? value : value.split( delimiter ) ).map(
-      i => strict ? Parser.strict( value, type, ...( args || [] ) )
-        : ( Parser[ type ] as any )( i, ...( args || [] ) )
+      v => strict ? Parser.strict( v, type, ...( args || [] ) )
+        : ( Parser[ type ] as any )( v, ...( args || [] ) )
     ).filter( Boolean ) as T[];
   }
 
