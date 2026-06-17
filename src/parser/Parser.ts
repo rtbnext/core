@@ -62,4 +62,15 @@ export class Parser {
         : ( Parser[ type ] as any )( i, ...( args || [] ) )
     ).filter( Boolean ) as T[];
   }
+
+  public static obj < T = unknown > (
+    value: T, type: TParserMethod = 'primitive',
+    strict: boolean = true, ...args: any[]
+  ) : T {
+    if ( typeof value !== 'object' || value === null ) return {} as T;
+    return Object.fromEntries( Object.entries( value ).map( ( [ k, v ] ) => [
+      k, strict ? Parser.strict( v, type, ...( args || [] ) )
+        : ( Parser[ type ] as any )( v, ...( args || [] ) )
+    ] ) ) as T;
+  }
 }
