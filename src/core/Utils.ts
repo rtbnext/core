@@ -4,7 +4,7 @@ import { hrtime } from 'node:process';
 
 import { REGEX_NOALNUM } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
-import type { TAggregator, TMeasuredResult } from '@/type/generic';
+import type { TAggregator, TMeasuredResult, TObjOperator } from '@/type/generic';
 import type { TParserDateType } from '@/type/parser';
 
 
@@ -65,8 +65,7 @@ export class Utils {
 
   public static aggregate <
     T extends Record< PropertyKey, unknown >,
-    K extends keyof T = keyof T,
-    R = unknown
+    K extends keyof T = keyof T, R = unknown
   > (
     arr: readonly T[], key: K, aggregator: TAggregator = 'first'
   ) : T[ K ] | T[ K ][] | number | R | undefined {
@@ -94,5 +93,20 @@ export class Utils {
         const s = values.reduce< number | undefined >( sum, 0 );
         return s === undefined ? undefined : s / values.length;
     }
+  }
+
+  // --- deep object updates ---
+
+  public static update ( operator: TObjOperator, obj: any, path: string, n?: any ) : void {
+    return path.split( '.' ).reduce( ( curr, p, i, arr ) => (
+      curr[ p ] ??= {}, i === arr.length - 1 ? ( operator === 'set' ? ( curr[ p ] = n )
+        : operator === 'inc' ? ( curr[ p ] = ( curr[ p ] || 0 ) + ( n ?? 1 ) )
+        : operator === 'max' ? ( curr[ p ] = Math.max( curr[ p ] || -Infinity, n ) )
+        : operator === 'min' ? ( curr[ p ] = Math.min( curr[ p ] || Infinity, n ) )
+        : operator === 'append' ? ( curr[ p ] = [ ...( curr[ p ] || [] ), n ] )
+        : operator === 'prepend' ? ( curr[ p ] = [ n, ...( curr[ p ] || [] ) ] )
+        : operator( curr[ p ], p )
+      ) : ( curr = curr[ p ] ), curr ), obj
+    );
   }
 }
