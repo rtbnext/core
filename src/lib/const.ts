@@ -1,4 +1,4 @@
-import type { TAssetType, TChangeFlag, TGender, TIndustry, TMaritalStatus, TRelationType, TSelfMadeRank } from '@rtbnext/schema/src/base/const';
+import type { TAssetType, TChangeFlag, TChildrenGroup, TGender, TIndustry, TMaritalStatus, TPercentiles, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread } from '@rtbnext/schema/src/base/const';
 
 // --- basics ---
 
@@ -30,4 +30,22 @@ export const AssetType: TAssetType[] = [
 
 export const ChangeFlag: TChangeFlag[] = [
   'up', 'down', 'unchanged'
+] as const;
+
+// --- stats ---
+
+export const StatsGroup: TStatsGroup[] = [
+  'industry', 'citizenship'
+] as const;
+
+export const ChildrenGroup: TChildrenGroup[] = [
+  'none', 'one', 'two', 'three', 'four', '5-to-10', 'over-10'
+] as const;
+
+export const Percentiles: TPercentiles[] = [
+  '10th', '25th', '50th', '75th', '90th', '95th', '99th'
+] as const;
+
+export const WealthSpread: TWealthSpread[] = [
+  '1', '2', '5', '10', '20', '50', '100', '200', '500'
 ] as const;
