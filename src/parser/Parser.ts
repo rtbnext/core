@@ -1,7 +1,7 @@
 import type { Primitive } from 'devtypes/types/primitive';
 
 import { REGEX_SPACES } from '@/lib/regex';
-import type { TParserContainer, TParserContainerObj, TParserDateType, TParserMethod } from '@/type/parser';
+import type { TParserContainer, TParserDateType, TParserMethod } from '@/type/parser';
 
 
 export class Parser {
@@ -88,7 +88,7 @@ export class Parser {
 
   // --- container ---
 
-  public static container < T = unknown > ( obj: TParserContainerObj ) : T {
+  public static container < T = unknown > ( obj: { [ K in keyof T ]: TParserContainer } ) : T {
     return Object.fromEntries( Object.entries< TParserContainer >( obj ).map(
       ( [ key, { value, type, strict = true, args } ] ) => [
         key, type === 'container' ? value

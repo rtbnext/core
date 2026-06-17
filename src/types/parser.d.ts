@@ -11,5 +11,3 @@ export type TParserContainer = {
   strict?: boolean;
   args?: unknown[];
 };
-
-export type TParserContainerObj = { [ K in keyof T ]: TParserContainer };
