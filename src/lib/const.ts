@@ -1,4 +1,7 @@
-import type { TAssetType, TChangeFlag, TChildrenGroup, TGender, TIndustry, TMaritalStatus, TPercentiles, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread } from '@rtbnext/schema/src/base/const';
+import type {
+  TAssetType, TChangeFlag, TChildrenGroup, TFilterGroup, TFilterSpecial, TGender, TIndustry,
+  TMaritalStatus, TPercentiles, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread
+} from '@rtbnext/schema/src/base/const';
 
 // --- basics ---
 
@@ -48,4 +51,14 @@ export const Percentiles: TPercentiles[] = [
 
 export const WealthSpread: TWealthSpread[] = [
   '1', '2', '5', '10', '20', '50', '100', '200', '500'
+] as const;
+
+// --- filter ---
+
+export const FilterGroup: TFilterGroup[] = [
+  'industry', 'citizenship', 'country', 'state', 'gender', 'age', 'maritalStatus', 'special'
+] as const;
+
+export const FilterSpecial: TFilterSpecial[] = [
+  'deceased', 'dropOff', 'family', 'selfMade'
 ] as const;
