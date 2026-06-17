@@ -3,7 +3,7 @@ import type { ListLike } from 'devtypes/types/list';
 import { sha256 } from 'js-sha256';
 import { hrtime } from 'node:process';
 
-import { REGEX_NOALNUM } from '@/lib/regex';
+import { REGEX_DIACRITICS, REGEX_NOALNUM } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TAggregator, TArgs, TMeasuredResult, TObjOperator } from '@/type/generic';
 import type { TParserDateType } from '@/type/parser';
@@ -152,5 +152,20 @@ export class Utils {
 
       return res;
     }, {} as TArgs );
+  }
+
+  // --- search index ---
+
+  public static buildSearchText ( value: any, minLength: number = 4 ) : string {
+    return Array.from( new Set( String( value )
+      .normalize( 'NFD' ).replace( REGEX_DIACRITICS, '' )
+      .toLowerCase().replace( REGEX_NOALNUM, ' ' ).split( ' ' )
+      .filter( w => w.length >= minLength ).filter( Boolean )
+    ) ).join( ' ' );
+  }
+
+  public static tokenSearch ( text: string, tokens: string[], looseMatch: boolean = false ) : boolean {
+    if ( ! text || ! tokens.length ) return false;
+    return tokens[ looseMatch ? 'some' : 'every' ]( t => text.includes( t ) );
   }
 }
