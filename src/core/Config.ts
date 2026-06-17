@@ -1,3 +1,4 @@
+import { ArrayMode, Merger } from '@komed3/deepmerge';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import process, { cwd } from 'node:process';
@@ -6,6 +7,8 @@ import { parse } from 'yaml';
 import type { IConfig } from '@/interface/config';
 import type { TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueConfig, TStorageConfig } from '@/type/config';
 
+
+const merger = new Merger( { arrayMode: ArrayMode.Replace } );
 
 export class Config implements IConfig {
   private static instance: Config;
@@ -30,7 +33,12 @@ export class Config implements IConfig {
     catch { return {} }
   }
 
-  private loadConfig () : TConfigObject {}
+  private loadConfig () : TConfigObject {
+    return merger.merge(
+      this.loadConfigFile( 'default.yml' ) as TConfigObject,
+      this.loadConfigFile( `${ this.env }.yml` )
+    );
+  }
 
   // --- public getter ---
 
