@@ -64,7 +64,8 @@ export class Logger implements ILogger {
   }
 
   public errMsg ( err: unknown, msg?: string ) : void {
-    this.log( 'error', ( msg ? `${ msg }: ` : '' ) + ( err as Error ).message, err as Error );
+    const message = err instanceof Error ? err.message : String( err );
+    this.log( 'error', ( msg ? `${ msg }: ` : '' ) + message, err as Error );
   }
 
   public exit ( msg: string, err?: Error ) : never {
@@ -93,10 +94,7 @@ export class Logger implements ILogger {
     catch ( err ) { this.log( level, msg, err as Error ) }
   }
 
-  public async catchAsync <
-    F extends ( ...args: any[] ) => Promise< any >,
-    R = Awaited< ReturnType< F > >
-  > (
+  public async catchAsync < F extends ( ...args: any[] ) => Promise< any >, R = Awaited< ReturnType< F > > > (
     fn: F, msg: string, level: TLoggingLevel = 'error'
   ) : Promise< R | undefined > {
     try { return await fn() }
