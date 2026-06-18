@@ -35,3 +35,6 @@ export class Logger implements ILogger {
     return Logger.instance ||= new Logger();
   }
 }
+
+// --- singleton instance ---
+export const log = Logger.getInstance();
