@@ -17,6 +17,7 @@ export class Fetch implements IFetch {
 
   private readonly config: TFetchConfig;
   private readonly wikiQuery = { format: 'json', formatversion: 2 };
+  private requestCount: number = 0;
   private httpClient: AxiosInstance;
 
   private constructor () {
@@ -61,11 +62,12 @@ export class Fetch implements IFetch {
 
       do {
         const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent() };
+        if ( this.requestCount++ ) await this.getRandomDelay();
+
         res = await this.httpClient[ method ]< T >( url, { headers } );
         if ( res.status === 200 && res.data ) break;
 
         log.warn( `Request failed with status: ${ res.status }. Retrying ...` );
-        await this.getRandomDelay();
       } while ( ++retries < this.config.rateLimit.retries );
 
       return { ...res, retries };
@@ -91,10 +93,8 @@ export class Fetch implements IFetch {
     const results: TResponse< T >[] = [];
     let url;
 
-    while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize ) {
+    while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize )
       results.push( await this.fetch< T >( url, method ) );
-      if ( urls.length ) await this.getRandomDelay();
-    }
 
     if ( urls.length ) log.warn( `Batch limit reached. ${ urls.length } URLs remaining.` );
     return results;
@@ -120,9 +120,8 @@ export class Fetch implements IFetch {
     let res: TResponse< TListResponse< T > >, count = 0, start = 0, requests = 0;
 
     do {
-      if ( start ) await this.getRandomDelay();
       res = await this.single< TListResponse< T > >( this.prepQuery(
-        this.config.endpoints.list, { uri, year, chunkSize, start }
+        this.config.endpoints.list, { uri, year, limit: chunkSize, start }
       ) );
 
       if ( ! res?.success || ! res.data?.personList.count ) return {
