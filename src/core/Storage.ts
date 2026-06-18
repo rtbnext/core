@@ -1,10 +1,12 @@
-import { existsSync, mkdirSync, readdirSync, statSync, type Stats } from 'node:fs';
+import { parse } from 'csv-string';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, type Stats } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import type { IStorage } from '@/interface/storage';
 import type { TStorageConfig } from '@/type/config';
+import type { TStorageRWType } from '@/type/storage';
 
 
 export class Storage implements IStorage {
@@ -37,6 +39,21 @@ export class Storage implements IStorage {
 
   private fileExt ( path: string ) : string {
     return extname( this.resolvePath( path ) ).toLowerCase().slice( 1 );
+  }
+
+  private read ( path: string, type?: TStorageRWType ) : unknown {
+    return log.catch( () => {
+      this.assertPath( path = this.resolvePath( path ) );
+      const content = readFileSync( path, 'utf8' );
+
+      switch ( type ?? this.fileExt( path ) ) {
+        case 'raw': return content;
+        case 'json': return JSON.parse( content );
+        case 'csv': return parse( content );
+      }
+
+      throw new Error( `Unsupported file extension: ${ extname( path ) }` );
+    }, `Failed to read ${ path }` );
   }
 
   // --- path operations ---
