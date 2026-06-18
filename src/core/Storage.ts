@@ -1,12 +1,12 @@
-import { parse } from 'csv-string';
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, type Stats } from 'node:fs';
+import { parse, stringify } from 'csv-string';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync, type Stats } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import type { IStorage } from '@/interface/storage';
 import type { TStorageConfig } from '@/type/config';
-import type { TStorageRWType } from '@/type/storage';
+import type { TStorageRWType, TStorageWOptions } from '@/type/storage';
 
 
 export class Storage implements IStorage {
@@ -54,6 +54,29 @@ export class Storage implements IStorage {
 
       throw new Error( `Unsupported file extension: ${ extname( path ) }` );
     }, `Failed to read ${ path }` );
+  }
+
+  private write (
+    path: string, content: any, type?: TStorageRWType,
+    options: TStorageWOptions = { append: false, nl: true }
+  ) : void {
+    log.catch( () => {
+      this.ensurePath( path = this.resolvePath( path ) );
+
+      switch ( type ?? this.fileExt( path ) ) {
+        case 'csv':
+          content = stringify( content ).trim();
+          break;
+        case 'json':
+          content = JSON.stringify( content, null, this.config.compression ? undefined : 2 ).trim();
+          break;
+      }
+
+      if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
+
+      ( options.append ? appendFileSync : writeFileSync )( path, content, 'utf8' );
+      log.debug( `Wrote data to ${ path }`, options );
+    }, `Failed to write ${ path }` );
   }
 
   // --- path operations ---
