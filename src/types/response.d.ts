@@ -148,3 +148,18 @@ export type TListResponse< T extends object > = {
     personsLists: Array< T >;
   };
 };
+
+export type TWikidataProp =
+  | 'gender' | 'birthdate' | 'article' | 'image' | 'iso2' | 'occupation' | 'employer'
+  | 'ownerOf' | 'netWorth';
+
+export type TWikidataResponseItem = {
+  item: { value: string };
+  itemLabel: { value: string, xmlLang: string };
+} & { [ K in TWikidataProp ]?: {
+  value: string;
+} };
+
+export interface TWikidataResponse {
+  results: { bindings: TWikidataResponseItem[] };
+}
