@@ -103,27 +103,28 @@ export class Fetch implements IFetch {
   // --- special requests ---
 
   public async wayback < T > ( url: string, ts: unknown ) : Promise< TResponse< T > > {
-    const res = await this.single< TWaybackResponse >( this.prepQuery(
-      this.config.endpoints.wayback, {
-        URL: encodeURIComponent( url ),
-        TS: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
-      }
-    ) );
+    const res = await this.single< TWaybackResponse >( this.prepQuery( this.config.endpoints.wayback, {
+      URL: encodeURIComponent( url ), TS: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
+    } ) );
 
     if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
-      success: false, error: 'No archived snapshot found',
-      duration: res.duration, retries: res.retries
+      success: false, error: 'No archived snapshot found', duration: res.duration, retries: res.retries
     };
 
-    return this.single< T >( this.prepQuery(
-      res.data.archived_snapshots.closest.url,
-      { '/http': 'if_/http' }
-    ) );
+    return this.single< T >( this.prepQuery( res.data.archived_snapshots.closest.url, {
+      '/http': 'if_/http'
+    } ) );
   }
 
   public async wikidata < T > ( sparql: string ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikidata, {
       SPARQL: encodeURIComponent( sparql.replace( REGEX_SPACES, ' ' ).trim() )
+    } ) );
+  }
+
+  public async wikipedia < T > ( query: Record< string, any >, lang: string = 'en' ) : Promise< TResponse< T > > {
+    return this.single< T >( this.prepQuery( this.config.endpoints.wikipedia, {
+      QUERY: Utils.queryStr( { ...this.wikiQuery, ...query } ), LANG: lang
     } ) );
   }
 
