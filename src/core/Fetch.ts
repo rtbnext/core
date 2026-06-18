@@ -111,10 +111,10 @@ export class Fetch implements IFetch {
       success: false, error: 'No archived snapshot found', duration: res.duration, retries: res.retries
     };
 
-    return this.single< T >( this.prepQuery( res.data.archived_snapshots.closest.url, {
-      '/http': 'if_/http'
-    } ) );
+    return this.single< T >( this.prepQuery( res.data.archived_snapshots.closest.url, { '/http': 'if_/http' } ) );
   }
+
+  public async list < T extends TListResponse > ( uriLike: string, year: string, ts?: any ) : Promise< TResponse< T > > {}
 
   public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
     return this.batch< TProfileResponse >( uriLike.map( uri =>
