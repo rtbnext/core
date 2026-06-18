@@ -160,6 +160,8 @@ export type TWikidataResponseItem = {
   value: string;
 } };
 
-export interface TWikidataResponse {
-  results: { bindings: TWikidataResponseItem[] };
-}
+export type TWikidataResponse = {
+  results: {
+    bindings: TWikidataResponseItem[];
+  };
+};
