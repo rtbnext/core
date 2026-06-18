@@ -1,5 +1,5 @@
 import { parse, stringify } from 'csv-string';
-import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync, type Stats } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync, type Stats } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
@@ -54,7 +54,7 @@ export class Storage implements IStorage {
       }
 
       throw new Error( `Unsupported file extension: ${ extname( path ) }` );
-    }, `Failed to read ${ path }` );
+    }, `Failed to read "${ path }"` );
   }
 
   private write (
@@ -76,8 +76,8 @@ export class Storage implements IStorage {
       if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
 
       ( options.append ? appendFileSync : writeFileSync )( path, content, 'utf8' );
-      log.debug( `Wrote data to ${ path }`, options );
-    }, `Failed to write ${ path }` );
+      log.debug( `Wrote data to "${ path }"`, options );
+    }, `Failed to write "${ path }"` );
   }
 
   // --- path operations ---
@@ -91,7 +91,7 @@ export class Storage implements IStorage {
   }
 
   public assertPath ( path: string ) : void | never {
-    if ( ! this.exists( path ) ) throw new Error( `Path ${ path } does not exist` );
+    if ( ! this.exists( path ) ) throw new Error( `Path "${ path }" does not exist` );
   }
 
   public ensurePath ( path: string, isDir: boolean = false ) : void {
@@ -103,7 +103,7 @@ export class Storage implements IStorage {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
       return statSync( path );
-    }, `Failed to stat ${ path }` ) ?? false;
+    }, `Failed to stat "${ path }"` ) ?? false;
   }
 
   // --- scan dir ---
@@ -112,7 +112,7 @@ export class Storage implements IStorage {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
       return readdirSync( path ).filter( f => ext.includes( this.fileExt( f ) ) );
-    }, `Failed to scan ${ path }` ) ?? [];
+    }, `Failed to scan "${ path }"` ) ?? [];
   }
 
   // --- JSON files ---
@@ -152,6 +152,23 @@ export class Storage implements IStorage {
     return this.writeCSV< T >( path, [ ...filtered, content ].sort(
       ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] )
     ) as T );
+  }
+
+  // --- file operations ---
+
+  public move ( from: string, to: string, force: boolean = false ) : boolean {
+    return !! log.catch( () => {
+      this.assertPath( from = this.resolvePath( from ) );
+
+      if ( this.exists( to = this.resolvePath( to ) ) ) {
+        if ( force ) this.remove( to, true );
+        else throw new Error( `Destination path "${ to }" already exists` );
+      }
+
+      renameSync( from, to );
+      log.debug( `Moved "${ from }" to "${ to }"` );
+      return true;
+    }, `Failed to move "${ from }" to "${ to }"` );
   }
 
   // --- instantiate ---
