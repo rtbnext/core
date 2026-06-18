@@ -115,14 +115,14 @@ export class Fetch implements IFetch {
   }
 
   public async list < T extends object > ( uriLike: string, year: string ) : Promise< TResponse< TListResponse< T > > > {
-    const { requests: { list: { chunkSize: limit, maxRequests } } } = this.config;
+    const { requests: { list: { chunkSize, maxRequests } } } = this.config;
     const uri = Utils.sanitize( uriLike ), entries: T[] = [];
     let res: TResponse< TListResponse< T > >, count = 0, start = 0, requests = 0;
 
     do {
       if ( start ) await this.getRandomDelay();
       res = await this.single< TListResponse< T > >( this.prepQuery(
-        this.config.endpoints.list, { uri, year, limit, start }
+        this.config.endpoints.list, { uri, year, chunkSize, start }
       ) );
 
       if ( ! res?.success || ! res.data?.personList.count ) return {
@@ -130,7 +130,7 @@ export class Fetch implements IFetch {
       };
 
       entries.push( ...res.data.personList.personsLists );
-      count = res.data.personList.count, start += limit;
+      count = res.data.personList.count, start += chunkSize;
     } while ( ++requests < maxRequests && start < count );
 
     res.data.personList.personsLists = entries;
