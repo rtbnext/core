@@ -32,10 +32,10 @@ export class Logger implements ILogger {
   }
 
   private format ( level: TLoggingLevel, msg: string, meta?: unknown ) : string {
-    const entry = `[${ Utils.date( 'iso' ) }] [${ level.toUpperCase() }] ${ msg }`;
+    let entry = `[${ Utils.date( 'iso' ) }] [${ level.toUpperCase() }] ${ msg }`;
 
-    if ( meta instanceof Error ) entry.concat( `: ${ meta.message }` );
-    else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
+    if ( meta instanceof Error ) entry += `: ${ meta.message }`;
+    else if ( meta ) entry += `: ${ JSON.stringify( meta ) }`;
 
     return entry;
   }
