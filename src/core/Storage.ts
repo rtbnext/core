@@ -45,15 +45,15 @@ export class Storage implements IStorage {
     return extname( this.resolvePath( path ) ).toLowerCase().slice( 1 );
   }
 
-  private read ( path: string, type?: TStorageRWType ) : unknown {
+  private read < T = unknown > ( path: string, type?: TStorageRWType ) : T | false {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
       const content = readFileSync( path, 'utf8' );
 
       switch ( type ?? this.fileExt( path ) ) {
-        case 'raw': return content;
-        case 'json': return JSON.parse( content );
-        case 'csv': return parse( content );
+        case 'raw': return content as T;
+        case 'json': return JSON.parse( content ) as T;
+        case 'csv': return parse( content ) as T;
       }
 
       throw new Error( `Unsupported file extension: ${ extname( path ) }` );
@@ -117,7 +117,7 @@ export class Storage implements IStorage {
   // --- JSON files ---
 
   public readJSON < T extends object > ( path: string ) : T | false {
-    return this.read( path, 'json' ) as T;
+    return this.read< T >( path, 'json' );
   }
 
   public writeJSON < T extends object > ( path: string, content: T ) : boolean {
@@ -127,7 +127,7 @@ export class Storage implements IStorage {
   // --- CSV files ---
 
   public readCSV < T extends any[] > ( path: string ) : T | false {
-    return this.read( path, 'csv' ) as T;
+    return this.read< T >( path, 'csv' );
   }
 
   public writeCSV < T extends any[] > ( path: string, content: T ) : boolean {
