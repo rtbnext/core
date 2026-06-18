@@ -184,8 +184,8 @@ export type TWikipediaResponse = {
 
 export type TCommonsResponse = {
   query: {
-    pages: {
-      imageinfo?: {
+    pages: Array< {
+      imageinfo?: Array< {
         url: string;
         descriptionurl: string;
         thumburl?: string;
@@ -197,7 +197,7 @@ export type TCommonsResponse = {
             | 'LicenseShortName' | 'UsageTerms'
           ) ]?: { value?: string };
         };
-      }[];
-    }[];
+      } >;
+    } >;
   };
 };
