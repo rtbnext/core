@@ -119,7 +119,7 @@ export class Logger implements ILogger {
   // --- instantiate ---
 
   public static getInstance () : ILogger {
-    return Logger.instance ||= new Logger();
+    return Logger.instance ??= new Logger();
   }
 }
 

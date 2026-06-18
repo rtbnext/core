@@ -95,6 +95,6 @@ export class Fetch implements IFetch {
   // --- instantiate ---
 
   public static getInstance () : IFetch {
-    return Fetch.instance ||= new Fetch();
+    return Fetch.instance ??= new Fetch();
   }
 }

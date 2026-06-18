@@ -53,6 +53,6 @@ export class Config implements IConfig {
   // --- instantiate ---
 
   public static getInstance () : IConfig {
-    return Config.instance ||= new Config();
+    return Config.instance ??= new Config();
   }
 }

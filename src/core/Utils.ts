@@ -114,8 +114,8 @@ export class Utils {
   public static sort < L extends ListLike > (
     value: L, compare?: ( a: any, b: any ) => number, objCompare?: ( a: any, b: any ) => number
   ) : L {
-    compare ||= ( a, b ) => ( a > b ? 1 : a < b ? -1 : 0 );
-    objCompare ||= ( a, b ) => compare( a[ 0 ], b[ 0 ] );
+    compare ??= ( a, b ) => ( a > b ? 1 : a < b ? -1 : 0 );
+    objCompare ??= ( a, b ) => compare( a[ 0 ], b[ 0 ] );
 
     return ( Array.isArray( value ) ? [ ...value ].sort( compare )
       : value instanceof Set ? new Set( [ ...value ].sort( compare ) )

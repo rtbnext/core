@@ -187,6 +187,6 @@ export class Storage implements IStorage {
   // --- instantiate ---
 
   public static getInstance () : IStorage {
-    return Storage.instance ||= new Storage();
+    return Storage.instance ??= new Storage();
   }
 }
