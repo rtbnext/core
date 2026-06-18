@@ -2,6 +2,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
+import { log } from '@/core/Logger';
 import type { IStorage } from '@/interface/storage';
 import type { TStorageConfig } from '@/type/config';
 
@@ -16,6 +17,16 @@ export class Storage implements IStorage {
     const { root, storage } = Config.getInstance();
     this.config = storage;
     this.path = join( root, this.config.baseDir );
+
+    this.initDB();
+  }
+
+  private initDB () : void {
+    log.debug( `Initializing storage at "${ this.path }"` );
+    this.ensurePath( this.path );
+
+    [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue' ]
+      .forEach( path => this.ensurePath( path, true ) );
   }
 
   // --- helper ---
