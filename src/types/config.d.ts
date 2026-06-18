@@ -38,8 +38,8 @@ export type TFetchConfig = {
   };
   requests: {
     list: {
-      limitRows: number;
-      maxQueries: number;
+      chunkSize: number;
+      maxRequests: number;
     };
   };
 };
