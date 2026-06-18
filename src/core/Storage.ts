@@ -1,5 +1,8 @@
 import { parse, stringify } from 'csv-string';
-import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync, type Stats } from 'node:fs';
+import {
+  appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync,
+  rmSync, statSync, writeFileSync, type Stats
+} from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
@@ -155,6 +158,16 @@ export class Storage implements IStorage {
   }
 
   // --- file operations ---
+
+  public remove ( path: string, force: boolean = true ) : boolean {
+    return !! log.catch( () => {
+      this.assertPath( path = this.resolvePath( path ) );
+
+      rmSync( path, { recursive: true, force } );
+      log.debug( `Removed "${ path }"` );
+      return true;
+    }, `Failed to remove "${ path }"` );
+  }
 
   public move ( from: string, to: string, force: boolean = false ) : boolean {
     return !! log.catch( () => {
