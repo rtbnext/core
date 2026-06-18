@@ -1,5 +1,6 @@
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { exit } from 'node:process';
 
 import { Config } from '@/core/Config';
 import { Utils } from '@/core/Utils';
@@ -54,6 +55,33 @@ export class Logger implements ILogger {
     const entry = this.format( level, label, msg, meta );
     if ( this.config.console ) this.log2Console( level, entry );
     if ( this.config.file ) this.log2File( entry );
+  }
+
+  // --- logging methods ---
+
+  public error ( label: string, msg: string, err?: Error ) : void {
+    this.log( 'error', label, msg, err );
+  }
+
+  public errMsg ( label: string, err: unknown, msg?: string ) : void {
+    this.log( 'error', label, ( msg ? `${ msg }: ` : '' ) + ( err as Error ).message, err as Error );
+  }
+
+  public exit ( label: string, msg: string, error?: Error ) : never {
+    this.log( 'error', label, msg, error );
+    exit( 1 );
+  }
+
+  public warn ( label: string, msg: string, meta?: unknown ) : void {
+    this.log( 'warn', label, msg, meta );
+  }
+
+  public info ( label: string, msg: string, meta?: unknown ) : void {
+    this.log( 'info', label, msg, meta );
+  }
+
+  public debug ( label: string, msg: string, meta?: unknown ) : void {
+    this.log( 'debug', label, msg, meta );
   }
 
   // --- instantiate ---
