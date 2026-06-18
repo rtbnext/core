@@ -29,12 +29,17 @@ export type TFetchConfig = {
   agentPool: string[];
   rateLimit: {
     batchSize: number;
-    listLimit: number;
     timeout: number;
     retries: number;
     requestDelay: {
       max: number;
       min: number;
+    };
+  };
+  requests: {
+    list: {
+      limitRows: number;
+      maxQueries: number;
     };
   };
 };
