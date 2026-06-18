@@ -81,7 +81,7 @@ export class Storage implements IStorage {
 
   // --- path operations ---
 
-  public getRoot () : string {
+  public get root () : string {
     return this.path;
   }
 
