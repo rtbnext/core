@@ -165,3 +165,19 @@ export type TWikidataResponse = {
     bindings: TWikidataResponseItem[];
   };
 };
+
+export type TWikipediaResponse = {
+  query: {
+    pages: Array< {
+      pageid: number;
+      title: string;
+      extract?: string;
+      touched: string;
+      lastrevid: number;
+      pageimage?: string;
+      pageprops?: {
+        [ K in ( 'defaultsort' | 'wikibase-shortdesc' | 'wikibase_item' ) ]?: string;
+      };
+    } >;
+  };
+};
