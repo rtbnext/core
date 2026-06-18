@@ -9,7 +9,7 @@ import { REGEX_NONUM, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod } from '@/type/fetch';
-import type { TProfileResponse, TResponse, TWaybackResponse } from '@/type/response';
+import type { TListResponse, TProfileResponse, TResponse, TWaybackResponse } from '@/type/response';
 
 
 export class Fetch implements IFetch {
@@ -104,14 +104,26 @@ export class Fetch implements IFetch {
 
   public async wayback < T > ( url: string, ts: unknown ) : Promise< TResponse< T > > {
     const res = await this.single< TWaybackResponse >( this.prepQuery( this.config.endpoints.wayback, {
-      URL: encodeURIComponent( url ), TS: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
+      url: encodeURIComponent( url ), ts: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
     } ) );
 
     if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
       success: false, error: 'No archived snapshot found', duration: res.duration, retries: res.retries
     };
 
-    return this.single< T >( this.prepQuery( res.data.archived_snapshots.closest.url, { '/http': 'if_/http' } ) );
+    return this.single< T >( res.data.archived_snapshots.closest.url.replace( '/http', 'if_/http' ) );
+  }
+
+  public async list < T extends object > ( uriLike: string, year: string ) : Promise< TListResponse< T > > {
+    const { requests: { list: { limitRows, maxQueries } } } = this.config;
+    const uri = Utils.sanitize( uriLike );
+    let start = 0;
+
+    do {
+      const res = await this.single< TListResponse< T > >( this.prepQuery(
+        this.config.endpoints.list, { uri, year, limit: limitRows, start }
+      ) );
+    } while ();
   }
 
   public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
@@ -122,19 +134,19 @@ export class Fetch implements IFetch {
 
   public async wikidata < T > ( sparql: string ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikidata, {
-      SPARQL: encodeURIComponent( sparql.replace( REGEX_SPACES, ' ' ).trim() )
+      sparql: encodeURIComponent( sparql.replace( REGEX_SPACES, ' ' ).trim() )
     } ) );
   }
 
   public async wikipedia < T > ( query: Record< string, any >, lang: string = 'en' ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikipedia, {
-      QUERY: Utils.queryStr( { ...this.wikiQuery, ...query } ), LANG: lang
+      query: Utils.queryStr( { ...this.wikiQuery, ...query } ), lang
     } ) );
   }
 
   public async commons < T > ( query: Record< string, any > ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.commons, {
-      QUERY: Utils.queryStr( { ...this.wikiQuery, ...query } )
+      query: Utils.queryStr( { ...this.wikiQuery, ...query } )
     } ) );
   }
 
