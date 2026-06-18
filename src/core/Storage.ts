@@ -1,4 +1,5 @@
-import { extname, join } from 'node:path';
+import { existsSync, mkdirSync } from 'node:fs';
+import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
 import type { IStorage } from '@/interface/storage';
@@ -28,6 +29,23 @@ export class Storage implements IStorage {
   }
 
   // --- path operations ---
+
+  public getRoot () : string {
+    return this.path;
+  }
+
+  public exists ( path: string ) : boolean {
+    return existsSync( this.resolvePath( path ) );
+  }
+
+  public assertPath ( path: string ) : void | never {
+    if ( ! this.exists( path ) ) throw new Error( `Path ${ path } does not exist` );
+  }
+
+  public ensurePath ( path: string, isDir: boolean = false ) : void {
+    path = this.resolvePath( path );
+    mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
+  }
 
   // --- instantiate ---
 
