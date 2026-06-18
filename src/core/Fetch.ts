@@ -5,7 +5,7 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import type { IFetch } from '@/interface/fetch';
-import { REGEX_NONUM } from '@/lib/regex';
+import { REGEX_NONUM, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod } from '@/type/fetch';
@@ -119,6 +119,12 @@ export class Fetch implements IFetch {
       res.data.archived_snapshots.closest.url,
       { '/http': 'if_/http' }
     ) );
+  }
+
+  public async wikidata < T > ( sparql: string ) : Promise< TResponse< T > > {
+    return this.single< T >( this.prepQuery( this.config.endpoints.wikidata, {
+      SPARQL: encodeURIComponent( sparql.replace( REGEX_SPACES, ' ' ).trim() )
+    } ) );
   }
 
   // --- instantiate ---
