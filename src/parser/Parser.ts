@@ -47,6 +47,16 @@ export class Parser {
     return format === 'iso' ? value : value.split( '-' ).slice( 0, format.length ).join( '-' );
   }
 
+  // --- URI component ---
+
+  public static decodeURI ( value: unknown ) : string {
+    return decodeURIComponent( Parser.string( value ) );
+  }
+
+  public static encodeURI ( value: unknown ) : string {
+    return encodeURIComponent( Parser.string( value ) );
+  }
+
   // --- helper ---
 
   public static strict < T = unknown > ( value: unknown, method: TParserMethod, ...args: any[] ) : T | undefined {

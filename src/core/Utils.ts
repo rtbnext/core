@@ -51,16 +51,6 @@ export class Utils {
     return { $metadata: { schemaVersion: 2, lastModified: Utils.date( 'iso' ), ...obj } };
   }
 
-  // --- URI component ---
-
-  public static decodeURI ( value: unknown ) : string {
-    return decodeURIComponent( Parser.string( value ) );
-  }
-
-  public static encodeURI ( value: unknown ) : string {
-    return encodeURIComponent( Parser.string( value ) );
-  }
-
   // --- aggregate from object arrays ---
 
   public static aggregate <
