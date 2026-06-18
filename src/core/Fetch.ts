@@ -24,6 +24,19 @@ export class Fetch implements IFetch {
     return axios.create( { headers, timeout } );
   }
 
+  // --- randomize ---
+
+  private getRandomUserAgent () : string {
+    return this.config.agentPool[ Math.floor( Math.random() * this.config.agentPool.length ) ];
+  }
+
+  private getRandomDelay () : Promise< void > {
+    const { max, min } = this.config.rateLimit.requestDelay;
+    const delay = Math.round( Math.random() * ( max - min ) + min );
+
+    return new Promise( resolve => setTimeout( resolve, delay ) );
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IFetch {
