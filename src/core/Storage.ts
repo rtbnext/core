@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, statSync, type Stats } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
@@ -56,6 +56,13 @@ export class Storage implements IStorage {
   public ensurePath ( path: string, isDir: boolean = false ) : void {
     path = this.resolvePath( path );
     mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
+  }
+
+  public stat ( path: string ) : Stats | false {
+    return log.catch( () => {
+      this.assertPath( path = this.resolvePath( path ) );
+      return statSync( path );
+    }, `Failed to stat ${ path }` ) ?? false;
   }
 
   // --- scan dir ---
