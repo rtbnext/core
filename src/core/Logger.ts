@@ -84,6 +84,25 @@ export class Logger implements ILogger {
     this.log( 'debug', label, msg, meta );
   }
 
+  // --- catch & log errors ---
+
+  public catch < F extends ( ...args: any[] ) => any, R = ReturnType< F > > (
+    fn: F, label: string, msg: string, level: TLoggingLevel = 'error'
+  ) : R | undefined {
+    try { return fn() }
+    catch ( err ) { this.log( level, label, msg, err as Error ) }
+  }
+
+  public async catchAsync <
+    F extends ( ...args: any[] ) => Promise< any >,
+    R = Awaited< ReturnType< F > >
+  > (
+    fn: F, label: string, msg: string, level: TLoggingLevel = 'error'
+  ) : Promise< R | undefined > {
+    try { return await fn() }
+    catch ( err ) { this.log( level, label, msg, err as Error ) }
+  }
+
   // --- instantiate ---
 
   public static getInstance () : ILogger {
