@@ -5,9 +5,11 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import type { IFetch } from '@/interface/fetch';
+import { REGEX_NONUM } from '@/lib/regex';
+import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod } from '@/type/fetch';
-import type { TResponse } from '@/type/response';
+import type { TResponse, TWaybackResponse } from '@/type/response';
 
 
 export class Fetch implements IFetch {
@@ -90,6 +92,25 @@ export class Fetch implements IFetch {
 
     if ( urls.length ) log.warn( `Batch limit reached. ${ urls.length } URLs remaining.` );
     return results;
+  }
+
+  // --- special requests ---
+
+  public async wayback < T > ( url: string, ts: unknown ) : Promise< TResponse< T > > {
+    const timestamp = Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' );
+    const res = await this.single< TWaybackResponse >(
+      this.config.endpoints.wayback
+        .replace( '{URL}', encodeURIComponent( url ) )
+        .replace( '{TS}', timestamp )
+    );
+
+    if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
+      success: false, error: 'No archived snapshot found',
+      duration: res.duration, retries: res.retries
+    };
+
+    const snapshotUrl = res.data.archived_snapshots.closest.url;
+    return this.single< T >( snapshotUrl.replace( '/http', 'if_/http' ) );
   }
 
   // --- instantiate ---
