@@ -139,6 +139,13 @@ export class Storage implements IStorage {
     catch { return false }
   }
 
+  public appendCSV < T extends unknown[] > (
+    path: string, content: T, nl: boolean = true
+  ) : boolean {
+    try { this.write( path, content, 'csv', { append: true, nl } ); return true }
+    catch { return false }
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IStorage {
