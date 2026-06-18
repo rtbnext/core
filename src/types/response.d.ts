@@ -6,3 +6,14 @@ export type TResponse< T > = {
   duration: number;
   retries: number;
 };
+
+export type TWaybackResponse = {
+  archived_snapshots: {
+    closest?: {
+      status: string;
+      available: boolean;
+      url: string;
+      timestamp: string;
+    };
+  };
+};
