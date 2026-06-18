@@ -1,4 +1,4 @@
-import { appendFileSync, mkdirSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { exit } from 'node:process';
 
@@ -101,6 +101,19 @@ export class Logger implements ILogger {
   ) : Promise< R | undefined > {
     try { return await fn() }
     catch ( err ) { this.log( level, label, msg, err as Error ) }
+  }
+
+  // --- get log file ---
+
+  public getLogFile ( date: string ) : string | undefined {
+    return this.catch(
+      () => readFileSync( join( this.path, `${ date }.log` ), 'utf8' ),
+      'logger', `Could not read log file for date ${ date }`
+    );
+  }
+
+  public getCurrentLogFile () : string | undefined {
+    return this.getLogFile( Utils.date( 'ym' ) );
   }
 
   // --- instantiate ---
