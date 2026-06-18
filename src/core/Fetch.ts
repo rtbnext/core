@@ -78,6 +78,19 @@ export class Fetch implements IFetch {
     return this.fetch< T >( url, method );
   }
 
+  public async batch < T > ( urls: string[], method: 'get' | 'post' = 'get' ) : Promise< TResponse< T >[] > {
+    const results: TResponse< T >[] = [];
+    let url;
+
+    while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize ) {
+      results.push( await this.fetch< T >( url, method ) );
+      await this.getRandomDelay();
+    }
+
+    if ( urls.length ) log.warn( `Batch limit reached. ${ urls.length } URLs remaining.` );
+    return results;
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IFetch {
