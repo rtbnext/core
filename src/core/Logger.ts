@@ -31,8 +31,8 @@ export class Logger implements ILogger {
     return Logger.LEVEL[ level ] <= Logger.LEVEL[ this.config.level ];
   }
 
-  private format ( level: TLoggingLevel, label: string, msg: string, meta?: unknown ) : string {
-    const entry = `[${ Utils.date( 'iso' ) }] [${ level.toUpperCase() }] ${ label } :: ${ msg }`;
+  private format ( level: TLoggingLevel, msg: string, meta?: unknown ) : string {
+    const entry = `[${ Utils.date( 'iso' ) }] [${ level.toUpperCase() }] ${ msg }`;
 
     if ( meta instanceof Error ) entry.concat( `: ${ meta.message }` );
     else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
@@ -49,58 +49,58 @@ export class Logger implements ILogger {
     appendFileSync( path, entry + '\n', 'utf8' );
   }
 
-  private log ( level: TLoggingLevel, label: string, msg: string, meta?: unknown ) : void {
+  private log ( level: TLoggingLevel, msg: string, meta?: unknown ) : void {
     if ( ! this.shouldLog( level ) ) return;
 
-    const entry = this.format( level, label, msg, meta );
+    const entry = this.format( level, msg, meta );
     if ( this.config.console ) this.log2Console( level, entry );
     if ( this.config.file ) this.log2File( entry );
   }
 
   // --- logging methods ---
 
-  public error ( label: string, msg: string, err?: Error ) : void {
-    this.log( 'error', label, msg, err );
+  public error ( msg: string, err?: Error ) : void {
+    this.log( 'error', msg, err );
   }
 
-  public errMsg ( label: string, err: unknown, msg?: string ) : void {
-    this.log( 'error', label, ( msg ? `${ msg }: ` : '' ) + ( err as Error ).message, err as Error );
+  public errMsg ( err: unknown, msg?: string ) : void {
+    this.log( 'error', ( msg ? `${ msg }: ` : '' ) + ( err as Error ).message, err as Error );
   }
 
-  public exit ( label: string, msg: string, err?: Error ) : never {
-    this.log( 'error', label, msg, err );
+  public exit ( msg: string, err?: Error ) : never {
+    this.log( 'error', msg, err );
     exit( 1 );
   }
 
-  public warn ( label: string, msg: string, meta?: unknown ) : void {
-    this.log( 'warn', label, msg, meta );
+  public warn ( msg: string, meta?: unknown ) : void {
+    this.log( 'warn', msg, meta );
   }
 
-  public info ( label: string, msg: string, meta?: unknown ) : void {
-    this.log( 'info', label, msg, meta );
+  public info ( msg: string, meta?: unknown ) : void {
+    this.log( 'info', msg, meta );
   }
 
-  public debug ( label: string, msg: string, meta?: unknown ) : void {
-    this.log( 'debug', label, msg, meta );
+  public debug ( msg: string, meta?: unknown ) : void {
+    this.log( 'debug', msg, meta );
   }
 
   // --- catch & log errors ---
 
   public catch < F extends ( ...args: any[] ) => any, R = ReturnType< F > > (
-    fn: F, label: string, msg: string, level: TLoggingLevel = 'error'
+    fn: F, msg: string, level: TLoggingLevel = 'error'
   ) : R | undefined {
     try { return fn() }
-    catch ( err ) { this.log( level, label, msg, err as Error ) }
+    catch ( err ) { this.log( level, msg, err as Error ) }
   }
 
   public async catchAsync <
     F extends ( ...args: any[] ) => Promise< any >,
     R = Awaited< ReturnType< F > >
   > (
-    fn: F, label: string, msg: string, level: TLoggingLevel = 'error'
+    fn: F, msg: string, level: TLoggingLevel = 'error'
   ) : Promise< R | undefined > {
     try { return await fn() }
-    catch ( err ) { this.log( level, label, msg, err as Error ) }
+    catch ( err ) { this.log( level, msg, err as Error ) }
   }
 
   // --- get log file ---
@@ -108,7 +108,7 @@ export class Logger implements ILogger {
   public getLogFile ( date: string ) : string | undefined {
     return this.catch(
       () => readFileSync( join( this.path, `${ date }.log` ), 'utf8' ),
-      'logger', `Could not read log file for date ${ date }`
+      `Could not read log file for date ${ date }`
     );
   }
 
