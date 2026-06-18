@@ -6,6 +6,7 @@ import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import type { IFetch } from '@/interface/fetch';
 import type { TFetchConfig } from '@/type/config';
+import type { TFetchMethod } from '@/type/fetch';
 import type { TResponse } from '@/type/response';
 
 
@@ -43,7 +44,7 @@ export class Fetch implements IFetch {
 
   // --- fetch ---
 
-  private async fetch < T > ( url: string, method: 'get' | 'post' = 'get' ) : Promise< TResponse< T > > {
+  private async fetch < T > ( url: string, method: TFetchMethod = 'get' ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
 
     const { result: res, ms } = await Utils.measure( async () => {
@@ -74,11 +75,11 @@ export class Fetch implements IFetch {
 
   // --- fetch methods ---
 
-  public async single < T > ( url: string, method: 'get' | 'post' = 'get' ) : Promise< TResponse< T > > {
+  public async single < T > ( url: string, method: TFetchMethod = 'get' ) : Promise< TResponse< T > > {
     return this.fetch< T >( url, method );
   }
 
-  public async batch < T > ( urls: string[], method: 'get' | 'post' = 'get' ) : Promise< TResponse< T >[] > {
+  public async batch < T > ( urls: string[], method: TFetchMethod = 'get' ) : Promise< TResponse< T >[] > {
     const results: TResponse< T >[] = [];
     let url;
 
