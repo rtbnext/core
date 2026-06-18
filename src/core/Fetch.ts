@@ -15,4 +15,10 @@ export class Fetch implements IFetch {
   private constructor () {
     this.config = Config.getInstance().fetch;
   }
+
+  // --- instantiate ---
+
+  public static getInstance () : IFetch {
+    return Fetch.instance ||= new Fetch();
+  }
 }
