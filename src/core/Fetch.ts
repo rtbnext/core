@@ -153,13 +153,13 @@ export class Fetch implements IFetch {
     } ) );
   }
 
-  public async wikipedia < T > ( query: Record< string, any >, lang: string = 'en' ) : Promise< TResponse< T > > {
+  public async wikipedia < T > ( query: Record< string, unknown >, lang: string = 'en' ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikipedia, {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } ), lang
     } ) );
   }
 
-  public async commons < T > ( query: Record< string, any > ) : Promise< TResponse< T > > {
+  public async commons < T > ( query: Record< string, unknown > ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.commons, {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } )
     } ) );
