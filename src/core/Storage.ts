@@ -4,6 +4,7 @@ import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
+import { Utils } from '@/core/Utils';
 import type { IStorage } from '@/interface/storage';
 import type { TStorageConfig } from '@/type/config';
 import type { TStorageRWType, TStorageWOptions } from '@/type/storage';
@@ -112,6 +113,18 @@ export class Storage implements IStorage {
       this.assertPath( path = this.resolvePath( path ) );
       return readdirSync( path ).filter( f => ext.includes( this.fileExt( f ) ) );
     }, `Failed to scan ${ path }` ) ?? [];
+  }
+
+  // --- JSON files ---
+
+  public readJSON < T > ( path: string ) : T | false {
+    try { return this.read( path, 'json' ) as T }
+    catch { return false }
+  }
+
+  public writeJSON < T > ( path: string, content: T ) : boolean {
+    try { this.write( path, Utils.sortKeysDeep( content ), 'json' ); return true }
+    catch { return false }
   }
 
   // --- instantiate ---
