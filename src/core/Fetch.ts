@@ -9,7 +9,7 @@ import { REGEX_NONUM, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod } from '@/type/fetch';
-import type { TResponse, TWaybackResponse } from '@/type/response';
+import type { TProfileResponse, TResponse, TWaybackResponse } from '@/type/response';
 
 
 export class Fetch implements IFetch {
@@ -114,6 +114,12 @@ export class Fetch implements IFetch {
     return this.single< T >( this.prepQuery( res.data.archived_snapshots.closest.url, {
       '/http': 'if_/http'
     } ) );
+  }
+
+  public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
+    return this.batch< TProfileResponse >( uriLike.map( uri =>
+      this.prepQuery( this.config.endpoints.profile, { URI: Utils.sanitize( uri ) } )
+    ) );
   }
 
   public async wikidata < T > ( sparql: string ) : Promise< TResponse< T > > {
