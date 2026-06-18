@@ -181,3 +181,23 @@ export type TWikipediaResponse = {
     } >;
   };
 };
+
+export type TCommonsResponse = {
+  query: {
+    pages: {
+      imageinfo?: {
+        url: string;
+        descriptionurl: string;
+        thumburl?: string;
+        responsiveUrls?: Record< string, string >;
+        extmetadata?: {
+          [ K in (
+            | 'Artist' | 'Attribution' | 'Credit' | 'DateTime'
+            | 'DateTimeOriginal' | 'ImageDescription'
+            | 'LicenseShortName' | 'UsageTerms'
+          ) ]?: { value?: string };
+        };
+      }[];
+    }[];
+  };
+};
