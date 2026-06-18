@@ -114,16 +114,23 @@ export class Fetch implements IFetch {
     return this.single< T >( res.data.archived_snapshots.closest.url.replace( '/http', 'if_/http' ) );
   }
 
-  public async list < T extends object > ( uriLike: string, year: string ) : Promise< TListResponse< T > > {
+  public async list < T extends object > ( uriLike: string, year: string ) : Promise< TResponse< TListResponse< T > > > {
     const { requests: { list: { limitRows, maxQueries } } } = this.config;
     const uri = Utils.sanitize( uriLike );
-    let start = 0;
+    let count = 0, start = 0, queries = 0;
 
     do {
       const res = await this.single< TListResponse< T > >( this.prepQuery(
         this.config.endpoints.list, { uri, year, limit: limitRows, start }
       ) );
-    } while ();
+
+      if ( ! res?.success || ! res.data?.personList.count ) return {
+        success: false, error: 'Could not fetch list data', duration: res.duration, retries: res.retries
+      };
+
+      count = res.data.personList.count;
+      start += limitRows;
+    } while ( ++queries < maxQueries && start < count );
   }
 
   public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
