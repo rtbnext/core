@@ -57,30 +57,26 @@ export class Storage implements IStorage {
       }
 
       throw new Error( `Unsupported file extension: ${ extname( path ) }` );
-    }, `Failed to read "${ path }"` );
+    }, `Failed to read "${ path }"` ) ?? false;
   }
 
   private write (
     path: string, content: any, type?: TStorageRWType,
     options: TStorageWOptions = { append: false, nl: true }
-  ) : void {
-    log.catch( () => {
+  ) : boolean {
+    return log.catch( () => {
       this.ensurePath( path = this.resolvePath( path ) );
 
       switch ( type ?? this.fileExt( path ) ) {
-        case 'csv':
-          content = stringify( content ).trim();
-          break;
-        case 'json':
-          content = JSON.stringify( content, null, this.config.compression ? undefined : 2 ).trim();
-          break;
+        case 'json': content = JSON.stringify( content, null, this.config.compression ? undefined : 2 ).trim(); break;
+        case 'csv': content = stringify( content ).trim(); break;
       }
 
       if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
-
       ( options.append ? appendFileSync : writeFileSync )( path, content, 'utf8' );
       log.debug( `Wrote data to "${ path }"`, options );
-    }, `Failed to write "${ path }"` );
+      return true;
+    }, `Failed to write "${ path }"` ) ?? false;
   }
 
   // --- path operations ---
@@ -121,30 +117,25 @@ export class Storage implements IStorage {
   // --- JSON files ---
 
   public readJSON < T extends object > ( path: string ) : T | false {
-    try { return this.read( path, 'json' ) as T }
-    catch { return false }
+    return this.read( path, 'json' ) as T;
   }
 
   public writeJSON < T extends object > ( path: string, content: T ) : boolean {
-    try { this.write( path, Utils.sortKeysDeep( content ), 'json' ); return true }
-    catch { return false }
+    return this.write( path, Utils.sortKeysDeep( content ), 'json' );
   }
 
   // --- CSV files ---
 
   public readCSV < T extends any[] > ( path: string ) : T | false {
-    try { return this.read( path, 'csv' ) as T }
-    catch { return false }
+    return this.read( path, 'csv' ) as T;
   }
 
   public writeCSV < T extends any[] > ( path: string, content: T ) : boolean {
-    try { this.write( path, content, 'csv' ); return true }
-    catch { return false }
+    return this.write( path, content, 'csv' );
   }
 
   public appendCSV < T extends any[] > ( path: string, content: T, nl: boolean = true ) : boolean {
-    try { this.write( path, content, 'csv', { append: true, nl } ); return true }
-    catch { return false }
+    return this.write( path, content, 'csv', { append: true, nl } );
   }
 
   public datedCSV < T extends any[] > ( path: string, content: T, force: boolean = false ) : boolean {
