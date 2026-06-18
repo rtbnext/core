@@ -128,6 +128,12 @@ export class Fetch implements IFetch {
     } ) );
   }
 
+  public async commons < T > ( query: Record< string, any > ) : Promise< TResponse< T > > {
+    return this.single< T >( this.prepQuery( this.config.endpoints.commons, {
+      QUERY: Utils.queryStr( { ...this.wikiQuery, ...query } )
+    } ) );
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IFetch {
