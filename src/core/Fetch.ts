@@ -116,7 +116,7 @@ export class Fetch implements IFetch {
 
   public async list < T extends object > ( uriLike: string, year: string ) : Promise< TResponse< TListResponse< T > > > {
     const { requests: { list: { limitRows, maxQueries } } } = this.config;
-    const uri = Utils.sanitize( uriLike );
+    const uri = Utils.sanitize( uriLike ), entries: T[] = [];
     let count = 0, start = 0, queries = 0;
 
     do {
@@ -128,8 +128,8 @@ export class Fetch implements IFetch {
         success: false, error: 'Could not fetch list data', duration: res.duration, retries: res.retries
       };
 
-      count = res.data.personList.count;
-      start += limitRows;
+      entries.push( ...res.data.personList.personsLists );
+      count = res.data.personList.count, start += limitRows;
     } while ( ++queries < maxQueries && start < count );
   }
 
