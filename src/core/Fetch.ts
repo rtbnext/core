@@ -17,7 +17,7 @@ export class Fetch implements IFetch {
 
   private readonly config: TFetchConfig;
   private readonly wikiQuery = { format: 'json', formatversion: 2 };
-  private requestCount: number = 0;
+  private lastRequest: number = 0;
   private httpClient: AxiosInstance;
 
   private constructor () {
@@ -32,7 +32,7 @@ export class Fetch implements IFetch {
     return axios.create( { headers, timeout } );
   }
 
-  // --- randomize ---
+  // --- rate limit ---
 
   private getRandomUserAgent () : string {
     return this.config.agentPool[ Math.floor( Math.random() * this.config.agentPool.length ) ];
@@ -43,6 +43,13 @@ export class Fetch implements IFetch {
     const delay = Math.round( Math.random() * ( max - min ) + min );
 
     return new Promise( resolve => setTimeout( resolve, delay ) );
+  }
+
+  private async applyRateLimit < T > ( fn: () => Promise< T > ) : Promise< T > {
+    if ( Date.now() - this.lastRequest < this.config.rateLimit.idle ) await this.getRandomDelay();
+
+    try { return await fn() }
+    finally { this.lastRequest = Date.now() }
   }
 
   // --- helper ---
@@ -62,9 +69,7 @@ export class Fetch implements IFetch {
 
       do {
         const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent() };
-        if ( this.requestCount++ ) await this.getRandomDelay();
-
-        res = await this.httpClient[ method ]< T >( url, { headers } );
+        res = await this.applyRateLimit( () => this.httpClient[ method ]< T >( url, { headers } ) );
         if ( res.status === 200 && res.data ) break;
 
         log.warn( `Request failed with status: ${ res.status }. Retrying ...` );

@@ -31,6 +31,7 @@ export type TFetchConfig = {
     batchSize: number;
     timeout: number;
     retries: number;
+    idle: number;
     requestDelay: {
       max: number;
       min: number;
