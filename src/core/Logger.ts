@@ -67,8 +67,8 @@ export class Logger implements ILogger {
     this.log( 'error', label, ( msg ? `${ msg }: ` : '' ) + ( err as Error ).message, err as Error );
   }
 
-  public exit ( label: string, msg: string, error?: Error ) : never {
-    this.log( 'error', label, msg, error );
+  public exit ( label: string, msg: string, err?: Error ) : never {
+    this.log( 'error', label, msg, err );
     exit( 1 );
   }
 
