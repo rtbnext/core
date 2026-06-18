@@ -30,7 +30,7 @@ export class Logger implements ILogger {
     return Logger.LEVEL[ level ] <= Logger.LEVEL[ this.config.level ];
   }
 
-  private format ( level: TLoggingLevel, label: string, msg: string, meta?: any ) : string {
+  private format ( level: TLoggingLevel, label: string, msg: string, meta?: unknown ) : string {
     const entry = `[${ Utils.date( 'iso' ) }] [${ level.toUpperCase() }] ${ label } :: ${ msg }`;
 
     if ( meta instanceof Error ) entry.concat( `: ${ meta.message }` );
@@ -46,6 +46,14 @@ export class Logger implements ILogger {
   private log2File ( entry: string ) : void {
     const path = join( this.path, `${ Utils.date( 'ym' ) }.log` );
     appendFileSync( path, entry + '\n', 'utf8' );
+  }
+
+  private log ( level: TLoggingLevel, label: string, msg: string, meta?: unknown ) : void {
+    if ( ! this.shouldLog( level ) ) return;
+
+    const entry = this.format( level, label, msg, meta );
+    if ( this.config.console ) this.log2Console( level, entry );
+    if ( this.config.file ) this.log2File( entry );
   }
 
   // --- instantiate ---
