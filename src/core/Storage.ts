@@ -68,8 +68,10 @@ export class Storage implements IStorage {
       this.ensurePath( path = this.resolvePath( path ) );
 
       switch ( type ?? this.fileExt( path ) ) {
+        case 'raw': content = String( content ); break;
         case 'json': content = JSON.stringify( content, null, this.config.compression ? undefined : 2 ).trim(); break;
         case 'csv': content = stringify( content ).trim(); break;
+        default: throw new Error( `Unsupported file extension: ${ extname( path ) }` );
       }
 
       if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
@@ -151,17 +153,17 @@ export class Storage implements IStorage {
   // --- file operations ---
 
   public remove ( path: string, force: boolean = true ) : boolean {
-    return !! log.catch( () => {
+    return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
 
       rmSync( path, { recursive: true, force } );
       log.debug( `Removed "${ path }"` );
       return true;
-    }, `Failed to remove "${ path }"` );
+    }, `Failed to remove "${ path }"` ) ?? false;
   }
 
   public move ( from: string, to: string, force: boolean = false ) : boolean {
-    return !! log.catch( () => {
+    return log.catch( () => {
       this.assertPath( from = this.resolvePath( from ) );
 
       if ( this.exists( to = this.resolvePath( to ) ) ) {
@@ -172,7 +174,7 @@ export class Storage implements IStorage {
       renameSync( from, to );
       log.debug( `Moved "${ from }" to "${ to }"` );
       return true;
-    }, `Failed to move "${ from }" to "${ to }"` );
+    }, `Failed to move "${ from }" to "${ to }"` ) ?? false;
   }
 
   // --- instantiate ---
