@@ -59,18 +59,14 @@ export class Wiki {
 
       const sparql = `
         SELECT DISTINCT
-          ?item ?itemLabel ?gender ?birthdate ?article ?image ?iso2
-          ?occupation ?employer ?ownerOf ?netWorth
+          ?item ?itemLabel ?gender ?birthdate ?article ?image ?iso2 ?occupation ?employer ?ownerOf ?netWorth
         WHERE {
           VALUES ?name { ${ nameVariants } }
           ?item wdt:P31 wd:Q5 .
           { { ?item rdfs:label ?name . } UNION { ?item skos:altLabel ?name . } }
           OPTIONAL { ?item wdt:P21 ?gender . }
           OPTIONAL { ?item wdt:P569 ?birthdate . }
-          OPTIONAL {
-            ?article schema:about ?item ;
-            schema:isPartOf <https://en.wikipedia.org/> .
-          }
+          OPTIONAL { ?article schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> . }
           OPTIONAL { ?item wdt:P18 ?image . }
           OPTIONAL { ?item wdt:P27 ?country . ?country wdt:P297 ?iso2 . }
           OPTIONAL { ?item wdt:P106 ?occupation . }
