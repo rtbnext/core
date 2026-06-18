@@ -2,6 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { Config } from '@/core/Config';
+import { Utils } from '@/core/Utils';
 import type { ILogger } from '@/interface/logger';
 import type { TLoggingConfig, TLoggingLevel } from '@/type/config';
 
@@ -27,6 +28,15 @@ export class Logger implements ILogger {
 
   private shouldLog ( level: TLoggingLevel ) : boolean {
     return Logger.LEVEL[ level ] <= Logger.LEVEL[ this.config.level ];
+  }
+
+  private format ( level: TLoggingLevel, label: string, msg: string, meta?: any ) : string {
+    const entry = `[${ Utils.date( 'iso' ) }] [${ level.toUpperCase() }] ${ label } :: ${ msg }`;
+
+    if ( meta instanceof Error ) entry.concat( `: ${ meta.message }` );
+    else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
+
+    return entry;
   }
 
   // --- instantiate ---
