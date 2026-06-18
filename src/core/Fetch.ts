@@ -83,6 +83,13 @@ export class Fetch implements IFetch {
     );
   }
 
+  private retErr ( res: TResponse< unknown >, msg?: string, code?: number ) : TResponse< never > {
+    return {
+      success: false, statusCode: code ?? res.statusCode ?? 500, error: msg ?? res.error,
+      duration: res.duration, retries: res.retries
+    };
+  }
+
   // --- fetch methods ---
 
   public async single < T > ( url: string, method: TFetchMethod = 'get' ) : Promise< TResponse< T > > {
@@ -107,9 +114,8 @@ export class Fetch implements IFetch {
       url: encodeURIComponent( url ), ts: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
     } ) );
 
-    if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
-      success: false, error: 'No archived snapshot found', duration: res.duration, retries: res.retries
-    };
+    if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available )
+      return this.retErr( res, 'No archived snapshot found', 404 );
 
     return this.single< T >( res.data.archived_snapshots.closest.url.replace( '/http', 'if_/http' ) );
   }
@@ -124,9 +130,8 @@ export class Fetch implements IFetch {
         this.config.endpoints.list, { uri, year, limit: chunkSize, start }
       ) );
 
-      if ( ! res?.success || ! res.data?.personList.count ) return {
-        success: false, error: 'Could not fetch list data', duration: res.duration, retries: res.retries
-      };
+      if ( ! res.success ) return this.retErr( res );
+      if ( ! res.data?.personList.count ) return this.retErr( res, 'Could not fetch list data', 404 );
 
       entries.push( ...res.data.personList.personsLists );
       count = res.data.personList.count, start += chunkSize;
@@ -138,7 +143,7 @@ export class Fetch implements IFetch {
 
   public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
     return this.batch< TProfileResponse >( uriLike.map( uri =>
-      this.prepQuery( this.config.endpoints.profile, { URI: Utils.sanitize( uri ) } )
+      this.prepQuery( this.config.endpoints.profile, { uri: Utils.sanitize( uri ) } )
     ) );
   }
 
