@@ -28,7 +28,7 @@ export class Storage implements IStorage {
   }
 
   private initDB () : void {
-    log.debug( `Initializing storage at "${ this.path }"` );
+    log.debug( `Initializing storage at ${ this.path }` );
     this.ensurePath( this.path );
 
     [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue' ]
@@ -57,7 +57,7 @@ export class Storage implements IStorage {
       }
 
       throw new Error( `Unsupported file extension: ${ extname( path ) }` );
-    }, `Failed to read "${ path }"` ) ?? false;
+    }, `Failed to read ${ path }` ) ?? false;
   }
 
   private write (
@@ -76,9 +76,9 @@ export class Storage implements IStorage {
 
       if ( options.nl && ! content.endsWith( '\n' ) ) content += '\n';
       ( options.append ? appendFileSync : writeFileSync )( path, content, 'utf8' );
-      log.debug( `Wrote data to "${ path }"`, options );
+      log.debug( `Wrote data to ${ path }`, options );
       return true;
-    }, `Failed to write "${ path }"` ) ?? false;
+    }, `Failed to write ${ path }` ) ?? false;
   }
 
   // --- path operations ---
@@ -92,7 +92,7 @@ export class Storage implements IStorage {
   }
 
   public assertPath ( path: string ) : void | never {
-    if ( ! this.exists( path ) ) throw new Error( `Path "${ path }" does not exist` );
+    if ( ! this.exists( path ) ) throw new Error( `Path ${ path } does not exist` );
   }
 
   public ensurePath ( path: string, isDir: boolean = false ) : void {
@@ -104,7 +104,7 @@ export class Storage implements IStorage {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
       return statSync( path );
-    }, `Failed to stat "${ path }"` ) ?? false;
+    }, `Failed to stat ${ path }` ) ?? false;
   }
 
   // --- scan dir ---
@@ -113,7 +113,7 @@ export class Storage implements IStorage {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
       return readdirSync( path ).filter( f => ext.includes( extname( f ).slice( 1 ).toLowerCase() ) );
-    }, `Failed to scan "${ path }"` ) ?? [];
+    }, `Failed to scan ${ path }` ) ?? [];
   }
 
   // --- JSON files ---
@@ -157,9 +157,9 @@ export class Storage implements IStorage {
       this.assertPath( path = this.resolvePath( path ) );
 
       rmSync( path, { recursive: true, force } );
-      log.debug( `Removed "${ path }"` );
+      log.debug( `Removed ${ path }` );
       return true;
-    }, `Failed to remove "${ path }"` ) ?? false;
+    }, `Failed to remove ${ path }` ) ?? false;
   }
 
   public move ( from: string, to: string, force: boolean = false ) : boolean {
@@ -168,13 +168,13 @@ export class Storage implements IStorage {
 
       if ( this.exists( to = this.resolvePath( to ) ) ) {
         if ( force ) this.remove( to, true );
-        else throw new Error( `Destination path "${ to }" already exists` );
+        else throw new Error( `Destination path ${ to } already exists` );
       }
 
       renameSync( from, to );
-      log.debug( `Moved "${ from }" to "${ to }"` );
+      log.debug( `Moved ${ from } to ${ to }` );
       return true;
-    }, `Failed to move "${ from }" to "${ to }"` ) ?? false;
+    }, `Failed to move ${ from } to ${ to }` ) ?? false;
   }
 
   // --- instantiate ---
