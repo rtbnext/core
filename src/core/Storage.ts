@@ -117,13 +117,25 @@ export class Storage implements IStorage {
 
   // --- JSON files ---
 
-  public readJSON < T > ( path: string ) : T | false {
+  public readJSON < T extends object > ( path: string ) : T | false {
     try { return this.read( path, 'json' ) as T }
     catch { return false }
   }
 
-  public writeJSON < T > ( path: string, content: T ) : boolean {
+  public writeJSON < T extends object > ( path: string, content: T ) : boolean {
     try { this.write( path, Utils.sortKeysDeep( content ), 'json' ); return true }
+    catch { return false }
+  }
+
+  // --- CSV files ---
+
+  public readCSV < T extends unknown[] > ( path: string ) : T | false {
+    try { return this.read( path, 'csv' ) as T }
+    catch { return false }
+  }
+
+  public writeCSV < T extends unknown[] > ( path: string, content: T ) : boolean {
+    try { this.write( path, content, 'csv' ); return true }
     catch { return false }
   }
 
