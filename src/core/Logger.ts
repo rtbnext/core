@@ -23,6 +23,12 @@ export class Logger implements ILogger {
     mkdirSync( this.path, { recursive: true } );
   }
 
+  // --- helper ---
+
+  private shouldLog ( level: TLoggingLevel ) : boolean {
+    return Logger.LEVEL[ level ] <= Logger.LEVEL[ this.config.level ];
+  }
+
   // --- instantiate ---
 
   public static getInstance () : ILogger {
