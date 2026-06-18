@@ -103,6 +103,7 @@ export type TProfileResponse = {
 
 export type TListResponse = {
   personList: {
+    count: number;
     personsLists: Array< {
       naturalId: string;
       name: string;
