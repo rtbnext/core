@@ -156,7 +156,7 @@ export class Utils {
 
   // --- search index ---
 
-  public static buildSearchText ( value: any, minLength: number = 4 ) : string {
+  public static buildSearchText ( value: unknown, minLength: number = 4 ) : string {
     return Array.from( new Set( String( value )
       .normalize( 'NFD' ).replace( REGEX_DIACRITICS, '' )
       .toLowerCase().replace( REGEX_NOALNUM, ' ' ).split( ' ' )

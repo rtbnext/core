@@ -49,7 +49,7 @@ export class Fetch implements IFetch {
 
   private prepQuery ( url: string, replacements: Record< string, unknown > ) : string {
     return Object.entries( replacements ).reduce( ( acc, [ key, value ] ) => {
-      return acc.replaceAll( `{${ key.toUpperCase() }}`, encodeURIComponent( String( value ) ) );
+      return acc.replaceAll( `{${ key.toUpperCase() }}`, String( value ) );
     }, url );
   }
 
