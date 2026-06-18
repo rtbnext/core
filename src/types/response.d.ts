@@ -100,3 +100,48 @@ export type TProfileResponse = {
     quote?: string;
   };
 };
+
+export type TListResponse = {
+  personList: {
+    personsLists: Array< {
+      naturalId: string;
+      name: string;
+      year: number;
+      listUri: string;
+      uri: string;
+      rank?: number;
+      finalWorth?: number;
+      person?: {
+        name?: string;
+        uri?: string;
+      },
+      personName: string;
+      state?: string;
+      city?: string;
+      source?: string;
+      industries?: string[];
+      countryOfCitizenship?: string;
+      timestamp: number;
+      gender?: 'M' | 'F';
+      birthDate?: number;
+      lastName?: string;
+      financialAssets?: Array< {
+        exchange: string;
+        ticker: string;
+        companyName: string;
+        numberOfShares?: number;
+        sharePrice?: number;
+        currencyCode?: string;
+        exchangeRate?: number;
+        currentPrice?: number;
+      } >;
+      date?: number;
+      estWorthPrev?: number;
+      privateAssetsWorth?: number;
+      archivedWorth?: number;
+      csfDisplayFields: string[];
+      bios?: string[];
+      abouts?: string[];
+    } >;
+  };
+};
