@@ -72,6 +72,12 @@ export class Fetch implements IFetch {
     );
   }
 
+  // --- fetch methods ---
+
+  public async single < T > ( url: string, method: 'get' | 'post' = 'get' ) : Promise< TResponse< T > > {
+    return this.fetch< T >( url, method );
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IFetch {
