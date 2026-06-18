@@ -44,7 +44,13 @@ export class Fetch implements IFetch {
     return new Promise( resolve => setTimeout( resolve, delay ) );
   }
 
-  // --- fetch ---
+  // --- helper ---
+
+  private prepQuery ( url: string, replacements: Record< string, unknown > ) : string {
+    return Object.entries( replacements ).reduce( ( acc, [ key, value ] ) => {
+      return acc.replaceAll( `{${ key.toUpperCase() }}`, encodeURIComponent( String( value ) ) );
+    }, url );
+  }
 
   private async fetch < T > ( url: string, method: TFetchMethod = 'get' ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
@@ -97,20 +103,22 @@ export class Fetch implements IFetch {
   // --- special requests ---
 
   public async wayback < T > ( url: string, ts: unknown ) : Promise< TResponse< T > > {
-    const timestamp = Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' );
-    const res = await this.single< TWaybackResponse >(
-      this.config.endpoints.wayback
-        .replace( '{URL}', encodeURIComponent( url ) )
-        .replace( '{TS}', timestamp )
-    );
+    const res = await this.single< TWaybackResponse >( this.prepQuery(
+      this.config.endpoints.wayback, {
+        URL: encodeURIComponent( url ),
+        TS: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
+      }
+    ) );
 
     if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available ) return {
       success: false, error: 'No archived snapshot found',
       duration: res.duration, retries: res.retries
     };
 
-    const snapshotUrl = res.data.archived_snapshots.closest.url;
-    return this.single< T >( snapshotUrl.replace( '/http', 'if_/http' ) );
+    return this.single< T >( this.prepQuery(
+      res.data.archived_snapshots.closest.url,
+      { '/http': 'if_/http' }
+    ) );
   }
 
   // --- instantiate ---
