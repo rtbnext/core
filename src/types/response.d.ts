@@ -101,48 +101,50 @@ export type TProfileResponse = {
   };
 };
 
-export type TListResponse = {
+export type TPersonList = {
+  naturalId: string;
+  name: string;
+  year: number;
+  listUri: string;
+  uri: string;
+  rank?: number;
+  finalWorth?: number;
+  person?: {
+    name?: string;
+    uri?: string;
+  },
+  personName: string;
+  state?: string;
+  city?: string;
+  source?: string;
+  industries?: string[];
+  countryOfCitizenship?: string;
+  timestamp: number;
+  gender?: 'M' | 'F';
+  birthDate?: number;
+  lastName?: string;
+  financialAssets?: Array< {
+    exchange: string;
+    ticker: string;
+    companyName: string;
+    numberOfShares?: number;
+    sharePrice?: number;
+    currencyCode?: string;
+    exchangeRate?: number;
+    currentPrice?: number;
+  } >;
+  date?: number;
+  estWorthPrev?: number;
+  privateAssetsWorth?: number;
+  archivedWorth?: number;
+  csfDisplayFields: string[];
+  bios?: string[];
+  abouts?: string[];
+};
+
+export type TListResponse< T extends object > = {
   personList: {
     count: number;
-    personsLists: Array< {
-      naturalId: string;
-      name: string;
-      year: number;
-      listUri: string;
-      uri: string;
-      rank?: number;
-      finalWorth?: number;
-      person?: {
-        name?: string;
-        uri?: string;
-      },
-      personName: string;
-      state?: string;
-      city?: string;
-      source?: string;
-      industries?: string[];
-      countryOfCitizenship?: string;
-      timestamp: number;
-      gender?: 'M' | 'F';
-      birthDate?: number;
-      lastName?: string;
-      financialAssets?: Array< {
-        exchange: string;
-        ticker: string;
-        companyName: string;
-        numberOfShares?: number;
-        sharePrice?: number;
-        currencyCode?: string;
-        exchangeRate?: number;
-        currentPrice?: number;
-      } >;
-      date?: number;
-      estWorthPrev?: number;
-      privateAssetsWorth?: number;
-      archivedWorth?: number;
-      csfDisplayFields: string[];
-      bios?: string[];
-      abouts?: string[];
-    } >;
+    personsLists: Array< T >;
   };
 };
