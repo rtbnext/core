@@ -1,4 +1,4 @@
-import { mkdirSync } from 'node:fs';
+import { appendFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { Config } from '@/core/Config';
@@ -37,6 +37,15 @@ export class Logger implements ILogger {
     else if ( meta ) entry.concat( `: ${ JSON.stringify( meta ) }` );
 
     return entry;
+  }
+
+  private log2Console ( level: TLoggingLevel, entry: string ) : void {
+    ( console[ level ] ?? console.log )( entry );
+  }
+
+  private log2File ( entry: string ) : void {
+    const path = join( this.path, `${ Utils.date( 'ym' ) }.log` );
+    appendFileSync( path, entry + '\n', 'utf8' );
   }
 
   // --- instantiate ---
