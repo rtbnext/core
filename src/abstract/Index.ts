@@ -70,7 +70,7 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
     }, `Failed to update index [${ this.type }] item: ${ uriLike }` ) ?? false;
   }
 
-  public delta ( items: { uriLike: string, data: Partial< I > }[], allowUpdate: boolean = true ) : number {
+  public delta ( items: Array< { uriLike: string, data: Partial< I > } >, allowUpdate: boolean = true ) : number {
     const updated = items.reduce( ( count, { uriLike, data } ) => count + (
       this.update( uriLike, data, allowUpdate, false ) ? 1 : 0
     ), 0 );
