@@ -1,4 +1,5 @@
 import type { TIndex } from '@rtbnext/schema/src/base/generic';
+import type { TProfileIndex, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
 
 
 export interface IIndex< I extends TIndex, T extends Map< string, I > > {
@@ -12,3 +13,5 @@ export interface IIndex< I extends TIndex, T extends Map< string, I > > {
   delete ( uriLike: string ) : void;
   search ( query: string, looseMatch: boolean = false ) : T;
 }
+
+export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex > {}
