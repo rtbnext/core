@@ -42,11 +42,17 @@ export class ProfileParser extends Cache implements IProfileParser {
   public aliases () : string[] {
     return this.cache( 'aliases', () => {
       const uri = this.uri();
-
-      return this.raw.uris.filter( Boolean ).map( i => Utils.sanitize( i ) )
-        .filter( i => i !== uri ).sort();
+      return this.raw.uris.filter( Boolean ).map( i => Utils.sanitize( i ) ).filter( i => i !== uri ).sort();
     } );
   }
+
+  // --- profile parser ---
+
+    public name () : { name: TProfileName, family: boolean } {
+      return this.cache( 'name', () => ProfileParser.name(
+        this.raw.name, this.raw.lastName, this.raw.firstName, Parser.boolean( this.raw.asianFormat )
+      ) );
+    }
 
   // --- static methods ---
 
