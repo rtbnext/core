@@ -1,4 +1,4 @@
-import type { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
+import type { TEducation, TLocation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
@@ -17,7 +17,9 @@ export class ProfileParser extends Cache implements IProfileParser {
     super();
 
     this.raw = res.person;
-    this.lists = res.person.personLists.sort( ( a, b ) => Number( b.date ?? 0 ) - Number( a.date ?? 0 ) );
+    this.lists = res.person.personLists.sort(
+      ( a, b ) => Number( b.date ?? 0 ) - Number( a.date ?? 0 )
+    );
   }
 
   // --- raw data ---
@@ -43,7 +45,9 @@ export class ProfileParser extends Cache implements IProfileParser {
   public aliases () : string[] {
     return this.cache( 'aliases', () => {
       const uri = this.uri();
-      return this.raw.uris.filter( Boolean ).map( i => Utils.sanitize( i ) ).filter( i => i !== uri ).sort();
+
+      return this.raw.uris.filter( Boolean ).map( i => Utils.sanitize( i ) )
+        .filter( i => i !== uri ).sort();
     } );
   }
 
@@ -69,16 +73,6 @@ export class ProfileParser extends Cache implements IProfileParser {
       ...Parser.container< Partial< TProfileInfo > >( {
         gender: { value: this.raw.gender, type: 'gender' },
         birthDate: { value: this.raw.birthDate, type: 'date' },
-        birthPlace: { value: {
-          country: this.raw.birthCountry,
-          state: this.raw.birthState,
-          city: this.raw.birthCity
-        }, type: 'location' },
-        residence: { value: {
-          country: this.raw.countryOfResidence,
-          state: this.raw.stateProvince,
-          city: this.raw.city
-        }, type: 'location' },
         maritalStatus: { value: this.raw.maritalStatus, type: 'maritalStatus' },
         children: { value: this.raw.numberOfChildren, type: 'number' },
         industry: { value: this.raw.industries, type: 'industry' },
@@ -87,6 +81,8 @@ export class ProfileParser extends Cache implements IProfileParser {
       flage: this.flags(),
       name: this.name().name,
       citizenship: this.citizenship(),
+      birthPlace: this.birthPlace(),
+      residence: this.residence(),
       education: this.education(),
       selfMade: this.selfMade(),
       philanthropyScore: this.philanthropyScore(),
@@ -98,6 +94,22 @@ export class ProfileParser extends Cache implements IProfileParser {
     return this.cache( 'citizenship', () => Parser.strict(
       this.raw.countryOfCitizenship || this.raw.countryOfResidence, 'country'
     ) );
+  }
+
+  public residence () : TLocation | undefined {
+    return Parser.location( {
+      country: this.raw.countryOfResidence,
+      state: this.raw.stateProvince,
+      city: this.raw.city
+    } );
+  }
+
+  public birthPlace () : TLocation | undefined {
+    return Parser.location( {
+      country: this.raw.birthCountry,
+      state: this.raw.birthState,
+      city: this.raw.birthCity
+    } );
   }
 
   public education () : TEducation[] {
