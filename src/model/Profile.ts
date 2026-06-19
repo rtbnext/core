@@ -1,3 +1,4 @@
+import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileHistory, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
@@ -45,6 +46,19 @@ export class Profile implements IProfile {
   private touch ( lookup: boolean = false ) : void {
     this.meta.$metadata.lastModified = Utils.date( 'iso' );
     if ( lookup ) this.meta.$metadata.lastLookup = this.meta.$metadata.lastModified;
+  }
+
+  private updateIndex ( aliases: string[] = [], mode: ArrayMode = ArrayMode.Unique ) : void {
+    const {
+      uri, info: { name: { shortName: name } }, bio: { cv },
+      wiki: { desc, image: { file, thumb } = {} } = {}
+    } = this.getData();
+
+    this.item = {
+      uri, name, desc, image: thumb ?? file,
+      aliases: Utils.mergeArray( this.item.aliases, aliases, mode ),
+      text: Utils.buildSearchText( cv )
+    };
   }
 
   // --- public getter ---

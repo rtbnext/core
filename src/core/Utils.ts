@@ -1,3 +1,4 @@
+import { ArrayMode } from '@komed3/deepmerge';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type { ListLike } from 'devtypes/types/list';
 import { sha256 } from 'js-sha256';
@@ -125,6 +126,22 @@ export class Utils {
         acc[ k ] = Utils.sortKeysDeep( ( value as any )[ k ], exclude );
         return acc;
       }, {} as any );
+  }
+
+  // --- merging ---
+
+  public static unique < T = unknown > ( arr: T[] ) : T[] {
+    return Array.from( new Set( arr.map( item => JSON.stringify( item ) ) ) )
+      .map( item => JSON.parse( item ) );
+  }
+
+  public static mergeArray < T = unknown > ( target: T[], source: T[], mode: ArrayMode = ArrayMode.Unique ) : T[] {
+    switch ( mode ) {
+      case ArrayMode.Replace: return source;
+      case ArrayMode.Keep: return target;
+      case ArrayMode.Concat: return [ ...target, ...source ];
+      case ArrayMode.Unique: return Utils.unique< T >( [ ...target, ...source ] );
+    }
   }
 
   // --- queries & args ---
