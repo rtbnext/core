@@ -14,4 +14,11 @@ export interface IIndex< I extends TIndex, T extends Map< string, I > > {
   search ( query: string, looseMatch: boolean = false ) : T;
 }
 
-export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex > {}
+export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex > {
+  find ( uriLike: string ) : TProfileIndex;
+  move ( from: string, to: string, makeAlias: boolean = true ) : TProfileIndexItem | false;
+  hasAlias ( alias: string ) : string | false;
+  removeAlias ( alias: string ) : boolean;
+  addAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false;
+  rmvAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false;
+}
