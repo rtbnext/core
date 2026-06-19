@@ -118,4 +118,25 @@ export abstract class Queue implements IQueue {
     this.saveQueue();
     return added;
   }
+
+  // --- remove items ---
+
+  public removeByKey ( key: string ) : boolean {
+    return this.queue.delete( key ) && (
+      log.debug( `Remove from queue [${ this.type }] by key: ${ key }` ),
+      this.saveQueue(), true
+    );
+  }
+
+  public remove ( ...uriLike: string[] ) : number {
+    const keys = [ ...new Set( uriLike.map( uri => this.getByUri( uri ).map( i => i.key ) ).flat() ) ];
+
+    if ( keys && keys.length ) {
+      keys.forEach( this.queue.delete.bind( this.queue ) );
+      log.debug( `Remove from queue [${ this.type }] by URI(s): ${ uriLike }`, keys );
+      this.saveQueue();
+    }
+
+    return keys.length;
+  }
 }
