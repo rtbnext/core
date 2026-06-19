@@ -108,4 +108,22 @@ export class Profile implements IProfile {
       this.resolvePath( 'profile.json' )
     ) ?? {} ) as TProfileData;
   }
+
+  public setData (
+    data: TProfileData, aliases?: string[], lookup: boolean = false,
+    aliasMode: ArrayMode = ArrayMode.Unique
+  ) : void {
+    this.data = data;
+    this.updateIndex( aliases, aliasMode );
+    this.touch( lookup );
+  }
+
+  public updateData (
+    data: Partial< TProfileData >, aliases?: string[], lookup: boolean = false,
+    mode: ArrayMode = ArrayMode.Replace, aliasMode: ArrayMode = ArrayMode.Unique
+  ) : void {
+    this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
+    this.updateIndex( aliases, aliasMode );
+    this.touch( lookup );
+  }
 }
