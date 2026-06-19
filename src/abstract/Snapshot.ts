@@ -1,6 +1,7 @@
 import type { TSnapshot } from '@rtbnext/schema/src/base/generic';
 import { join } from 'node:path';
 
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { ISnapshot } from '@/interface/snapshot';
@@ -81,5 +82,23 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
 
   public getLatest () : T | false {
     return this.dates.length ? this.getSnapshot( this.latestDate()! ) : false;
+  }
+
+  // --- save snapshot ---
+
+  public saveSnapshot ( snapshot: T, force: boolean = false ) : boolean {
+    log.debug( `Saving snapshot for date ${ snapshot.date }` );
+
+    return log.catch( () => {
+      if ( ! force && this.hasDate( snapshot.date ) )
+        throw new Error( `Snapshot for date ${ snapshot.date } already exists` );
+
+      const path = this.datedPath( snapshot.date );
+      if ( ! Snapshot.storage.writeJSON< T >( path, snapshot ) )
+        throw new Error( `Failed to write snapshot to ${ path }` );
+
+      this.dates = this.scanDates();
+      return true;
+    }, `Failed to save snapshot for date ${ snapshot.date }` ) ?? false;
   }
 }
