@@ -2,6 +2,7 @@ import type { TProfileData, TProfileInfo } from '@rtbnext/schema/src/model/profi
 import { CmpStrAsync, type CmpStrResult } from 'cmpstr';
 
 import { REGEX_URI_CLEANUP } from '@/lib/regex';
+import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 
 
@@ -25,15 +26,29 @@ export class ProfileMerger {
 
   // --- check mergeable profiles ---
 
-  public static mergeableProfiles ( target: TProfileData, source: TProfileData ) : boolean {
+  public static mergeableProfiles ( target: Partial< TProfileData >, source: Partial< TProfileData > ) : boolean {
     if ( target.id === source.id ) return true;
 
     for ( const test of [ 'gender', 'birthDate', 'birthPlace', 'citizenship', 'industry' ] ) if (
-      test in target.info && test in source.info &&
+      target.info && test in target.info && source.info && test in source.info &&
       JSON.stringify( target.info[ test as keyof TProfileInfo ] ) !==
       JSON.stringify( source.info[ test as keyof TProfileInfo ] )
     ) return false;
 
     return true;
+  }
+
+  // --- find matching profiles ---
+
+  public static findMatching ( data: Partial< TProfileData > ) : Profile[] {
+    if ( ! data.id || ! data.uri ) return [];
+    const res: Profile[] = [];
+
+    for ( const uri of ProfileMerger.similarURIs( data.uri ) ) {
+      const profile = Profile.get( uri );
+      if ( profile && ProfileMerger.mergeableProfiles( profile.getData(), data ) ) res.push( profile );
+    }
+
+    return res;
   }
 }
