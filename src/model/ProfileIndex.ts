@@ -70,6 +70,36 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     }, `Failed to remove profile alias ${ alias }` ) ?? false;
   }
 
+  public addAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Adding profile aliases [${ aliases.join( ', ' ) }] to ${ uri }` );
+
+    return log.catch( () => {
+      const item = this.index.get( uri );
+      if ( ! item ) throw new Error( `Profile index item ${ uri } not found` );
+
+      item.aliases = [ ...new Set( [ ...item.aliases, ...aliases ] ) ];
+      this.saveIndex();
+
+      return item;
+    }, `Failed to add profile aliases to ${ uri }` ) ?? false;
+  }
+
+  public rmvAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Removing profile aliases [${ aliases.join( ', ' ) }] from ${ uri }` );
+
+    return log.catch( () => {
+      const item = this.index.get( uri );
+      if ( ! item ) throw new Error( `Profile index item ${ uri } not found` );
+
+      item.aliases = item.aliases.filter( alias => ! aliases.includes( alias ) );
+      this.saveIndex();
+
+      return item;
+    }, `Failed to remove profile aliases from ${ uri }` ) ?? false;
+  }
+
   // --- instantitate ---
 
   public static getInstance () : IProfileIndex {
