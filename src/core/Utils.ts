@@ -47,8 +47,8 @@ export class Utils {
     return Parser.date( undefined, format )!;
   }
 
-  public static metaData < T extends Record< string, any > > ( obj?: T ) : TMetaData {
-    return { $metadata: { schemaVersion: 2, lastModified: Utils.date( 'iso' ), ...obj } };
+  public static metaData < T extends Record< string, any > > ( obj?: T ) : TMetaData< T > {
+    return { $metadata: { schemaVersion: 2, lastModified: Utils.date( 'iso' ), ...obj } } as TMetaData< T >;
   }
 
   // --- aggregate from object arrays ---
