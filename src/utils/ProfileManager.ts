@@ -48,4 +48,18 @@ export class ProfileManager {
   public static handleURIChange ( profile: Profile, newUri: string, makeAlias: boolean = true ) : boolean {
     return profile.getUri() !== newUri ? profile.move( newUri, makeAlias ) : false;
   }
+
+  // --- perform profile operation ---
+
+  public static process (
+    uriLike: string, id: string, profileData: Partial< TProfileData >,
+    aliases: string[] = [], method: 'setData' | 'updateData' = 'updateData'
+  ) : { profile: Profile | false; action: TProfileOperation, success: boolean } {
+    const lookup = this.lookup( uriLike, id, profileData );
+    const action = this.determineAction( lookup );
+    const profile = this.execute( lookup, uriLike, profileData, aliases, method );
+
+    if ( profile && action !== 'create' ) this.handleURIChange( profile, uriLike );
+    return { profile, action, success: !! profile };
+  }
 }
