@@ -1,4 +1,4 @@
-import { ArrayMode } from '@komed3/deepmerge';
+import { ArrayMode, Merger } from '@komed3/deepmerge';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type { ListLike } from 'devtypes/types/list';
 import { sha256 } from 'js-sha256';
@@ -11,6 +11,8 @@ import type { TParserDateType } from '@/type/parser';
 
 
 export class Utils {
+  private static readonly mergeInstances: { [ K in ArrayMode ]?: Merger } = {};
+
   // --- sanitize IDs and URIs ---
 
   public static sanitize ( value: unknown, delimiter: string = '-' ) : string {
@@ -142,6 +144,12 @@ export class Utils {
       case ArrayMode.Concat: return [ ...target, ...source ];
       case ArrayMode.Unique: return Utils.unique< T >( [ ...target, ...source ] );
     }
+  }
+
+  public static merge < T > ( mode: ArrayMode, ...obj: T[] ) : T {
+    return ( Utils.mergeInstances[ mode ] ??= new Merger( { arrayMode: mode } ) ).merge< T >(
+      obj[ 0 ] ?? {} as T, ...obj.slice( 1 )
+    );
   }
 
   // --- queries & args ---
