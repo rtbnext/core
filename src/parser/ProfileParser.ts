@@ -1,3 +1,5 @@
+import { Cache } from '@/abstract/Cache';
+import { Utils } from '@/core/Utils';
 import type { IProfileParser } from '@/interface/parser';
 import type { TProfileResponse } from '@/type/response';
 
@@ -21,5 +23,15 @@ export class ProfileParser extends Cache implements IProfileParser {
 
   public sortedLists () : TProfileResponse[ 'person' ][ 'personLists' ] {
     return this.lists;
+  }
+
+  // --- URIs & IDs ---
+
+  public uri () : string {
+    return this.cache( 'uri', () => Utils.sanitize( this.raw.uri ) );
+  }
+
+  public id () : string {
+    return this.cache( 'id', () => Utils.hash( this.raw.naturalId ) );
   }
 }
