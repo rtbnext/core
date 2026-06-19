@@ -13,6 +13,10 @@ export class Profile implements IProfile {
   private static readonly storage = Storage.getInstance();
   private static readonly index = ProfileIndex.getInstance();
 
+  private static readonly emptyDataSet = {
+    info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: []
+  };
+
   private uri: string;
   private path: string;
   private item: TProfileIndexItem;
@@ -159,7 +163,8 @@ export class Profile implements IProfile {
   public save () : void {
     log.debug( `Saving profile: ${ this.uri }` );
     log.catch( () => {
-      if ( ! Profile.index.update( this.uri, this.item ) ) throw new Error( `Failed to update profile index` );
+      if ( ! Profile.index.update( this.uri, this.item ) )
+        throw new Error( `Failed to update profile index` );
 
       if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
         this.resolvePath( 'profile.json' ), this.data
@@ -190,7 +195,8 @@ export class Profile implements IProfile {
       this.path = join( 'profile', uri );
       this.item = item;
 
-      if ( ! Profile.storage.move( oldPath, this.path ) ) throw new Error( `Failed to move profile storage` );
+      if ( ! Profile.storage.move( oldPath, this.path ) )
+        throw new Error( `Failed to move profile storage` );
 
       this.updateData( { uri: uri } );
       this.save();
@@ -239,14 +245,31 @@ export class Profile implements IProfile {
       if ( ! item ) throw new Error( `Failed to add profile to index` );
 
       const profile = new Profile( item );
-      profile.setData( { ...{
-        info: {}, bio: {}, related: [], media: [], map: [], ranking: [], annual: [], assets: []
-      }, ...data } );
+      profile.setData( { ...Profile.emptyDataSet, ...data } );
       profile.setHistory( history ?? [] );
       profile.save();
 
       log.debug( `Profile created: ${ uri }` );
       return profile;
     }, `Failed to create profile: ${ uri }` ) ?? false;
+  }
+
+  // --- delete profile ---
+
+  public static delete ( uriLike: string ) : boolean {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Deleting profile: ${ uri }` );
+
+    return log.catch( () => {
+      const path = join( 'profile', uri );
+
+      if ( ! Profile.storage.remove( path ) )
+        throw new Error( `Failed to remove profile from storage` );
+
+      Profile.index.delete( uri );
+
+      log.debug( `Profile deleted: ${ uri }` );
+      return true;
+    }, `Failed to delete profile: ${ uri }` ) ?? false;
   }
 }
