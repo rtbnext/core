@@ -1,23 +1,23 @@
 import type { ICache } from '@/interface/cache';
 
 
-export abstract class Cache< K extends string, T = unknown > implements ICache< K, T > {
-  protected cachedData: Map< K, T > = new Map();
+export abstract class Cache implements ICache {
+  protected cachedData: Map< string, unknown > = new Map();
 
-  protected cache ( key: K, fn: () => T ) : T {
+  protected cache < T = unknown > ( key: string, fn: () => T ) : T {
     if ( ! this.cachedData.has( key ) ) this.cachedData.set( key, fn() );
-    return this.cachedData.get( key )!;
+    return this.cachedData.get( key ) as T;
   }
 
   public get size () : number {
     return this.cachedData.size;
   }
 
-  public get ( key: K ) : T | undefined {
-    return this.cachedData.get( key );
+  public get < T = unknown > ( key: string ) : T | undefined {
+    return this.cachedData.get( key ) as T;
   }
 
-  public has ( key: K ) : boolean {
+  public has ( key: string ) : boolean {
     return this.cachedData.has( key );
   }
 

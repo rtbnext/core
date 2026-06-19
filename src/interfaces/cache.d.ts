@@ -1,6 +1,6 @@
-export interface ICache< K extends string, T = unknown > {
+export interface ICache {
   readonly size: number;
-  get ( key: K ) : T | undefined;
-  has ( key: K ) : boolean;
+  get < T = any > ( key: string ) : T | undefined;
+  has ( key: string ) : boolean;
   clear () : void;
 }
