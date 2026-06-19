@@ -1,4 +1,4 @@
-import type { TEducation, TSelfMade } from '@rtbnext/schema/src/base/generic';
+import type { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
@@ -82,6 +82,15 @@ export class ProfileParser extends Cache implements IProfileParser {
     return this.cache( 'philanthropyScore', () =>
       Utils.aggregate( this.lists, 'philanthropyScore', 'first' ) as number | undefined
     );
+  }
+
+  public organization () : TOrganization | undefined {
+    return this.cache( 'organization', () => {
+      if ( this.raw.organization ) return Parser.container< TOrganization >( {
+        name: { value: this.raw.organization, type: 'string' },
+        title: { value: this.raw.title, type: 'string' }
+      } );
+    } );
   }
 
   // --- static methods ---
