@@ -8,7 +8,7 @@ import type { IIndex } from '@/interface/index';
 
 
 export abstract class Index< I extends TIndex, T extends Map< string, I > > implements IIndex< I, T > {
-  private static readonly merger = new Merger( { arrayMode: ArrayMode.Unique } );
+  protected static readonly merger = new Merger( { arrayMode: ArrayMode.Unique } );
   protected static readonly storage = Storage.getInstance();
 
   protected readonly type: 'profile' | 'list';
@@ -89,5 +89,12 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
     log.debug( `Deleting index [${ this.type }] item: ${ uriLike }` );
     this.index.delete( Utils.sanitize( uriLike ) );
     this.saveIndex();
+  }
+
+  // --- search index items ---
+
+  public search ( query: string, looseMatch: boolean = false ) : T {
+    const tokens = Utils.buildSearchText( query ).split( ' ' ).filter( Boolean );
+    return new Map( [ ...this.index ].filter( ( [ _, { text } ] ) => Utils.tokenSearch( text, tokens, looseMatch ) ) ) as T;
   }
 }
