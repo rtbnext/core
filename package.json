@@ -22,6 +22,7 @@
     "@komed3/deepmerge": "^1.0.0",
     "@rtbnext/schema": "^2.0.0-alpha.1",
     "axios": "^1.18.0",
+    "cmpstr": "^3.3.0",
     "csv-string": "^4.1.1",
     "devtypes": "^2.2.0",
     "i18n-iso-countries": "^7.14.0",
