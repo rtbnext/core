@@ -1,5 +1,6 @@
 import type { TIndex } from '@rtbnext/schema/src/base/generic';
 
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import type { IIndex } from '../interfaces';
 
@@ -14,5 +15,20 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
     this.type = type;
     this.path = path;
     Index.storage.ensurePath( this.path );
+    this.index = this.loadIndex();
+  }
+
+  // --- load & save index ---
+
+  protected loadIndex () : T {
+    const raw = Index.storage.readJSON< Record< string, I > > ( this.path ) ?? {};
+    log.debug( `Index [${ this.type }] loaded: ${ Object.keys( raw ).length } items` );
+
+    return new Map( Object.entries( raw ) ) as T;
+  }
+
+  protected saveIndex () : void {
+    const content = Object.fromEntries( this.index );
+    Index.storage.writeJSON< Record< string, I > >( this.path, content );
   }
 }
