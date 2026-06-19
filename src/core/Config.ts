@@ -9,7 +9,7 @@ import type { TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueCon
 
 
 export class Config implements IConfig {
-  private static merger = new Merger( { arrayMode: ArrayMode.Replace } );
+  private static readonly merger = new Merger( { arrayMode: ArrayMode.Replace } );
   private static instance: IConfig;
 
   private readonly cwd: string;
