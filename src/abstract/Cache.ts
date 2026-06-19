@@ -1,7 +1,7 @@
 import type { ICache } from '@/interface/cache';
 
 
-export abstract class Cache< K extends string, T = unknown > implements ICache {
+export abstract class Cache< K extends string, T = unknown > implements ICache< K, T > {
   protected cachedData: Map< K, T > = new Map();
 
   protected cache ( key: K, fn: () => T ) : T {
