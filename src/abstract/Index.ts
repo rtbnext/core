@@ -1,3 +1,4 @@
+import { ArrayMode, Merger } from '@komed3/deepmerge';
 import type { TIndex } from '@rtbnext/schema/src/base/generic';
 
 import { log } from '@/core/Logger';
@@ -7,7 +8,9 @@ import type { IIndex } from '@/interface/index';
 
 
 export abstract class Index< I extends TIndex, T extends Map< string, I > > implements IIndex< I, T > {
+  private static readonly merger = new Merger( { arrayMode: ArrayMode.Unique } );
   protected static readonly storage = Storage.getInstance();
+
   protected readonly type: 'profile' | 'list';
   protected readonly path: string;
   protected index: T;
@@ -49,5 +52,21 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
 
   public get ( uriLike: string ) : I | undefined {
     return this.index.get( Utils.sanitize( uriLike ) );
+  }
+
+  // --- manipulate index (add, update, remove items) ---
+
+  public update ( uriLike: string, data: Partial< I >, allowUpdate: boolean = true, save: boolean = true ) : I | false {
+    return log.catch( () => {
+      const uri = Utils.sanitize( uriLike );
+      if ( ! allowUpdate && this.index.has( uri ) ) return false;
+
+      log.debug( `Updating index [${ this.type }] item: ${ uri }`, data );
+      const item = Index.merger.merge< I >( this.index.get( uri ) ?? {} as I, data );
+      this.index.set( uri, item );
+
+      if ( save ) this.saveIndex();
+      return item;
+    }, `Failed to update index [${ this.type }] item: ${ uriLike }` ) ?? false;
   }
 }
