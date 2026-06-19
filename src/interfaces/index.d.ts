@@ -1,4 +1,5 @@
 import type { TIndex } from '@rtbnext/schema/src/base/generic';
+import type { TListIndex, TListIndexItem } from '@rtbnext/schema/src/model/list';
 import type { TProfileIndex, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
 
 
@@ -22,3 +23,5 @@ export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex 
   addAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false;
   rmvAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false;
 }
+
+export interface IListIndex extends IIndex< TListIndexItem, TListIndex > {}
