@@ -1,5 +1,5 @@
 import type { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
-import type { TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
@@ -55,6 +55,15 @@ export class ProfileParser extends Cache implements IProfileParser {
     ) );
   }
 
+  public flags () : TProfileFlags {
+    return this.cache( 'flags', () => Parser.container< TProfileFlags >( {
+      deceased: { value: this.raw.deceased, type: 'boolean' },
+      family: { value: this.name().family, type: 'boolean' },
+      dropOff: { value: this.raw.dropOff, type: 'boolean' },
+      embargo: { value: this.raw.embargo, type: 'boolean' }
+    } ) );
+  }
+
   public info () : TProfileInfo {
     return this.cache( 'info', () => ( {
       ...Parser.container< Partial< TProfileInfo > >( {
@@ -75,12 +84,14 @@ export class ProfileParser extends Cache implements IProfileParser {
         industry: { value: this.raw.industries, type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
       } ),
+      flage: this.flags(),
+      name: this.name().name,
       citizenship: this.citizenship(),
       education: this.education(),
       selfMade: this.selfMade(),
       philanthropyScore: this.philanthropyScore(),
       organization: this.organization()
-    } as TProfileInfo ) );
+    } ) as TProfileInfo );
   }
 
   public citizenship () : string | undefined {
