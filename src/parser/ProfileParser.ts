@@ -1,5 +1,5 @@
 import type { TEducation, TLocation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
-import type { TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
@@ -51,7 +51,7 @@ export class ProfileParser extends Cache implements IProfileParser {
     } );
   }
 
-  // --- profile parser ---
+  // --- profile info ---
 
   public name () : { name: TProfileName, family: boolean } {
     return this.cache( 'name', () => ProfileParser.name(
@@ -142,6 +142,28 @@ export class ProfileParser extends Cache implements IProfileParser {
         title: { value: this.raw.title, type: 'string' }
       } );
     } );
+  }
+
+  // --- bio ---
+
+  public bio () : TProfileBio {
+    return this.cache( 'bio', () => ( { cv: this.cv(), facts: this.facts(), quotes: this.quotes() } ) );
+  }
+
+  public cv () : string[] {
+    return this.cache( 'cv', () => Parser.list< string >(
+      Utils.aggregate( this.lists, 'bios', 'first' ) as string[], 'safeStr'
+    ) );
+  }
+
+  public facts () : string[] {
+    return this.cache( 'facts', () => Parser.list< string >(
+      Utils.aggregate( this.lists, 'abouts', 'first' ) as string[], 'safeStr'
+    ) );
+  }
+
+  public quotes () : string[] {
+    return this.cache( 'quotes', () => Parser.list< string >( [ this.raw.quote ?? '' ], 'safeStr' ) );
   }
 
   // --- static methods ---
