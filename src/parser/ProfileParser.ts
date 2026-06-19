@@ -1,3 +1,4 @@
+import type { TEducation } from '@rtbnext/schema/src/base/generic';
 import type { TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
@@ -48,11 +49,26 @@ export class ProfileParser extends Cache implements IProfileParser {
 
   // --- profile parser ---
 
-    public name () : { name: TProfileName, family: boolean } {
-      return this.cache( 'name', () => ProfileParser.name(
-        this.raw.name, this.raw.lastName, this.raw.firstName, Parser.boolean( this.raw.asianFormat )
-      ) );
-    }
+  public name () : { name: TProfileName, family: boolean } {
+    return this.cache( 'name', () => ProfileParser.name(
+      this.raw.name, this.raw.lastName, this.raw.firstName, Parser.boolean( this.raw.asianFormat )
+    ) );
+  }
+
+  public citizenship () : string | undefined {
+    return this.cache( 'citizenship', () => Parser.strict(
+      this.raw.countryOfCitizenship || this.raw.countryOfResidence, 'country'
+    ) );
+  }
+
+  public education () : TEducation[] {
+    return this.cache( 'education', () => ( this.raw.educations ?? [] ).filter( Boolean ).map(
+      item => Parser.container< TEducation >( {
+        school: { value: item.school, type: 'string' },
+        degree: { value: item.degree, type: 'string' }
+      } )
+    ) );
+  }
 
   // --- static methods ---
 
