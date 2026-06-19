@@ -1,5 +1,8 @@
 import { ArrayMode } from '@komed3/deepmerge';
-import type { TProfileData, TProfileHistory, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
+import type {
+  TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem,
+  TProfileMetaData
+} from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
 import { Storage } from '@/core/Storage';
@@ -125,5 +128,30 @@ export class Profile implements IProfile {
     this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
     this.updateIndex( aliases, aliasMode );
     this.touch( lookup );
+  }
+
+  // --- profile history ---
+
+  public getHistory () : TProfileHistory {
+    return this.history ??= ( Profile.storage.readCSV< TProfileHistory >(
+      this.resolvePath( 'history.csv' )
+    ) ?? [] ) as TProfileHistory;
+  }
+
+  public setHistory ( history: TProfileHistory ) : void {
+    this.history = history;
+    this.touch();
+  }
+
+  public addHistory ( row: TProfileHistoryItem ) : void {
+    this.history = [ ...this.getHistory(), row ];
+    this.touch();
+  }
+
+  public mergeHistory ( history: TProfileHistory ) : void {
+    this.history = Array.from(
+      new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values()
+    ).sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
+    this.touch();
   }
 }
