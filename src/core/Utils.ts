@@ -132,6 +132,12 @@ export class Utils {
 
   // --- merging ---
 
+  public static merge < T > ( mode: ArrayMode, ...objects: any[] ) : T {
+    return ( Utils.mergeInstances[ mode ] ??= new Merger( { arrayMode: mode } ) ).merge< T >(
+      objects[ 0 ] ?? {} as T, ...objects.slice( 1 )
+    ) as T;
+  }
+
   public static unique < T = unknown > ( arr: T[] ) : T[] {
     return Array.from( new Set( arr.map( item => JSON.stringify( item ) ) ) )
       .map( item => JSON.parse( item ) );
@@ -144,12 +150,6 @@ export class Utils {
       case ArrayMode.Concat: return [ ...target, ...source ];
       case ArrayMode.Unique: return Utils.unique< T >( [ ...target, ...source ] );
     }
-  }
-
-  public static merge < T > ( mode: ArrayMode, ...obj: any[] ) : T {
-    return ( Utils.mergeInstances[ mode ] ??= new Merger( { arrayMode: mode } ) ).merge< T >(
-      obj[ 0 ] ?? {} as T, ...obj.slice( 1 )
-    ) as T;
   }
 
   // --- queries & args ---

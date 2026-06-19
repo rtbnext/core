@@ -144,7 +144,8 @@ export class Profile implements IProfile {
   }
 
   public addHistory ( row: TProfileHistoryItem ) : void {
-    this.history = [ ...this.getHistory(), row ];
+    this.getHistory();
+    this.history!.push( row );
     this.touch();
   }
 
