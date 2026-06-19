@@ -220,4 +220,33 @@ export class Profile implements IProfile {
       `Failed to find profile: ${ uriLike }`
     ) ?? false;
   }
+
+  // --- create profile ---
+
+  public static create (
+    uriLike: string, data: TProfileData, history?: TProfileHistory, aliases: string[] = []
+  ) : Profile | false {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Creating profile: ${ uri }` );
+
+    return log.catch( () => {
+      const item = Profile.index.add( uri, {
+        uri, name: data.info.name.shortName, aliases, desc: data.wiki?.desc,
+        image: data.wiki?.image?.thumb ?? data.wiki?.image?.file,
+        text: Utils.buildSearchText( data.bio.cv )
+      } );
+
+      if ( ! item ) throw new Error( `Failed to add profile to index` );
+
+      const profile = new Profile( item );
+      profile.setData( { ...{
+        info: {}, bio: {}, related: [], media: [], map: [], ranking: [], annual: [], assets: []
+      }, ...data } );
+      profile.setHistory( history ?? [] );
+      profile.save();
+
+      log.debug( `Profile created: ${ uri }` );
+      return profile;
+    }, `Failed to create profile: ${ uri }` ) ?? false;
+  }
 }
