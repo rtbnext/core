@@ -1,15 +1,12 @@
 import { ArrayMode } from '@komed3/deepmerge';
-import type {
-  TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem,
-  TProfileMetaData
-} from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IProfile } from '@/interface/profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import { log } from '@/core/Logger';
 
 
 export class Profile implements IProfile {
@@ -162,8 +159,7 @@ export class Profile implements IProfile {
   public save () : void {
     log.debug( `Saving profile: ${ this.uri }` );
     log.catch( () => {
-      if ( ! Profile.index.update( this.uri, this.item ) )
-        throw new Error( `Failed to update profile index` );
+      if ( ! Profile.index.update( this.uri, this.item ) ) throw new Error( `Failed to update profile index` );
 
       if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
         this.resolvePath( 'profile.json' ), this.data
@@ -177,5 +173,28 @@ export class Profile implements IProfile {
         this.resolvePath( 'meta.json' ), this.meta
       ) ) throw new Error( `Failed to write profile metadata` );
     }, `Failed to save profile: ${ this.uri }` );
+  }
+
+  // --- move profile ---
+
+  public move ( uriLike: string, makeAlias: boolean = true ) : boolean {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Moving profile: ${ this.uri } -> ${ uri }` );
+
+    return log.catch( () => {
+      const item = Profile.index.move( this.uri, uri, makeAlias );
+      if ( ! item ) throw new Error( `Failed to move profile index item` );
+
+      const oldPath = this.path;
+      this.uri = uri;
+      this.path = join( 'profile', uri );
+      this.item = item;
+
+      if ( ! Profile.storage.move( oldPath, this.path ) ) throw new Error( `Failed to move profile storage` );
+
+      this.updateData( { uri: uri } );
+      this.save();
+      return true;
+    }, `Failed to move profile: ${ this.uri } -> ${ uri }` ) ?? false;
   }
 }
