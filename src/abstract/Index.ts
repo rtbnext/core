@@ -5,7 +5,6 @@ import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IIndex } from '@/interface/index';
-import { merge } from '@/lib/merge';
 
 
 export abstract class Index< I extends TIndex, T extends Map< string, I > > implements IIndex< I, T > {
@@ -62,7 +61,7 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
       if ( ! allowUpdate && this.index.has( uri ) ) return false;
 
       log.debug( `Updating index [${ this.type }] item: ${ uri }`, data );
-      const item = merge( ArrayMode.Unique )< I >( this.index.get( uri ) ?? {} as I, data );
+      const item = Utils.merge< I >( ArrayMode.Unique, this.index.get( uri ) ?? {}, data );
       this.index.set( uri, item );
 
       if ( save ) this.saveIndex();

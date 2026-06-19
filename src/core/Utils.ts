@@ -146,10 +146,10 @@ export class Utils {
     }
   }
 
-  public static merge < T > ( mode: ArrayMode, ...obj: T[] ) : T {
+  public static merge < T > ( mode: ArrayMode, ...obj: any[] ) : T {
     return ( Utils.mergeInstances[ mode ] ??= new Merger( { arrayMode: mode } ) ).merge< T >(
       obj[ 0 ] ?? {} as T, ...obj.slice( 1 )
-    );
+    ) as T;
   }
 
   // --- queries & args ---
