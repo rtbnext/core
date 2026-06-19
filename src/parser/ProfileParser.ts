@@ -1,5 +1,5 @@
 import type { TEducation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
-import type { TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
@@ -53,6 +53,34 @@ export class ProfileParser extends Cache implements IProfileParser {
     return this.cache( 'name', () => ProfileParser.name(
       this.raw.name, this.raw.lastName, this.raw.firstName, Parser.boolean( this.raw.asianFormat )
     ) );
+  }
+
+  public info () : TProfileInfo {
+    return this.cache( 'info', () => ( {
+      ...Parser.container< Partial< TProfileInfo > >( {
+        gender: { value: this.raw.gender, type: 'gender' },
+        birthDate: { value: this.raw.birthDate, type: 'date' },
+        birthPlace: { value: {
+          country: this.raw.birthCountry,
+          state: this.raw.birthState,
+          city: this.raw.birthCity
+        }, type: 'location' },
+        residence: { value: {
+          country: this.raw.countryOfResidence,
+          state: this.raw.stateProvince,
+          city: this.raw.city
+        }, type: 'location' },
+        maritalStatus: { value: this.raw.maritalStatus, type: 'maritalStatus' },
+        children: { value: this.raw.numberOfChildren, type: 'number' },
+        industry: { value: this.raw.industries, type: 'industry' },
+        source: { value: this.raw.source, type: 'list' }
+      } ),
+      citizenship: this.citizenship(),
+      education: this.education(),
+      selfMade: this.selfMade(),
+      philanthropyScore: this.philanthropyScore(),
+      organization: this.organization()
+    } as TProfileInfo ) );
   }
 
   public citizenship () : string | undefined {
