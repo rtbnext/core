@@ -9,6 +9,7 @@ import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IProfile } from '@/interface/profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
+import { log } from '@/core/Logger';
 
 
 export class Profile implements IProfile {
@@ -154,5 +155,27 @@ export class Profile implements IProfile {
       new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values()
     ).sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
     this.touch();
+  }
+
+  // --- save profile data ---
+
+  public save () : void {
+    log.debug( `Saving profile: ${ this.uri }` );
+    log.catch( () => {
+      if ( ! Profile.index.update( this.uri, this.item ) )
+        throw new Error( `Failed to update profile index` );
+
+      if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
+        this.resolvePath( 'profile.json' ), this.data
+      ) ) throw new Error( `Failed to write profile data` );
+
+      if ( this.history && ! Profile.storage.writeCSV< TProfileHistory >(
+        this.resolvePath( 'history.csv' ), this.history
+      ) ) throw new Error( `Failed to write profile history` );
+
+      if ( this.meta && ! Profile.storage.writeJSON< TProfileMetaData >(
+        this.resolvePath( 'meta.json' ), this.meta
+      ) ) throw new Error( `Failed to write profile metadata` );
+    }, `Failed to save profile: ${ this.uri }` );
   }
 }
