@@ -1,3 +1,4 @@
+import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 import { CmpStrAsync, type CmpStrResult } from 'cmpstr';
 
@@ -50,5 +51,18 @@ export class ProfileMerger {
     }
 
     return res;
+  }
+
+  // --- merge profiles ---
+
+  public static mergeProfiles ( target: Profile, source: Profile, force: boolean = false, makeAlias: boolean = true ) : boolean {
+    if ( ! force && ! ProfileMerger.mergeableProfiles( target.getData(), source.getData() ) ) return false;
+
+    const aliases = makeAlias ? [ source.getUri() ] : [];
+    target.updateData( source.getData(), aliases, false, ArrayMode.Unique );
+    target.mergeHistory( source.getHistory() );
+    target.save();
+
+    return Profile.delete( source.getUri() );
   }
 }
