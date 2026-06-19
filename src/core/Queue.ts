@@ -139,4 +139,22 @@ export abstract class Queue implements IQueue {
 
     return keys.length;
   }
+
+  // --- get items from queue (processing) ---
+
+  public next ( n: number = 1 ) : TQueueItem[] {
+    const items: TQueueItem[] = [];
+
+    for ( const [ k, item ] of this.queue ) if ( items.length < n ) {
+      items.push( item ); this.queue.delete( k );
+    } else break;
+
+    this.saveQueue();
+    log.debug( `Process ${ items.length } item(s) from queue [${ this.type }]`, items );
+    return items;
+  }
+
+  public nextUri ( n: number = 1 ) : string[] {
+    return this.next( n ).filter( Boolean ).map( i => i.uri );
+  }
 }
