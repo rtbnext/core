@@ -65,4 +65,21 @@ export class ProfileMerger {
 
     return Profile.delete( source.getUri() );
   }
+
+  // --- list matching candidates ---
+
+  public static listCandidates ( ...uriLike: string[] ) : Record< string, string[] > {
+    if ( ! uriLike.length ) return {};
+    const res: Record< string, string[] > = {};
+
+    for ( const uri of uriLike ) {
+      const profile = Profile.get( uri );
+      if ( ! profile ) continue;
+
+      const matches = this.findMatching( profile.getData() );
+      res[ profile.getUri() ] = matches.map( m => m.getUri() );
+    }
+
+    return res;
+  }
 }
