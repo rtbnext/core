@@ -69,4 +69,17 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
     const target = Parser.string( year );
     return this.dates.filter( date => date.substring( 0, 4 ) === target ).at( -1 );
   }
+
+  // --- get snapshot data ---
+
+  public getSnapshot ( dateLike: string, exactMatch: boolean = true ) : T | false {
+    const target = Parser.date( dateLike )!;
+    const date = this.hasDate( target ) ? target : exactMatch ? undefined : this.nearestDate( target );
+
+    return date ? Snapshot.storage.readJSON< T >( this.datedPath( date ) ) : false;
+  }
+
+  public getLatest () : T | false {
+    return this.dates.length ? this.getSnapshot( this.latestDate()! ) : false;
+  }
 }
