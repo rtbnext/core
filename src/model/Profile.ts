@@ -152,9 +152,9 @@ export class Profile implements IProfile {
   }
 
   public mergeHistory ( history: TProfileHistory ) : void {
-    this.history = Array.from(
-      new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values()
-    ).sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
+    this.history = [ ...new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values() ]
+      .sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
+
     this.touch();
   }
 

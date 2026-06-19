@@ -139,8 +139,7 @@ export class Utils {
   }
 
   public static unique < T = unknown > ( arr: T[] ) : T[] {
-    return Array.from( new Set( arr.map( item => JSON.stringify( item ) ) ) )
-      .map( item => JSON.parse( item ) );
+    return [ ...new Set( arr.map( item => JSON.stringify( item ) ) ) ].map( item => JSON.parse( item ) );
   }
 
   public static mergeArray < T = unknown > ( target: T[], source: T[], mode: ArrayMode = ArrayMode.Unique ) : T[] {
@@ -172,11 +171,11 @@ export class Utils {
   // --- search index ---
 
   public static buildSearchText ( value: unknown, minLength: number = 4 ) : string {
-    return Array.from( new Set( String( value )
+    return [ ...new Set( String( value )
       .normalize( 'NFD' ).replace( REGEX_DIACRITICS, '' )
       .toLowerCase().replace( REGEX_NOALNUM, ' ' ).split( ' ' )
       .filter( w => w.length >= minLength ).filter( Boolean )
-    ) ).join( ' ' );
+    ) ].join( ' ' );
   }
 
   public static tokenSearch ( text: string, tokens: string[], looseMatch: boolean = false ) : boolean {
