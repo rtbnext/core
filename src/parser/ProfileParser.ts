@@ -12,4 +12,14 @@ export class ProfileParser extends Cache implements IProfileParser {
     this.raw = res.person;
     this.lists = res.person.personLists.sort( ( a, b ) => Number( b.date ?? 0 ) - Number( a.date ?? 0 ) );
   }
+
+  // --- raw data ---
+
+  public rawData () : TProfileResponse[ 'person' ] {
+    return this.raw;
+  }
+
+  public sortedLists () : TProfileResponse[ 'person' ][ 'personLists' ] {
+    return this.lists;
+  }
 }
