@@ -79,7 +79,7 @@ export class ProfileParser extends Cache implements IProfileParser {
         industry: { value: this.raw.industries, type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
       } ),
-      flage: this.flags(),
+      flags: this.flags(),
       name: this.name().name,
       citizenship: this.citizenship(),
       birthPlace: this.birthPlace(),
