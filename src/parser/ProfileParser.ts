@@ -1,4 +1,4 @@
-import type { TEducation, TLocation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
+import type { TEducation, TLocation, TOrganization, TRelation, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
@@ -7,6 +7,7 @@ import type { IProfileParser } from '@/interface/parser';
 import { REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TProfileResponse } from '@/type/response';
+import { RelationType } from '@/lib/const';
 
 
 export class ProfileParser extends Cache implements IProfileParser {
@@ -164,6 +165,19 @@ export class ProfileParser extends Cache implements IProfileParser {
 
   public quotes () : string[] {
     return this.cache( 'quotes', () => Parser.list< string >( [ this.raw.quote ?? '' ], 'safeStr' ) );
+  }
+
+  // --- related entries ---
+
+  public related () : TRelation[] {
+    return this.cache( 'related', () => ( this.raw.relatedEntities ?? [] ).filter( Boolean ).map( item => ( {
+      uri: item.uri ? Utils.sanitize( item.uri ) : undefined,
+      ...Parser.container< TRelation >( {
+        type: { value: item.type, type: 'map', args: [ RelationType ] },
+        name: { value: item.name, type: 'string' },
+        relation: { value: item.relationshipType, type: 'string' }
+      } )
+    } ) ) );
   }
 
   // --- static methods ---
