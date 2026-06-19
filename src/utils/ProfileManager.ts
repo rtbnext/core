@@ -1,7 +1,7 @@
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import { Profile } from '@/model/Profile';
-import type { TProfileLookupResult } from '@/type/utils';
+import type { TProfileLookupResult, TProfileOperation } from '@/type/utils';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
 
@@ -35,5 +35,17 @@ export class ProfileManager {
     const isSimilar = ! isExisting && !! ( profile = ProfileMerger.findMatching( profileData ?? {} )[ 0 ] );
 
     return { profile, isExisting, isSimilar };
+  }
+
+  // --- determine action based on profile lookup ---
+
+  public static determineAction ( lookup: TProfileLookupResult ) : TProfileOperation {
+    return lookup.isExisting ? 'update' : lookup.isSimilar ? 'merge' : 'create';
+  }
+
+  // --- handle URI change ---
+
+  public static handleURIChange ( profile: Profile, newUri: string, makeAlias: boolean = true ) : boolean {
+    return profile.getUri() !== newUri ? profile.move( newUri, makeAlias ) : false;
   }
 }
