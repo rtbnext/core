@@ -2,7 +2,8 @@ import type { TIndex } from '@rtbnext/schema/src/base/generic';
 
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
-import type { IIndex } from '../interfaces';
+import { Utils } from '@/core/Utils';
+import type { IIndex } from '@/interface/index';
 
 
 export abstract class Index< I extends TIndex, T extends Map< string, I > > implements IIndex< I, T > {
@@ -30,5 +31,23 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
   protected saveIndex () : void {
     const content = Object.fromEntries( this.index );
     Index.storage.writeJSON< Record< string, I > >( this.path, content );
+  }
+
+  // --- basic operations ---
+
+  public get size () : number {
+    return this.index.size;
+  }
+
+  public getIndex () : T {
+    return this.index;
+  }
+
+  public has ( uriLike: string ) : boolean {
+    return this.index.has( Utils.sanitize( uriLike ) );
+  }
+
+  public get ( uriLike: string ) : I | undefined {
+    return this.index.get( Utils.sanitize( uriLike ) );
   }
 }
