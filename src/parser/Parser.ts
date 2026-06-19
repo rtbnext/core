@@ -1,5 +1,8 @@
 import type { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
+import type { TLocation } from '@rtbnext/schema/src/base/generic';
 import type { Primitive } from 'devtypes/types/primitive';
+import { getAlpha2Code } from 'i18n-iso-countries';
+import { abbr } from 'us-state-converter';
 
 import { Gender, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
 import { REGEX_SPACES } from '@/lib/regex';
@@ -82,6 +85,31 @@ export class Parser {
 
   public static industry ( value: unknown ) : TIndustry {
     return Parser.map< TIndustry, TIndustryResolver >( value, IndustryResolver, 'diversified' )!;
+  }
+
+  // --- location ---
+
+  public static country ( value: unknown ) : string | undefined {
+    const code = getAlpha2Code( Parser.string( value ), 'en' );
+    return code ? code.toUpperCase() : undefined;
+  }
+
+  public static state ( value: unknown ) : string | undefined {
+    return value ? abbr( Parser.string( value ) ).toUpperCase() : undefined;
+  }
+
+  public static latLng ( lat: unknown, lng: unknown ) : [ number, number ] | undefined {
+    const latitude = Parser.number( lat, 6 ), longitude = Parser.number( lng, 6 );
+    return isNaN( latitude ) || isNaN( longitude ) ? undefined : [ latitude, longitude ];
+  }
+
+  public static location ( value: { country: unknown, state?: unknown, city?: unknown } ) : TLocation | undefined {
+    const country = Parser.country( value.country );
+
+    return country ? {
+      country, state: Parser.state( value.state ),
+      city: Parser.strict( value.city, 'string' )
+    } : undefined;
   }
 
   // --- helper ---
