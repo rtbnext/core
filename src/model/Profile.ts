@@ -46,4 +46,38 @@ export class Profile implements IProfile {
     this.meta.$metadata.lastModified = Utils.date( 'iso' );
     if ( lookup ) this.meta.$metadata.lastLookup = this.meta.$metadata.lastModified;
   }
+
+  // --- public getter ---
+
+  public getUri () : string {
+    return this.uri;
+  }
+
+  public getItem () : TProfileIndexItem {
+    return this.item;
+  }
+
+  public getMeta () : TProfileMetaData[ '$metadata' ] {
+    return this.meta.$metadata;
+  }
+
+  public schemaVersion () : number {
+    return this.meta.$metadata.schemaVersion;
+  }
+
+  public lastModified () : string {
+    return this.meta.$metadata.lastModified;
+  }
+
+  public lastModifiedTime () : number {
+    return new Date( this.meta.$metadata.lastModified ).getTime();
+  }
+
+  public lastLookup () : string {
+    return this.meta.$metadata.lastLookup;
+  }
+
+  public lastLookupTime () : number {
+    return new Date( this.meta.$metadata.lastLookup ).getTime();
+  }
 }
