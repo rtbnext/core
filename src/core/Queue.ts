@@ -158,3 +158,23 @@ export abstract class Queue implements IQueue {
     return this.next( n ).filter( Boolean ).map( i => i.uri );
   }
 }
+
+
+export class ProfileQueue extends Queue implements IQueue {
+  private static instance: ProfileQueue;
+  private constructor () { super( 'profile' ) }
+
+  public static getInstance () : ProfileQueue {
+    return this.instance ??= new ProfileQueue();
+  }
+}
+
+
+export class ListQueue extends Queue implements IQueue {
+  private static instance: ListQueue;
+  private constructor () { super( 'list' ) }
+
+  public static getInstance () : ListQueue {
+    return this.instance ??= new ListQueue();
+  }
+}
