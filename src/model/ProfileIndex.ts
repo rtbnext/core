@@ -1,3 +1,4 @@
+import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileIndex, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
 
 import { Index } from '@/abstract/Index';
@@ -78,7 +79,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
       const item = this.index.get( uri );
       if ( ! item ) throw new Error( `Profile index item ${ uri } not found` );
 
-      item.aliases = [ ...new Set( [ ...item.aliases, ...aliases ] ) ];
+      item.aliases = Utils.mergeArray( item.aliases, aliases, ArrayMode.Unique );
       this.saveIndex();
 
       return item;
