@@ -1,6 +1,9 @@
+import type { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
 import type { Primitive } from 'devtypes/types/primitive';
 
+import { Gender, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
 import { REGEX_SPACES } from '@/lib/regex';
+import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
 import type { TParserContainer, TParserDateType, TParserMethod } from '@/type/parser';
 
 
@@ -67,6 +70,18 @@ export class Parser {
   public static ageDecade ( value: any, min: number = 30, max: number = 90 ) : number | undefined {
     const age = Parser.age( value );
     return age === undefined ? undefined : Math.max( min, Math.min( max, Math.floor( age / 10 ) * 10 ) );
+  }
+
+  public static gender ( value: unknown ) : TGender | undefined {
+    return Parser.map( value, Gender );
+  }
+
+  public static maritalStatus ( value: unknown ) : TMaritalStatus | undefined {
+    return Parser.map< TMaritalStatus, TMaritalStatusResolver >( value, MaritalStatusResolver );
+  }
+
+  public static industry ( value: unknown ) : TIndustry {
+    return Parser.map< TIndustry, TIndustryResolver >( value, IndustryResolver, 'diversified' )!;
   }
 
   // --- helper ---
