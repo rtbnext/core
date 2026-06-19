@@ -1,13 +1,13 @@
-import type { TEducation, TLocation, TOrganization, TRelation, TSelfMade } from '@rtbnext/schema/src/base/generic';
+import type { TEducation, TImage, TLocation, TOrganization, TRelation, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
 import type { IProfileParser } from '@/interface/parser';
+import { RelationType } from '@/lib/const';
 import { REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TProfileResponse } from '@/type/response';
-import { RelationType } from '@/lib/const';
 
 
 export class ProfileParser extends Cache implements IProfileParser {
@@ -170,14 +170,30 @@ export class ProfileParser extends Cache implements IProfileParser {
   // --- related entries ---
 
   public related () : TRelation[] {
-    return this.cache( 'related', () => ( this.raw.relatedEntities ?? [] ).filter( Boolean ).map( item => ( {
-      uri: item.uri ? Utils.sanitize( item.uri ) : undefined,
-      ...Parser.container< TRelation >( {
-        type: { value: item.type, type: 'map', args: [ RelationType ] },
-        name: { value: item.name, type: 'string' },
-        relation: { value: item.relationshipType, type: 'string' }
+    return this.cache( 'related', () => ( this.raw.relatedEntities ?? [] ).filter( Boolean ).map(
+      item => ( {
+        uri: item.uri ? Utils.sanitize( item.uri ) : undefined,
+        ...Parser.container< TRelation >( {
+          type: { value: item.type, type: 'map', args: [ RelationType ] },
+          name: { value: item.name, type: 'string' },
+          relation: { value: item.relationshipType, type: 'string' }
+        } )
       } )
-    } ) ) );
+    ) );
+  }
+
+  // --- media ---
+
+  public media () : TImage[] {
+    return this.cache( 'media', () => ( this.raw.listImages ?? [] ).filter( Boolean ).map(
+      item => Parser.container< TImage >( {
+        url: { value: item.uri, type: 'string' },
+        credits: { value: item.credit, type: 'string' },
+        file: { value: item.image, type: 'string' },
+        caption: { value: item.caption, type: 'safeStr' },
+        desc: { value: item.description, type: 'safeStr' }
+      } ) )
+    );
   }
 
   // --- static methods ---
