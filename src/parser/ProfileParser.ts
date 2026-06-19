@@ -34,4 +34,13 @@ export class ProfileParser extends Cache implements IProfileParser {
   public id () : string {
     return this.cache( 'id', () => Utils.hash( this.raw.naturalId ) );
   }
+
+  public aliases () : string[] {
+    return this.cache( 'aliases', () => {
+      const uri = this.uri();
+
+      return this.raw.uris.filter( Boolean ).map( i => Utils.sanitize( i ) )
+        .filter( i => i !== uri ).sort();
+    } );
+  }
 }
