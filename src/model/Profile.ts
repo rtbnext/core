@@ -80,4 +80,18 @@ export class Profile implements IProfile {
   public lastLookupTime () : number {
     return new Date( this.meta.$metadata.lastLookup ).getTime();
   }
+
+  // --- verify profile ---
+
+  public verify ( id: string ) : boolean {
+    return Utils.verifyHash( id, this.getData().id );
+  }
+
+  // --- profile data ---
+
+  public getData () : TProfileData {
+    return this.data ??= ( Profile.storage.readJSON< TProfileData >(
+      this.resolvePath( 'profile.json' )
+    ) ?? {} ) as TProfileData;
+  }
 }
