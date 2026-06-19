@@ -1,14 +1,13 @@
-import { ArrayMode, Merger } from '@komed3/deepmerge';
 import type { TIndex } from '@rtbnext/schema/src/base/generic';
 
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IIndex } from '@/interface/index';
+import { mergeUnique } from '@/lib/merge';
 
 
 export abstract class Index< I extends TIndex, T extends Map< string, I > > implements IIndex< I, T > {
-  protected static readonly merger = new Merger( { arrayMode: ArrayMode.Unique } );
   protected static readonly storage = Storage.getInstance();
 
   protected readonly type: 'profile' | 'list';
@@ -62,7 +61,7 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
       if ( ! allowUpdate && this.index.has( uri ) ) return false;
 
       log.debug( `Updating index [${ this.type }] item: ${ uri }`, data );
-      const item = Index.merger.merge< I >( this.index.get( uri ) ?? {} as I, data );
+      const item = mergeUnique< I >( this.index.get( uri ) ?? {} as I, data );
       this.index.set( uri, item );
 
       if ( save ) this.saveIndex();
