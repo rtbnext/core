@@ -43,6 +43,33 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     }, `Failed to move profile index item ${ from } to ${ to }` ) ?? false;
   }
 
+  // --- alias handling ---
+
+  public hasAlias ( alias: string ) : string | false {
+    alias = Utils.sanitize( alias );
+    return [ ...this.index.values() ].find( ( { aliases } ) => aliases.includes( alias ) )?.uri || false;
+  }
+
+  public removeAlias ( alias: string ) : boolean {
+    alias = Utils.sanitize( alias );
+    log.debug( `Removing profile alias ${ alias }` );
+
+    return log.catch( () => {
+      for ( const item of this.index.values() ) {
+        const index = item.aliases.indexOf( alias );
+
+        if ( index >= 0 ) {
+          item.aliases.splice( index, 1 );
+          this.saveIndex();
+
+          return true;
+        }
+      }
+
+      return false;
+    }, `Failed to remove profile alias ${ alias }` ) ?? false;
+  }
+
   // --- instantitate ---
 
   public static getInstance () : IProfileIndex {
