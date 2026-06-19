@@ -13,7 +13,7 @@ import type { TListResponse, TProfileResponse, TResponse, TWaybackResponse } fro
 
 
 export class Fetch implements IFetch {
-  private static instance: Fetch;
+  private static instance: IFetch;
 
   private readonly config: TFetchConfig;
   private readonly wikiQuery = { format: 'json', formatversion: 2 };

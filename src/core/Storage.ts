@@ -14,7 +14,7 @@ import type { TStorageRWType, TStorageWOptions } from '@/type/storage';
 
 
 export class Storage implements IStorage {
-  private static instance: Storage;
+  private static instance: IStorage;
 
   private readonly config: TStorageConfig;
   private readonly path: string;
