@@ -108,7 +108,7 @@ export class Fetch implements IFetch {
     while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize )
       results.push( await this.fetch< T >( url, method ) );
 
-    if ( urls.length ) log.warn( `Batch limit reached. ${ urls.length } URLs remaining.` );
+    if ( urls.length ) log.warn( `Batch limit reached: ${ urls.length } URLs remaining` );
     return results;
   }
 
