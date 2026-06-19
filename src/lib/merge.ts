@@ -1,7 +1,8 @@
-import { ArrayMode, Merger } from '@komed3/deepmerge';
+import { type ArrayMode, Merger } from '@komed3/deepmerge';
 
 
-export const mergeReplace = new Merger( { arrayMode: ArrayMode.Replace } ).merge;
-export const mergeKeep = new Merger( { arrayMode: ArrayMode.Keep } ).merge;
-export const mergeConcat = new Merger( { arrayMode: ArrayMode.Concat } ).merge;
-export const mergeUnique = new Merger( { arrayMode: ArrayMode.Unique } ).merge;
+const cache: { [ key: string ]: Merger } = {};
+
+export const merge = ( mode: ArrayMode ) => (
+  cache[ mode ] ??= new Merger( { arrayMode: mode } )
+).merge;

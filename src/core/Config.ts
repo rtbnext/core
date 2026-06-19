@@ -1,10 +1,11 @@
+import { ArrayMode } from '@komed3/deepmerge';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import process, { cwd } from 'node:process';
 import { parse } from 'yaml';
 
 import type { IConfig } from '@/interface/config';
-import { mergeReplace } from '@/lib/merge';
+import { merge } from '@/lib/merge';
 import type { TConfigObject, TFetchConfig, TJobConfig, TLoggingConfig, TQueueConfig, TStorageConfig } from '@/type/config';
 
 
@@ -32,7 +33,7 @@ export class Config implements IConfig {
   }
 
   private loadConfig () : TConfigObject {
-    return mergeReplace< TConfigObject >(
+    return merge( ArrayMode.Replace )< TConfigObject >(
       this.loadConfigFile( 'default.yml' ) as TConfigObject,
       this.loadConfigFile( `${ this.env }.yml` )
     );
