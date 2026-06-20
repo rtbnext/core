@@ -5,6 +5,7 @@ import type { IJob } from '@/interface/job';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
+import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 
 
@@ -37,11 +38,15 @@ export class ProfileJob extends Job implements IJob {
         } );
 
         // --- enrich profile data with ranking and wiki ---
-        if ( ! Parser.boolean( this.args.skipRanking ) ) {
-          profileData.ranking = Ranking.generateProfileRanking(
-            parser.sortedLists(), profileData.ranking
-          );
-        }
+        if ( ! Parser.boolean( this.args.skipRanking ) )
+          profileData.ranking = Ranking.generateProfileRanking( parser.sortedLists(), profileData.ranking );
+
+        if ( ! Parser.boolean( this.args.skipWiki ) ) {}
+
+        // --- process profile using ProfileManager ---
+        const { action, success } = ProfileManager.process( uri, id, profileData, parser.aliases(), method );
+        if ( ! success ) this.err( `Failed to process profile with uri ${ uri }` );
+        else this.log( `Profile with uri ${ uri } processed in ${ action } mode` );
       }
     } );
   }
