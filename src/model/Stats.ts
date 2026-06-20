@@ -2,8 +2,8 @@ import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type {
-  TAgePyramidGroup, TDBStats, TGlobalStats, TGlobalStatsData, THistory, TProfileStats,
-  TProfileStatsData, TScatter, TStatsGroup, TWealthStats, TWealthStatsData
+  TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, TProfileStats,
+  TProfileStatsData, TScatter, TScatterData, TStatsGroup, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
@@ -159,6 +159,21 @@ export class Stats implements IStats {
         decades: { value: data.decades, type: 'obj', args: [ 'money' ] },
         gender: { value: data.gender, type: 'obj', args: [ 'money' ] },
         spread: { value: data.spread, type: 'obj', args: [ 'number' ] }
+      } )
+    ) );
+  }
+
+  public setScatter ( data: TScatterData ) : boolean {
+    return this.saveStats( 'scatter.json', 'json', this.prepStats( {
+      count: Parser.number( data.count ), items: data.items
+    } ) );
+  }
+
+  public setDBStats ( data: TDBStatsData ) : boolean {
+    return this.saveStats( 'db.json', 'json', this.prepStats(
+      Parser.container< TDBStatsData >( {
+        files: { value: data.files, type: 'number' },
+        size: { value: data.size, type: 'number' }
       } )
     ) );
   }
