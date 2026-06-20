@@ -1,5 +1,6 @@
+import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
-import type { TDBStats, TGlobalStats, THistory, TProfileStats, TScatter, TWealthStats } from '@rtbnext/schema/src/model/stats';
+import type { TDBStats, TGlobalStats, THistory, TProfileStats, TScatter, TStatsGroup, TWealthStats } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -68,5 +69,24 @@ export class Stats implements IStats {
 
   public getHistory () : THistory {
     return this.getStats< THistory >( 'history.csv', 'csv' );
+  }
+
+  // --- grouped stats getter ---
+
+  public getGroupedStatsIndex ( group: TStatsGroupType ) : TStatsGroup< string >[ 'index' ] {
+    return this.getStats< TStatsGroup< string >[ 'index' ] >( `${ group }/index.json`, 'json' );
+  }
+
+  public getGroupedStatsHistory ( group: TStatsGroupType, key: string ) : THistory {
+    return this.getStats< THistory >( `${ group }/${ key }.csv`, 'csv' );
+  }
+
+  public getGroupedStats ( group: TStatsGroupType ) : TStatsGroup< string > {
+    const index = this.getGroupedStatsIndex( group );
+    const history = Object.fromEntries( Object.keys( index.items ).map(
+      k => [ k, this.getGroupedStatsHistory( group, k ) ]
+    ) );
+
+    return { index, history };
   }
 }
