@@ -10,14 +10,14 @@ import type { TArgs } from '@/type/generic';
 export abstract class Job implements IJob {
   protected static readonly config = Config.getInstance();
 
-  protected get job () : string { return 'Unknown' }
-
   protected readonly args: TArgs = {};
+  protected readonly job: string;
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
 
-  constructor ( args: string[] ) {
+  constructor ( args: string[], job: string ) {
     this.args = Utils.parseArgs( args );
+    this.job = job;
 
     const { silent, safeMode } = Job.config.job;
     this.silent = this.args.silent !== undefined ? Parser.boolean( this.args.silent ) : silent;

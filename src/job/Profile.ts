@@ -14,7 +14,7 @@ export class ProfileJob extends Job implements IJob {
   private static readonly fetch = Fetch.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
 
-  protected override get job () : string { return 'Profile' };
+  constructor ( args: string[] ) { super( args, 'Profile' ) }
 
   public async run () : Promise< void > {
     await this.protect( async () => {
