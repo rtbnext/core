@@ -5,6 +5,7 @@ import type { IJob } from '@/interface/job';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
+import { Ranking } from '@/util/Ranking';
 
 
 export class ProfileJob extends Job implements IJob {
@@ -34,6 +35,13 @@ export class ProfileJob extends Job implements IJob {
           uri, id, info: parser.info(), bio: parser.bio(),
           related: parser.related(), media: parser.media()
         } );
+
+        // --- enrich profile data with ranking and wiki ---
+        if ( ! Parser.boolean( this.args.skipRanking ) ) {
+          profileData.ranking = Ranking.generateProfileRanking(
+            parser.sortedLists(), profileData.ranking
+          );
+        }
       }
     } );
   }
