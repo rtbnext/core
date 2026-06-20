@@ -1,5 +1,5 @@
 import type { TFilterGroup } from '@rtbnext/schema/src/base/const';
-import type { TFilterCollection } from '@rtbnext/schema/src/model/filter';
+import type { TFilter, TFilterCollection, TFilterItem } from '@rtbnext/schema/src/model/filter';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -21,6 +21,17 @@ export class Filter implements IFilter {
   private initDB () : void {
     log.debug( 'Initializing filter storage paths' );
     FilterGroup.forEach( group => Filter.storage.ensurePath( join( 'filter', group ), true ) );
+  }
+
+  // --- helper ---
+
+  private prepFilter ( list: TFilterItem[] ) : TFilterItem[] {
+    return [ ...new Map( list.map( i => [ i.uri, i ] ) ).values() ]
+      .sort( ( a, b ) => a.uri.localeCompare( b.uri ) );
+  }
+
+  private setFilterData ( group: TFilterGroup, key: string, filter: TFilter ) : void {
+    ( this.data[ group ] ??= {} as any )[ key ] = filter;
   }
 
   // --- path helper ---
