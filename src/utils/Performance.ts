@@ -12,7 +12,7 @@ export class Performance {
   public static getProfileExtrema ( history: TProfileHistory ) : TExtrema {
     const map = ( [ date, rank, networth ]: TProfileHistoryItem ) => ( { date, rank, networth } );
 
-    const [ low, high ] = history.toReversed().reduce(
+    const [ low, high ] = history.reduce(
       ( [ l, h ], row ) => [ ! l || row[ 2 ] < l[ 2 ] ? row : l, ! h || row[ 2 ] > h[ 2 ] ? row : h ],
       [] as [ TProfileHistoryItem?, TProfileHistoryItem? ]
     );
@@ -27,12 +27,14 @@ export class Performance {
     const result: TReturns = {};
     const now = Date.parse( latest[ 0 ] );
     const networth = latest[ 2 ];
-    let remaining = Object.keys( Performance.RETURNS ).length;
+
+    const returns = Object.entries( Performance.RETURNS );
+    let remaining = Object.keys( returns ).length;
 
     for ( const item of history.toReversed() ) {
       const days = ( now - Date.parse( item[ 0 ] ) ) / 86400000;
 
-      for ( const [ key, target ] of Object.entries( Performance.RETURNS ) ) {
+      for ( const [ key, target ] of returns ) {
         if ( result[ key as keyof TReturns ] || days < target ) continue;
 
         result[ key as keyof TReturns ] = {
