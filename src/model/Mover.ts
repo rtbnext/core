@@ -100,4 +100,22 @@ export class Mover extends Snapshot< TMover > implements IMover {
       col.ytd.percent[ type ].push( { uri, name, value: data.ytd.percent } );
     }
   }
+
+  // --- factory ---
+
+  public static factory ( date?: any ) : TMoverData {
+    return {
+      date: Parser.date( date ?? new Date(), 'ymd' )!,
+      today: {
+        total: { value: 0, percent: 0 },
+        networth: { winner: [], loser: [] },
+        percent: { winner: [], loser: [] }
+      },
+      ytd: {
+        total: { value: 0, percent: 0 },
+        networth: { winner: [], loser: [] },
+        percent: { winner: [], loser: [] }
+      }
+    };
+  };
 }
