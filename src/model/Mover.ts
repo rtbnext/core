@@ -1,7 +1,10 @@
-import type { TMover, TMoverData, TMoverEntry } from '@rtbnext/schema/src/model/mover';
+import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
+import type { TMover, TMoverData, TMoverEntry, TMoverItem, TMoverSubject } from '@rtbnext/schema/src/model/mover';
 
 import { Snapshot } from '@/abstract/Snapshot';
+import { Utils } from '@/core/Utils';
 import type { IMover } from '@/interface/mover';
+import { Parser } from '@/parser/Parser';
 
 
 export class Mover extends Snapshot< TMover > implements IMover {
@@ -26,6 +29,48 @@ export class Mover extends Snapshot< TMover > implements IMover {
       snapshot.today.networth.loser, snapshot.today.percent.loser,
       snapshot.ytd.networth.loser, snapshot.ytd.percent.loser
     ].map( a => this.prep( a, 'asc' ) );
+  }
+
+  // --- (override) save mover snapshot ---
+
+  public override saveSnapshot ( snapshot: TMoverData, force?: boolean ) : boolean {
+    const winner = this.prepWinner( snapshot );
+    const loser = this.prepLoser( snapshot );
+
+    return super.saveSnapshot( {
+      ...Utils.metaData(),
+      ...Parser.container< TMoverData >( {
+        date: { value: snapshot.date, type: 'date' },
+        today: { value: Parser.container< TMoverItem >( {
+          total: { value: Parser.container< TChangeItem >( {
+            value: { value: snapshot.today.total.value, type: 'money' },
+            percent: { value: snapshot.today.total.percent, type: 'pct' }
+          } ), type: 'container' },
+          networth: { value: Parser.container< TMoverSubject >( {
+            winner: { value: winner[ 0 ], type: 'money' },
+            loser: { value: loser[ 0 ], type: 'money' }
+          } ), type: 'container' },
+          percent: { value: Parser.container< TMoverSubject >( {
+            winner: { value: winner[ 1 ], type: 'pct' },
+            loser: { value: loser[ 1 ], type: 'pct' }
+          } ), type: 'container' }
+        } ), type: 'container' },
+        ytd: { value: Parser.container< TMoverItem >( {
+          total: { value: Parser.container< TChangeItem >( {
+            value: { value: snapshot.ytd.total.value, type: 'money' },
+            percent: { value: snapshot.ytd.total.percent, type: 'pct' }
+          } ), type: 'container' },
+          networth: { value: Parser.container< TMoverSubject >( {
+            winner: { value: winner[ 2 ], type: 'money' },
+            loser: { value: loser[ 2 ], type: 'money' }
+          } ), type: 'container' },
+          percent: { value: Parser.container< TMoverSubject >( {
+            winner: { value: winner[ 3 ], type: 'pct' },
+            loser: { value: loser[ 3 ], type: 'pct' }
+          } ), type: 'container' }
+        } ), type: 'container' }
+      } )
+    }, force );
   }
 
   // --- instantiate ---
