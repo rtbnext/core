@@ -7,6 +7,7 @@ import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
+import { Wiki } from '@/util/Wiki';
 
 
 export class ProfileJob extends Job implements IJob {
@@ -41,7 +42,8 @@ export class ProfileJob extends Job implements IJob {
         if ( ! Parser.boolean( this.args.skipRanking ) )
           profileData.ranking = Ranking.generateProfileRanking( parser.sortedLists(), profileData.ranking );
 
-        if ( ! Parser.boolean( this.args.skipWiki ) ) {}
+        if ( ! Parser.boolean( this.args.skipWiki ) )
+          profileData.wiki = await Wiki.fromProfileData( profileData );
 
         // --- process profile using ProfileManager ---
         const { action, success } = ProfileManager.process( uri, id, profileData, parser.aliases(), method );
