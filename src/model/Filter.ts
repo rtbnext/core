@@ -48,4 +48,21 @@ export class Filter implements IFilter {
   public resolvePath ( path: string ) : string | false {
     return this.joinPath( ...( this.splitPath( path ) ?? [] ) as [ TFilterGroup, string ] );
   }
+
+  // --- load & save filter ---
+
+  private loadFilter ( group: TFilterGroup, key: string ) : TFilter | undefined {
+    log.debug( `Loading filter from ${ group }/${ key }` );
+
+    return log.catch( () => {
+      const resolved = this.joinPath( group, key );
+      if ( ! resolved ) throw new Error( `Invalid filter path: ${ group }/${ key }` );
+
+      const filter = Filter.storage.readJSON< TFilter >( resolved );
+      if ( ! filter ) throw new Error( `Filter file not found: ${ resolved }` );
+
+      this.setFilterData( group, key, filter );
+      return filter;
+    }, `Failed to load filter at ${ group }/${ key }` );
+  }
 }
