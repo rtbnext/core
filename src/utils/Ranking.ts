@@ -37,10 +37,60 @@ export class Ranking {
     }
 
     // --- merge existing and new entries ---
-
     const allListUris = new Set( [ ...lists.keys(), ...entries.keys() ] );
     const result: TRanking[] = [];
 
+    // --- generate final rankings ---
+
+    for ( const listUri of allListUris ) {
+      const existing = lists.get( listUri );
+      const news = entries.get( listUri ) || [];
+      const allItems: TRankingItem[] = [];
+
+      // --- add existing entry ---
+      if ( existing ) {
+        allItems.push( {
+          date: existing.date, rank: existing.rank, networth: existing.networth,
+          prev: existing.prev, next: existing.next
+        } );
+        if ( existing.history ) allItems.push( ...existing.history );
+      }
+
+      // --- add new entries and sort by date ---
+      allItems.push( ...news );
+      allItems.sort( ( a, b ) => b.date.localeCompare( a.date ) );
+
+      const main = allItems[ 0 ];
+      let historyItems: TRankingItem[] = [];
+
+      // --- prepare history ---
+      if ( history ) historyItems = allItems.slice( 1 );
+      else if ( existing?.history ) historyItems = [ ...existing.history ];
+      historyItems.sort( ( a, b ) => b.date.localeCompare( a.date ) );
+
+      // --- create final ranking entry ---
+      const name = existing?.name || names.get( listUri )?.name || listUri;
+      const ranking: TRanking = {
+        list: listUri, name, date: main.date, rank: main.rank, prev: main.prev,
+        next: main.next, networth: main.networth, history: historyItems
+      };
+
+      result.push( ranking );
+
+      // --- queue list for future processing if needed ---
+      if ( addQueue && main.rank && main.networth ) {
+        const indexItem = Ranking.index.get( listUri );
+
+        if ( ! indexItem || indexItem.date !== main.date ) queue.push( {
+          uriLike: listUri, args: {
+            name, desc: names.get( listUri )?.desc,
+            year: main.date.split( '-' )[ 0 ]
+          }
+        } );
+      }
+    }
+
+    if ( addQueue && queue.length ) this.queue.addMany( queue );
     return result;
   }
 }
