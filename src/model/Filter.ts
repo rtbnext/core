@@ -1,5 +1,6 @@
 import type { TFilterGroup, TFilterSpecial } from '@rtbnext/schema/src/base/const';
 import type { TFilter, TFilterCollection, TFilterItem, TFilterList } from '@rtbnext/schema/src/model/filter';
+import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -7,6 +8,7 @@ import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IFilter } from '@/interface/filter';
 import { FilterGroup, FilterSpecial } from '@/lib/const';
+import { Parser } from '@/parser/Parser';
 
 
 export class Filter implements IFilter {
@@ -140,5 +142,31 @@ export class Filter implements IFilter {
 
   public static getInstance () : IFilter {
     return Filter.instance ??= new Filter();
+  }
+
+  // --- aggregate filter data ---
+
+  public static aggregate ( data: TProfileData, col: Partial< TFilterList > ) : void {
+    const { uri, info, realtime } = data;
+    const item: TFilterItem = { uri, name: info.name.shortName ?? info.name, value: undefined };
+    const decade = Parser.ageDecade( info.birthDate )?.toString();
+
+    const add = ( g: TFilterGroup, k: string | undefined, v: any = null ) : void => {
+      g && k && ( ( ( col as any )[ g ] ??= {} )[ k ] ??= [] ) &&
+      ( col as any )[ g ][ k ].push( { ...item, value: v === null ? k : v } )
+    };
+
+    add( 'industry', info.industry );
+    add( 'citizenship', info.citizenship );
+    add( 'country', info.residence?.country );
+    add( 'state', info.residence?.state );
+    add( 'gender', info.gender );
+    add( 'age', decade, info.birthDate );
+    add( 'maritalStatus', info.maritalStatus );
+
+    info.flags.deceased && add( 'special', 'deceased', undefined );
+    info.flags.dropOff && add( 'special', 'dropOff', realtime?.date );
+    info.flags.family && add( 'special', 'family', undefined );
+    info.selfMade?.is && add( 'special', 'selfMade', info.selfMade.rank );
   }
 }
