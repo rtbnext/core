@@ -1,4 +1,4 @@
-import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
+import type { TChangeItem, TRealtime } from '@rtbnext/schema/src/base/assets';
 import type { TMover, TMoverData, TMoverEntry, TMoverItem, TMoverSubject } from '@rtbnext/schema/src/model/mover';
 
 import { Snapshot } from '@/abstract/Snapshot';
@@ -77,5 +77,27 @@ export class Mover extends Snapshot< TMover > implements IMover {
 
   public static getInstance () : IMover {
     return this.instance ??= new Mover();
+  }
+
+  // --- aggregate mover data ---
+
+  public static aggregate (
+    data: TRealtime | undefined, uri: string, name: string, col: TMoverData, total: number = 0
+  ) : void {
+    if ( data?.today?.value ) {
+      const type = data.today.value > 0 ? 'winner' : 'loser';
+      col.today.total.value += data.today.value;
+      col.today.total.percent = total ? col.today.total.value / total : 0;
+      col.today.networth[ type ].push( { uri, name, value: data.today.value } );
+      col.today.percent[ type ].push( { uri, name, value: data.today.percent } );
+    }
+
+    if ( data?.ytd?.value ) {
+      const type = data.ytd.value > 0 ? 'winner' : 'loser';
+      col.ytd.total.value += data.ytd.value;
+      col.ytd.total.percent = total ? col.ytd.total.value / total : 0;
+      col.ytd.networth[ type ].push( { uri, name, value: data.ytd.value } );
+      col.ytd.percent[ type ].push( { uri, name, value: data.ytd.percent } );
+    }
   }
 }
