@@ -1,6 +1,8 @@
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
+import { Utils } from '@/core/Utils';
 import type { IJob } from '@/interface/job';
+import { Parser } from '@/parser/Parser';
 import type { TLoggingLevel } from '@/type/config';
 import type { TArgs } from '@/type/generic';
 
@@ -8,10 +10,20 @@ import type { TArgs } from '@/type/generic';
 export abstract class Job implements IJob {
   protected static readonly config = Config.getInstance();
 
-  protected readonly job: string;
+  protected readonly job!: string;
   protected readonly args: TArgs = {};
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
+
+  constructor ( args: string[] ) {
+    this.args = Utils.parseArgs( args );
+
+    const { silent, safeMode } = Job.config.job;
+    this.silent = this.args.silent !== undefined ? Parser.boolean( this.args.silent ) : silent;
+    this.safeMode = this.args.safeMode !== undefined ? Parser.boolean( this.args.safeMode ) : safeMode;
+
+    this.log( `Run job [${ this.job }]`, this.args, 'info' );
+  }
 
   // --- helper ---
 
