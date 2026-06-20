@@ -5,7 +5,7 @@ import type { IJob } from '@/interface/job';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
-import type { TCommandDefinition } from '@/type/job';
+import type { TJobDefinition } from '@/type/job';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 import { Wiki } from '@/util/Wiki';
@@ -17,7 +17,7 @@ export class ProfileJob extends Job implements IJob {
 
   constructor ( args: string[] ) { super( args, 'Profile' ) }
 
-  // --- runner ---
+  // --- job runner ---
 
   public async run () : Promise< void > {
     await this.protect( async () => {
@@ -56,9 +56,9 @@ export class ProfileJob extends Job implements IJob {
     } );
   }
 
-  // --- command ---
+  // --- command definition ---
 
-  public static readonly command: TCommandDefinition = {
+  public static readonly definition: TJobDefinition = {
     id: 'profile',
     name: 'Profile',
     desc: 'Fetch and update Forbes profiles',
