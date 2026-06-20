@@ -47,7 +47,7 @@ export class ProfileJob extends Job implements IJob {
 
         // --- process profile using ProfileManager ---
         const { action, success } = ProfileManager.process( uri, id, profileData, parser.aliases(), method );
-        if ( ! success ) this.err( `Failed to process profile with uri ${ uri }` );
+        if ( ! success ) this.log( `Failed to process profile with uri ${ uri }`, profileData, 'warn' );
         else this.log( `Profile with uri ${ uri } processed in ${ action } mode` );
       }
     } );
