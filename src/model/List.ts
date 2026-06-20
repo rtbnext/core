@@ -28,4 +28,11 @@ export class List extends Snapshot< TListSnapshot > implements IList {
   public getItem () : TListIndexItem {
     return this.item;
   }
+
+  // --- instantiate ---
+
+  public static get ( uriLike: string ) : IList | false {
+    try { return new List( List.index.get( uriLike ) ) }
+    catch { return false }
+  }
 }
