@@ -1,4 +1,5 @@
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
+import type { TDBStats, TGlobalStats, THistory, TProfileStats, TScatter, TWealthStats } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -41,5 +42,31 @@ export class Stats implements IStats {
       ( Stats.storage[ format === 'csv' ? 'writeCSV' : 'writeJSON' ] as any )
         ( this.resolvePath( path ), data ), `Failed to save stats to ${ path }`
     ) ?? false;
+  }
+
+  // --- getter ---
+
+  public getGlobalStats () : TGlobalStats {
+    return this.getStats< TGlobalStats >( 'global.json', 'json' );
+  }
+
+  public getProfileStats () : TProfileStats {
+    return this.getStats< TProfileStats >( 'profile.json', 'json' );
+  }
+
+  public getWealthStats () : TWealthStats {
+    return this.getStats< TWealthStats >( 'wealth.json', 'json' );
+  }
+
+  public getScatter () : TScatter {
+    return this.getStats< TScatter >( 'scatter.json', 'json' );
+  }
+
+  public getDBStats () : TDBStats {
+    return this.getStats< TDBStats >( 'db.json', 'json' );
+  }
+
+  public getHistory () : THistory {
+    return this.getStats< THistory >( 'history.csv', 'csv' );
   }
 }
