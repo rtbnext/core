@@ -3,7 +3,7 @@ import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/co
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type {
   TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, THistoryItem, TProfileStats,
-  TProfileStatsData, TScatter, TScatterData, TScatterItem, TStatsGroup, TWealthStats, TWealthStatsData
+  TProfileStatsData, TScatter, TScatterData, TScatterItem, TStatsGroup, TStatsGroupItem, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
@@ -177,6 +177,46 @@ export class Stats implements IStats {
         size: { value: data.size, type: 'number' }
       } )
     ) );
+  }
+
+  // --- grouped stats setter ---
+
+  public setGroupedStats< T extends string = string > (
+    group: TStatsGroupType, raw: Record< T, TStatsGroupItem >
+  ) : boolean {
+    return log.catch( () => {
+      const items = Object.fromEntries(
+        Object.entries< TStatsGroupItem >( raw ).map( ( [ key, item ] ) => {
+          item = { first: item.first, ...Parser.container( {
+            date: { value: item.date, type: 'date', args: [ 'ymd' ] },
+            count: { value: item.count, type: 'number' },
+            total: { value: item.total, type: 'money' },
+            woman: { value: item.woman, type: 'number' },
+            quota: { value: item.quota, type: 'pct' },
+            today: { value: Parser.container< TChangeItem >( {
+              value: { value: item.today?.value, type: 'money' },
+              percent: { value: item.today?.percent, type: 'pct' }
+            } ), type: 'container' },
+            ytd: { value: Parser.container< TChangeItem >( {
+              value: { value: item.ytd?.value, type: 'money' },
+              percent: { value: item.ytd?.percent, type: 'pct' }
+            } ), type: 'container' }
+          } ) } as TStatsGroupItem;
+
+          Stats.storage.datedCSV< THistoryItem >(
+            this.resolvePath( `${ group }/${ key }.csv` ), [
+              item.date, item.count, item.total, item.woman, item.quota,
+              item.today?.value ?? 0, item.today?.percent ?? 0
+            ], true );
+
+          return [ key, item ];
+        } )
+      ) as Record< T, TStatsGroupItem >;
+
+      this.saveStats< TStatsGroup< T >[ 'index' ] >(
+        `${ group }/index.json`, 'json', this.prepStats( { items } )
+      );
+    }, `Failed to set grouped stats for group ${ group }` ) ?? false;
   }
 
   // --- update history (add new line) ---
