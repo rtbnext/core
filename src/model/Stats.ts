@@ -2,9 +2,11 @@ import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type {
-  TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, THistoryItem, TProfileStats,
-  TProfileStatsData, TScatter, TScatterData, TScatterItem, TStatsGroup, TStatsGroupItem, TWealthStats, TWealthStatsData
+  TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory,
+  THistoryItem, TProfileStats, TProfileStatsData, TScatter, TScatterData, TScatterItem,
+  TStatsGroup, TStatsGroupItem, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
+import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -13,7 +15,6 @@ import { Utils } from '@/core/Utils';
 import type { IStats } from '@/interface/stats';
 import { Percentiles, StatsGroup, WealthSpread } from '@/lib/const';
 import { Parser } from '@/parser/Parser';
-import { readdirSync } from 'node:fs';
 
 
 export class Stats implements IStats {
