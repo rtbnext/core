@@ -1,4 +1,4 @@
-import type { TFilterGroup } from '@rtbnext/schema/src/base/const';
+import type { TFilterGroup, TFilterSpecial } from '@rtbnext/schema/src/base/const';
 import type { TFilter, TFilterCollection, TFilterItem } from '@rtbnext/schema/src/model/filter';
 import { join } from 'node:path';
 
@@ -81,5 +81,13 @@ export class Filter implements IFilter {
       if ( ! Filter.storage.writeJSON< TFilter >( resolved, filter ) )
         throw new Error( `Failed to write filter file: ${ resolved }` );
     }, `Failed to save filter at ${ group }/${ key }` );
+  }
+
+  private saveGroup ( group: TFilterGroup, data: Record< string, TFilterItem[] > ) : void {
+    Object.entries( data ).forEach( ( [ key, list ] ) => this.saveFilter( group, key, list ) );
+  }
+
+  private saveSpecial ( special: TFilterSpecial, data: TFilterItem[] ) : void {
+    this.saveFilter( 'special', special, data );
   }
 }
