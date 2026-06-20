@@ -6,8 +6,8 @@ export class Performance {
   public static getProfileExtrema ( history: TProfileHistory ) : TExtrema {
     const map = ( [ date, rank, networth ]: TProfileHistoryItem ) => ( { date, rank, networth } );
 
-    const [ low, high ] = history.reduce(
-      ( [ l, h ], next ) => [ ! l || next[ 2 ] < l[ 2 ] ? next : l, ! h || next[ 2 ] > h[ 2 ] ? next : h ],
+    const [ low, high ] = history.reverse().reduce(
+      ( [ l, h ], row ) => [ ! l || row[ 2 ] < l[ 2 ] ? row : l, ! h || row[ 2 ] > h[ 2 ] ? row : h ],
       [] as [ TProfileHistoryItem?, TProfileHistoryItem? ]
     );
 
