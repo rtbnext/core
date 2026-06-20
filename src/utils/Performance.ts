@@ -18,7 +18,14 @@ export class Performance {
     return { low: low && map( low ), high: high && map( high ) };
   }
 
-  public static generateProfileReturns ( history: TProfileHistory ) : TReturns {}
+  public static generateProfileReturns ( history: TProfileHistory ) : TReturns {
+    const latest = history.at( -1 );
+    if ( ! latest ) return {};
+
+    const result: TReturns = {};
+    const now = Date.parse( latest[ 0 ] );
+    const networth = latest[ 2 ];
+  }
 
   public static generateProfilePerformance () {}
 }
