@@ -2,6 +2,7 @@ import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 import { CmpStrAsync, type CmpStrResult } from 'cmpstr';
 
+import type { IProfile } from '@/interface/profile';
 import { REGEX_URI_CLEANUP } from '@/lib/regex';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
@@ -41,9 +42,9 @@ export class ProfileMerger {
 
   // --- find matching profiles ---
 
-  public static findMatching ( data: Partial< TProfileData > ) : Profile[] {
+  public static findMatching ( data: Partial< TProfileData > ) : IProfile[] {
     if ( ! data.id || ! data.uri ) return [];
-    const res: Profile[] = [];
+    const res: IProfile[] = [];
 
     for ( const uri of ProfileMerger.similarURIs( data.uri ) ) {
       const profile = Profile.get( uri );
@@ -55,7 +56,7 @@ export class ProfileMerger {
 
   // --- merge profiles ---
 
-  public static mergeProfiles ( target: Profile, source: Profile, force: boolean = false, makeAlias: boolean = true ) : boolean {
+  public static mergeProfiles ( target: IProfile, source: IProfile, force: boolean = false, makeAlias: boolean = true ) : boolean {
     if ( ! force && ! ProfileMerger.mergeableProfiles( target.getData(), source.getData() ) ) return false;
 
     const aliases = makeAlias ? [ source.getUri() ] : [];

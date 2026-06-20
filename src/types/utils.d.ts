@@ -1,10 +1,10 @@
-import type { Profile } from '@/model/Profile';
+import type { IProfile } from '@/interface/profile';
 
 
 export type TProfileOperation = 'create' | 'update' | 'merge';
 
 export type TProfileLookupResult = {
-  profile: Profile | false;
+  profile: IProfile | false;
   isExisting: boolean;
   isSimilar: boolean;
 };

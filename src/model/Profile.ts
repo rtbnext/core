@@ -206,21 +206,21 @@ export class Profile implements IProfile {
 
   // --- instantiate ---
 
-  public static get ( uriLike: string ) : Profile | false {
+  public static get ( uriLike: string ) : IProfile | false {
     return log.catch(
       () => new Profile( Profile.index.get( uriLike ) ),
       `Failed to get profile: ${ uriLike }`
     ) ?? false;
   }
 
-  public static getByItem ( item: TProfileIndexItem ) : Profile | false {
+  public static getByItem ( item: TProfileIndexItem ) : IProfile | false {
     return log.catch(
       () => new Profile( item ),
       `Failed to get profile by item: ${ item.uri }`
     ) ?? false;
   }
 
-  public static find ( uriLike: string ) : Profile | false {
+  public static find ( uriLike: string ) : IProfile | false {
     return log.catch(
       () => new Profile( Profile.index.find( uriLike ).values().next().value ),
       `Failed to find profile: ${ uriLike }`

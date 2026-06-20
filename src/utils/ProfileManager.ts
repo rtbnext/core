@@ -1,5 +1,6 @@
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
+import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import type { TProfileLookupResult, TProfileOperation } from '@/type/utils';
 import { ProfileMerger } from '@/util/ProfileMerger';
@@ -9,7 +10,7 @@ export class ProfileManager {
   private static execute (
     lookup: TProfileLookupResult, uriLike: string, profileData: Partial< TProfileData >,
     aliases: string[] = [], method: 'setData' | 'updateData' = 'updateData'
-  ) : Profile | false {
+  ) : IProfile | false {
     const { profile, isExisting, isSimilar } = lookup;
 
     if ( isExisting && profile ) {
@@ -45,7 +46,7 @@ export class ProfileManager {
 
   // --- handle URI change ---
 
-  public static handleURIChange ( profile: Profile, newUri: string, makeAlias: boolean = true ) : boolean {
+  public static handleURIChange ( profile: IProfile, newUri: string, makeAlias: boolean = true ) : boolean {
     return profile.getUri() !== newUri ? profile.move( newUri, makeAlias ) : false;
   }
 
@@ -54,7 +55,7 @@ export class ProfileManager {
   public static process (
     uriLike: string, id: string, profileData: Partial< TProfileData >,
     aliases: string[] = [], method: 'setData' | 'updateData' = 'updateData'
-  ) : { profile: Profile | false; action: TProfileOperation, success: boolean } {
+  ) : { profile: IProfile | false; action: TProfileOperation, success: boolean } {
     const lookup = this.lookup( uriLike, id, profileData );
     const action = this.determineAction( lookup );
     const profile = this.execute( lookup, uriLike, profileData, aliases, method );
