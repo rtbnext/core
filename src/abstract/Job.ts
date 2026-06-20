@@ -10,4 +10,22 @@ export abstract class Job implements IJob {
   protected readonly args: TArgs = {};
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
+
+  // --- getter ---
+
+  public getJobName () : string {
+    return this.job;
+  }
+
+  public getArgs () : TArgs {
+    return this.args;
+  }
+
+  public isSilent () : boolean {
+    return this.silent;
+  }
+
+  public isSafeMode () : boolean {
+    return this.safeMode;
+  }
 }
