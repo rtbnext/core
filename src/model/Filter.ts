@@ -1,3 +1,4 @@
+import type { TFilterGroup } from '@rtbnext/schema/src/base/const';
 import type { TFilterCollection } from '@rtbnext/schema/src/model/filter';
 import { join } from 'node:path';
 
@@ -20,5 +21,20 @@ export class Filter implements IFilter {
   private initDB () : void {
     log.debug( 'Initializing filter storage paths' );
     FilterGroup.forEach( group => Filter.storage.ensurePath( join( 'filter', group ), true ) );
+  }
+
+  // --- path helper ---
+
+  private splitPath ( path: string ) : [ TFilterGroup, string ] | undefined {
+    const [ group, key ] = path.replace( '.json', '' ).split( '/' ).slice( -2 );
+    return FilterGroup.includes( group as TFilterGroup ) && key ? [ group as TFilterGroup, key ] : undefined;
+  }
+
+  private joinPath ( group?: TFilterGroup, key?: string ) : string | false {
+    return group && key ? join( 'filter', group, `${ key }.json` ) : false;
+  }
+
+  public resolvePath ( path: string ) : string | false {
+    return this.joinPath( ...( this.splitPath( path ) ?? [] ) as [ TFilterGroup, string ] );
   }
 }
