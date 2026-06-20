@@ -1,19 +1,24 @@
 import type { IJob } from '@/interface/job';
 
 
-export type TCommandOption = readonly [
+export type TJobOption = readonly [
   name: string,
   desc: string,
   required?: boolean
 ];
 
-export type TCommandOptions = ReadonlyArray< TCommandOption >;
+export type TJobOptions = ReadonlyArray< TJobOption >;
 
-export type TCommandDefinition = {
+export type TJobDefinition = {
   readonly id: string;
   name: string;
   desc: string;
-  options: TCommandOptions;
+  options: TJobOptions;
 };
 
-export type TCommands = { [ key: string ]: IJob };
+export interface TJobClass {
+  readonly definition: TJobDefinition;
+  new ( args: string[] ) : IJob;
+}
+
+export type TJobRegistry = ReadonlyArray< TJobClass >;
