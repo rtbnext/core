@@ -2,7 +2,9 @@ import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
 import type { IJob } from '@/interface/job';
+import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
+import { ProfileParser } from '@/parser/ProfileParser';
 
 
 export class ProfileJob extends Job implements IJob {
@@ -23,6 +25,15 @@ export class ProfileJob extends Job implements IJob {
           this.log( 'Request failed', raw, 'warn' );
           continue;
         }
+
+        // --- parse raw profile data ---
+        const parser = new ProfileParser( raw.data );
+        const uri = parser.uri();
+        const id = parser.id();
+        const profileData = Profile.factory( {
+          uri, id, info: parser.info(), bio: parser.bio(),
+          related: parser.related(), media: parser.media()
+        } );
       }
     } );
   }
