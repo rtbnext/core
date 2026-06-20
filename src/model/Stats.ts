@@ -310,4 +310,10 @@ export class Stats implements IStats {
       return this.setDBStats( stats );
     }, `Failed to generate DB stats` ) ?? false;
   }
+
+  // --- instantiate ---
+
+  public static getInstance () : IStats {
+    return Stats.instance ??= new Stats();
+  }
 }
