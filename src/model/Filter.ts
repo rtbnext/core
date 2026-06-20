@@ -135,4 +135,10 @@ export class Filter implements IFilter {
     FilterGroup.forEach( g => g !== 'special' && col[ g ] && this.saveGroup( g, col[ g ] ) );
     FilterSpecial.forEach( s => col.special?.[ s ] && this.saveSpecial( s, col.special[ s ] ) );
   }
+
+  // --- instantiate ---
+
+  public static getInstance () : IFilter {
+    return Filter.instance ??= new Filter();
+  }
 }
