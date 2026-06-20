@@ -1,6 +1,9 @@
+import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
-import type { TDBStats, TGlobalStats, THistory, TProfileStats, TScatter, TStatsGroup, TWealthStats } from '@rtbnext/schema/src/model/stats';
+import type {
+  TDBStats, TGlobalStats, TGlobalStatsData, THistory, TProfileStats, TScatter, TStatsGroup, TWealthStats
+} from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -8,6 +11,7 @@ import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IStats } from '@/interface/stats';
 import { StatsGroup } from '@/lib/const';
+import { Parser } from '@/parser/Parser';
 
 
 export class Stats implements IStats {
@@ -88,5 +92,31 @@ export class Stats implements IStats {
     ) );
 
     return { index, history };
+  }
+
+  // --- save global stats ---
+
+  public setGlobalStats ( data: TGlobalStatsData ) : boolean {
+    return this.saveStats( 'global.json', 'json', this.prepStats(
+      Parser.container< TGlobalStatsData >( {
+        date: { value: data.date, type: 'date', args: [ 'ymd' ] },
+        count: { value: data.count, type: 'number' },
+        total: { value: data.total, type: 'money' },
+        woman: { value: data.woman, type: 'number' },
+        quota: { value: data.quota, type: 'pct' },
+        today: { value: Parser.container< TChangeItem >( {
+          value: { value: data.today?.value, type: 'money' },
+          percent: { value: data.today?.percent, type: 'pct' }
+        } ), type: 'container' },
+        ytd: { value: Parser.container< TChangeItem >( {
+          value: { value: data.ytd?.value, type: 'money' },
+          percent: { value: data.ytd?.percent, type: 'pct' }
+        } ), type: 'container' },
+        stats: { value: Parser.container< TGlobalStatsData[ 'stats' ] >( {
+          profiles: { value: data.stats?.profiles, type: 'number' },
+          days: { value: data.stats?.days, type: 'number' }
+        } ), type: 'container' }
+      } )
+    ) );
   }
 }
