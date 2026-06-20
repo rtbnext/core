@@ -13,6 +13,7 @@ import { Utils } from '@/core/Utils';
 import type { IStats } from '@/interface/stats';
 import { Percentiles, StatsGroup, WealthSpread } from '@/lib/const';
 import { Parser } from '@/parser/Parser';
+import { readdirSync } from 'node:fs';
 
 
 export class Stats implements IStats {
@@ -243,5 +244,29 @@ export class Stats implements IStats {
         max: scatter.at( -1 )!.networth, min: scatter[ 0 ].networth
       } )
     }, `Failed to generate wealth stats` ) ?? false;
+  }
+
+  // --- generate DB stats ---
+
+  public generateDBStats () : boolean {
+    return log.catch( () => {
+      log.debug( 'Generating DB stats ...' );
+      const stats = { files: 0, size: 0 };
+
+      const scan = ( path: string ) : void => {
+        readdirSync( path, { recursive: true } ).forEach( p => {
+          if ( p === '.' || p === '..' || typeof p !== 'string' ) return;
+          const fullPath = join( path, p );
+          const stat = Stats.storage.stat( fullPath );
+
+          if ( stat ) stat.isDirectory() ? scan( fullPath ) : (
+            stats.files++, stats.size += stat.size
+          );
+        } );
+      };
+
+      scan( Stats.storage.root );
+      return this.setDBStats( stats );
+    }, `Failed to generate DB stats` ) ?? false;
   }
 }
