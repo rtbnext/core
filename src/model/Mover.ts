@@ -27,4 +27,10 @@ export class Mover extends Snapshot< TMover > implements IMover {
       snapshot.ytd.networth.loser, snapshot.ytd.percent.loser
     ].map( a => this.prep( a, 'asc' ) );
   }
+
+  // --- instantiate ---
+
+  public static getInstance () : IMover {
+    return this.instance ??= new Mover();
+  }
 }
