@@ -1,4 +1,5 @@
 import type { TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
+import type { TListSnapshot } from '@rtbnext/schema/src/model/list';
 
 
 export type TArgs = Record< string, string | boolean >;
@@ -18,3 +19,5 @@ export type TMeasuredResult< R > = {
 
 export type TMaritalStatusResolver = Record< string, TMaritalStatus >;
 export type TIndustryResolver = Record< string, TIndustry >;
+
+export type TListSnapshotData = Omit< TListSnapshot, '$metadata' >;
