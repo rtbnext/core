@@ -1,6 +1,8 @@
 import type { TExtrema, TReturns } from '@rtbnext/schema/src/base/assets';
 import type { TProfileHistory, TProfileHistoryItem } from '@rtbnext/schema/src/model/profile';
 
+import { Parser } from '@/parser/Parser';
+
 
 export class Performance {
   private static readonly RETURNS = {
@@ -25,6 +27,24 @@ export class Performance {
     const result: TReturns = {};
     const now = Date.parse( latest[ 0 ] );
     const networth = latest[ 2 ];
+    let remaining = Object.keys( Performance.RETURNS ).length;
+
+    for ( const item of history.toReversed() ) {
+      const days = ( now - Date.parse( item[ 0 ] ) ) / 86400000;
+
+      for ( const [ key, target ] of Object.entries( Performance.RETURNS ) ) {
+        if ( result[ key as keyof TReturns ] || days < target ) continue;
+
+        result[ key as keyof TReturns ] = {
+          value: Parser.money( networth - item[ 2 ] ),
+          percent: Parser.pct( ( networth / item[ 2 ] - 1 ) * 100 )
+        };
+
+        if ( --remaining === 0 ) return result;
+      }
+    }
+
+    return result;
   }
 
   public static generateProfilePerformance () {}
