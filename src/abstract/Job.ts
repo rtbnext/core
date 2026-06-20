@@ -1,5 +1,7 @@
 import { Config } from '@/core/Config';
+import { log } from '@/core/Logger';
 import type { IJob } from '@/interface/job';
+import type { TLoggingLevel } from '@/type/config';
 import type { TArgs } from '@/type/generic';
 
 
@@ -10,6 +12,16 @@ export abstract class Job implements IJob {
   protected readonly args: TArgs = {};
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
+
+  // --- helper ---
+
+  protected log ( msg: string, meta?: any, as: TLoggingLevel = 'debug' ) : void {
+    if ( ! this.silent ) log[ as ]( `[${ this.job }] ${ msg }`, meta );
+  }
+
+  protected err ( err: unknown, msg?: string ) : void {
+    if ( ! this.silent ) log.errMsg( err, msg ? `[${ this.job }] ${ msg }` : undefined );
+  }
 
   // --- getter ---
 
