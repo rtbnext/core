@@ -1,8 +1,8 @@
 import type { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
 import type { TLocation } from '@rtbnext/schema/src/base/generic';
 import type { Primitive } from 'devtypes/types/primitive';
-import { getAlpha2Code } from 'i18n-iso-countries';
-import { abbr } from 'us-state-converter';
+import countries from 'i18n-iso-countries';
+import states from 'us-state-converter';
 
 import { Gender, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
 import { REGEX_SPACES } from '@/lib/regex';
@@ -90,12 +90,12 @@ export class Parser {
   // --- location ---
 
   public static country ( value: unknown ) : string | undefined {
-    const code = getAlpha2Code( Parser.string( value ), 'en' );
+    const code = countries.getAlpha2Code( Parser.string( value ), 'en' );
     return code ? code.toUpperCase() : undefined;
   }
 
   public static state ( value: unknown ) : string | undefined {
-    return value ? abbr( Parser.string( value ) ).toUpperCase() : undefined;
+    return value ? ( states as any ).abbr( Parser.string( value ) ).toUpperCase() : undefined;
   }
 
   public static latLng ( lat: unknown, lng: unknown ) : [ number, number ] | undefined {
