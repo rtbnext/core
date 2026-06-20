@@ -1,3 +1,6 @@
+import type { IJob } from '@/interface/job';
+
+
 export type TCommandOption = readonly [
   name: string,
   desc: string,
@@ -12,3 +15,5 @@ export type TCommandDefinition = {
   desc: string;
   options: TCommandOptions;
 };
+
+export type TCommands = { [ key: string ]: IJob };
