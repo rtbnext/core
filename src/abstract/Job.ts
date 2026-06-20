@@ -28,4 +28,8 @@ export abstract class Job implements IJob {
   public isSafeMode () : boolean {
     return this.safeMode;
   }
+
+  // --- (abstract) job runner ---
+
+  public abstract run () : void | Promise< void >;
 }
