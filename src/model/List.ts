@@ -18,4 +18,14 @@ export class List extends Snapshot< TListSnapshot > implements IList {
     this.uri = item.uri;
     this.item = item;
   }
+
+  // --- getter ---
+
+  public getUri () : string {
+    return this.uri;
+  }
+
+  public getItem () : TListIndexItem {
+    return this.item;
+  }
 }
