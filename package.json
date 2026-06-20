@@ -13,6 +13,9 @@
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "rtbnext": "./dist/bin/rtbnext.js"
+  },
   "type": "module",
   "scripts": {
     "format": "prettier --ignore-path \"\" --write \"./dist/**/*.@(js|d.ts)\" --log-level warn",
