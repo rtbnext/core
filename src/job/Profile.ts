@@ -16,6 +16,8 @@ export class ProfileJob extends Job implements IJob {
 
   constructor ( args: string[] ) { super( args, 'Profile' ) }
 
+  // --- runner ---
+
   public async run () : Promise< void > {
     await this.protect( async () => {
       const method = Parser.boolean( this.args.replace ) ? 'setData' : 'updateData';
@@ -52,4 +54,18 @@ export class ProfileJob extends Job implements IJob {
       }
     } );
   }
+
+  // --- command ---
+
+  public static readonly command = {
+    id: 'profile',
+    name: 'Profile',
+    desc: 'Fetch and update Forbes profiles',
+    options: [
+      [ '--profiles <URIs>', 'Process specific profiles', false ],
+      [ '--replace', 'Replace existing profile data', false ],
+      [ '--skip-ranking', 'Skip ranking generation', false ],
+      [ '--skip-wiki', 'Skip wiki data enrichment', false ]
+    ]
+  } as const;
 }
