@@ -4,6 +4,7 @@ import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
+import { Utils } from '@/core/Utils';
 import type { IFilter } from '@/interface/filter';
 import { FilterGroup } from '@/lib/const';
 
@@ -64,5 +65,21 @@ export class Filter implements IFilter {
       this.setFilterData( group, key, filter );
       return filter;
     }, `Failed to load filter at ${ group }/${ key }` );
+  }
+
+  private saveFilter ( group: TFilterGroup, key: string, list: TFilterItem[] ) : void {
+    log.debug( `Saving filter to ${ group }/${ key }` );
+
+    log.catch( () => {
+      const resolved = this.joinPath( group, key );
+      if ( ! resolved ) throw new Error( `Invalid filter path: ${ group }/${ key }` );
+
+      const items = this.prepFilter( list );
+      const filter = { ...Utils.metaData(), items, count: items.length };
+      this.setFilterData( group, key, filter );
+
+      if ( ! Filter.storage.writeJSON< TFilter >( resolved, filter ) )
+        throw new Error( `Failed to write filter file: ${ resolved }` );
+    }, `Failed to save filter at ${ group }/${ key }` );
   }
 }
