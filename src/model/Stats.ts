@@ -3,7 +3,7 @@ import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/co
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type {
   TAgePyramidGroup, TDBStats, TGlobalStats, TGlobalStatsData, THistory, TProfileStats,
-  TProfileStatsData, TScatter, TStatsGroup, TWealthStats
+  TProfileStatsData, TScatter, TStatsGroup, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
@@ -143,5 +143,23 @@ export class Stats implements IStats {
         } ) ]
       ) )
     } ) );
+  }
+
+  public setWealthStats ( data: TWealthStatsData ) : boolean {
+    return this.saveStats( 'wealth.json', 'json', this.prepStats(
+      Parser.container< TWealthStatsData >( {
+        percentiles: { value: data.percentiles, type: 'obj', args: [ 'money' ] },
+        quartiles: { value: data.quartiles, type: 'list', args: [ 'money' ] },
+        total: { value: data.total, type: 'money' },
+        max: { value: data.max, type: 'money' },
+        min: { value: data.min, type: 'money' },
+        mean: { value: data.mean, type: 'money' },
+        median: { value: data.median, type: 'money' },
+        stdDev: { value: data.stdDev, type: 'money' },
+        decades: { value: data.decades, type: 'obj', args: [ 'money' ] },
+        gender: { value: data.gender, type: 'obj', args: [ 'money' ] },
+        spread: { value: data.spread, type: 'obj', args: [ 'number' ] }
+      } )
+    ) );
   }
 }
