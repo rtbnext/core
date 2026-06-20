@@ -10,7 +10,7 @@ import type { TArgs } from '@/type/generic';
 export abstract class Job implements IJob {
   protected static readonly config = Config.getInstance();
 
-  protected readonly job!: string;
+  protected abstract readonly job: string;
   protected readonly args: TArgs = {};
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
@@ -22,7 +22,7 @@ export abstract class Job implements IJob {
     this.silent = this.args.silent !== undefined ? Parser.boolean( this.args.silent ) : silent;
     this.safeMode = this.args.safeMode !== undefined ? Parser.boolean( this.args.safeMode ) : safeMode;
 
-    this.log( `Run job [${ this.job }]`, this.args, 'info' );
+    this.log( 'Run job', this.args, 'info' );
   }
 
   // --- helper ---
