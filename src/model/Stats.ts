@@ -2,7 +2,8 @@ import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type {
-  TDBStats, TGlobalStats, TGlobalStatsData, THistory, TProfileStats, TScatter, TStatsGroup, TWealthStats
+  TAgePyramidGroup, TDBStats, TGlobalStats, TGlobalStatsData, THistory, TProfileStats,
+  TProfileStatsData, TScatter, TStatsGroup, TWealthStats
 } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
@@ -94,7 +95,7 @@ export class Stats implements IStats {
     return { index, history };
   }
 
-  // --- save global stats ---
+  // --- setter ---
 
   public setGlobalStats ( data: TGlobalStatsData ) : boolean {
     return this.saveStats( 'global.json', 'json', this.prepStats(
@@ -118,5 +119,29 @@ export class Stats implements IStats {
         } ), type: 'container' }
       } )
     ) );
+  }
+
+  public setProfileStats ( data: TProfileStatsData ) : boolean {
+    return this.saveStats( 'profile.json', 'json', this.prepStats( {
+      ...Parser.container< Partial< TProfileStatsData > >( {
+        gender: { value: data.gender, type: 'obj', args: [ 'number' ] },
+        maritalStatus: { value: data.maritalStatus, type: 'obj', args: [ 'number' ] },
+        children: { value: Parser.container< TProfileStatsData[ 'children' ] >( {
+          full: { value: data.children?.full, type: 'obj', args: [ 'number' ] },
+          short: { value: data.children?.short, type: 'obj', args: [ 'number' ] },
+        } ), type: 'container' },
+        selfMade: { value: data.selfMade, type: 'obj', args: [ 'number' ] },
+        philanthropyScore: { value: data.philanthropyScore, type: 'obj', args: [ 'number' ] }
+      } ),
+      agePyramid: Object.fromEntries( Object.entries( data.agePyramid ).map(
+        ( [ gender, item ] ) => [ gender, Parser.container< TAgePyramidGroup >( {
+          count: { value: item.count, type: 'number' },
+          decades: { value: item.decades, type: 'obj', args: [ 'number' ] },
+          max: { value: item.max, type: 'number' },
+          min: { value: item.min, type: 'number' },
+          mean: { value: item.mean, type: 'number' }
+        } ) ]
+      ) )
+    } ) );
   }
 }
