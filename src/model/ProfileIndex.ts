@@ -9,10 +9,7 @@ import type { IProfileIndex } from '@/interface/index';
 
 export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > implements IProfileIndex {
   protected static instance: IProfileIndex;
-
-  private constructor () {
-    super( 'profile', 'profile/index.json' );
-  }
+  private constructor () { super( 'profile', 'profile/index.json' ) }
 
   // --- special profile index operations ---
 
