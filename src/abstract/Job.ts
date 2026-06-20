@@ -41,7 +41,7 @@ export abstract class Job implements IJob {
   > ( fn: F ) : Promise< R | undefined > {
     try { return await fn() }
     catch ( err ) {
-      if ( ! this.silent ) this.err( err );
+      this.err( err );
       if ( ! this.safeMode ) throw err;
     }
   }
