@@ -13,10 +13,6 @@ export class Profile implements IProfile {
   private static readonly storage = Storage.getInstance();
   private static readonly index = ProfileIndex.getInstance();
 
-  private static get factory () {
-    return { info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: [] };
-  };
-
   private uri: string;
   private path: string;
   private item: TProfileIndexItem;
@@ -227,6 +223,13 @@ export class Profile implements IProfile {
     ) ?? false;
   }
 
+  // --- factory ---
+
+  public static factory ( data?: Partial< TProfileData > ) : Partial< TProfileData > {
+    return { ...{ info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: [] },
+      ...data } as Partial< TProfileData >;
+  };
+
   // --- create profile ---
 
   public static create (
@@ -245,7 +248,7 @@ export class Profile implements IProfile {
       if ( ! item ) throw new Error( `Failed to add profile to index` );
 
       const profile = new Profile( item );
-      profile.setData( { ...Profile.factory, ...data } );
+      profile.setData( Profile.factory( data ) as TProfileData );
       profile.setHistory( history ?? [] );
       profile.save();
 
