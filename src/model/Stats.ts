@@ -2,7 +2,7 @@ import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type {
-  TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, TProfileStats,
+  TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, THistoryItem, TProfileStats,
   TProfileStatsData, TScatter, TScatterData, TStatsGroup, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
@@ -176,5 +176,18 @@ export class Stats implements IStats {
         size: { value: data.size, type: 'number' }
       } )
     ) );
+  }
+
+  // --- update history (add new line) ---
+
+  public updateHistory ( data: Partial< TGlobalStats > ) : boolean {
+    return log.catch(
+      () => Stats.storage.datedCSV< THistoryItem >( this.resolvePath( 'history.csv' ), [
+        Parser.date( data.date, 'ymd' )!, Parser.number( data.count ),
+        Parser.money( data.total ), Parser.number( data.woman ), Parser.pct( data.quota ),
+        Parser.money( data.today?.value ), Parser.pct( data.today?.percent )
+      ], true ),
+      `Failed to update history`
+    ) ?? false;
   }
 }
