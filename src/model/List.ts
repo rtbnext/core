@@ -1,9 +1,10 @@
 import type { TListIndexItem, TListSnapshot } from '@rtbnext/schema/src/model/list';
 
 import { Snapshot } from '@/abstract/Snapshot';
+import { log } from '@/core/Logger';
+import { Utils } from '@/core/Utils';
 import type { IList } from '@/interface/list';
 import { ListIndex } from '@/model/ListIndex';
-import { log } from '@/core/Logger';
 
 
 export class List extends Snapshot< TListSnapshot > implements IList {
@@ -28,6 +29,17 @@ export class List extends Snapshot< TListSnapshot > implements IList {
 
   public getItem () : TListIndexItem {
     return this.item;
+  }
+
+  // --- (override) save list snapshot ---
+
+  public override saveSnapshot ( snapshot: Omit< TListSnapshot, '$metadata' >, force: boolean = false ) : boolean {
+    const res = super.saveSnapshot( { ...Utils.metaData(), ...snapshot }, force );
+    if ( ! res || ! List.index.update( this.uri, { date: snapshot.date, count: snapshot.stats.count } ) ) return false;
+
+    this.item.date = snapshot.date;
+    this.item.count = snapshot.stats.count;
+    return true;
   }
 
   // --- instantiate ---
