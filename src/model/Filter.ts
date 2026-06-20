@@ -148,7 +148,7 @@ export class Filter implements IFilter {
 
   public static aggregate ( data: TProfileData, col: Partial< TFilterList > ) : void {
     const { uri, info, realtime } = data;
-    const item: TFilterItem = { uri, name: info.name.shortName ?? info.name, value: undefined };
+    const item: TFilterItem = { uri, name: info.name.shortName, value: undefined };
     const decade = Parser.ageDecade( info.birthDate )?.toString();
 
     const add = ( g: TFilterGroup, k: string | undefined, v: any = null ) : void => {
