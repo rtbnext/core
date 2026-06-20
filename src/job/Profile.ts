@@ -17,6 +17,13 @@ export class ProfileJob extends Job implements IJob {
       const batch = 'profile' in this.args && typeof this.args.profile === 'string'
         ? this.args.profile.split( ',' ).filter( Boolean )
         : ProfileJob.queue.nextUri( Job.config.fetch.rateLimit.batchSize );
+
+      for ( const raw of await ProfileJob.fetch.profile( ...batch ) ) {
+        if ( ! raw?.success || ! raw.data ) {
+          this.log( 'Request failed', raw, 'warn' );
+          continue;
+        }
+      }
     } );
   }
 }
