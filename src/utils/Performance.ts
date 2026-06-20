@@ -1,4 +1,4 @@
-import type { TExtrema, TReturns } from '@rtbnext/schema/src/base/assets';
+import type { TExtrema, TPerformance, TReturns } from '@rtbnext/schema/src/base/assets';
 import type { TProfileHistory, TProfileHistoryItem } from '@rtbnext/schema/src/model/profile';
 
 import { Parser } from '@/parser/Parser';
@@ -47,5 +47,10 @@ export class Performance {
     return result;
   }
 
-  public static generateProfilePerformance () {}
+  public static generateProfilePerformance ( history: TProfileHistory ) : TPerformance {
+    return {
+      extrema: Performance.getProfileExtrema( history ),
+      returns: Performance.generateProfileReturns( history )
+    };
+  }
 }
