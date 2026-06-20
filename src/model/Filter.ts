@@ -90,4 +90,33 @@ export class Filter implements IFilter {
   private saveSpecial ( special: TFilterSpecial, data: TFilterItem[] ) : void {
     this.saveFilter( 'special', special, data );
   }
+
+  // --- getter ---
+
+  public getFilter ( group: TFilterGroup, key: string ) : TFilter | undefined {
+    return ( this.data[ group ] as any )?.[ key ] ?? this.loadFilter( group, key );
+  }
+
+  public getFilterByPath ( path: string ) : TFilter | undefined {
+    const [ group, key ] = this.splitPath( path ) ?? [];
+    return group && key ? this.getFilter( group, key ) : undefined;
+  }
+
+  public getGroup ( group: TFilterGroup ) : Record< string, TFilter > | undefined {
+    Filter.storage.scanDir( join( 'filter', group ) ).forEach( file => {
+      const key = file.replace( '.json', '' ).split( '/' ).pop();
+      if ( key && ! ( this.data[ group ] as any )?.[ key ] ) this.loadFilter( group, key );
+    } );
+
+    return this.data[ group ];
+  }
+
+  public getSpecial ( special: TFilterSpecial ) : TFilter | undefined {
+    Filter.storage.scanDir( 'filter/special' ).forEach( file => {
+      const key = file.replace( '.json', '' ).split( '/' ).pop();
+      if ( key && ! this.data.special?.[ special ] ) this.loadFilter( 'special', special );
+    } );
+
+    return this.data.special?.[ special ];
+  }
 }
