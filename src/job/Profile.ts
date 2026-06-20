@@ -5,6 +5,7 @@ import type { IJob } from '@/interface/job';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
+import type { TCommandDefinition } from '@/type/job';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 import { Wiki } from '@/util/Wiki';
@@ -57,15 +58,15 @@ export class ProfileJob extends Job implements IJob {
 
   // --- command ---
 
-  public static readonly command = {
+  public static readonly command: TCommandDefinition = {
     id: 'profile',
     name: 'Profile',
     desc: 'Fetch and update Forbes profiles',
     options: [
-      [ '--profiles <URIs>', 'Process specific profiles', false ],
-      [ '--replace', 'Replace existing profile data', false ],
-      [ '--skip-ranking', 'Skip ranking generation', false ],
-      [ '--skip-wiki', 'Skip wiki data enrichment', false ]
+      [ '--profiles <URIs>', 'Process specific profiles' ],
+      [ '--replace', 'Replace existing profile data' ],
+      [ '--skip-ranking', 'Skip ranking generation' ],
+      [ '--skip-wiki', 'Skip wiki data enrichment' ]
     ]
   } as const;
 }
