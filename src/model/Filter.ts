@@ -1,12 +1,12 @@
 import type { TFilterGroup, TFilterSpecial } from '@rtbnext/schema/src/base/const';
-import type { TFilter, TFilterCollection, TFilterItem } from '@rtbnext/schema/src/model/filter';
+import type { TFilter, TFilterCollection, TFilterItem, TFilterList } from '@rtbnext/schema/src/model/filter';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IFilter } from '@/interface/filter';
-import { FilterGroup } from '@/lib/const';
+import { FilterGroup, FilterSpecial } from '@/lib/const';
 
 
 export class Filter implements IFilter {
@@ -127,5 +127,12 @@ export class Filter implements IFilter {
     const uri = Utils.sanitize( uriLike );
 
     return !! group && !! key && !! ( this.getFilter( group, key )?.items?.some( i => i.uri === uri ) );
+  }
+
+  // --- save (partial) filter collection ---
+
+  public save ( col: Partial< TFilterList > ) : void {
+    FilterGroup.forEach( g => g !== 'special' && col[ g ] && this.saveGroup( g, col[ g ] ) );
+    FilterSpecial.forEach( s => col.special?.[ s ] && this.saveSpecial( s, col.special[ s ] ) );
   }
 }
