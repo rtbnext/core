@@ -13,8 +13,8 @@ export class Profile implements IProfile {
   private static readonly storage = Storage.getInstance();
   private static readonly index = ProfileIndex.getInstance();
 
-  private static readonly emptyDataSet = {
-    info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: []
+  private static get factory () {
+    return { info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: [] };
   };
 
   private uri: string;
@@ -245,7 +245,7 @@ export class Profile implements IProfile {
       if ( ! item ) throw new Error( `Failed to add profile to index` );
 
       const profile = new Profile( item );
-      profile.setData( { ...Profile.emptyDataSet, ...data } );
+      profile.setData( { ...Profile.factory, ...data } );
       profile.setHistory( history ?? [] );
       profile.save();
 
