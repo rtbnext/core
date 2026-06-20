@@ -3,7 +3,7 @@ import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/co
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type {
   TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, THistoryItem, TProfileStats,
-  TProfileStatsData, TScatter, TScatterData, TStatsGroup, TWealthStats, TWealthStatsData
+  TProfileStatsData, TScatter, TScatterData, TScatterItem, TStatsGroup, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { join } from 'node:path';
 
@@ -11,7 +11,7 @@ import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IStats } from '@/interface/stats';
-import { StatsGroup } from '@/lib/const';
+import { Percentiles, StatsGroup, WealthSpread } from '@/lib/const';
 import { Parser } from '@/parser/Parser';
 
 
@@ -189,5 +189,59 @@ export class Stats implements IStats {
       ], true ),
       `Failed to update history`
     ) ?? false;
+  }
+
+  // --- generate wealth stats ---
+
+  public generateWealthStats ( scatter: TScatterItem[] ) : boolean {
+    return log.catch( () => {
+      log.debug( 'Generating wealth stats ...' );
+      if ( ! scatter || ! scatter.length ) throw new Error( 'No scatter data provided' );
+      scatter.sort( ( a, b ) => a.networth - b.networth );
+
+      const count = scatter.length;
+      const total = scatter.reduce( ( acc, i ) => acc + i.networth, 0 );
+      const medianIndex = Math.floor( count / 2 );
+      const median = count % 2 === 0 ? (
+        scatter[ medianIndex - 1 ].networth + scatter[ medianIndex ].networth
+      ) / 2 : scatter[ medianIndex ].networth;
+      const mean = total / count;
+      const variance = scatter.reduce( ( acc, i ) => {
+        const diff = i.networth - mean; return acc + diff * diff;
+      }, 0 ) / count;
+      const stdDev = Math.sqrt( variance );
+
+      const percentiles: TWealthStatsData[ 'percentiles' ] = {};
+      Percentiles.forEach( p => {
+        const idx = Math.ceil( ( parseInt( p ) / 100 ) * count ) - 1;
+        percentiles[ p ] = scatter[ idx ].networth;
+      } );
+
+      const quartiles: TWealthStatsData[ 'quartiles' ] = [
+        scatter[ Math.floor( count * 0.25 ) ].networth,
+        scatter[ Math.floor( count * 0.5 ) ].networth,
+        scatter[ Math.floor( count * 0.75 ) ].networth
+      ];
+
+      const decades: TWealthStatsData[ 'decades' ] = {};
+      const gender: TWealthStatsData[ 'gender' ] = {};
+      const spread: TWealthStatsData[ 'spread' ] = {};
+
+      scatter.forEach( item => {
+        const { gender: g, age, networth } = item;
+        const decade = Math.max( 30, Math.min( 90, Math.floor( age / 10 ) * 10 ) );
+        decades[ decade ] = ( decades[ decade ] || 0 ) + networth;
+        gender[ g ] = ( gender[ g ] || 0 ) + networth;
+
+        WealthSpread.forEach( n => {
+          if ( networth >= Number( n ) * 1000 ) spread[ n ] = ( spread[ n ] || 0 ) + 1;
+        } );
+      } );
+
+      return this.setWealthStats( {
+        total, median, mean, stdDev, percentiles, quartiles, decades, gender, spread,
+        max: scatter.at( -1 )!.networth, min: scatter[ 0 ].networth
+      } )
+    }, `Failed to generate wealth stats` ) ?? false;
   }
 }
