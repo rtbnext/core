@@ -20,10 +20,13 @@ export class ProfileMerger {
     const revUri = uri.split( '-' ).reverse().join( '-' );
     const keys = [ ...ProfileMerger.index.getIndex().keys() ];
 
-    return [ ...new Set( [
+    const res = new Set( [
       ...ProfileMerger.cmp.match< CmpStrResult[] >( keys, uri, 0.9 ).map( i => i.source ),
       ...ProfileMerger.cmp.match< CmpStrResult[] >( keys, revUri, 0.8 ).map( i => i.source )
-    ] ) ];
+    ] );
+
+    res.delete( uri );
+    return [ ...res ];
   }
 
   // --- check mergeable profiles ---
