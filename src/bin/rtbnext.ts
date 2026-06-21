@@ -7,6 +7,11 @@ import { JOBS } from '@/job/index';
 
 const program = new Command();
 
+program
+  .name( 'ntbnext' )
+  .description( 'CLI to manage rtbnext database' )
+  .version( '2.0.0' );
+
 for ( const JobClass of JOBS ) {
   const { id, desc, options } = JobClass.definition;
   const command = program.command( id ).description( desc );
