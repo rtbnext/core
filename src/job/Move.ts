@@ -34,15 +34,15 @@ export class MoveJob extends Job< TMoveJobOptions > {
     id: 'move',
     desc: 'Move a profile from one URI to another',
     options: [ {
-      name: '--source <URI>',
-      desc: 'The profile URI to move from',
+      name: '-s, --source <URI>',
+      desc: 'Source profile URI to move from',
       required: true
     }, {
-      name: '--target <URI>',
-      desc: 'The profile URI to move to',
+      name: '-t, --target <URI>',
+      desc: 'Target profile URI to move to',
       required: true
     }, {
-      name: '--make-alias',
+      name: '-a, --make-alias',
       desc: 'Whether to create an alias from the old URI to the new one'
     } ]
   } as const;

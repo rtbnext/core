@@ -34,7 +34,7 @@ export class QueueJob extends Job< TQueueJobOptions > {
     id: 'queue',
     desc: 'Managing list and profile queues',
     options: [ {
-      name: '--type <TYPE>',
+      name: '-t, --type <TYPE>',
       desc: 'Which queue to use (available: list, profile)',
       parser: ( v: string ) : TQueueType => v.toLowerCase() as TQueueType,
       required: true
@@ -55,7 +55,7 @@ export class QueueJob extends Job< TQueueJobOptions > {
       desc: 'Additional queue item arguments as JSON string',
       parser: ( v: string ) => Parser.strict( v, 'json' )
     }, {
-      name: '--clear',
+      name: '-c, --clear',
       desc: 'Clear the queue before adding new items'
     } ]
   } as const;

@@ -46,7 +46,7 @@ export class WikiJob extends Job< TWikiJobOptions > {
     id: 'wiki',
     desc: 'Update and assign wiki data to a profile',
     options: [ {
-      name: '--profile <URI>',
+      name: '-p, --profile <URI>',
       desc: 'The profile URI to process',
       required: true
     }, {

@@ -60,7 +60,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
     id: 'profile',
     desc: 'Fetch and update Forbes profiles',
     options: [ {
-      name: '--profiles <URIs>',
+      name: '-p, --profiles <URIs>',
       desc: 'Process specific profiles by URI (comma-separated)',
       parser: ( v: string ) => Parser.list( v, 'string', ',' )
     }, {
