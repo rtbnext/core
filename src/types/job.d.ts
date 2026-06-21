@@ -26,6 +26,7 @@ export type TJobClsOptions< T extends object = {} > = Expand< {
 export type TMoveJobOptions = TJobClsOptions< {
   from: string;
   to: string;
+  makeAlias?: boolean;
 } >;
 
 export type TProfileJobOptions = TJobClsOptions< {
