@@ -1,5 +1,4 @@
-import type { TArgs } from '@/type/generic';
-import { TJobClsOptions } from '@/type/job';
+import type { TJobClsOptions } from '@/type/job';
 
 
 export interface IJob< T extends TJobClsOptions = TJobClsOptions > {
