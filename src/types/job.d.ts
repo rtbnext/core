@@ -31,8 +31,8 @@ export type TProfileJobOptions = TJobClsOptions< {
 } >;
 
 export interface TJobCls {
-  new < T extends TJobClsOptions = TJobClsOptions > ( options: T ) : IJob< T >;
   readonly definition: TJobDefinition;
+  new ( options: TJobClsOptions ) : IJob;
 }
 
 export type TJobRegistry = ReadonlyArray< TJobCls >;
