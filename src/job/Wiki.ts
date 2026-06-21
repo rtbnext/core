@@ -1,11 +1,22 @@
 import { Job } from '@/abstract/Job';
+import { Profile } from '@/model/Profile';
 import type { TJobDefinition, TWikiJobOptions } from '@/type/job';
+import { Wiki } from '@/util/Wiki';
 
 
 export class WikiJob extends Job< TWikiJobOptions > {
   constructor ( options: TWikiJobOptions ) { super( options, 'Wiki' ) }
 
   // --- job runner ---
+
+  private async update ( profile: Profile ) : Promise< void > {
+    this.log( `Updating wiki for profile: ${ profile.getUri() }` );
+    const wiki = await Wiki.fromProfileData( profile.getData() );
+    if ( ! wiki ) return;
+
+    profile.updateData( { wiki } );
+    profile.save();
+  }
 
   public async run () : Promise< void > {}
 
