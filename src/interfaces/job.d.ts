@@ -1,9 +1,10 @@
 import type { TArgs } from '@/type/generic';
+import { TJobClsOptions } from '@/type/job';
 
 
-export interface IJob {
+export interface IJob< T extends TJobClsOptions = TJobClsOptions > {
   getJobName () : string;
-  getArgs () : TArgs;
+  getOptions () : T;
   isSilent () : boolean;
   isSafeMode () : boolean;
   run () : void | Promise< void >;
