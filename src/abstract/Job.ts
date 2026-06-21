@@ -22,7 +22,7 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
     this.silent = this.options.silent !== undefined ? Parser.boolean( this.options.silent ) : silent;
     this.safeMode = this.options.safeMode !== undefined ? Parser.boolean( this.options.safeMode ) : safeMode;
 
-    this.log( `Run job [${ this.job }]`, this.options, 'info' );
+    this.log( 'Run job', this.options, 'info' );
   }
 
   // --- helper ---

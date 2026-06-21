@@ -22,7 +22,7 @@ export class MoveJob extends Job< TMoveJobOptions > {
       const res = profile.move( to, makeAlias );
 
       if ( ! res ) throw new Error( `Failed to move profile from ${ from } to ${ to }` );
-      this.log( `Profile moved successfully to new URI "${ to }"` + makeAlias ? ' with alias' : '' );
+      this.log( `Profile moved successfully to ${ to }${ makeAlias ? ' with alias' : '' }` );
     } );
   }
 
