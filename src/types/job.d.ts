@@ -1,3 +1,5 @@
+import type { Expand } from 'devtypes/types/util';
+
 import type { IJob } from '@/interface/job';
 
 
@@ -16,9 +18,21 @@ export type TJobDefinition = {
   options: TJobOptions;
 };
 
-export interface TJobClass {
+export type TJobClsOptions< T extends object = {} > = Expand< {
+  silent?: boolean;
+  safeMode?: boolean;
+} & T >;
+
+export type TProfileJobOptions = TJobClsOptions< {
+  profiles?: string[];
+  replace?: boolean;
+  skipRanking?: boolean;
+  skipWiki?: boolean;
+} >;
+
+export interface TJobCls {
+  new < T extends TJobClsOptions = TJobClsOptions > ( options: T ) : IJob< T >;
   readonly definition: TJobDefinition;
-  new ( args: string[] ) : IJob;
 }
 
-export type TJobRegistry = ReadonlyArray< TJobClass >;
+export type TJobRegistry = ReadonlyArray< TJobCls >;
