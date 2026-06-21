@@ -32,7 +32,6 @@ export type TProfileJobOptions = TJobClsOptions< {
 
 export type TWikiJobOptions = TJobClsOptions< {
   profile: string;
-  update?: boolean;
   assign?: string;
 } >;
 
