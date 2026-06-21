@@ -38,7 +38,7 @@ export type TProfileJobOptions = TJobClsOptions< {
 } >;
 
 export type TQueueJobOptions = TJobClsOptions< {
-  type: TQueueType;
+  queue: TQueueType;
   add?: string[];
   remove?: string[];
   prio?: number;
