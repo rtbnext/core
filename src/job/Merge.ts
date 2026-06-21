@@ -1,4 +1,5 @@
 import { Job } from '@/abstract/Job';
+import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TMergeJobOptions } from '@/type/job';
@@ -19,11 +20,19 @@ export class MergeJob extends Job< TMergeJobOptions > {
     }
   }
 
-  private isMergeable ( target: Profile, source: Profile ) : void {
+  private isMergeable ( target: IProfile, source: IProfile ) : void {
     const test = ProfileMerger.mergeableProfiles( target.getData(), source.getData() );
 
     if ( test ) console.log( `Profiles ${ target.getUri() } and ${ source.getUri() } are mergeable.` );
     else console.log( `Profiles ${ target.getUri() } and ${ source.getUri() } are NOT mergeable.` );
+  }
+
+  private merge ( target: IProfile, source: IProfile, force: boolean, makeAlias: boolean ) : void {
+    this.log( `Merging profile ${ source.getUri() } into ${ target.getUri() }` );
+
+    const res = ProfileMerger.mergeProfiles( target, source, force, makeAlias );
+    if ( ! res ) throw new Error( 'Merge failed: profiles are not mergeable.' );
+    this.log( 'Merge completed successfully.' );
   }
 
   public async run () : Promise< void > {
