@@ -9,7 +9,7 @@ import { TJobClsOptions } from '@/type/job';
 export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implements IJob< T > {
   protected static readonly config = Config.getInstance();
 
-  protected readonly options = {} as T;
+  protected readonly options: T;
   protected readonly job: string;
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
