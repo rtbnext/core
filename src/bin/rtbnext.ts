@@ -7,7 +7,7 @@ import { JOBS } from '@/job/index';
 
 const addGlobalOptions = ( command: Command ) : void => void command
   .optionsGroup( 'Global Options:' )
-  .option( '-s, --silent', 'Disable logging' )
+  .option( '--silent', 'Disable logging' )
   .option( '--safe-mode', 'Enable safe mode' );
 
 const program = new Command();
@@ -15,7 +15,7 @@ const program = new Command();
 program
   .name( 'ntbnext' )
   .description( 'CLI to maintain the @rtbnext database' )
-  .version( '2.0.0' );
+  .version( '2.0.0', '-v, --version' );
 
 for ( const JobClass of JOBS ) {
   const { id, desc, options } = JobClass.definition;
