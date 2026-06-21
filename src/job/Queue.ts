@@ -7,8 +7,8 @@ import type { TQueueType } from '@/type/queue';
 
 export class QueueJob extends Job< TQueueJobOptions > {
   private static readonly queues = {
-    list: ListQueue.getInstance,
-    profile: ProfileQueue.getInstance
+    list: ListQueue.getInstance(),
+    profile: ProfileQueue.getInstance()
   } as const;
 
   constructor ( options: TQueueJobOptions ) { super( options, 'Queue' ) }
@@ -17,7 +17,14 @@ export class QueueJob extends Job< TQueueJobOptions > {
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
-      //
+      const { type, clear, add, remove, prio, args } = this.options;
+
+      const queue = QueueJob.queues[ type ];
+      if ( ! queue ) throw new Error( `Unknown queue type: ${ type }` );
+
+      if ( clear ) queue.clear();
+      if ( add?.length ) queue.addMany( add.map( uriLike => ( { uriLike, prio, args } ) ) );
+      if ( remove?.length ) queue.remove( ...remove );
     } );
   }
 
@@ -42,7 +49,7 @@ export class QueueJob extends Job< TQueueJobOptions > {
     }, {
       name: '--prio <NUMBER>',
       desc: 'Set priority of added items (higher number = higher priority)',
-      parser: ( v: string ) => Parser.number( v )
+      parser: ( v: string ) => Parser.strict( v, 'number' )
     }, {
       name: '--args <JSON>',
       desc: 'Additional queue item arguments as JSON string',
