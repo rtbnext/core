@@ -6,7 +6,7 @@ import { hrtime } from 'node:process';
 
 import { REGEX_DIACRITICS, REGEX_NOALNUM } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
-import type { TAggregator, TArgs, TMeasuredResult, TObjOperator } from '@/type/generic';
+import type { TAggregator, TMeasuredResult, TObjOperator } from '@/type/generic';
 import type { TParserDateType } from '@/type/parser';
 
 
@@ -151,21 +151,10 @@ export class Utils {
     }
   }
 
-  // --- queries & args ---
+  // --- queries ---
 
   public static queryStr ( query: Record< string, any > ) : string {
     return new URLSearchParams( query ).toString();
-  }
-
-  public static parseArgs ( args: readonly string[] ) : TArgs {
-    return args.reduce( ( res, a, i ) => {
-      if ( a.startsWith( '--' ) ) {
-        const [ key, val ] = a.slice( 2 ).split( '=', 2 );
-        res[ key ] = val ?? ( args[ i + 1 ]?.startsWith( '--' ) ? true : args[ ++i ] );
-      }
-
-      return res;
-    }, {} as TArgs );
   }
 
   // --- search index ---
