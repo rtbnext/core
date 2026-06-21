@@ -4,7 +4,7 @@ import type { IJob } from '@/interface/job';
 export type TJobOption = {
   name: string;
   desc: string;
-  cb?: ( value: string ) => any;
+  parser?: ( value: string ) => any;
   required?: boolean;
 };
 
