@@ -61,11 +61,19 @@ export class ProfileJob extends Job implements IJob {
   public static readonly definition: TJobDefinition = {
     id: 'profile',
     desc: 'Fetch and update Forbes profiles',
-    options: [
-      [ '--profiles <URIs>', 'Process specific profiles' ],
-      [ '--replace', 'Replace existing profile data' ],
-      [ '--skip-ranking', 'Skip ranking generation' ],
-      [ '--skip-wiki', 'Skip wiki data enrichment' ]
-    ]
+    options: [ {
+      name: '--profiles <URIs>',
+      desc: 'Process specific profiles by URI (comma-separated)',
+      parser: ( v: string ) => Parser.list( v, 'string', ',' )
+    }, {
+      name: '--replace',
+      desc: 'Replace existing profile data'
+    }, {
+      name: '--skip-ranking',
+      desc: 'Skip ranking generation'
+    }, {
+      name: '--skip-wiki',
+      desc: 'Skip wiki data enrichment'
+    } ]
   } as const;
 }
