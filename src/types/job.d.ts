@@ -1,6 +1,7 @@
 import type { Expand } from 'devtypes/types/util';
 
 import type { IJob } from '@/interface/job';
+import type { TQueueType } from '@/type/queue';
 
 
 export type TJobOption = {
@@ -34,6 +35,15 @@ export type TProfileJobOptions = TJobClsOptions< {
   replace?: boolean;
   skipRanking?: boolean;
   skipWiki?: boolean;
+} >;
+
+export type TQueueJobOptione = TJobClsOptions< {
+  type: TQueueType;
+  add?: string[];
+  remove?: string[];
+  prio?: number;
+  args?: any;
+  clear?: boolean;
 } >;
 
 export type TWikiJobOptions = TJobClsOptions< {
