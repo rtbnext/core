@@ -28,11 +28,11 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
   // --- helper ---
 
   protected log ( msg: string, meta?: any, as: TLoggingLevel = 'debug' ) : void {
-    if ( ! this.silent ) log[ as ]( `[${ this.job }] ${ msg }`, meta );
+    if ( ! this.silent ) log[ as ]( `[${ this.job.toUpperCase() }] ${ msg }`, meta );
   }
 
   protected err ( err: unknown, msg?: string ) : void {
-    if ( ! this.silent ) log.errMsg( err, msg ? `[${ this.job }] ${ msg }` : undefined );
+    if ( ! this.silent ) log.errMsg( err, msg ? `[${ this.job.toUpperCase() }] ${ msg }` : undefined );
   }
 
   protected async protect<
