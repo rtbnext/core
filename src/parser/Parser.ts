@@ -11,8 +11,6 @@ import type { TParserContainer, TParserDateType, TParserMethod } from '@/type/pa
 
 
 export class Parser {
-  // --- primitive ---
-
   public static primitive ( value: unknown, safe: boolean = true ) : Primitive {
     return value === null || value === undefined ? value
       : typeof value === 'boolean' ? value
@@ -51,6 +49,13 @@ export class Parser {
   public static date ( value?: any, format: TParserDateType = 'ymd' ) : string | undefined {
     try { value = ( value ? new Date( value ) : new Date() ).toISOString() } catch { return undefined }
     return format === 'iso' ? value : value.split( 'T' )[ 0 ].split( '-' ).slice( 0, format.length ).join( '-' );
+  }
+
+  public static json ( value: unknown ) : any {
+    if ( typeof value === 'object' ) return value;
+
+    try { return JSON.parse( String( value ) ) }
+    catch ( err ) { throw new SyntaxError( `Invalid JSON string: ${ value }` ) }
   }
 
   // --- URI component ---
