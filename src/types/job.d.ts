@@ -1,11 +1,12 @@
 import type { IJob } from '@/interface/job';
 
 
-export type TJobOption = readonly [
-  name: string,
-  desc: string,
-  required?: boolean
-];
+export type TJobOption = {
+  name: string;
+  desc: string;
+  cb?: ( value: string ) => any;
+  required?: boolean;
+};
 
 export type TJobOptions = ReadonlyArray< TJobOption >;
 
