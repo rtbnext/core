@@ -37,7 +37,7 @@ export type TProfileJobOptions = TJobClsOptions< {
   skipWiki?: boolean;
 } >;
 
-export type TQueueJobOptione = TJobClsOptions< {
+export type TQueueJobOptions = TJobClsOptions< {
   type: TQueueType;
   add?: string[];
   remove?: string[];
