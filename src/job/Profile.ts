@@ -14,7 +14,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
   private static readonly fetch = Fetch.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
 
-  constructor ( options: TProfileJobOptions ) { super( options, 'Profile' ) }
+  constructor ( options: TProfileJobOptions ) { super( options, 'profile' ) }
 
   // --- job runner ---
 

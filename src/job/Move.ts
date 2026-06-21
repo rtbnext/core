@@ -5,7 +5,7 @@ import type { TJobDefinition, TMoveJobOptions } from '@/type/job';
 
 
 export class MoveJob extends Job< TMoveJobOptions > {
-  constructor ( options: TMoveJobOptions ) { super( options, 'Move' ) }
+  constructor ( options: TMoveJobOptions ) { super( options, 'move' ) }
 
   // --- job runner ---
 
