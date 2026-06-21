@@ -1,17 +1,23 @@
 import { Job } from '@/abstract/Job';
+import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TQueueJobOptions } from '@/type/job';
 import type { TQueueType } from '@/type/queue';
 
 
 export class QueueJob extends Job< TQueueJobOptions > {
+  private static readonly queues = {
+    list: ListQueue.getInstance,
+    profile: ProfileQueue.getInstance
+  } as const;
+
   constructor ( options: TQueueJobOptions ) { super( options, 'Queue' ) }
 
   // --- job runner ---
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
-      console.log( this.options );
+      //
     } );
   }
 
