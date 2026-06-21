@@ -11,18 +11,20 @@ export class MoveJob extends Job< TMoveJobOptions > {
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
-      const from = Utils.sanitize( this.options.from ), to = Utils.sanitize( this.options.to );
       const makeAlias = !! this.options.makeAlias;
-      if( ! from || ! to ) throw new Error( 'Invalid from/to profile names' );
+      const source = Utils.sanitize( this.options.source );
+      const target = Utils.sanitize( this.options.target );
 
-      const profile = Profile.find( from );
-      if ( ! profile ) throw new Error( `Profile ${ from } not found` );
+      if( ! source || ! target ) throw new Error( 'Invalid from/to profile names' );
 
-      this.log( `Moving profile from ${ from } to ${ to } ...` );
-      const res = profile.move( to, makeAlias );
+      const profile = Profile.find( source );
+      if ( ! profile ) throw new Error( `Profile ${ source } not found` );
 
-      if ( ! res ) throw new Error( `Failed to move profile from ${ from } to ${ to }` );
-      this.log( `Profile moved successfully to ${ to }${ makeAlias ? ' with alias' : '' }` );
+      this.log( `Moving profile from ${ source } to ${ target } ...` );
+      const res = profile.move( target, makeAlias );
+
+      if ( ! res ) throw new Error( `Failed to move profile from ${ source } to ${ target }` );
+      this.log( `Profile moved successfully to ${ target }${ makeAlias ? ' with alias' : '' }` );
     } );
   }
 
@@ -32,11 +34,11 @@ export class MoveJob extends Job< TMoveJobOptions > {
     id: 'move',
     desc: 'Move a profile from one URI to another',
     options: [ {
-      name: '--from <URI>',
+      name: '--source <URI>',
       desc: 'The profile URI to move from',
       required: true
     }, {
-      name: '--to <URI>',
+      name: '--target <URI>',
       desc: 'The profile URI to move to',
       required: true
     }, {

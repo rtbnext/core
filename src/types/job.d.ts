@@ -34,8 +34,8 @@ export type TMergeJobOptions = TJobClsOptions< {
 } >;
 
 export type TMoveJobOptions = TJobClsOptions< {
-  from: string;
-  to: string;
+  source: string;
+  target: string;
   makeAlias?: boolean;
 } >;
 
