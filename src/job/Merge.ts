@@ -1,5 +1,7 @@
 import { Job } from '@/abstract/Job';
+import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TMergeJobOptions } from '@/type/job';
+import { ProfileMerger } from '@/util/ProfileMerger';
 
 
 export class MergeJob extends Job< TMergeJobOptions > {
@@ -7,9 +9,20 @@ export class MergeJob extends Job< TMergeJobOptions > {
 
   // --- job runner ---
 
+  private listMergeable ( uriLike: string[] ) : void {
+    for ( const [ uri, list ] of Object.entries( ProfileMerger.listCandidates( ...uriLike ) ) ) {
+      console.log( `Candidates for ${ uri }:` );
+
+      if ( ! list.length ) console.log( ' - None' );
+      for ( const candidate of list ) console.log( ` - ${ candidate }` );
+    }
+  }
+
   public async run () : Promise< void > {
     await this.protect( async () => {
       const { list, source, target, dryRun, force, makeAlias } = this.options;
+
+      if ( list?.length ) this.listMergeable( list );
     } );
   }
 
@@ -19,8 +32,9 @@ export class MergeJob extends Job< TMergeJobOptions > {
     id: 'merge',
     desc: 'Merge two profiles safely',
     options: [ {
-      name: '-l, --list',
-      desc: 'Find and list all merge candidates'
+      name: '-l, --list <URIs>',
+      desc: 'List merge candidates for the given profile URIs (comma-separated)',
+      parser: ( v: string ) => Parser.list( v, 'string', ',' )
     }, {
       name: '-s, --source <URI>',
       desc: 'Source profile URI to merge from'

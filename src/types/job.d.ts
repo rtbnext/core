@@ -25,7 +25,7 @@ export type TJobClsOptions< T extends object = {} > = Expand< {
 } & T >;
 
 export type TMergeJobOptions = TJobClsOptions< {
-  list?: boolean;
+  list?: string[];
   source?: string;
   target?: string;
   dryRun?: boolean;
