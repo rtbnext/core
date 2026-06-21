@@ -1,5 +1,4 @@
 import { sha256 } from 'js-sha256';
-import { join } from 'node:path';
 
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
@@ -19,13 +18,11 @@ export abstract class Queue implements IQueue {
   protected queue: TQueue;
 
   protected constructor ( type: TQueueType ) {
-    const { root, queue } = Config.getInstance();
-    this.config = queue;
+    this.config = Config.getInstance().queue;
     this.type = type;
+    this.path = `queue/${ this.type }.json`;
 
-    this.path = join( root, `queue/${ this.type }.json` );
     Queue.storage.ensurePath( this.path );
-
     this.queue = this.loadQueue();
   }
 
