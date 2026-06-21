@@ -1,29 +1,28 @@
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
-import { Utils } from '@/core/Utils';
 import type { IJob } from '@/interface/job';
 import { Parser } from '@/parser/Parser';
 import type { TLoggingLevel } from '@/type/config';
-import type { TArgs } from '@/type/generic';
+import { TJobClsOptions } from '@/type/job';
 
 
-export abstract class Job implements IJob {
+export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implements IJob< T > {
   protected static readonly config = Config.getInstance();
 
-  protected readonly args: TArgs = {};
+  protected readonly options = {} as T;
   protected readonly job: string;
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
 
-  constructor ( args: string[], job: string ) {
-    this.args = Utils.parseArgs( args );
+  constructor ( options: T, job: string ) {
+    this.options = options;
     this.job = job;
 
     const { silent, safeMode } = Job.config.job;
-    this.silent = this.args.silent !== undefined ? Parser.boolean( this.args.silent ) : silent;
-    this.safeMode = this.args.safeMode !== undefined ? Parser.boolean( this.args.safeMode ) : safeMode;
+    this.silent = this.options.silent !== undefined ? Parser.boolean( this.options.silent ) : silent;
+    this.safeMode = this.options.safeMode !== undefined ? Parser.boolean( this.options.safeMode ) : safeMode;
 
-    this.log( `Run job [${ this.job }]`, this.args, 'info' );
+    this.log( `Run job [${ this.job }]`, this.options, 'info' );
   }
 
   // --- helper ---
@@ -53,8 +52,8 @@ export abstract class Job implements IJob {
     return this.job;
   }
 
-  public getArgs () : TArgs {
-    return this.args;
+  public getOptions () : T {
+    return this.options;
   }
 
   public isSilent () : boolean {
