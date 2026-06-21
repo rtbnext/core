@@ -1,4 +1,5 @@
 import { Job } from '@/abstract/Job';
+import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TMergeJobOptions } from '@/type/job';
 import { ProfileMerger } from '@/util/ProfileMerger';
@@ -23,6 +24,14 @@ export class MergeJob extends Job< TMergeJobOptions > {
       const { list, source, target, dryRun, force, makeAlias } = this.options;
 
       if ( list?.length ) this.listMergeable( list );
+      else if ( ! source || ! target ) throw new Error( 'Invalid arguments for merge job' );
+      else {
+        const src = Profile.get( source ), tgt = Profile.get( target );
+        if ( ! src || ! tgt ) throw new Error( 'One or both profiles not found' );
+
+        if ( dryRun ) this.isMergeable( src, tgt );
+        else this.merge( tgt, src, Parser.boolean( force ), Parser.boolean( makeAlias ) );
+      }
     } );
   }
 
