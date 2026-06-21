@@ -1,9 +1,13 @@
+import type { TRTBListItem } from '@rtbnext/schema/src/model/list';
+
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
+import { Mover } from '@/model/Mover';
 import { Stats } from '@/model/Stats';
 import { Parser } from '@/parser/Parser';
 import type { TJobClsOptions, TJobDefinition } from '@/type/job';
+import type { TQueueOptions } from '@/type/queue';
 import type { TPersonList } from '@/type/response';
 
 
@@ -23,6 +27,7 @@ export class RTBJob extends Job {
 
       const rawList = res.data.personList.personsLists;
       const date = Parser.date( rawList[ 0 ].timestamp, 'ymd' )!;
+      const ts = new Date( date ).getTime();
 
       if ( RTBJob.stats.getGlobalStats().date === date ) {
         this.log( 'RTB list is already up to date' );
@@ -34,6 +39,16 @@ export class RTBJob extends Job {
         .sort( ( a, b ) => a.rank! - b.rank! );
 
       this.log( `Processing RTB list dated ${ date } (${ entries.length } items)` );
+
+      // --- process list data ---
+      let count = 0, total = 0, woman = 0;
+      const items: TRTBListItem[] = [];
+      const mover = Mover.factory( date );
+      const queue: TQueueOptions[] = [];
+
+      for ( const [ i, raw ] of Object.entries( entries ) ) {
+        raw.date = ts;
+      }
     } );
   }
 
