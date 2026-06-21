@@ -60,7 +60,6 @@ export class ProfileJob extends Job implements IJob {
 
   public static readonly definition: TJobDefinition = {
     id: 'profile',
-    name: 'Profile',
     desc: 'Fetch and update Forbes profiles',
     options: [
       [ '--profiles <URIs>', 'Process specific profiles' ],

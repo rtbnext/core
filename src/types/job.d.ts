@@ -11,7 +11,6 @@ export type TJobOptions = ReadonlyArray< TJobOption >;
 
 export type TJobDefinition = {
   readonly id: string;
-  name: string;
   desc: string;
   options: TJobOptions;
 };
