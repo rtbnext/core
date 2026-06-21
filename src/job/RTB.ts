@@ -28,6 +28,12 @@ export class RTBJob extends Job {
         this.log( 'RTB list is already up to date' );
         return;
       }
+
+      const th = Date.now() - Job.config.queue.tsThreshold;
+      const entries = rawList.filter( i => i.rank && i.finalWorth ).filter( Boolean )
+        .sort( ( a, b ) => a.rank! - b.rank! );
+
+      this.log( `Processing RTB list dated ${ date } (${ entries.length } items)` );
     } );
   }
 
