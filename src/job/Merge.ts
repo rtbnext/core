@@ -19,6 +19,13 @@ export class MergeJob extends Job< TMergeJobOptions > {
     }
   }
 
+  private isMergeable ( target: Profile, source: Profile ) : void {
+    const test = ProfileMerger.mergeableProfiles( target.getData(), source.getData() );
+
+    if ( test ) console.log( `Profiles ${ target.getUri() } and ${ source.getUri() } are mergeable.` );
+    else console.log( `Profiles ${ target.getUri() } and ${ source.getUri() } are NOT mergeable.` );
+  }
+
   public async run () : Promise< void > {
     await this.protect( async () => {
       const { list, source, target, dryRun, force, makeAlias } = this.options;
