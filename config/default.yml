@@ -1,0 +1,50 @@
+logging:
+  level: "debug"
+  console: false
+  file: true
+
+job:
+  silent: false
+  safeMode: true
+
+storage:
+  baseDir: "data"
+  compression: true
+
+fetch:
+  endpoints:
+    profile: "https://forbes.com/forbesapi/person/{URI}.json"
+    list: "https://forbes.com/forbesapi/person/{URI}/{YEAR}/position/true.json?limit={LIMIT}&start={START}"
+    wikipedia: "https://{LANG}.wikipedia.org/w/api.php?{QUERY}"
+    commons: "https://commons.wikimedia.org/w/api.php?{QUERY}"
+    wikidata: "https://query.wikidata.org/sparql?query={SPARQL}"
+    wayback: "https://archive.org/wayback/available?url={URL}&timestamp={TS}"
+  headers:
+    Accept-Language: "en-US,en;q=0.9"
+    Accept-Encoding: "gzip, deflate, br"
+    Accept: "application/json"
+    Connection: "keep-alive"
+    Upgrade-Insecure-Requests: "1"
+  agentPool:
+    - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    - "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0"
+    - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"
+    - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  rateLimit:
+    batchSize: 10
+    timeout: 30000
+    retries: 3
+    idle: 60000
+    requestDelay:
+      max: 2500
+      min: 50
+  requests:
+    list:
+      chunkSize: 500
+      maxRequests: 20
+
+queue:
+  tsThreshold: 2592000
+  maxSize: 1000
+  defaultPrio: 0
