@@ -1,3 +1,4 @@
+import { MergeJob } from '@/job/Merge';
 import { MoveJob } from '@/job/Move';
 import { ProfileJob } from '@/job/Profile';
 import { QueueJob } from '@/job/Queue';
@@ -6,5 +7,5 @@ import type { TJobRegistry } from '@/type/job';
 
 
 export const JOBS = [
-  MoveJob, ProfileJob, QueueJob, WikiJob
+  MergeJob, MoveJob, ProfileJob, QueueJob, WikiJob
 ] as const satisfies TJobRegistry;
