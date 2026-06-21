@@ -5,7 +5,5 @@ import type { TJobRegistry } from '@/type/job';
 
 
 export const JOBS = [
-  MoveJob,
-  ProfileJob,
-  WikiJob
+  MoveJob, ProfileJob, WikiJob
 ] as const satisfies TJobRegistry;
