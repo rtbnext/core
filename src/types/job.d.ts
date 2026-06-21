@@ -30,6 +30,12 @@ export type TProfileJobOptions = TJobClsOptions< {
   skipWiki?: boolean;
 } >;
 
+export type TWikiJobOptions = TJobClsOptions< {
+  profile: string;
+  update?: boolean;
+  assign?: string;
+} >;
+
 export interface TJobCls {
   readonly definition: TJobDefinition;
   new ( options: TJobClsOptions ) : IJob;
