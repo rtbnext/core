@@ -14,13 +14,13 @@ export class ProfileManager {
     const { profile, isExisting, isSimilar } = lookup;
 
     if ( isExisting && profile ) {
-      profile[ method ]( profileData as any, aliases );
+      profile[ method ]( profileData as TProfileData, aliases );
       profile.save();
       return profile;
     }
 
     if ( isSimilar && profile ) {
-      profile[ method ]( profileData as any, aliases );
+      profile[ method ]( profileData as TProfileData, aliases );
       profile.move( uriLike, true );
       return profile;
     }
