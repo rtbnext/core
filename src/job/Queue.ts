@@ -53,7 +53,7 @@ export class QueueJob extends Job< TQueueJobOptions > {
     }, {
       name: '--args <JSON>',
       desc: 'Additional queue item arguments as JSON string',
-      parser: ( v: string ) => JSON.parse( v )
+      parser: ( v: string ) => Parser.strict( v, 'json' )
     }, {
       name: '--clear',
       desc: 'Clear the queue before adding new items'
