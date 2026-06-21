@@ -9,7 +9,7 @@ export class MoveJob extends Job< TMoveJobOptions > {
 
   // --- job runner ---
 
-  public async run () : Promise< void > {
+  public override async run () : Promise< void > {
     await this.protect( async () => {
       const from = Utils.sanitize( this.options.from ), to = Utils.sanitize( this.options.to );
       const makeAlias = !! this.options.makeAlias;

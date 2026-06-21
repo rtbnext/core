@@ -18,7 +18,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
   // --- job runner ---
 
-  public async run () : Promise< void > {
+  public override async run () : Promise< void > {
     await this.protect( async () => {
       const method = this.options.replace ? 'setData' : 'updateData';
       const batch = this.options.profiles?.length ? this.options.profiles

@@ -30,7 +30,7 @@ export class WikiJob extends Job< TWikiJobOptions > {
     profile.save();
   }
 
-  public async run () : Promise< void > {
+  public override async run () : Promise< void > {
     await this.protect( async () => {
       const profile = Profile.find( this.options.profile );
       if ( ! profile ) throw new Error( `Profile not found: ${ this.options.profile }` );
