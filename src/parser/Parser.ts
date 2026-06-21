@@ -49,8 +49,8 @@ export class Parser {
   }
 
   public static date ( value?: any, format: TParserDateType = 'ymd' ) : string | undefined {
-    try { value = new Date( value ).toISOString() } catch { return undefined }
-    return format === 'iso' ? value : value.split( '-' ).slice( 0, format.length ).join( '-' );
+    try { value = ( value ? new Date( value ) : new Date() ).toISOString() } catch { return undefined }
+    return format === 'iso' ? value : value.split( 'T' )[ 0 ].split( '-' ).slice( 0, format.length ).join( '-' );
   }
 
   // --- URI component ---
