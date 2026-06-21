@@ -24,6 +24,15 @@ export type TJobClsOptions< T extends object = {} > = Expand< {
   safeMode?: boolean;
 } & T >;
 
+export type TMergeJobOptions = TJobClsOptions< {
+  list?: boolean;
+  source?: string;
+  target?: string;
+  dryRun?: boolean;
+  force?: boolean;
+  makeAlias?: boolean;
+} >;
+
 export type TMoveJobOptions = TJobClsOptions< {
   from: string;
   to: string;
