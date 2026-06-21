@@ -22,8 +22,8 @@ export class ProfileJob extends Job implements IJob {
   public async run () : Promise< void > {
     await this.protect( async () => {
       const method = Parser.boolean( this.args.replace ) ? 'setData' : 'updateData';
-      const batch = 'profile' in this.args && typeof this.args.profile === 'string'
-        ? this.args.profile.split( ',' ).filter( Boolean )
+      const batch = 'profiles' in this.args && typeof this.args.profiles === 'string'
+        ? this.args.profiles.split( ',' ).filter( Boolean )
         : ProfileJob.queue.nextUri( Job.config.fetch.rateLimit.batchSize );
 
       for ( const raw of await ProfileJob.fetch.profile( ...batch ) ) {
