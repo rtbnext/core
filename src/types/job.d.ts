@@ -37,7 +37,7 @@ export type TWikiJobOptions = TJobClsOptions< {
 
 export interface TJobCls {
   readonly definition: TJobDefinition;
-  new ( options: TJobClsOptions ) : IJob;
+  new ( options: TJobClsOptions< any > ) : IJob;
 }
 
 export type TJobRegistry = ReadonlyArray< TJobCls >;
