@@ -23,6 +23,11 @@ export type TJobClsOptions< T extends object = {} > = Expand< {
   safeMode?: boolean;
 } & T >;
 
+export type TMoveJobOptions = TJobClsOptions< {
+  from: string;
+  to: string;
+} >;
+
 export type TProfileJobOptions = TJobClsOptions< {
   profiles?: string[];
   replace?: boolean;
