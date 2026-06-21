@@ -1,29 +1,27 @@
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
-import type { IJob } from '@/interface/job';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
-import type { TJobDefinition } from '@/type/job';
+import type { TJobDefinition, TProfileJobOptions } from '@/type/job';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 import { Wiki } from '@/util/Wiki';
 
 
-export class ProfileJob extends Job implements IJob {
+export class ProfileJob extends Job< TProfileJobOptions > {
   private static readonly fetch = Fetch.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
 
-  constructor ( args: string[] ) { super( args, 'Profile' ) }
+  constructor ( options: TProfileJobOptions ) { super( options, 'Profile' ) }
 
   // --- job runner ---
 
   public async run () : Promise< void > {
     await this.protect( async () => {
-      const method = Parser.boolean( this.args.replace ) ? 'setData' : 'updateData';
-      const batch = 'profiles' in this.args && typeof this.args.profiles === 'string'
-        ? this.args.profiles.split( ',' ).filter( Boolean )
+      const method = this.options.replace ? 'setData' : 'updateData';
+      const batch = this.options.profiles?.length ? this.options.profiles
         : ProfileJob.queue.nextUri( Job.config.fetch.rateLimit.batchSize );
 
       for ( const raw of await ProfileJob.fetch.profile( ...batch ) ) {
@@ -42,10 +40,10 @@ export class ProfileJob extends Job implements IJob {
         } );
 
         // --- enrich profile data with ranking and wiki ---
-        if ( ! Parser.boolean( this.args.skipRanking ) )
+        if ( ! Parser.boolean( this.options.skipRanking ) )
           profileData.ranking = Ranking.generateProfileRanking( parser.sortedLists(), profileData.ranking );
 
-        if ( ! Parser.boolean( this.args.skipWiki ) )
+        if ( ! Parser.boolean( this.options.skipWiki ) )
           profileData.wiki = await Wiki.fromProfileData( profileData );
 
         // --- process profile using ProfileManager ---
