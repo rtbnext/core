@@ -21,7 +21,7 @@ export class Profile implements IProfile {
   private history?: TProfileHistory;
 
   private constructor ( item?: TProfileIndexItem ) {
-    if ( ! item ) throw new Error( `Profile index item not given` );
+    if ( ! item ) throw new Error( 'Profile index item not given' );
 
     this.uri = item.uri;
     this.path = join( 'profile', item.uri );
@@ -160,19 +160,19 @@ export class Profile implements IProfile {
     log.debug( `Saving profile: ${ this.uri }` );
     log.catch( () => {
       if ( ! Profile.index.update( this.uri, this.item ) )
-        throw new Error( `Failed to update profile index` );
+        throw new Error( 'Failed to update profile index' );
 
       if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
         this.resolvePath( 'profile.json' ), this.data
-      ) ) throw new Error( `Failed to write profile data` );
+      ) ) throw new Error( 'Failed to write profile data' );
 
       if ( this.history && ! Profile.storage.writeCSV< TProfileHistory >(
         this.resolvePath( 'history.csv' ), this.history
-      ) ) throw new Error( `Failed to write profile history` );
+      ) ) throw new Error( 'Failed to write profile history' );
 
       if ( this.meta && ! Profile.storage.writeJSON< TProfileMetaData >(
         this.resolvePath( 'meta.json' ), this.meta
-      ) ) throw new Error( `Failed to write profile metadata` );
+      ) ) throw new Error( 'Failed to write profile metadata' );
     }, `Failed to save profile: ${ this.uri }` );
   }
 
@@ -184,7 +184,7 @@ export class Profile implements IProfile {
 
     return log.catch( () => {
       const item = Profile.index.move( this.uri, uri, makeAlias );
-      if ( ! item ) throw new Error( `Failed to move profile index item` );
+      if ( ! item ) throw new Error( 'Failed to move profile index item' );
 
       const oldPath = this.path;
       this.uri = uri;
@@ -192,7 +192,7 @@ export class Profile implements IProfile {
       this.item = item;
 
       if ( ! Profile.storage.move( oldPath, this.path ) )
-        throw new Error( `Failed to move profile storage` );
+        throw new Error( 'Failed to move profile storage' );
 
       this.updateData( { uri: uri } );
       this.save();
@@ -245,7 +245,7 @@ export class Profile implements IProfile {
         text: Utils.buildSearchText( data.bio.cv )
       } );
 
-      if ( ! item ) throw new Error( `Failed to add profile to index` );
+      if ( ! item ) throw new Error( 'Failed to add profile to index' );
 
       const profile = new Profile( item );
       profile.setData( Profile.factory( data ) as TProfileData );
@@ -267,7 +267,7 @@ export class Profile implements IProfile {
       const path = join( 'profile', uri );
 
       if ( ! Profile.storage.remove( path ) )
-        throw new Error( `Failed to remove profile from storage` );
+        throw new Error( 'Failed to remove profile from storage' );
 
       Profile.index.delete( uri );
 

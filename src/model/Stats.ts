@@ -230,7 +230,7 @@ export class Stats implements IStats {
         Parser.money( data.total ), Parser.number( data.woman ), Parser.pct( data.quota ),
         Parser.money( data.today?.value ), Parser.pct( data.today?.percent )
       ], true ),
-      `Failed to update history`
+      'Failed to update history'
     ) ?? false;
   }
 
@@ -285,7 +285,7 @@ export class Stats implements IStats {
         total, median, mean, stdDev, percentiles, quartiles, decades, gender, spread,
         max: scatter.at( -1 )!.networth, min: scatter[ 0 ].networth
       } )
-    }, `Failed to generate wealth stats` ) ?? false;
+    }, 'Failed to generate wealth stats' ) ?? false;
   }
 
   // --- generate DB stats ---
@@ -309,7 +309,7 @@ export class Stats implements IStats {
 
       scan( Stats.storage.root );
       return this.setDBStats( stats );
-    }, `Failed to generate DB stats` ) ?? false;
+    }, 'Failed to generate DB stats' ) ?? false;
   }
 
   // --- instantiate ---
@@ -379,6 +379,6 @@ export class Stats implements IStats {
           );
         }
       } );
-    }, `Failed to aggregate stats data` );
+    }, 'Failed to aggregate stats data' );
   }
 }
