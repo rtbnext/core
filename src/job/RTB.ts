@@ -14,6 +14,7 @@ import type { TPersonListEntry } from '@/type/response';
 import { Performance } from '@/util/Performance';
 import { ProfileManager } from '@/util/ProfileManager';
 import { List } from '@/model/List';
+import { ProfileIndex } from '@/model/ProfileIndex';
 
 
 export class RTBJob extends Job {
@@ -131,6 +132,18 @@ export class RTBJob extends Job {
 
       if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
       this.log( `Saving RTB list dated ${ date } (${ count } items)` );
+
+      // --- create stats ---
+      const stats = PersonListParser.stats( {
+        date, count, total, woman,
+        today: { value: mover.today.total.value, percent: mover.today.total.percent },
+        ytd: { value: mover.today.total.value, percent: mover.today.total.percent }
+      } );
+
+      const globalStats = { ...stats, stats: {
+        profiles: ProfileIndex.getInstance().size,
+        days: list.getDates().length
+      } };
     } );
   }
 
