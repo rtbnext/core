@@ -46,5 +46,5 @@ fetch:
 
 queue:
   tsThreshold: 2592000
-  maxSize: 1000
+  maxSize: 10000
   defaultPrio: 0
