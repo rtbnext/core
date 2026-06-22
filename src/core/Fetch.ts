@@ -5,7 +5,7 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import type { IFetch } from '@/interface/fetch';
-import { REGEX_NONUM } from '@/lib/regex';
+import { REGEX_NONUM, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod, THeader } from '@/type/fetch';
@@ -16,6 +16,7 @@ export class Fetch implements IFetch {
   private static instance: IFetch;
 
   private readonly config: TFetchConfig;
+  private readonly wikiQuery = { format: 'json', formatversion: 2 };
   private lastRequest: number = 0;
   private httpClient: AxiosInstance;
 
@@ -158,5 +159,23 @@ export class Fetch implements IFetch {
     return this.batch< TProfileResponse >( uriLike.map( uri =>
       this.prepQuery( this.config.endpoints.profile, { uri: Utils.sanitize( uri ) } )
     ), 'get', this.useRandomUserAgent() );
+  }
+
+  public async wikidata < T > ( sparql: string ) : Promise< TResponse< T > > {
+    return this.single< T >( this.prepQuery( this.config.endpoints.wikidata, {
+      sparql: encodeURIComponent( sparql.replace( REGEX_SPACES, ' ' ).trim() )
+    } ), 'get', this.useApiAgent() );
+  }
+
+  public async wikipedia < T > ( query: Record< string, unknown >, lang: string = 'en' ) : Promise< TResponse< T > > {
+    return this.single< T >( this.prepQuery( this.config.endpoints.wikipedia, {
+      query: Utils.queryStr( { ...this.wikiQuery, ...query } ), lang
+    } ), 'get', this.useApiAgent() );
+  }
+
+  public async commons < T > ( query: Record< string, unknown > ) : Promise< TResponse< T > > {
+    return this.single< T >( this.prepQuery( this.config.endpoints.commons, {
+      query: Utils.queryStr( { ...this.wikiQuery, ...query } )
+    } ), 'get', this.useApiAgent() );
   }
 }
