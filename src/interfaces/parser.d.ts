@@ -28,3 +28,5 @@ export interface IProfileParser extends ICache {
   related () : TRelation[];
   media () : TImage[];
 }
+
+export interface IListParser extends ICache {}
