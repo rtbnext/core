@@ -67,7 +67,7 @@ export class ProfileManager {
 
   // --- add queue item based on action ---
 
-  public static updateQueue ( queue: TQueueOptions[], profile: Profile, action: TProfileOperation, th?: number ) : void {
+  public static updateQueue ( queue: TQueueOptions[], profile: IProfile, action: TProfileOperation, th?: number ) : void {
     const uriLike = profile.getUri();
 
     switch ( action ) {

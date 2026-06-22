@@ -78,6 +78,9 @@ export class RTBJob extends Job {
           this.log( `Failed to process profile for ${ uri }` );
           continue;
         }
+
+        ProfileManager.updateQueue( queue, profile, action, th );
+        profileData = profile.getData();
       }
     } );
   }
