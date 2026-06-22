@@ -1,8 +1,9 @@
+import type { TAsset, TRealtime } from '@rtbnext/schema/src/base/assets';
 import type { TEducation, TImage, TLocation, TOrganization, TRelation, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import type { ICache } from '@/type/cache';
-import type { TProfileResponse } from '@/type/response';
+import type { TPersonListEntry, TProfileResponse } from '@/type/response';
 
 
 export interface IProfileParser extends ICache {
@@ -29,4 +30,21 @@ export interface IProfileParser extends ICache {
   media () : TImage[];
 }
 
-export interface IListParser< T extends object > extends ICache {}
+export interface IListParser< T extends object > extends ICache {
+  rawData () : T;
+}
+
+export interface IParsonListParser extends IListParser< TPersonListEntry > {
+  uri () : string;
+  id () : string;
+  date () : string;
+  rank () : number | undefined;
+  networth () : number | undefined;
+  dropOff () : boolean | undefined;
+  name () : { name: TProfileName, family: boolean };
+  info () : Partial< TProfileInfo >;
+  bio () : TProfileBio;
+  age () : number | undefined;
+  assets () : TAsset[];
+  realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined;
+}
