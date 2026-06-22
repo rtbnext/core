@@ -99,6 +99,21 @@ export class RTBJob extends Job {
 
         // --- aggregate mover data ---
         Mover.aggregate( realtime, uri, name, mover, total );
+
+        // --- push list item ---
+        items.push( {
+          uri, rank, networth, name,
+          gender: profileData.info?.gender,
+          age: parser.age(),
+          today: realtime?.today,
+          ytd: realtime?.ytd,
+          citizenship: profileData.info?.citizenship,
+          industry: profileData.info?.industry!,
+          source: profileData.info?.source!
+        } );
+
+        count++; total += networth;
+        woman += +( profileData.info?.gender === 'f' );
       }
     } );
   }
