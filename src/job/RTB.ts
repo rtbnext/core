@@ -56,6 +56,11 @@ export class RTBJob extends Job {
         const id = parser.id();
         const rank = parser.rank();
         const networth = parser.networth();
+
+        if ( ! rank || ! networth ) {
+          this.log( `Skipping invalid RTB entry for ${ uri }` );
+          continue;
+        }
       }
     } );
   }
