@@ -1,8 +1,9 @@
 import { Job } from '@/abstract/Job';
-import type { TJobDefinition } from '@/type/job';
+import type { TJobClsOptions, TJobDefinition } from '@/type/job';
 
 
 export class StatsJob extends Job {
+  constructor ( options: TJobClsOptions ) { super( options, 'stats' ) }
 
   // --- job runner ---
 
