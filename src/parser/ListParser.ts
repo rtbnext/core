@@ -8,7 +8,7 @@ export class ListParser< T extends object > extends Cache implements IListParser
 
   // --- helper ---
 
-  public proceed < R > ( key: string, fn: ( val: any ) => R ) : R {
+  public do < R > ( key: string, fn: ( val: any ) => R ) : R {
     if ( ! ( key in this.raw ) ) throw new Error( `Key "${ key }" not found in raw data` );
     return fn( this.raw[ key as keyof T ] );
   }
@@ -22,10 +22,10 @@ export class ListParser< T extends object > extends Cache implements IListParser
   // --- URIs & IDs ---
 
   public uri () : string {
-    return this.proceed( 'uri', ( val: string ) => this.cache( 'uri', () => Utils.sanitize( val ) ) );
+    return this.cache( 'uri', () => this.do( 'uri', v => Utils.sanitize( v ) ) );
   }
 
   public id () : string {
-    return this.proceed( 'id', ( val: string ) => this.cache( 'id', () => Utils.hash( val ) ) );
+    return this.cache( 'id', () => this.do( 'id', v => Utils.hash( v ) ) );
   }
 }
