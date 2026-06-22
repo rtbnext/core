@@ -1,5 +1,6 @@
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
+import { Utils } from '@/core/Utils';
 import type { IJob } from '@/interface/job';
 import { Parser } from '@/parser/Parser';
 import type { TLoggingLevel } from '@/type/config';
@@ -39,8 +40,11 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
     F extends ( ...args: any[] ) => any,
     R = Awaited< ReturnType< F > >
   > ( fn: F ) : Promise< R | undefined > {
-    try { return await fn() }
-    catch ( err ) {
+    try {
+      const res = await Utils.measure< F, R >( fn );
+      this.log( `Finished in ${ ( res.ms / 1000 ).toFixed( 3 ) } sec` );
+      return res.result;
+    } catch ( err ) {
       this.err( err );
       if ( ! this.safeMode ) throw err;
     }
