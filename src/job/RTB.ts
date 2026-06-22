@@ -5,6 +5,7 @@ import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
 import { Mover } from '@/model/Mover';
 import { Stats } from '@/model/Stats';
+import { PersonListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
 import type { TJobClsOptions, TJobDefinition } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
@@ -48,6 +49,13 @@ export class RTBJob extends Job {
 
       for ( const [ i, raw ] of Object.entries( entries ) ) {
         raw.date = ts;
+
+        // --- parse raw list data ---
+        const parser = new PersonListParser( raw );
+        const uri = parser.uri();
+        const id = parser.id();
+        const rank = parser.rank();
+        const networth = parser.networth();
       }
     } );
   }
