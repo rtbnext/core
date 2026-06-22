@@ -3,8 +3,10 @@ import type { TRTBListItem } from '@rtbnext/schema/src/model/list';
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
+import { List } from '@/model/List';
 import { Mover } from '@/model/Mover';
 import { Profile } from '@/model/Profile';
+import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
 import { PersonListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
@@ -13,12 +15,11 @@ import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 import { Performance } from '@/util/Performance';
 import { ProfileManager } from '@/util/ProfileManager';
-import { List } from '@/model/List';
-import { ProfileIndex } from '@/model/ProfileIndex';
 
 
 export class RTBJob extends Job {
   private static readonly fetch = Fetch.getInstance();
+  private static readonly mover = Mover.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
   private static readonly stats = Stats.getInstance();
 
@@ -144,6 +145,13 @@ export class RTBJob extends Job {
         profiles: ProfileIndex.getInstance().size,
         days: list.getDates().length
       } };
+
+      // --- save data ---
+      list.saveSnapshot( { date, count, items, stats } );
+      RTBJob.mover.saveSnapshot( mover );
+      RTBJob.queue.addMany( queue );
+      RTBJob.stats.setGlobalStats( globalStats );
+      RTBJob.stats.updateHistory( globalStats );
     } );
   }
 
