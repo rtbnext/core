@@ -8,7 +8,7 @@ import { Stats } from '@/model/Stats';
 import { Parser } from '@/parser/Parser';
 import type { TJobClsOptions, TJobDefinition } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
-import type { TPersonList } from '@/type/response';
+import type { TPersonListEntry } from '@/type/response';
 
 
 export class RTBJob extends Job {
@@ -22,7 +22,7 @@ export class RTBJob extends Job {
 
   public async run () : Promise< void > {
     await this.protect( async () => {
-      const res = await RTBJob.fetch.list< TPersonList >( 'rtb', '0' );
+      const res = await RTBJob.fetch.list< TPersonListEntry >( 'rtb', '0' );
       if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
       const rawList = res.data.personList.personsLists;

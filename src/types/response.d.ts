@@ -101,7 +101,7 @@ export type TProfileResponse = {
   };
 };
 
-export type TPersonList = {
+export type TPersonListEntry = {
   naturalId: string;
   name: string;
   year: number;
