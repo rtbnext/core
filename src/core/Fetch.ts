@@ -22,4 +22,20 @@ export class Fetch implements IFetch {
     const { headers, rateLimit: { timeout } } = this.config;
     return axios.create( { headers, timeout } );
   }
+
+  // --- rate limit ---
+
+  private getRandomDelay () : Promise< void > {
+    const { max, min } = this.config.rateLimit.requestDelay;
+    const delay = Math.round( Math.random() * ( max - min ) + min );
+
+    return new Promise( resolve => setTimeout( resolve, delay ) );
+  }
+
+  private async applyRateLimit < T > ( fn: () => Promise< T > ) : Promise< T > {
+    if ( Date.now() - this.lastRequest < this.config.rateLimit.idle ) await this.getRandomDelay();
+
+    try { return await fn() }
+    finally { this.lastRequest = Date.now() }
+  }
 }
