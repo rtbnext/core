@@ -8,7 +8,7 @@ import type { IFetch } from '@/interface/fetch';
 import { REGEX_NONUM, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
-import type { TFetchMethod } from '@/type/fetch';
+import type { TFetchMethod, THeader } from '@/type/fetch';
 import type { TListResponse, TProfileResponse, TResponse, TWaybackResponse } from '@/type/response';
 
 
@@ -60,7 +60,7 @@ export class Fetch implements IFetch {
     }, url );
   }
 
-  private async fetch < T > ( url: string, method: TFetchMethod = 'get' ) : Promise< TResponse< T > > {
+  private async fetch < T > ( url: string, method: TFetchMethod = 'get', optHeader?: THeader ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
 
     const { result: res, ms } = await Utils.measure( async () => {
@@ -68,7 +68,7 @@ export class Fetch implements IFetch {
       let retries = 0;
 
       do {
-        const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent() };
+        const headers = { ...this.config.headers, 'User-Agent': this.getRandomUserAgent(), ...optHeader };
         res = await this.applyRateLimit( () => this.httpClient[ method ]< T >( url, { headers } ) );
         if ( res.status === 200 && res.data ) break;
 
@@ -97,16 +97,16 @@ export class Fetch implements IFetch {
 
   // --- fetch methods ---
 
-  public async single < T > ( url: string, method: TFetchMethod = 'get' ) : Promise< TResponse< T > > {
-    return this.fetch< T >( url, method );
+  public async single < T > ( url: string, method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T > > {
+    return this.fetch< T >( url, method, header );
   }
 
-  public async batch < T > ( urls: string[], method: TFetchMethod = 'get' ) : Promise< TResponse< T >[] > {
+  public async batch < T > ( urls: string[], method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T >[] > {
     const results: TResponse< T >[] = [];
     let url;
 
     while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize )
-      results.push( await this.fetch< T >( url, method ) );
+      results.push( await this.fetch< T >( url, method, header ) );
 
     if ( urls.length ) log.warn( `Batch limit reached: ${ urls.length } URLs remaining` );
     return results;
