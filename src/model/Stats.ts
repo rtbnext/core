@@ -4,8 +4,8 @@ import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type {
   TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory,
-  THistoryItem, TProfileStats, TProfileStatsData, TScatter, TScatterData, TScatterItem,
-  TStatsGroup, TStatsGroupItem, TWealthStats, TWealthStatsData
+  THistoryItem, TProfileStats, TProfileStatsData, TScatter, TScatterItem, TStatsGroup,
+  TStatsGroupItem, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -166,9 +166,9 @@ export class Stats implements IStats {
     ) );
   }
 
-  public setScatter ( data: TScatterData ) : boolean {
+  public setScatter ( items: TScatterItem[] ) : boolean {
     return this.saveStats( 'scatter.json', 'json', this.prepStats( {
-      count: Parser.number( data.count ), items: data.items
+      count: Parser.number( items.length ), items
     } ) );
   }
 
