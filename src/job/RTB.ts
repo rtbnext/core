@@ -138,7 +138,7 @@ export class RTBJob extends Job {
       const stats = PersonListParser.stats( {
         date, count, total, woman,
         today: { value: mover.today.total.value, percent: mover.today.total.percent },
-        ytd: { value: mover.today.total.value, percent: mover.today.total.percent }
+        ytd: { value: mover.ytd.total.value, percent: mover.ytd.total.percent }
       } );
 
       const globalStats = { ...stats, stats: {
