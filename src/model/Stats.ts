@@ -364,6 +364,7 @@ export class Stats implements IStats {
       let k: string;
       StatsGroup.forEach( key => {
         if ( key in info && info[ key ] && ( k = info[ key ] ) ) {
+          set( `groups.${ key }.${ k }.date`, date );
           inc( `groups.${ key }.${ k }.count` );
           inc( `groups.${ key }.${ k }.total`, networth );
           inc( `groups.${ key }.${ k }.woman`, +( info.gender === 'f' ) );
