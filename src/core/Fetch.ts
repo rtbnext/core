@@ -63,6 +63,13 @@ export class Fetch implements IFetch {
     }, url );
   }
 
+  private retErr ( res: TResponse< unknown >, msg?: string, code?: number ) : TResponse< never > {
+    return {
+      success: false, statusCode: code ?? res.statusCode ?? 500, error: msg ?? res.error,
+      duration: res.duration, retries: res.retries
+    };
+  }
+
   private async fetch < T > ( url: string, method: TFetchMethod = 'get', headers?: THeader ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
     headers = { ...this.config.headers, ...headers };
@@ -89,5 +96,22 @@ export class Fetch implements IFetch {
         statusCode: res.status
       }
     );
+  }
+
+  // --- fetch methods ---
+
+  public async single < T > ( url: string, method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T > > {
+    return this.fetch< T >( url, method, header );
+  }
+
+  public async batch < T > ( urls: string[], method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T >[] > {
+    const results: TResponse< T >[] = [];
+    let url;
+
+    while ( ( url = urls.shift() ) && results.length < this.config.rateLimit.batchSize )
+      results.push( await this.fetch< T >( url, method, header ) );
+
+    if ( urls.length ) log.warn( `Batch limit reached: ${ urls.length } URLs remaining` );
+    return results;
   }
 }
