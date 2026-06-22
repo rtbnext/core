@@ -1,6 +1,7 @@
 import type { TFilterList } from '@rtbnext/schema/src/model/filter';
 
 import { Job } from '@/abstract/Job';
+import { StatsGroup } from '@/lib/const';
 import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
@@ -33,6 +34,16 @@ export class StatsJob extends Job {
         Stats.aggregate( data, date, stats );
         Filter.aggregate( data, filter );
       }
+
+      this.log( `Saving stats for ${ date }` );
+      this.filter.save( filter );
+      this.stats.setProfileStats( stats.profile );
+      this.stats.generateWealthStats( stats.scatter );
+      StatsGroup.forEach( g => this.stats.setGroupedStats( g, stats.groups[ g ] ) );
+      this.stats.setScatter( stats.scatter );
+      this.stats.generateDBStats();
+
+      this.log( `Stats generation completed, as of ${ date }` );
     } );
   }
 
