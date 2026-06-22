@@ -1,6 +1,9 @@
 import { Config } from '@/core/Config';
+import { log } from '@/core/Logger';
 import type { IFetch } from '@/interface/fetch';
 import type { TFetchConfig } from '@/type/config';
+import type { TFetchMethod, THeader } from '@/type/fetch';
+import type { TResponse } from '@/type/response';
 import axios, { type AxiosInstance } from 'axios';
 
 
@@ -45,5 +48,9 @@ export class Fetch implements IFetch {
     return Object.entries( replacements ).reduce( ( acc, [ key, value ] ) => {
       return acc.replaceAll( `{${ key.toUpperCase() }}`, String( value ) );
     }, url );
+  }
+
+  private async fetch < T > ( url: string, method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T > > {
+    log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
   }
 }
