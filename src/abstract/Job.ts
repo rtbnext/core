@@ -37,8 +37,7 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
   }
 
   protected async protect<
-    F extends ( ...args: any[] ) => any,
-    R = Awaited< ReturnType< F > >
+    F extends ( ...args: any[] ) => any, R = Awaited< ReturnType< F > >
   > ( fn: F ) : Promise< R | undefined > {
     try {
       const res = await Utils.measure< F, R >( fn );
