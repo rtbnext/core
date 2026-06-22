@@ -53,12 +53,20 @@ export class Fetch implements IFetch {
     }, url );
   }
 
-  private async fetch < T > ( url: string, method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T > > {
+  private async fetch < T > ( url: string, method: TFetchMethod = 'get', headers?: THeader ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
+    headers = { ...this.config.headers, ...headers };
 
     const { result: res, ms } = await Utils.measure( async () => {
       let res: AxiosResponse< T, any, {} >;
       let retries = 0;
+
+      do {
+        res = await this.applyRateLimit( () => this.httpClient[ method ]< T >( url, { headers } ) );
+        if ( res.status === 200 && res.data ) break;
+
+        log.warn( `Request failed with status: ${ res.status }. Retrying ...` );
+      } while ( ++retries < this.config.rateLimit.retries );
     } );
   }
 }
