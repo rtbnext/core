@@ -8,8 +8,9 @@ export class ListParser< T extends object > extends Cache implements IListParser
 
   // --- helper ---
 
-  public safeVal < R > ( key: string, def?: unknown ) : R | undefined {
-    return ( key in this.raw ? this.raw[ key as keyof T ] : def ?? undefined ) as R;
+  public proceed < R > ( key: string, fn: ( val: any ) => R ) : R {
+    if ( ! ( key in this.raw ) ) throw new Error( `Key "${ key }" not found in raw data` );
+    return fn( this.raw[ key as keyof T ] );
   }
 
   // --- raw data ---
@@ -21,10 +22,10 @@ export class ListParser< T extends object > extends Cache implements IListParser
   // --- URIs & IDs ---
 
   public uri () : string {
-    return this.cache( 'uri', () => Utils.sanitize( this.safeVal< string >( 'uri' ) ) );
+    return this.proceed( 'uri', ( val: string ) => this.cache( 'uri', () => Utils.sanitize( val ) ) );
   }
 
   public id () : string {
-    return this.cache( 'id', () => Utils.hash( this.safeVal< string >( 'naturalId' ) ) );
+    return this.proceed( 'id', ( val: string ) => this.cache( 'id', () => Utils.hash( val ) ) );
   }
 }
