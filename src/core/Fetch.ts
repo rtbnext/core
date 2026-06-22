@@ -38,4 +38,12 @@ export class Fetch implements IFetch {
     try { return await fn() }
     finally { this.lastRequest = Date.now() }
   }
+
+  // --- helper ---
+
+  private prepQuery ( url: string, replacements: Record< string, unknown > ) : string {
+    return Object.entries( replacements ).reduce( ( acc, [ key, value ] ) => {
+      return acc.replaceAll( `{${ key.toUpperCase() }}`, String( value ) );
+    }, url );
+  }
 }
