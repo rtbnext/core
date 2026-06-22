@@ -96,6 +96,9 @@ export class RTBJob extends Job {
 
         profileData = profile.getData();
         const name = profileData.info!.name.shortName;
+
+        // --- aggregate mover data ---
+        Mover.aggregate( realtime, uri, name, mover, total );
       }
     } );
   }
