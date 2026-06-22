@@ -129,7 +129,7 @@ export class Wiki {
         url: { value: info.descriptionurl, type: 'string' },
         file: { value: info.url, type: 'string' },
         thumb: { value: thumbUrl, type: 'string' },
-        caption: { value: meta.ImageDescription?.value, type: 'string' },
+        caption: { value: meta.ImageDescription?.value, type: 'safeStr' },
         date: { value: dateTime, type: 'date', args: [ 'iso' ] },
         credits: { value: credits, type: 'safeStr' }
       } );

@@ -188,7 +188,7 @@ export class ProfileParser extends Cache implements IProfileParser {
     return this.cache( 'media', () => ( this.raw.listImages ?? [] ).filter( Boolean ).map(
       item => Parser.container< TImage >( {
         url: { value: item.uri, type: 'string' },
-        credits: { value: item.credit, type: 'string' },
+        credits: { value: item.credit, type: 'safeStr' },
         file: { value: item.image, type: 'string' },
         caption: { value: item.caption, type: 'safeStr' },
         desc: { value: item.description, type: 'safeStr' }
