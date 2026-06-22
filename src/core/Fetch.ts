@@ -178,4 +178,10 @@ export class Fetch implements IFetch {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } )
     } ), 'get', this.useApiAgent() );
   }
+
+  // --- instantiate ---
+
+  public static getInstance () : IFetch {
+    return Fetch.instance ??= new Fetch();
+  }
 }
