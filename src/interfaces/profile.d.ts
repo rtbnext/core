@@ -9,8 +9,8 @@ export interface IProfile {
   schemaVersion () : number;
   lastModified () : string;
   lastModifiedTime () : number;
-  lastLookup () : string;
-  lastLookupTime () : number;
+  lastLookup () : string | undefined;
+  lastLookupTime () : number | undefined;
   verify ( id: string ) : boolean;
   getData () : TProfileData;
   setData (

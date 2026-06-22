@@ -88,12 +88,12 @@ export class Profile implements IProfile {
     return new Date( this.meta.$metadata.lastModified ).getTime();
   }
 
-  public lastLookup () : string {
+  public lastLookup () : string | undefined {
     return this.meta.$metadata.lastLookup;
   }
 
-  public lastLookupTime () : number {
-    return new Date( this.meta.$metadata.lastLookup ).getTime();
+  public lastLookupTime () : number | undefined {
+    return this.meta.$metadata.lastLookup ? new Date( this.meta.$metadata.lastLookup ).getTime() : undefined;
   }
 
   // --- verify profile ---
