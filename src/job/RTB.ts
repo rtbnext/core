@@ -11,6 +11,7 @@ import { Parser } from '@/parser/Parser';
 import type { TJobClsOptions, TJobDefinition } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
+import { ProfileManager } from '@/util/ProfileManager';
 
 
 export class RTBJob extends Job {
@@ -69,6 +70,14 @@ export class RTBJob extends Job {
           bio: parser.bio(),
           assets: parser.assets()
         } );
+
+        // --- process profile using ProfileManager ---
+        const { profile, action } = ProfileManager.process( uri, id, profileData, [], 'updateData' );
+
+        if ( ! profile ) {
+          this.log( `Failed to process profile for ${ uri }` );
+          continue;
+        }
       }
     } );
   }
