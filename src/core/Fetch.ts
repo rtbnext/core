@@ -5,9 +5,11 @@ import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import type { IFetch } from '@/interface/fetch';
+import { REGEX_NONUM } from '@/lib/regex';
+import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod, THeader } from '@/type/fetch';
-import type { TResponse } from '@/type/response';
+import type { TResponse, TWaybackResponse } from '@/type/response';
 
 
 export class Fetch implements IFetch {
@@ -113,5 +115,21 @@ export class Fetch implements IFetch {
 
     if ( urls.length ) log.warn( `Batch limit reached: ${ urls.length } URLs remaining` );
     return results;
+  }
+
+  // --- special requests ---
+
+  public async wayback < T > ( url: string, ts: unknown ) : Promise< TResponse< T > > {
+    const res = await this.single< TWaybackResponse >( this.prepQuery( this.config.endpoints.wayback, {
+      url: encodeURIComponent( url ), ts: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
+    } ), 'get', this.useApiAgent() );
+
+    if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available )
+      return this.retErr( res, 'No archived snapshot found', 404 );
+
+    return this.single< T >(
+      res.data.archived_snapshots.closest.url.replace( '/http', 'if_/http' ),
+      'get', this.useApiAgent()
+    );
   }
 }
