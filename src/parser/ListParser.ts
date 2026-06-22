@@ -1,4 +1,4 @@
-import type { TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileBio, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
@@ -58,6 +58,14 @@ export class PersonListParser extends ListParser< TPersonListEntry > {
         industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
       } )
+    } ) );
+  }
+
+  public bio () : TProfileBio {
+    return this.cache( 'bio', () => Parser.container< TProfileBio >( {
+      cv: { value: this.raw.bios, type: 'list', args: [ 'safeStr' ] },
+      facts: { value: this.raw.abouts, type: 'list', args: [ 'safeStr' ] },
+      quotes: { value: [], type: 'list', args: [ 'safeStr' ] }
     } ) );
   }
 }
