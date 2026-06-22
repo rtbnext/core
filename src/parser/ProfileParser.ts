@@ -93,7 +93,7 @@ export class ProfileParser extends Cache implements IProfileParser {
 
   public citizenship () : string | undefined {
     return this.cache( 'citizenship', () => Parser.strict(
-      this.raw.countryOfCitizenship || this.raw.countryOfResidence, 'country'
+      this.raw.countryOfCitizenship ?? this.raw.countryOfResidence, 'country'
     ) );
   }
 
@@ -211,7 +211,7 @@ export class ProfileParser extends Cache implements IProfileParser {
       asianFormat ? parts.slice( 1 ).join( ' ' ) : parts.slice( 0, -1 ).join( ' ' )
     );
     const lN = lastName ? Parser.string( lastName ).replace( REGEX_FAMILY, '' ) : (
-      asianFormat ? parts[ 0 ] || '' : parts.pop() || ''
+      asianFormat ? parts[ 0 ] ?? '' : parts.pop() ?? ''
     );
 
     return { family, name: {

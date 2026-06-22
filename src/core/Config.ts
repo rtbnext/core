@@ -20,7 +20,7 @@ export class Config implements IConfig {
   private constructor () {
     this.cwd = cwd();
     this.path = join( this.cwd, 'config' );
-    this.env = process.env.NODE_ENV || 'production';
+    this.env = process.env.NODE_ENV ?? 'production';
     this.cfg = this.loadConfig();
   }
 

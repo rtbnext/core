@@ -41,7 +41,7 @@ export class Wiki {
     else if ( item.occupation ) score += 0.05;
 
     // --- economic matching ---
-    if ( item.employer || item.ownerOf ) score += 0.1;
+    if ( item.employer ?? item.ownerOf ) score += 0.1;
     if ( item.netWorth ) score += 0.2;
 
     return Math.min( 1, Math.max( 0, score ) );
@@ -120,8 +120,8 @@ export class Wiki {
       const thumbUrl = info.thumburl ?? Object.values( info.responsiveUrls ?? {} ).at( 0 );
       const dateTime = meta.DateTimeOriginal?.value ?? meta.DateTime?.value;
       const credits = Parser.list( [
-          meta.Attribution?.value || meta.Artist?.value || meta.Credit?.value,
-          meta.LicenseShortName?.value || meta.UsageTerms?.value,
+          meta.Attribution?.value ?? meta.Artist?.value ?? meta.Credit?.value,
+          meta.LicenseShortName?.value ?? meta.UsageTerms?.value,
           'via Wikimedia Commons'
       ] ).join( ', ' );
 

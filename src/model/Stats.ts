@@ -43,7 +43,7 @@ export class Stats implements IStats {
 
   private getStats < T > ( path: string, format: 'json' | 'csv' ) : T {
     return ( ( Stats.storage[ format === 'csv' ? 'readCSV' : 'readJSON' ] as any )
-      ( this.resolvePath( path ) ) || ( format === 'csv' ? [] : {} ) ) as T;
+      ( this.resolvePath( path ) ) ?? ( format === 'csv' ? [] : {} ) ) as T;
   }
 
   private saveStats < T > ( path: string, format: 'json' | 'csv', data: T ) : boolean {
@@ -273,11 +273,11 @@ export class Stats implements IStats {
       scatter.forEach( item => {
         const { gender: g, age, networth } = item;
         const decade = Math.max( 30, Math.min( 90, Math.floor( age / 10 ) * 10 ) );
-        decades[ decade ] = ( decades[ decade ] || 0 ) + networth;
-        gender[ g ] = ( gender[ g ] || 0 ) + networth;
+        decades[ decade ] = ( decades[ decade ] ?? 0 ) + networth;
+        gender[ g ] = ( gender[ g ] ?? 0 ) + networth;
 
         WealthSpread.forEach( n => {
-          if ( networth >= Number( n ) * 1000 ) spread[ n ] = ( spread[ n ] || 0 ) + 1;
+          if ( networth >= Number( n ) * 1000 ) spread[ n ] = ( spread[ n ] ?? 0 ) + 1;
         } );
       } );
 

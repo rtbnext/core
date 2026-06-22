@@ -27,7 +27,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   // --- basic fields ---
 
   public date () : string {
-    return this.cache( 'date', () => Parser.date( this.raw.date || this.raw.timestamp, 'ymd' )! );
+    return this.cache( 'date', () => Parser.date( this.raw.date ?? this.raw.timestamp, 'ymd' )! );
   }
 
   public rank () : number | undefined {
@@ -82,7 +82,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
       Parser.container< TAsset >( {
         type: { value: 'public', type: 'string' },
         label: { value: a.companyName, type: 'string' },
-        value: { value: a.numberOfShares && ( a.currentPrice || a.sharePrice )
+        value: { value: a.numberOfShares && ( a.currentPrice ?? a.sharePrice )
           ? a.numberOfShares * ( a.currentPrice ?? a.sharePrice )! / 1e6
           : undefined, type: 'money' },
         info: { value: a.exchange && a.ticker ? Parser.container< TAsset[ 'info' ] >( {

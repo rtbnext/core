@@ -41,7 +41,7 @@ export abstract class Queue implements IQueue {
 
     Queue.storage.writeJSON< TQueueStorage >( this.path,
       [ ...this.queue.values() ].sort( ( a: TQueueItem, b: TQueueItem ) =>
-        ( b.prio ?? defaultPrio ) - ( a.prio ?? defaultPrio ) || 
+        ( b.prio ?? defaultPrio ) - ( a.prio ?? defaultPrio ) ||
         ( new Date( a.ts ).getTime() - new Date( b.ts ).getTime() )
       )
     );
@@ -97,7 +97,7 @@ export abstract class Queue implements IQueue {
       const uri = Utils.sanitize( uriLike );
       const key = this.key( uri, args );
       const item = this.queue.get( key );
-      const ts = item?.ts || Utils.date( 'iso' );
+      const ts = item?.ts ?? Utils.date( 'iso' );
       const data: TQueueItem = { key, uri, ts, args, prio };
 
       if ( JSON.stringify( item ) === JSON.stringify( data ) ) return false;

@@ -44,7 +44,7 @@ export class Ranking {
 
     for ( const listUri of allListUris ) {
       const existing = lists.get( listUri );
-      const news = entries.get( listUri ) || [];
+      const news = entries.get( listUri ) ?? [];
       const allItems: TRankingItem[] = [];
 
       // --- add existing entry ---
@@ -69,7 +69,7 @@ export class Ranking {
       historyItems.sort( ( a, b ) => b.date.localeCompare( a.date ) );
 
       // --- create final ranking entry ---
-      const name = existing?.name || names.get( listUri )?.name || listUri;
+      const name = existing?.name ?? names.get( listUri )?.name ?? listUri;
       const ranking: TRanking = {
         list: listUri, name, date: main.date, rank: main.rank, prev: main.prev,
         next: main.next, networth: main.networth, history: historyItems

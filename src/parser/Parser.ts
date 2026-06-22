@@ -128,8 +128,8 @@ export class Parser {
     strict: boolean = true, ...args: any[]
   ) : T[] {
     return ( Array.isArray( value ) ? value : value.split( delimiter ) ).map(
-      v => strict ? Parser.strict( v, type, ...( args || [] ) )
-        : ( Parser[ type ] as any )( v, ...( args || [] ) )
+      v => strict ? Parser.strict( v, type, ...( args ?? [] ) )
+        : ( Parser[ type ] as any )( v, ...( args ?? [] ) )
     ).filter( Boolean ) as T[];
   }
 
@@ -139,8 +139,8 @@ export class Parser {
     if ( typeof value !== 'object' || value === null ) return {} as T;
 
     return Object.fromEntries( Object.entries( value ).map( ( [ k, v ] ) => [
-      k, strict ? Parser.strict( v, type, ...( args || [] ) )
-        : ( Parser[ type ] as any )( v, ...( args || [] ) )
+      k, strict ? Parser.strict( v, type, ...( args ?? [] ) )
+        : ( Parser[ type ] as any )( v, ...( args ?? [] ) )
     ] ) ) as T;
   }
 
@@ -152,8 +152,8 @@ export class Parser {
 
     return Object.entries( list ).find( ( [ k, v ] ) => {
       const test = Parser.string( useKey ? k : v ).toLowerCase();
-      return exactMatch ? value === test : ( value.includes( test ) || test.includes( value ) );
-    } )?.[ 1 ] || fb;
+      return exactMatch ? value === test : ( value.includes( test ) ?? test.includes( value ) );
+    } )?.[ 1 ] ?? fb;
   }
 
   // --- container ---
@@ -162,8 +162,8 @@ export class Parser {
     return Object.fromEntries( Object.entries< TParserContainer >( obj ).map(
       ( [ key, { value, type, strict = true, args } ] ) => [
         key, type === 'container' ? value
-          : strict ? Parser.strict( value, type, ...( args || [] ) )
-          : ( Parser[ type ] as any )( value, ...( args || [] ) )
+          : strict ? Parser.strict( value, type, ...( args ?? [] ) )
+          : ( Parser[ type ] as any )( value, ...( args ?? [] ) )
       ]
     ) ) as T;
   }
