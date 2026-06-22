@@ -38,10 +38,7 @@ export class Profile implements IProfile {
   }
 
   private metaData () : TProfileMetaData {
-    return Profile.storage.readJSON< TProfileMetaData >(
-      this.resolvePath( 'meta.json' ) ) ||
-      Utils.metaData( { lastLookup: Utils.date( 'iso' ) }
-    );
+    return Profile.storage.readJSON< TProfileMetaData >( this.resolvePath( 'meta.json' ) ) || Utils.metaData();
   }
 
   private touch ( lookup: boolean = false ) : void {
