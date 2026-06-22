@@ -81,6 +81,19 @@ export class RTBJob extends Job {
 
         ProfileManager.updateQueue( queue, profile, action, th );
         profileData = profile.getData();
+
+        // --- process realtime data ---
+        const prev = entries[ Number( i ) - 1 ]?.uri;
+        const next = entries[ Number( i ) + 1 ]?.uri;
+        const realtime = parser.realtime( profileData, prev, next );
+        const { value = 0, percent = 0 } = realtime?.today ?? {};
+
+        profile.updateData( { realtime } );
+        profile.addHistory( [ date, rank, networth, value, percent ] );
+        profile.save();
+
+        profileData = profile.getData();
+        const name = profileData.info!.name.shortName;
       }
     } );
   }
