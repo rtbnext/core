@@ -1,10 +1,11 @@
+import type { TProfileName } from '@rtbnext/schema/src/model/profile';
+
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
 import type { IListParser } from '@/interface/parser';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
 import type { TPersonListEntry } from '@/type/response';
-import { TProfileName } from '@rtbnext/schema/src/model/profile';
 
 
 export class ListParser< T extends object > extends Cache implements IListParser< T > {
