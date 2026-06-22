@@ -9,7 +9,7 @@ import { REGEX_NONUM } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod, THeader } from '@/type/fetch';
-import type { TResponse, TWaybackResponse } from '@/type/response';
+import type { TListResponse, TProfileResponse, TResponse, TWaybackResponse } from '@/type/response';
 
 
 export class Fetch implements IFetch {
@@ -131,5 +131,32 @@ export class Fetch implements IFetch {
       res.data.archived_snapshots.closest.url.replace( '/http', 'if_/http' ),
       'get', this.useApiAgent()
     );
+  }
+
+  public async list < T extends object > ( uriLike: string, year: string ) : Promise< TResponse< TListResponse< T > > > {
+    const { requests: { list: { chunkSize, maxRequests } } } = this.config;
+    const uri = Utils.sanitize( uriLike ), entries: T[] = [];
+    let res: TResponse< TListResponse< T > >, count = 0, start = 0, requests = 0;
+
+    do {
+      res = await this.single< TListResponse< T > >( this.prepQuery(
+        this.config.endpoints.list, { uri, year, limit: chunkSize, start }
+      ), 'get', this.useRandomUserAgent() );
+
+      if ( ! res.success ) return this.retErr( res );
+      if ( ! res.data?.personList.count ) return this.retErr( res, 'Could not fetch list data', 404 );
+
+      entries.push( ...res.data.personList.personsLists );
+      count = res.data.personList.count, start += chunkSize;
+    } while ( ++requests < maxRequests && start < count );
+
+    res.data.personList.personsLists = entries;
+    return res;
+  }
+
+  public async profile ( ...uriLike: string[] ) : Promise< TResponse< TProfileResponse >[] > {
+    return this.batch< TProfileResponse >( uriLike.map( uri =>
+      this.prepQuery( this.config.endpoints.profile, { uri: Utils.sanitize( uri ) } )
+    ), 'get', this.useRandomUserAgent() );
   }
 }
