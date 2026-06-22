@@ -68,4 +68,8 @@ export class PersonListParser extends ListParser< TPersonListEntry > {
       quotes: { value: [], type: 'list', args: [ 'safeStr' ] }
     } ) );
   }
+
+  public age () : number | undefined {
+    return this.cache( 'age', () => Parser.strict( this.raw.birthDate, 'age' ) );
+  }
 }
