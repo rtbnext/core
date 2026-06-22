@@ -4,6 +4,7 @@ import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
 import { Mover } from '@/model/Mover';
+import { Profile } from '@/model/Profile';
 import { Stats } from '@/model/Stats';
 import { PersonListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
@@ -61,6 +62,13 @@ export class RTBJob extends Job {
           this.log( `Skipping invalid RTB entry for ${ uri }` );
           continue;
         }
+
+        let profileData = Profile.factory( {
+          uri, id,
+          info: parser.info(),
+          bio: parser.bio(),
+          assets: parser.assets()
+        } );
       }
     } );
   }
