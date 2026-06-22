@@ -1,7 +1,7 @@
 import { Config } from '@/core/Config';
 import type { IFetch } from '@/interface/fetch';
 import type { TFetchConfig } from '@/type/config';
-import { type AxiosInstance } from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 
 
 export class Fetch implements IFetch {
@@ -14,5 +14,12 @@ export class Fetch implements IFetch {
   private constructor () {
     this.config = Config.getInstance().fetch;
     this.httpClient = this.setupHttpClient();
+  }
+
+  // --- set up axios ---
+
+  private setupHttpClient () : AxiosInstance {
+    const { headers, rateLimit: { timeout } } = this.config;
+    return axios.create( { headers, timeout } );
   }
 }
