@@ -13,6 +13,7 @@ import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 import { Performance } from '@/util/Performance';
 import { ProfileManager } from '@/util/ProfileManager';
+import { List } from '@/model/List';
 
 
 export class RTBJob extends Job {
@@ -115,6 +116,21 @@ export class RTBJob extends Job {
         count++; total += networth;
         woman += +( profileData.info?.gender === 'f' );
       }
+
+      // --- create "rtb" list ---
+      const list = List.get( 'rtb' ) || List.create( 'rtb', {
+        uri: 'rtb',
+        name: 'The World’s Real-Time Billionaires',
+        shortName: 'Real-Time Billionaires',
+        desc: 'Today’s richest people in the world',
+        text: 'todays richest people world',
+        date, count,
+        columns: [ 'rank', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
+        filters: [ 'gender', 'industry', 'citizenship' ]
+      } );
+
+      if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
+      this.log( `Saving RTB list dated ${ date } (${ count } items)` );
     } );
   }
 
