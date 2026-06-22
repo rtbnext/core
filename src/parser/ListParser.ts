@@ -3,7 +3,7 @@ import type { TProfileBio, TProfileData, TProfileInfo, TProfileName } from '@rtb
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
-import type { IListParser } from '@/interface/parser';
+import type { IListParser, IParsonListParser } from '@/interface/parser';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
 import type { TPersonListEntry } from '@/type/response';
@@ -14,7 +14,7 @@ export class ListParser< T extends object > extends Cache implements IListParser
   public rawData () : T { return this.raw }
 }
 
-export class PersonListParser extends ListParser< TPersonListEntry > {
+export class PersonListParser extends ListParser< TPersonListEntry > implements IParsonListParser {
   public uri () : string {
     return this.cache( 'uri', () => Utils.sanitize( this.raw.uri ) );
   }
