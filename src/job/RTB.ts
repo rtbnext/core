@@ -11,6 +11,7 @@ import { Parser } from '@/parser/Parser';
 import type { TJobClsOptions, TJobDefinition } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
+import { Performance } from '@/util/Performance';
 import { ProfileManager } from '@/util/ProfileManager';
 
 
@@ -88,8 +89,9 @@ export class RTBJob extends Job {
         const realtime = parser.realtime( profileData, prev, next );
         const { value = 0, percent = 0 } = realtime?.today ?? {};
 
-        profile.updateData( { realtime } );
         profile.addHistory( [ date, rank, networth, value, percent ] );
+        const performance = Performance.generateProfilePerformance( profile.getHistory() );
+        profile.updateData( { realtime, performance } );
         profile.save();
 
         profileData = profile.getData();
