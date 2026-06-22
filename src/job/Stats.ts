@@ -21,7 +21,7 @@ export class StatsJob extends Job {
     await this.protect( async () => {
       const date = this.stats.getGlobalStats().date;
       const index = ProfileIndex.getInstance().getIndex();
-      if ( ! date || ! index.size ) throw new Error( `No data available` );
+      if ( ! date || ! index.size ) throw new Error( 'No data available' );
 
       this.log( `Generating stats for ${ date } with ${ index.size } profiles` );
       const filter: Partial< TFilterList > = {}, stats: any = {};
