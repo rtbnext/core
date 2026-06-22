@@ -1,10 +1,13 @@
+import type { AxiosInstance, AxiosResponse } from 'axios';
+import axios from 'axios';
+
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
+import { Utils } from '@/core/Utils';
 import type { IFetch } from '@/interface/fetch';
 import type { TFetchConfig } from '@/type/config';
 import type { TFetchMethod, THeader } from '@/type/fetch';
 import type { TResponse } from '@/type/response';
-import axios, { type AxiosInstance } from 'axios';
 
 
 export class Fetch implements IFetch {
@@ -52,5 +55,10 @@ export class Fetch implements IFetch {
 
   private async fetch < T > ( url: string, method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
+
+    const { result: res, ms } = await Utils.measure( async () => {
+      let res: AxiosResponse< T, any, {} >;
+      let retries = 0;
+    } );
   }
 }
