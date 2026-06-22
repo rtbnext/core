@@ -45,6 +45,16 @@ export class Fetch implements IFetch {
     finally { this.lastRequest = Date.now() }
   }
 
+  // --- headers ---
+
+  private useApiAgent () : THeader {
+    return { 'User-Agent': this.config.apiAgent, 'Api-User-Agent': this.config.apiAgent };
+  }
+
+  private useRandomUserAgent () : THeader {
+    return { 'User-Agent': this.config.agentPool[ Math.floor( Math.random() * this.config.agentPool.length ) ] };
+  }
+
   // --- helper ---
 
   private prepQuery ( url: string, replacements: Record< string, unknown > ) : string {
