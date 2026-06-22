@@ -320,16 +320,16 @@ export class Stats implements IStats {
 
   // --- aggregate stats data ---
 
-  public static aggregate ( data: TProfileData, date: string, col: any ) : void {
+  public static aggregate ( data: TProfileData, date: string, stats: any ) : void {
     return log.catch( () => {
       const { uri, info, realtime, realtime: { rank, networth } = {} } = data;
       const age = Parser.age( info.birthDate ), decade = Parser.ageDecade( info.birthDate );
       const item = { uri, name: info.name.shortName };
 
-      const set = ( path: string, n: any ) : void => Utils.update( 'set', col, path, n );
-      const inc = ( path: string, n?: number ) : void => Utils.update( 'inc', col, path, n );
-      const max = ( path: string, n: number ) : void => Utils.update( 'max', col, path, n );
-      const min = ( path: string, n: number ) : void => Utils.update( 'min', col, path, n );
+      const set = ( path: string, n: any ) : void => Utils.update( 'set', stats, path, n );
+      const inc = ( path: string, n?: number ) : void => Utils.update( 'inc', stats, path, n );
+      const max = ( path: string, n: number ) : void => Utils.update( 'max', stats, path, n );
+      const min = ( path: string, n: number ) : void => Utils.update( 'min', stats, path, n );
       const srt = ( n: number ) => n >= 10 ? 'over-10' : n >= 5 ? '5-to-10' : n === 4
         ? 'four' : n === 3 ? 'three' : n === 2 ? 'two' : n === 1 ? 'one' : 'none';
 
@@ -346,8 +346,8 @@ export class Stats implements IStats {
         min( `profile.agePyramid.${ info.gender }.min`, age );
 
         set( `profile.agePyramid.${ info.gender }.mean`, (
-          col.profile.agePyramid[ info.gender ].total /
-          col.profile.agePyramid[ info.gender ].count
+          stats.profile.agePyramid[ info.gender ].total /
+          stats.profile.agePyramid[ info.gender ].count
         ) );
       }
 
@@ -358,8 +358,8 @@ export class Stats implements IStats {
         inc( 'profile.children.short.none' );
       }
 
-      if ( ! networth || ! rank || realtime?.date !== date ) return col;
-      if ( info.gender && age && networth ) ( col.scatter ??= [] ).push( { ...item, gender: info.gender, age, networth } );
+      if ( ! networth || ! rank || realtime?.date !== date ) return stats;
+      if ( info.gender && age && networth ) ( stats.scatter ??= [] ).push( { ...item, gender: info.gender, age, networth } );
 
       let k: string;
       StatsGroup.forEach( key => {
@@ -367,14 +367,14 @@ export class Stats implements IStats {
           inc( `groups.${ key }.${ k }.count` );
           inc( `groups.${ key }.${ k }.total`, networth );
           inc( `groups.${ key }.${ k }.woman`, +( info.gender === 'f' ) );
-          set( `groups.${ key }.${ k }.quota`, ( col.groups[ key ][ k ].woman / col.groups[ key ][ k ].count * 100 ) );
+          set( `groups.${ key }.${ k }.quota`, ( stats.groups[ key ][ k ].woman / stats.groups[ key ][ k ].count * 100 ) );
 
           inc( `groups.${ key }.${ k }.today.value`, realtime.today?.value ?? 0 );
           inc( `groups.${ key }.${ k }.today.percent`, realtime.today?.percent ?? 0 );
           inc( `groups.${ key }.${ k }.ytd.value`, realtime.ytd?.value ?? 0 );
           inc( `groups.${ key }.${ k }.ytd.percent`, realtime.ytd?.percent ?? 0 );
 
-          if ( rank < ( col?.groups?.[ key ]?.[ k ]?.first?.rank ?? Infinity ) ) set(
+          if ( rank < ( stats?.groups?.[ key ]?.[ k ]?.first?.rank ?? Infinity ) ) set(
             `groups.${ key }.${ k }.first`, { ...item, rank, networth }
           );
         }
