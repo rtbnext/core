@@ -1,5 +1,6 @@
 import { Job } from '@/abstract/Job';
 import { Filter } from '@/model/Filter';
+import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
 import type { TJobClsOptions, TJobDefinition } from '@/type/job';
 
@@ -13,7 +14,11 @@ export class StatsJob extends Job {
   // --- job runner ---
 
   public override async run () : Promise< void > {
-    await this.protect( async () => {} );
+    await this.protect( async () => {
+      const date = this.stats.getGlobalStats().date;
+      const index = ProfileIndex.getInstance().getIndex();
+      if ( ! date || ! index.size ) throw new Error( `No data available` );
+    } );
   }
 
   // --- command definition ---
