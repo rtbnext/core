@@ -1,6 +1,6 @@
 import type { TListIndexItem, TListSnapshot } from '@rtbnext/schema/src/model/list';
 
-import type { ISnapshot } from '@/interfaces/snapshot';
+import type { ISnapshot } from '@/interface/snapshot';
 import type { TListSnapshotData } from '@/type/generic';
 
 
