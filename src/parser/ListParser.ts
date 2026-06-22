@@ -48,9 +48,9 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     ) );
   }
 
-  // --- (partial) profile data ---
+  // --- profile data ---
 
-  public info () : Partial< TProfileInfo > {
+  public info () : TProfileInfo {
     return this.cache( 'info', () => ( {
       flags: { dropOff: this.dropOff() }, ...this.name(),
       ...Parser.container< Partial< TProfileInfo > >( {
@@ -60,7 +60,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
         industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
       } )
-    } ) );
+    } ) ) as TProfileInfo;
   }
 
   public bio () : TProfileBio {
