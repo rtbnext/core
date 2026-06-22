@@ -34,6 +34,10 @@ export class Fetch implements IFetch {
 
   // --- rate limit ---
 
+  private getApiAgent () : { 'Api-User-Agent': string } {
+    return { 'Api-User-Agent': this.config.apiAgent };
+  }
+
   private getRandomUserAgent () : string {
     return this.config.agentPool[ Math.floor( Math.random() * this.config.agentPool.length ) ];
   }
@@ -155,19 +159,19 @@ export class Fetch implements IFetch {
   public async wikidata < T > ( sparql: string ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikidata, {
       sparql: encodeURIComponent( sparql.replace( REGEX_SPACES, ' ' ).trim() )
-    } ) );
+    } ), 'get', this.getApiAgent() );
   }
 
   public async wikipedia < T > ( query: Record< string, unknown >, lang: string = 'en' ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikipedia, {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } ), lang
-    } ) );
+    } ), 'get', this.getApiAgent() );
   }
 
   public async commons < T > ( query: Record< string, unknown > ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.commons, {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } )
-    } ) );
+    } ), 'get', this.getApiAgent() );
   }
 
   // --- instantiate ---
