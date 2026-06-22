@@ -26,6 +26,7 @@ export type TFetchConfig = {
     wayback: string;
   };
   headers: Record< string, string >;
+  apiAgent: string;
   agentPool: string[];
   rateLimit: {
     batchSize: number;
