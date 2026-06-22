@@ -29,4 +29,4 @@ export interface IProfileParser extends ICache {
   media () : TImage[];
 }
 
-export interface IListParser extends ICache {}
+export interface IListParser< T extends object > extends ICache {}
