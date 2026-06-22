@@ -50,7 +50,7 @@ export class Fetch implements IFetch {
 
   // --- headers ---
 
-  private useApiAgent () : THeader {
+  private useApiUserAgent () : THeader {
     return { 'User-Agent': this.config.apiAgent, 'Api-User-Agent': this.config.apiAgent };
   }
 
@@ -123,14 +123,14 @@ export class Fetch implements IFetch {
   public async wayback < T > ( url: string, ts: unknown ) : Promise< TResponse< T > > {
     const res = await this.single< TWaybackResponse >( this.prepQuery( this.config.endpoints.wayback, {
       url: encodeURIComponent( url ), ts: Parser.date( ts, 'ymd' )!.replaceAll( REGEX_NONUM, '' )
-    } ), 'get', this.useApiAgent() );
+    } ), 'get', this.useApiUserAgent() );
 
     if ( ! res?.success || ! res.data?.archived_snapshots?.closest?.available )
       return this.retErr( res, 'No archived snapshot found', 404 );
 
     return this.single< T >(
       res.data.archived_snapshots.closest.url.replace( '/http', 'if_/http' ),
-      'get', this.useApiAgent()
+      'get', this.useApiUserAgent()
     );
   }
 
@@ -164,19 +164,19 @@ export class Fetch implements IFetch {
   public async wikidata < T > ( sparql: string ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikidata, {
       sparql: encodeURIComponent( sparql.replace( REGEX_SPACES, ' ' ).trim() )
-    } ), 'get', this.useApiAgent() );
+    } ), 'get', this.useApiUserAgent() );
   }
 
   public async wikipedia < T > ( query: Record< string, unknown >, lang: string = 'en' ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.wikipedia, {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } ), lang
-    } ), 'get', this.useApiAgent() );
+    } ), 'get', this.useApiUserAgent() );
   }
 
   public async commons < T > ( query: Record< string, unknown > ) : Promise< TResponse< T > > {
     return this.single< T >( this.prepQuery( this.config.endpoints.commons, {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } )
-    } ), 'get', this.useApiAgent() );
+    } ), 'get', this.useApiUserAgent() );
   }
 
   // --- instantiate ---
