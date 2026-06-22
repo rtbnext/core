@@ -1,5 +1,5 @@
 logging:
-  level: "debug"
+  level: "info"
   console: false
   file: true
 
@@ -33,7 +33,7 @@ fetch:
     - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"
     - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
   rateLimit:
-    batchSize: 2
+    batchSize: 3
     timeout: 30000
     retries: 3
     idle: 60000
