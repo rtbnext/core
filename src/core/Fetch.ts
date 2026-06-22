@@ -67,6 +67,17 @@ export class Fetch implements IFetch {
 
         log.warn( `Request failed with status: ${ res.status }. Retrying ...` );
       } while ( ++retries < this.config.rateLimit.retries );
+
+      return { ...res, retries };
     } );
+
+    log.info( `Fetched URL: ${ url } in ${ ms } ms` );
+
+    return Object.assign( { duration: ms, retries: res.retries },
+      res.status === 200 && res.data ? { success: true, data: res.data } : {
+        success: false, error: `Invalid response status: ${ res.status }`,
+        statusCode: res.status
+      }
+    );
   }
 }
