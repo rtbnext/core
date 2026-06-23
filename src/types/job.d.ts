@@ -56,7 +56,10 @@ export type TQueueJobOptions = TJobClsOptions< {
 } >;
 
 export type TTop10JobOptions = TJobClsOptions< {
-  date?: string;
+  date?: readonly [
+    year: number,
+    month: number
+  ];
 } >;
 
 export type TWikiJobOptions = TJobClsOptions< {
