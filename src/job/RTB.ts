@@ -91,6 +91,7 @@ export class RTBJob extends Job {
         const prev = entries[ Number( i ) - 1 ]?.uri;
         const next = entries[ Number( i ) + 1 ]?.uri;
         const realtime = parser.realtime( profileData, prev, next );
+        const { flag, rankDiff } = parser.rankDiff( profileData );
         const { value = 0, percent = 0 } = realtime?.today ?? {};
 
         // --- update profile data ---
@@ -102,8 +103,8 @@ export class RTBJob extends Job {
         profileData = profile.getData();
         const name = profileData.info!.name.shortName;
 
-        // --- calc YTD rank diff ---
-        const { flag, rankDiff } = Performance.getYTDRankDiff( rank, year, profileData.annual );
+        // --- skip profiles if their networth is less than $1B ---
+        if ( networth < 1000 && networth - value < 1000 ) continue;
 
         // --- aggregate mover data ---
         Mover.aggregate( realtime, uri, name, mover, total );
