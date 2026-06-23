@@ -5,6 +5,8 @@ import type { TProfileIndex, TProfileIndexItem } from '@rtbnext/schema/src/model
 
 export interface IIndex< I extends TIndex, T extends Map< string, I > > {
   readonly size: number;
+  readonly values: IterableIterator< I >;
+  readonly keys: IterableIterator< string >;
   getIndex () : T;
   has ( uriLike: string ) : boolean;
   get ( uriLike: string ) : I | undefined;
