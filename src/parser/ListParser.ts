@@ -1,4 +1,5 @@
 import type { TAsset, TChangeItem, TRealtime } from '@rtbnext/schema/src/base/assets';
+import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TProfileBio, TProfileData, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
@@ -124,6 +125,17 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
         } : undefined
       };
     } );
+  }
+
+  // --- (YTD) rank diff ---
+
+  public rankDiff ( data?: Partial< TProfileData > ) : { flag: TChangeFlag, rankDiff?: number } {
+    const item = data?.annual?.find( i => i.year === this.year() - 1 );
+    if ( ! item ) return { flag: data?.annual?.filter( i => i.rank?.last !== undefined ).length ? 'returned' : 'new' };
+    if ( item.rank?.last === undefined || this.rank() === undefined ) return { flag: 'unknown' };
+
+    const rankDiff = item.rank.last - this.rank()!;
+    return { flag: rankDiff > 0 ? 'up' : rankDiff < 0 ? 'down' : 'unchanged', rankDiff };
   }
 
   // --- aggregate stats ---
