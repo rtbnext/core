@@ -11,65 +11,40 @@ export class Mover extends Snapshot< TMover > implements IMover {
   private static instance: Mover;
   private constructor () { super( 'mover', 'json' ) }
 
-  // --- prepare mover entries ---
+  // --- parse mover entries ---
 
-  private prep ( arr: TMoverEntry[], dir: 'asc' | 'desc' = 'asc' ) : TMoverEntry[] {
-    return arr.sort( ( a, b ) => dir === 'asc' ? a.value - b.value : b.value - a.value ).slice( 0, 10 );
+  private prepEntries ( entries: TMoverEntry[], method: 'money' | 'pct', dir: 'asc' | 'desc' ) : TMoverEntry[] {
+    return entries.sort( ( a, b ) => dir === 'asc' ? a.value - b.value : b.value - a.value ).slice( 0, 10 ).map(
+      ( { uri, name, value } ) => ( { uri, name, value: Parser[ method ]( value ) } )
+    );
   }
 
-  private prepWinner ( snapshot: TMoverData ) : TMoverEntry[][] {
-    return [
-      snapshot.today.networth.winner, snapshot.today.percent.winner,
-      snapshot.ytd.networth.winner, snapshot.ytd.percent.winner
-    ].map( a => this.prep( a, 'desc' ) );
+  private parseSubject ( subject: TMoverSubject, method: 'money' | 'pct' ) : TMoverSubject {
+    return {
+      winner: this.prepEntries( subject.winner, method, 'desc' ),
+      loser: this.prepEntries( subject.loser, method, 'asc' )
+    };
   }
 
-  private prepLoser ( snapshot: TMoverData ) : TMoverEntry[][] {
-    return [
-      snapshot.today.networth.loser, snapshot.today.percent.loser,
-      snapshot.ytd.networth.loser, snapshot.ytd.percent.loser
-    ].map( a => this.prep( a, 'asc' ) );
+  private parseItem ( item: TMoverItem ) : TMoverItem {
+    return {
+      total: Parser.container< TChangeItem >( {
+        value: { value: item.total.value, type: 'money' },
+        percent: { value: item.total.percent, type: 'pct' }
+      } ),
+      networth: this.parseSubject( item.networth, 'money' ),
+      percent: this.parseSubject( item.percent, 'pct' )
+    };
   }
 
   // --- (override) save mover snapshot ---
 
   public override saveSnapshot ( snapshot: TMoverData, force?: boolean ) : boolean {
-    const winner = this.prepWinner( snapshot );
-    const loser = this.prepLoser( snapshot );
-
     return super.saveSnapshot( {
       ...Utils.metaData(),
-      ...Parser.container< TMoverData >( {
-        date: { value: snapshot.date, type: 'date' },
-        today: { value: Parser.container< TMoverItem >( {
-          total: { value: Parser.container< TChangeItem >( {
-            value: { value: snapshot.today.total.value, type: 'money' },
-            percent: { value: snapshot.today.total.percent, type: 'pct' }
-          } ), type: 'container' },
-          networth: { value: Parser.container< TMoverSubject >( {
-            winner: { value: winner[ 0 ], type: 'money' },
-            loser: { value: loser[ 0 ], type: 'money' }
-          } ), type: 'container' },
-          percent: { value: Parser.container< TMoverSubject >( {
-            winner: { value: winner[ 1 ], type: 'pct' },
-            loser: { value: loser[ 1 ], type: 'pct' }
-          } ), type: 'container' }
-        } ), type: 'container' },
-        ytd: { value: Parser.container< TMoverItem >( {
-          total: { value: Parser.container< TChangeItem >( {
-            value: { value: snapshot.ytd.total.value, type: 'money' },
-            percent: { value: snapshot.ytd.total.percent, type: 'pct' }
-          } ), type: 'container' },
-          networth: { value: Parser.container< TMoverSubject >( {
-            winner: { value: winner[ 2 ], type: 'money' },
-            loser: { value: loser[ 2 ], type: 'money' }
-          } ), type: 'container' },
-          percent: { value: Parser.container< TMoverSubject >( {
-            winner: { value: winner[ 3 ], type: 'pct' },
-            loser: { value: loser[ 3 ], type: 'pct' }
-          } ), type: 'container' }
-        } ), type: 'container' }
-      } )
+      date: Parser.date( snapshot.date )!,
+      today: this.parseItem( snapshot.today ),
+      ytd: this.parseItem( snapshot.ytd )
     }, force );
   }
 
