@@ -62,7 +62,7 @@ export class Performance {
   } {
     const item = annual.find( i => i.year === year - 1 );
     if ( ! item ) return { flag: annual.filter( i => i.rank?.last !== undefined ).length ? 'returned' : 'new' };
-    if ( item.rank?.last === undefined ) return { flag: 'unchanged' };
+    if ( item.rank?.last === undefined ) return { flag: 'unknown' };
 
     const rankDiff = item.rank.last - rank;
     return { flag: rankDiff > 0 ? 'up' : rankDiff < 0 ? 'down' : 'unchanged', rankDiff };
