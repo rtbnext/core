@@ -10,7 +10,9 @@ export class Performance {
   } as const;
 
   public static getProfileExtrema ( history: TProfileHistory ) : TExtrema {
-    const map = ( [ date, rank, networth ]: TProfileHistoryItem ) => ( { date, rank, networth } );
+    const map = ( [ date, rank, networth ]: TProfileHistoryItem ) => ( {
+      date, rank: Parser.number( rank ), networth: Parser.money( networth )
+    } );
 
     const [ low, high ] = history.reduce(
       ( [ l, h ], row ) => [ ! l || row[ 2 ] < l[ 2 ] ? row : l, ! h || row[ 2 ] > h[ 2 ] ? row : h ],
@@ -39,7 +41,7 @@ export class Performance {
 
         result[ key as keyof TReturns ] = {
           value: Parser.money( networth - item[ 2 ] ),
-          percent: Parser.pct( ( networth / item[ 2 ] - 1 ) * 100 )
+          percent: Parser.pct( ( networth / ( item[ 2 ] ?? 1 ) ) * 100 )
         };
 
         if ( --remaining === 0 ) return result;
