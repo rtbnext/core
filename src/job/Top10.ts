@@ -3,6 +3,7 @@ import { Utils } from '@/core/Utils';
 import { List } from '@/model/List';
 import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TTop10JobOptions } from '@/type/job';
+import { TTop10List } from '@rtbnext/schema/src/model/stats';
 
 
 export class Top10Job extends Job< TTop10JobOptions > {
@@ -21,6 +22,11 @@ export class Top10Job extends Job< TTop10JobOptions > {
       this.log( `Searching for real-time billionaires list snapshot for ${ date }` );
       const snapshot = list.getSnapshot( date, false );
       if ( ! snapshot ) throw new Error( `No snapshot found for ${ date }` );
+
+      const top10: TTop10List = [];
+      for ( const { uri, rank, networth } of snapshot.items.slice( 0, 10 ) ) {
+        top10.push( { uri, rank, networth, flag: 'unknown' } );
+      }
     } );
   }
 
