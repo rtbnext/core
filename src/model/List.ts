@@ -16,7 +16,7 @@ export class List extends Snapshot< TListSnapshot > implements IList {
   private constructor ( item?: TListIndexItem ) {
     if ( ! item ) throw new Error( 'List index item not given' );
 
-    super( 'list', 'json' );
+    super( 'list' );
     this.uri = item.uri;
     this.item = item;
   }

@@ -9,7 +9,7 @@ import { Parser } from '@/parser/Parser';
 
 export class Mover extends Snapshot< TMover > implements IMover {
   private static instance: Mover;
-  private constructor () { super( 'mover', 'json' ) }
+  private constructor () { super( 'mover' ) }
 
   // --- parse mover items ---
 
