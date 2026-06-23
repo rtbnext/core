@@ -1,14 +1,23 @@
 import { Job } from '@/abstract/Job';
+import { Utils } from '@/core/Utils';
+import { List } from '@/model/List';
+import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TTop10JobOptions } from '@/type/job';
 
 
-export class Top10Job extends Job {
+export class Top10Job extends Job< TTop10JobOptions > {
   constructor ( options: TTop10JobOptions ) { super( options, 'top10' ) }
 
   // --- job runner ---
 
   public override async run () : Promise< void > {
-    await this.protect( async () => {} );
+    await this.protect( async () => {
+      const list = List.get( 'rtb' );
+      if ( ! list ) throw new Error( 'Real-time billionaires list not found' );
+
+      const [ year, month ] = this.options.date ?? Utils.date( 'ym' ).split( '-', 2 );
+      const date = Parser.date( Utils.lastMonthDay( month, year ), 'ymd' );
+    } );
   }
 
   // --- command definition ---
@@ -17,10 +26,10 @@ export class Top10Job extends Job {
     id: 'top10',
     desc: 'Generate monthly top 10 ranking',
     options: [ {
-      name: '-d, --date',
+      name: '--date',
       desc: 'Specify the date for the top 10 ranking (format: YYYY-MM)',
       parser: ( value: string ) => {
-        if ( ! /^\d{4}-\d{2}$/.test( value ) ) throw new Error( 'Invalid date format. Use YYYY-MM.' );
+        if ( ! /^\d{4}-\d{2}$/.test( value ) ) throw new Error( `Invalid date format: ${ value }. Use YYYY-MM.` );
         return value.split( '-', 2 ).map( ( v ) => Number( v ) );
       }
     } ]
