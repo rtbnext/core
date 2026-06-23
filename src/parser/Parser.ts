@@ -42,7 +42,7 @@ export class Parser {
     return Parser.number( value, 3 );
   }
 
-  public static pct ( value: unknown, digits: number = 2 ) : number {
+  public static pct ( value: unknown, digits: number = 3 ) : number {
     return Parser.number( value, digits );
   }
 
