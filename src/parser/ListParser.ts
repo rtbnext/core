@@ -30,6 +30,10 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'date', () => Parser.date( this.raw.date ?? this.raw.timestamp, 'ymd' )! );
   }
 
+  public year () : number {
+    return this.cache( 'year', () => Number( this.date().slice( 0, 4 ) ) );
+  }
+
   public rank () : number | undefined {
     return this.cache( 'rank', () => Parser.strict( this.raw.rank, 'number' ) );
   }
@@ -102,20 +106,21 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   public realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined {
     return this.cache( 'realtime', () => {
       if ( ! this.raw.finalWorth ) return;
-      const lastDay = data?.realtime?.networth ?? 0;
-      const dailyChange = this.raw.finalWorth - lastDay;
-      const lastYear = data?.annual?.sort( ( a, b ) => b.year - a.year )?.[ 0 ]?.networth?.last ?? 0;
-      const ytdChange = this.raw.finalWorth - lastYear;
+
+      const cur = this.raw.finalWorth;
+      const lastDay = data?.realtime?.networth;
+      const lastYear = data?.annual?.find( i => i.year === this.year() - 1 )?.networth?.last;
+      let diff;
 
       return {
         date: this.date(), rank: this.rank(), networth: this.networth(), prev, next,
-        today: data && data.realtime && lastDay ? {
-          value: Parser.money( dailyChange ),
-          percent: Parser.pct( dailyChange / lastDay * 100 )
+        today: lastDay ? {
+          value: Parser.money( diff = cur - lastDay ),
+          percent: Parser.pct( diff / lastDay * 100 )
         } : undefined,
-        ytd: data && data.annual?.length && lastYear ? {
-          value: Parser.money( ytdChange ),
-          percent: Parser.pct( ytdChange / lastYear * 100 )
+        ytd: lastYear ? {
+          value: Parser.money( diff = cur - lastYear ),
+          percent: Parser.pct( diff / lastYear * 100 )
         } : undefined
       };
     } );
