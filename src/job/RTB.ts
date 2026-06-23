@@ -32,8 +32,7 @@ export class RTBJob extends Job {
       const res = await RTBJob.fetch.list< TPersonListEntry >( 'rtb', '0' );
       if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
-      const rawList = res.data.personList.personsLists;
-      const date = Parser.date( rawList[ 0 ].timestamp, 'ymd' )!;
+      const date = Parser.date( undefined, 'ymd' )!;
       const year = Number( date.substring( 0, 4 ) );
       const ts = new Date( date ).getTime();
 
@@ -43,6 +42,7 @@ export class RTBJob extends Job {
       }
 
       const th = Date.now() - Job.config.queue.tsThreshold;
+      const rawList = res.data.personList.personsLists;
       const entries = rawList.filter( i => i.rank && i.finalWorth ).filter( Boolean )
         .sort( ( a, b ) => a.rank! - b.rank! );
 
@@ -93,6 +93,7 @@ export class RTBJob extends Job {
         const realtime = parser.realtime( profileData, prev, next );
         const { value = 0, percent = 0 } = realtime?.today ?? {};
 
+        // --- update profile data ---
         profile.addHistory( [ date, rank, networth, value, percent ] );
         const performance = Performance.generateProfilePerformance( profile.getHistory() );
         profile.updateData( { realtime, performance } );
@@ -131,8 +132,8 @@ export class RTBJob extends Job {
         desc: 'Today’s richest people in the world',
         text: 'todays richest people world',
         date, count,
-        columns: [ 'rank', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
-        filters: [ 'gender', 'industry', 'citizenship' ]
+        columns: [ 'rank', 'diff', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
+        filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
       } );
 
       if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
