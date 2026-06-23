@@ -5,7 +5,7 @@ import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type {
   TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory,
   THistoryItem, TProfileStats, TProfileStatsData, TScatter, TScatterItem, TStatsGroup,
-  TStatsGroupItem, TWealthStats, TWealthStatsData
+  TStatsGroupItem, TTop10, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -69,6 +69,10 @@ export class Stats implements IStats {
 
   public getScatter () : TScatter {
     return this.getStats< TScatter >( 'scatter.json', 'json' );
+  }
+
+  public getTop10 () : TTop10 {
+    return this.getStats< TTop10 >( 'top10.json', 'json' );
   }
 
   public getDBStats () : TDBStats {
