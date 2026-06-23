@@ -1,7 +1,8 @@
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type {
-  TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, TProfileStats, TProfileStatsData,
-  TScatter, TScatterItem, TStatsGroup, TStatsGroupItem, TWealthStats, TWealthStatsData
+  TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, TProfileStats,
+  TProfileStatsData, TScatter, TScatterItem, TStatsGroup, TStatsGroupItem, TTop10,
+  TTop10Data, TTop10List, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 
 export interface IStats {
@@ -9,6 +10,7 @@ export interface IStats {
   getProfileStats () : TProfileStats;
   getWealthStats () : TWealthStats;
   getScatter () : TScatter;
+  getTop10 () : TTop10;
   getDBStats () : TDBStats;
   getHistory () : THistory;
   getGroupedStatsIndex ( group: TStatsGroupType ) : TStatsGroup< string >[ 'index' ];
@@ -18,6 +20,8 @@ export interface IStats {
   setProfileStats ( data: TProfileStatsData ) : boolean;
   setWealthStats ( data: TWealthStatsData ) : boolean;
   setScatter ( data: TScatterItem[] ) : boolean;
+  setTop10 ( data: TTop10Data ) : boolean;
+  updateTop10 ( year: string | number, month: string | number, list: TTop10List ) : boolean;
   setDBStats ( data: TDBStatsData ) : boolean;
   setGroupedStats< T extends string = string > ( group: TStatsGroupType, raw: Record< T, TStatsGroupItem > ) : boolean;
   updateHistory ( data: Partial< TGlobalStats > ) : boolean;
