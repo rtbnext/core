@@ -18,7 +18,7 @@ export class ProfileMerger {
 
   private static similarURIs ( uri: string ) : string[] {
     const revUri = uri.split( '-' ).reverse().join( '-' );
-    const keys = [ ...ProfileMerger.index.getIndex().keys() ];
+    const keys = [ ...ProfileMerger.index.keys ];
 
     const res = new Set( [
       ...ProfileMerger.cmp.match< CmpStrResult[] >( keys, uri, 0.9 ).map( i => i.source ),
