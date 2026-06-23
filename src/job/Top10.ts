@@ -27,6 +27,8 @@ export class Top10Job extends Job< TTop10JobOptions > {
       for ( const { uri, rank, networth } of snapshot.items.slice( 0, 10 ) ) {
         top10.push( { uri, rank, networth, flag: 'unknown' } );
       }
+
+      console.log( top10 )
     } );
   }
 

@@ -28,7 +28,7 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
   }
 
   protected datedPath ( date: string ) : string {
-    return join( this.path, `${ date }.${ this.ext }` );
+    return join( this.path, `${ date }` );
   }
 
   // --- basic getter ---
