@@ -55,6 +55,10 @@ export type TQueueJobOptions = TJobClsOptions< {
   clear?: boolean;
 } >;
 
+export type TTop10JobOptions = TJobClsOptions< {
+  date?: string;
+} >;
+
 export type TWikiJobOptions = TJobClsOptions< {
   profile: string;
   assign?: string;
