@@ -66,8 +66,9 @@ export class Utils {
     if ( ! values.length ) return undefined;
     if ( typeof aggregator === 'function' ) return aggregator( values );
 
+    const isNum = ( v: unknown ) : v is number => typeof v === 'number' && ! Number.isNaN( v );
     const sum = ( acc: number | undefined, val: T[ K ] ) : number | undefined => (
-      acc === undefined || typeof val !== 'number' ? undefined : acc + val
+      acc === undefined || ! isNum( val ) ? undefined : acc + val
     );
 
     switch ( aggregator ) {
