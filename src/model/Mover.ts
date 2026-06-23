@@ -100,22 +100,22 @@ export class Mover extends Snapshot< TMover > implements IMover {
   // --- aggregate mover data ---
 
   public static aggregate (
-    data: TRealtime | undefined, uri: string, name: string, col: TMoverData, total: number = 0
+    data: TRealtime | undefined, uri: string, name: string, mover: TMoverData, total: number = 0
   ) : void {
     if ( data?.today?.value ) {
       const type = data.today.value > 0 ? 'winner' : 'loser';
-      col.today.total.value += data.today.value;
-      col.today.total.percent = total ? col.today.total.value / total : 0;
-      col.today.networth[ type ].push( { uri, name, value: data.today.value } );
-      col.today.percent[ type ].push( { uri, name, value: data.today.percent } );
+      mover.today.total.value += data.today.value;
+      mover.today.total.percent = total ? mover.today.total.value / total : 0;
+      mover.today.networth[ type ].push( { uri, name, value: data.today.value } );
+      mover.today.percent[ type ].push( { uri, name, value: data.today.percent } );
     }
 
     if ( data?.ytd?.value ) {
       const type = data.ytd.value > 0 ? 'winner' : 'loser';
-      col.ytd.total.value += data.ytd.value;
-      col.ytd.total.percent = total ? col.ytd.total.value / total : 0;
-      col.ytd.networth[ type ].push( { uri, name, value: data.ytd.value } );
-      col.ytd.percent[ type ].push( { uri, name, value: data.ytd.percent } );
+      mover.ytd.total.value += data.ytd.value;
+      mover.ytd.total.percent = total ? mover.ytd.total.value / total : 0;
+      mover.ytd.networth[ type ].push( { uri, name, value: data.ytd.value } );
+      mover.ytd.percent[ type ].push( { uri, name, value: data.ytd.percent } );
     }
   }
 }
