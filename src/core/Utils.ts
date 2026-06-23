@@ -44,11 +44,19 @@ export class Utils {
     catch ( err ) { throw Object.assign( err ?? {}, { ms: diff() } ) }
   }
 
-  // --- meta data ---
+  // --- date ---
 
   public static date ( format: TParserDateType = 'ymd' ) : string {
     return Parser.date( undefined, format )!;
   }
+
+  public static lastMonthDay ( month: number, year?: number ) : Date {
+    const date = new Date( year ?? new Date().getFullYear(), month, 0 );
+    date.setHours( 23, 59, 59, 999 );
+    return date;
+  }
+
+  // --- meta data ---
 
   public static metaData < T extends Record< string, unknown > > ( obj?: T ) : TMetaData< T > {
     return { $metadata: { schemaVersion: 2, lastModified: Utils.date( 'iso' ), ...obj } } as TMetaData< T >;
