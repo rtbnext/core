@@ -10,8 +10,9 @@ import type { TJobClsOptions, TJobDefinition } from '@/type/job';
 
 
 export class StatsJob extends Job {
-  private readonly filter = Filter.getInstance();
-  private readonly stats = Stats.getInstance();
+  private static readonly filter = Filter.getInstance();
+  private static readonly index = ProfileIndex.getInstance();
+  private static readonly stats = Stats.getInstance();
 
   constructor ( options: TJobClsOptions ) { super( options, 'stats' ) }
 
@@ -19,14 +20,13 @@ export class StatsJob extends Job {
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
-      const date = this.stats.getGlobalStats().date;
-      const index = ProfileIndex.getInstance().getIndex();
-      if ( ! date || ! index.size ) throw new Error( 'No data available' );
+      const date = StatsJob.stats.getGlobalStats().date;
+      if ( ! date || ! StatsJob.index.size ) throw new Error( 'No data available' );
 
-      this.log( `Generating stats for ${ date } with ${ index.size } profiles` );
+      this.log( `Generating stats for ${ date } with ${ StatsJob.index.size } profiles` );
       const filter: Partial< TFilterList > = {}, stats: any = {};
 
-      for ( const item of index.values() ) {
+      for ( const item of StatsJob.index.values ) {
         const profile = Profile.getByItem( item );
         if ( ! profile ) continue;
 
@@ -36,14 +36,12 @@ export class StatsJob extends Job {
       }
 
       this.log( `Saving stats for ${ date }` );
-      this.filter.save( filter );
-      this.stats.setProfileStats( stats.profile );
-      this.stats.generateWealthStats( stats.scatter );
-      StatsGroup.forEach( g => this.stats.setGroupedStats( g, stats.groups[ g ] ) );
-      this.stats.setScatter( stats.scatter );
-      this.stats.generateDBStats();
-
-      this.log( `Stats generation completed, as of ${ date }` );
+      StatsJob.filter.save( filter );
+      StatsJob.stats.setProfileStats( stats.profile );
+      StatsJob.stats.generateWealthStats( stats.scatter );
+      StatsGroup.forEach( g => StatsJob.stats.setGroupedStats( g, stats.groups[ g ] ) );
+      StatsJob.stats.setScatter( stats.scatter );
+      StatsJob.stats.generateDBStats();
     } );
   }
 
