@@ -1,9 +1,10 @@
+import type { TTop10List } from '@rtbnext/schema/src/model/stats';
+
 import { Job } from '@/abstract/Job';
 import { Utils } from '@/core/Utils';
 import { List } from '@/model/List';
 import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TTop10JobOptions } from '@/type/job';
-import { TTop10List } from '@rtbnext/schema/src/model/stats';
 
 
 export class Top10Job extends Job< TTop10JobOptions > {
@@ -27,8 +28,6 @@ export class Top10Job extends Job< TTop10JobOptions > {
       for ( const { uri, rank, networth } of snapshot.items.slice( 0, 10 ) ) {
         top10.push( { uri, rank, networth, flag: 'unknown' } );
       }
-
-      console.log( top10 )
     } );
   }
 
