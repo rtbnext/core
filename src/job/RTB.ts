@@ -34,6 +34,7 @@ export class RTBJob extends Job {
 
       const rawList = res.data.personList.personsLists;
       const date = Parser.date( rawList[ 0 ].timestamp, 'ymd' )!;
+      const year = Number( date.substring( 0, 4 ) );
       const ts = new Date( date ).getTime();
 
       if ( RTBJob.stats.getGlobalStats().date === date ) {
@@ -100,12 +101,15 @@ export class RTBJob extends Job {
         profileData = profile.getData();
         const name = profileData.info!.name.shortName;
 
+        // --- calc YTD rank diff ---
+        const { flag, rankDiff } = Performance.getYTDRankDiff( rank, year, profileData.annual );
+
         // --- aggregate mover data ---
         Mover.aggregate( realtime, uri, name, mover, total );
 
         // --- push list item ---
         items.push( {
-          uri, rank, networth, name,
+          uri, rank, networth, name, flag, rankDiff,
           gender: profileData.info?.gender,
           age: parser.age(),
           today: realtime?.today,
