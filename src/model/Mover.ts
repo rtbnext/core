@@ -1,5 +1,5 @@
 import type { TChangeItem, TRealtime } from '@rtbnext/schema/src/base/assets';
-import type { TMover, TMoverData, TMoverEntry, TMoverItem, TMoverSubject } from '@rtbnext/schema/src/model/mover';
+import type { TMover, TMoverBucket, TMoverData, TMoverEntry, TMoverItem } from '@rtbnext/schema/src/model/mover';
 
 import { Snapshot } from '@/abstract/Snapshot';
 import { Utils } from '@/core/Utils';
@@ -11,29 +11,29 @@ export class Mover extends Snapshot< TMover > implements IMover {
   private static instance: Mover;
   private constructor () { super( 'mover', 'json' ) }
 
-  // --- parse mover entries ---
+  // --- parse mover items ---
 
-  private prepEntries ( entries: TMoverEntry[], method: 'money' | 'pct', dir: 'asc' | 'desc' ) : TMoverEntry[] {
-    return entries.sort( ( a, b ) => dir === 'asc' ? a.value - b.value : b.value - a.value ).slice( 0, 10 ).map(
+  private prepItems ( items: TMoverItem[], method: 'money' | 'pct', dir: 'asc' | 'desc' ) : TMoverItem[] {
+    return items.sort( ( a, b ) => dir === 'asc' ? a.value - b.value : b.value - a.value ).slice( 0, 10 ).map(
       ( { uri, name, value } ) => ( { uri, name, value: Parser[ method ]( value ) } )
     );
   }
 
-  private parseSubject ( subject: TMoverSubject, method: 'money' | 'pct' ) : TMoverSubject {
+  private parseEntry ( entry: TMoverEntry, method: 'money' | 'pct' ) : TMoverEntry {
     return {
-      winner: this.prepEntries( subject.winner, method, 'desc' ),
-      loser: this.prepEntries( subject.loser, method, 'asc' )
+      winner: this.prepItems( entry.winner, method, 'desc' ),
+      loser: this.prepItems( entry.loser, method, 'asc' )
     };
   }
 
-  private parseItem ( item: TMoverItem ) : TMoverItem {
+  private parseBucket ( bucket: TMoverBucket ) : TMoverBucket {
     return {
       total: Parser.container< TChangeItem >( {
-        value: { value: item.total.value, type: 'money' },
-        percent: { value: item.total.percent, type: 'pct' }
+        value: { value: bucket.total.value, type: 'money' },
+        percent: { value: bucket.total.percent, type: 'pct' }
       } ),
-      networth: this.parseSubject( item.networth, 'money' ),
-      percent: this.parseSubject( item.percent, 'pct' )
+      networth: this.parseEntry( bucket.networth, 'money' ),
+      percent: this.parseEntry( bucket.percent, 'pct' )
     };
   }
 
@@ -43,8 +43,8 @@ export class Mover extends Snapshot< TMover > implements IMover {
     return super.saveSnapshot( {
       ...Utils.metaData(),
       date: Parser.date( snapshot.date )!,
-      today: this.parseItem( snapshot.today ),
-      ytd: this.parseItem( snapshot.ytd )
+      today: this.parseBucket( snapshot.today ),
+      ytd: this.parseBucket( snapshot.ytd )
     }, force );
   }
 
