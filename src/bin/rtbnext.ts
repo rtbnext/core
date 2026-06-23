@@ -14,7 +14,7 @@ const program = new Command();
 
 program
   .name( 'ntbnext' )
-  .description( 'CLI to maintain the @rtbnext database' )
+  .description( 'CLI to maintain the @rtbnext billionaires database' )
   .version( '2.0.0', '-v, --version' );
 
 for ( const JobClass of JOBS ) {
