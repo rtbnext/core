@@ -1,5 +1,4 @@
-import type { TAnnual, TExtrema, TPerformance, TReturns } from '@rtbnext/schema/src/base/assets';
-import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
+import type { TExtrema, TPerformance, TReturns } from '@rtbnext/schema/src/base/assets';
 import type { TProfileHistory, TProfileHistoryItem } from '@rtbnext/schema/src/model/profile';
 
 import { Parser } from '@/parser/Parser';
@@ -55,16 +54,5 @@ export class Performance {
       extrema: Performance.getProfileExtrema( history ),
       returns: Performance.generateProfileReturns( history )
     };
-  }
-
-  public static getYTDRankDiff ( rank: number, year: number, annual: TAnnual[] = [] ) : {
-    flag: TChangeFlag, rankDiff?: number
-  } {
-    const item = annual.find( i => i.year === year - 1 );
-    if ( ! item ) return { flag: annual.filter( i => i.rank?.last !== undefined ).length ? 'returned' : 'new' };
-    if ( item.rank?.last === undefined ) return { flag: 'unknown' };
-
-    const rankDiff = item.rank.last - rank;
-    return { flag: rankDiff > 0 ? 'up' : rankDiff < 0 ? 'down' : 'unchanged', rankDiff };
   }
 }
