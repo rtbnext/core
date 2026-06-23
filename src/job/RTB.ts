@@ -33,7 +33,6 @@ export class RTBJob extends Job {
       if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
       const date = Parser.date( undefined, 'ymd' )!;
-      const year = Number( date.substring( 0, 4 ) );
       const ts = new Date( date ).getTime();
 
       if ( RTBJob.stats.getGlobalStats().date === date ) {
