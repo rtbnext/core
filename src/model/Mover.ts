@@ -105,7 +105,7 @@ export class Mover extends Snapshot< TMover > implements IMover {
     if ( data?.today?.value ) {
       const type = data.today.value > 0 ? 'winner' : 'loser';
       mover.today.total.value += data.today.value;
-      mover.today.total.percent = total ? mover.today.total.value / total : 0;
+      mover.today.total.percent = total ? mover.today.total.value / total * 100 : 0;
       mover.today.networth[ type ].push( { uri, name, value: data.today.value } );
       mover.today.percent[ type ].push( { uri, name, value: data.today.percent } );
     }
@@ -113,7 +113,7 @@ export class Mover extends Snapshot< TMover > implements IMover {
     if ( data?.ytd?.value ) {
       const type = data.ytd.value > 0 ? 'winner' : 'loser';
       mover.ytd.total.value += data.ytd.value;
-      mover.ytd.total.percent = total ? mover.ytd.total.value / total : 0;
+      mover.ytd.total.percent = total ? mover.ytd.total.value / total * 100 : 0;
       mover.ytd.networth[ type ].push( { uri, name, value: data.ytd.value } );
       mover.ytd.percent[ type ].push( { uri, name, value: data.ytd.percent } );
     }
