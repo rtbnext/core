@@ -50,8 +50,8 @@ export class Utils {
     return Parser.date( undefined, format )!;
   }
 
-  public static lastMonthDay ( month: number, year?: number ) : Date {
-    const date = new Date( year ?? new Date().getFullYear(), month, 0 );
+  public static lastMonthDay ( month: string | number, year?: string | number ) : Date {
+    const date = new Date( Number( year ?? new Date().getFullYear() ), Number( month ), 0 );
     date.setHours( 23, 59, 59, 999 );
     return date;
   }
