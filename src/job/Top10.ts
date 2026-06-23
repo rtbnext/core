@@ -3,11 +3,13 @@ import type { TTop10List } from '@rtbnext/schema/src/model/stats';
 import { Job } from '@/abstract/Job';
 import { Utils } from '@/core/Utils';
 import { List } from '@/model/List';
+import { Stats } from '@/model/Stats';
 import { Parser } from '@/parser/Parser';
 import type { TJobDefinition, TTop10JobOptions } from '@/type/job';
 
 
 export class Top10Job extends Job< TTop10JobOptions > {
+  private static readonly stats = Stats.getInstance();
   constructor ( options: TTop10JobOptions ) { super( options, 'top10' ) }
 
   // --- job runner ---
@@ -20,16 +22,17 @@ export class Top10Job extends Job< TTop10JobOptions > {
       const [ year, month ] = this.options.date ?? Utils.date( 'ym' ).split( '-', 2 );
       const date = Parser.date( Utils.lastMonthDay( month, year ), 'ymd' )!;
 
-      this.log( `Searching for real-time billionaires list snapshot for ${ date }` );
+      this.log( `Searching for real-time billionaires list snapshot for ${ month }/${ year } (${ date })` );
       const snapshot = list.getSnapshot( date, false );
-      if ( ! snapshot ) throw new Error( `No snapshot found for ${ date }` );
+      if ( ! snapshot ) throw new Error( `No snapshot found for ${ month }/${ year }` );
 
       const top10: TTop10List = [];
       for ( const { uri, rank, networth } of snapshot.items.slice( 0, 10 ) ) {
         top10.push( { uri, rank, networth, flag: 'unknown' } );
       }
 
-      console.log( top10 );
+      this.log( `Saving top 10 ranking for ${ month }/${ year }` );
+      Top10Job.stats.updateTop10( year, month, top10 );
     } );
   }
 
@@ -43,7 +46,7 @@ export class Top10Job extends Job< TTop10JobOptions > {
       desc: 'Specify the date for the top 10 ranking',
       parser: ( v: string ) => {
         if ( ! /^\d{4}-\d{2}$/.test( v ) ) throw new Error( `Invalid date format "${ v }"; use YYYY-MM.` );
-        return v.split( '-', 2 ).map( ( v ) => Number( v ) );
+        return v.split( '-', 2 ).map( v => Number( v ) );
       }
     } ]
   } as const;
