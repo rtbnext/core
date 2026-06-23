@@ -26,11 +26,11 @@ export class Top10Job extends Job< TTop10JobOptions > {
     id: 'top10',
     desc: 'Generate monthly top 10 ranking',
     options: [ {
-      name: '--date',
-      desc: 'Specify the date for the top 10 ranking (format: YYYY-MM)',
-      parser: ( value: string ) => {
-        if ( ! /^\d{4}-\d{2}$/.test( value ) ) throw new Error( `Invalid date format: ${ value }. Use YYYY-MM.` );
-        return value.split( '-', 2 ).map( ( v ) => Number( v ) );
+      name: '-d, --date <YYYY-MM>',
+      desc: 'Specify the date for the top 10 ranking',
+      parser: ( v: string ) => {
+        if ( ! /^\d{4}-\d{2}$/.test( v ) ) throw new Error( `Invalid date format: ${ v }. Use YYYY-MM.` );
+        return v.split( '-', 2 ).map( ( v ) => Number( v ) );
       }
     } ]
   } as const;
