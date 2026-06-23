@@ -41,6 +41,14 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
     return this.index.size;
   }
 
+  public get values () : IterableIterator< I > {
+    return this.index.values();
+  }
+
+  public get keys () : IterableIterator< string > {
+    return this.index.keys();
+  }
+
   public getIndex () : T {
     return this.index;
   }
