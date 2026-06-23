@@ -180,7 +180,9 @@ export class Stats implements IStats {
     return this.saveStats( 'top10.json', 'json', this.prepStats( { data } ) );
   }
 
-  public updateTop10 ( year: string | number, month: string | number, list: TTop10Data ) : boolean {}
+  public updateTop10 ( year: string | number, month: string | number, list: TTop10List ) : boolean {
+    return this.setTop10( { ...this.getTop10().entries, [ `${ year }-${ month }` ]: list } );
+  }
 
   public setDBStats ( data: TDBStatsData ) : boolean {
     return this.saveStats( 'db.json', 'json', this.prepStats(

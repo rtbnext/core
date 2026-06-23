@@ -28,6 +28,8 @@ export class Top10Job extends Job< TTop10JobOptions > {
       for ( const { uri, rank, networth } of snapshot.items.slice( 0, 10 ) ) {
         top10.push( { uri, rank, networth, flag: 'unknown' } );
       }
+
+      console.log( top10 );
     } );
   }
 
@@ -40,7 +42,7 @@ export class Top10Job extends Job< TTop10JobOptions > {
       name: '-d, --date <YYYY-MM>',
       desc: 'Specify the date for the top 10 ranking',
       parser: ( v: string ) => {
-        if ( ! /^\d{4}-\d{2}$/.test( v ) ) throw new Error( `Invalid date format: ${ v }. Use YYYY-MM.` );
+        if ( ! /^\d{4}-\d{2}$/.test( v ) ) throw new Error( `Invalid date format "${ v }"; use YYYY-MM.` );
         return v.split( '-', 2 ).map( ( v ) => Number( v ) );
       }
     } ]
