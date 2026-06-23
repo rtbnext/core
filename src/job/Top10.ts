@@ -16,7 +16,11 @@ export class Top10Job extends Job< TTop10JobOptions > {
       if ( ! list ) throw new Error( 'Real-time billionaires list not found' );
 
       const [ year, month ] = this.options.date ?? Utils.date( 'ym' ).split( '-', 2 );
-      const date = Parser.date( Utils.lastMonthDay( month, year ), 'ymd' );
+      const date = Parser.date( Utils.lastMonthDay( month, year ), 'ymd' )!;
+
+      this.log( `Searching for real-time billionaires list snapshot for ${ date }` );
+      const snapshot = list.getSnapshot( date, false );
+      if ( ! snapshot ) throw new Error( `No snapshot found for ${ date }` );
     } );
   }
 
