@@ -6,17 +6,16 @@ import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { ISnapshot } from '@/interface/snapshot';
 import { Parser } from '@/parser/Parser';
-import type { TStorageRWType } from '@/type/storage';
 
 
 export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > {
   protected static readonly storage = Storage.getInstance();
+
+  protected readonly path: string
   protected dates: string[];
 
-  protected constructor (
-    protected readonly path: string,
-    protected readonly ext: TStorageRWType = 'json'
-  ) {
+  protected constructor ( path: string ) {
+    this.path = path;
     Snapshot.storage.ensurePath( this.path, true );
     this.dates = this.scanDates();
   }
