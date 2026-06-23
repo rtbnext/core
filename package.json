@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@komed3/deepmerge": "^1.0.0",
-    "@rtbnext/schema": "^2.0.0-alpha.9",
+    "@rtbnext/schema": "^2.0.0-alpha.10",
     "axios": "^1.18.0",
     "cmpstr": "^3.3.0",
     "commander": "^15.0.0",
