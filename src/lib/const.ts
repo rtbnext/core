@@ -35,7 +35,7 @@ export const AssetType: TAssetType[] = [
 ] as const;
 
 export const ChangeFlag: TChangeFlag[] = [
-  'up', 'down', 'unchanged'
+  'up', 'down', 'unchanged', 'new', 'returned'
 ] as const;
 
 // --- stats ---
