@@ -5,7 +5,7 @@ import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type {
   TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory,
   THistoryItem, TProfileStats, TProfileStatsData, TScatter, TScatterItem, TStatsGroup,
-  TStatsGroupItem, TTop10, TWealthStats, TWealthStatsData
+  TStatsGroupItem, TTop10, TTop10Data, TTop10List, TWealthStats, TWealthStatsData
 } from '@rtbnext/schema/src/model/stats';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -175,6 +175,12 @@ export class Stats implements IStats {
       count: Parser.number( items.length ), items
     } ) );
   }
+
+  public setTop10 ( data: TTop10Data ) : boolean {
+    return this.saveStats( 'top10.json', 'json', this.prepStats( { data } ) );
+  }
+
+  public updateTop10 ( year: string | number, month: string | number, list: TTop10Data ) : boolean {}
 
   public setDBStats ( data: TDBStatsData ) : boolean {
     return this.saveStats( 'db.json', 'json', this.prepStats(
