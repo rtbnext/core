@@ -7,7 +7,7 @@ import type { TAnnualRawData } from '@/type/annual';
 export class Annual {
   private static readonly handler = {
     rank: {
-      sort: ( a: number, b: number ) => a - b
+      sort: ( a: number, b: number ) => a - b,
     },
     networth: {
       sort: ( a: number, b: number ) => b - a
@@ -43,7 +43,18 @@ export class Annual {
   }
 
   private static record ( raw: TAnnualRawData, type: keyof typeof Annual.handler ) : TAnnualRecord | undefined {
-    if ( ! raw.rank?.length ) return;
-    return;
+    const data = raw[ type ], len = data?.length ?? 0;
+    if ( len === 0 ) return;
+
+    const { sort } = Annual.handler[ type ];
+    const first = data[ len - 1 ], last = data[ 0 ], diff = sort( first, last );
+    const sorted = data.sort( sort );
+    const max = sorted[ 0 ], min = sorted[ len - 1 ];
+    const mean = sorted.reduce( ( sum, v ) => sum + v, 0 ) / len;
+    const median = sorted[ Math.floor( len / 2 ) ];
+    const range = Math.abs( max - min );
+    const stdDev = Math.sqrt( sorted.reduce( ( sum, v ) => sum + ( v - mean ) ** 2, 0 ) / len );
+
+    return { first, last, max, min, diff, flag: 'unknown', mean, median, range, stdDev };
   }
 }
