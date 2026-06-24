@@ -11,12 +11,18 @@ export class Annual {
     rank: {
       sort: ( a: number, b: number ) => a - b,
       parse: ( v: number ) => Parser.number( v, 0 ),
-      flag: () : TChangeFlag => 'unknown'
+      flag: ( raw: TAnnualRawData ) : TChangeFlag => {
+        //
+      }
     },
     networth: {
       sort: ( a: number, b: number ) => b - a,
       parse: Parser.money,
-      flag: () : TChangeFlag => 'unknown'
+      flag: ( raw: TAnnualRawData ) : TChangeFlag => {
+        if ( raw.prevNetworth === undefined ) return 'unknown';
+        const diff = raw.networth[ 0 ] - raw.prevNetworth;
+        return diff > 0 ? 'up' : diff < 0 ? 'down' : 'unchanged';
+      }
     }
   } as const;
 
@@ -60,7 +66,7 @@ export class Annual {
 
     return {
       first: parse( first ), last: parse( last ), max: parse( max ), min: parse( min ),
-      diff: parse( sort( first, last ) ), flag: flag(), mean: parse( mean ),
+      diff: parse( sort( first, last ) ), flag: flag( raw ), mean: parse( mean ),
       median: parse( sorted[ Math.floor( len / 2 ) ] ), range: parse( Math.abs( max - min ) ),
       stdDev: parse( Math.sqrt( sorted.reduce( ( sum, v ) => sum + ( v - mean ) ** 2, 0 ) / len ) )
     };
