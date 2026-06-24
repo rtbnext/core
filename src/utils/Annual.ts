@@ -1,4 +1,5 @@
 import type { TAnnualRecord } from '@rtbnext/schema/src/base/assets';
+import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TProfileHistory } from '@rtbnext/schema/src/model/profile';
 
 import { Parser } from '@/parser/Parser';
@@ -9,11 +10,13 @@ export class Annual {
   private static readonly handler = {
     rank: {
       sort: ( a: number, b: number ) => a - b,
-      parse: ( v: number ) => Parser.number( v, 0 )
+      parse: ( v: number ) => Parser.number( v, 0 ),
+      flag: () : TChangeFlag => 'unknown'
     },
     networth: {
       sort: ( a: number, b: number ) => b - a,
-      parse: Parser.money
+      parse: Parser.money,
+      flag: () : TChangeFlag => 'unknown'
     }
   } as const;
 
@@ -49,22 +52,16 @@ export class Annual {
     const data = raw[ type ], len = data?.length ?? 0;
     if ( len === 0 ) return;
 
-    const { sort, parse } = Annual.handler[ type ];
+    const { sort, parse, flag } = Annual.handler[ type ];
     const first = data[ len - 1 ], last = data[ 0 ];
     const sorted = data.sort( sort );
     const max = sorted[ 0 ], min = sorted[ len - 1 ];
     const mean = sorted.reduce( ( sum, v ) => sum + v, 0 ) / len;
 
     return {
-      first: parse( first ),
-      last: parse( last ),
-      max: parse( max ),
-      min: parse( min ),
-      diff: parse( sort( first, last ) ),
-      flag: 'unknown',
-      mean: parse( mean ),
-      median: parse( sorted[ Math.floor( len / 2 ) ] ),
-      range: parse( Math.abs( max - min ) ),
+      first: parse( first ), last: parse( last ), max: parse( max ), min: parse( min ),
+      diff: parse( sort( first, last ) ), flag: flag(), mean: parse( mean ),
+      median: parse( sorted[ Math.floor( len / 2 ) ] ), range: parse( Math.abs( max - min ) ),
       stdDev: parse( Math.sqrt( sorted.reduce( ( sum, v ) => sum + ( v - mean ) ** 2, 0 ) / len ) )
     };
   }
