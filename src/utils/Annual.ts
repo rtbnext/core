@@ -6,8 +6,12 @@ import type { TAnnualRawData } from '@/type/annual';
 
 export class Annual {
   private static readonly handler = {
-    rank: {},
-    networth: {}
+    rank: {
+      sort: ( a: number, b: number ) => a - b
+    },
+    networth: {
+      sort: ( a: number, b: number ) => b - a
+    }
   } as const;
 
   private static aggregate ( history: TProfileHistory, year: number ) : TAnnualRawData {
@@ -38,7 +42,8 @@ export class Annual {
     return { rank, networth, prevRank, prevNetworth, hadBefore };
   }
 
-  private static record ( raw: TAnnualRawData ) : TAnnualRecord {
-    //
+  private static record ( raw: TAnnualRawData, type: keyof typeof Annual.handler ) : TAnnualRecord | undefined {
+    if ( ! raw.rank?.length ) return;
+    return;
   }
 }
