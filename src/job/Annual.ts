@@ -10,7 +10,13 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
   // --- job runner ---
 
   public async run () : Promise< void > {
-    await this.protect( async () => Annual.generateAll( this.options.year ) );
+    await this.protect( async () => {
+      if ( this.options.profiles?.length )
+        for ( const uri of this.options.profiles )
+          Annual.generate( uri, this.options.year );
+
+      else Annual.generateAll( this.options.year );
+    } );
   }
 
   // --- command definition ---
@@ -23,6 +29,10 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
       desc: 'The year for which to generate annual records',
       parser: ( v: string ) => Parser.number( v ),
       required: true
+    }, {
+      name: '-p, --profiles <URIs>',
+      desc: 'Process specific profiles by URI (comma-separated)',
+      parser: ( v: string ) => Parser.list( v, 'string', ',' )
     } ]
   } as const;
 }
