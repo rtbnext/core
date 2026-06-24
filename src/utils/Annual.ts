@@ -87,9 +87,17 @@ export class Annual {
       const history = profile.getHistory();
       if ( ! history?.length ) throw new Error( `No history found for ${ uriLike }` );
 
-      const annual = profile.getData().annual ?? [];
       const raw = Annual.aggregate( history, year );
       const item = { year, rank: Annual.record( raw, 'rank' ), networth: Annual.record( raw, 'networth' ) };
+
+      const annual = profile.getData().annual ?? [];
+      const idx = annual.findIndex( ( a: TAnnual ) => a.year === year );
+      if ( idx >= 0 ) annual[ idx ] = item;
+      else annual.push( item );
+
+      profile.updateData( { annual } );
+      profile.save();
+      return true;
     }, `Failed to generate annual report for ${ uriLike } @ ${ year }` ) ?? false;
   }
 }
