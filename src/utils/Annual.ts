@@ -1,9 +1,11 @@
-import type { TAnnualRecord } from '@rtbnext/schema/src/base/assets';
+import type { TAnnual, TAnnualRecord } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TProfileHistory } from '@rtbnext/schema/src/model/profile';
 
 import { Parser } from '@/parser/Parser';
 import type { TAnnualRawData } from '@/type/annual';
+import { Profile } from '@/model/Profile';
+import { log } from '@/core/Logger';
 
 
 export class Annual {
@@ -75,5 +77,19 @@ export class Annual {
       median: parse( sorted[ Math.floor( len / 2 ) ] ), range: parse( Math.abs( max - min ) ),
       stdDev: parse( Math.sqrt( sorted.reduce( ( sum, v ) => sum + ( v - mean ) ** 2, 0 ) / len ) )
     };
+  }
+
+  public static generate ( uriLike: string, year: number ) : boolean {
+    return log.catch( () => {
+      const profile = Profile.get( uriLike );
+      if ( ! profile ) throw new Error( `Profile not found for ${ uriLike }` );
+
+      const history = profile.getHistory();
+      if ( ! history?.length ) throw new Error( `No history found for ${ uriLike }` );
+
+      const annual = profile.getData().annual ?? [];
+      const raw = Annual.aggregate( history, year );
+      const item = { year, rank: Annual.record( raw, 'rank' ), networth: Annual.record( raw, 'networth' ) };
+    }, `Failed to generate annual report for ${ uriLike } @ ${ year }` ) ?? false;
   }
 }
