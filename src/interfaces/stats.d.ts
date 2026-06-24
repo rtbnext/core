@@ -22,7 +22,7 @@ export interface IStats {
   setWealthStats ( data: TWealthStatsData ) : boolean;
   setScatter ( data: TScatterItem[] ) : boolean;
   setTop10 ( data: TTop10Data ) : boolean;
-  updateTop10 ( year: string | number, month: string | number, list: TTop10List ) : boolean;
+  updateTop10 ( key: string, list: TTop10List ) : boolean;
   setDBStats ( data: TDBStatsData ) : boolean;
   setGroupedStats< T extends string = string > ( group: TStatsGroupType, raw: Record< T, TStatsGroupItem > ) : boolean;
   updateHistory ( data: Partial< TGlobalStats > ) : boolean;

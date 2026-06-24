@@ -181,8 +181,8 @@ export class Stats implements IStats {
     return this.saveStats( 'top10.json', 'json', this.prepStats( { data } ) );
   }
 
-  public updateTop10 ( year: string | number, month: string | number, list: TTop10List ) : boolean {
-    return this.setTop10( { ...this.getTop10().entries, [ `${ year }-${ month }` ]: list } );
+  public updateTop10 ( key: string, list: TTop10List ) : boolean {
+    return this.setTop10( { ...this.getTop10().entries, [ key ]: list } );
   }
 
   public setDBStats ( data: TDBStatsData ) : boolean {
@@ -310,7 +310,7 @@ export class Stats implements IStats {
       const prev = `${ month === 1 ? year - 1 : year }-${ String( month === 1 ? 12 : month - 1 ).padStart( 2, '0' ) }`;
 
       log.debug( `Generating top 10 entry for ${ key } ...` );
-      const { entries } = this.getTop10();
+      const { entries = {} } = this.getTop10();
       const last = entries[ prev ];
       const top10: TTop10List = [];
 
@@ -324,7 +324,7 @@ export class Stats implements IStats {
         } );
       }
 
-      return this.updateTop10( year, month, top10 );
+      return this.updateTop10( key, top10 );
     }, 'Failed to generate top 10 entry' ) ?? false;
   }
 
