@@ -323,6 +323,8 @@ export class Stats implements IStats {
           : 'new'
         } );
       }
+
+      return this.updateTop10( year, month, top10 );
     }, 'Failed to generate top 10 entry' ) ?? false;
   }
 
