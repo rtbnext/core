@@ -1,6 +1,7 @@
 import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
+import type { TRTBListSnapshot } from '@rtbnext/schema/src/model/list';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type {
   TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory,
@@ -16,7 +17,6 @@ import { Utils } from '@/core/Utils';
 import type { IStats } from '@/interface/stats';
 import { Percentiles, StatsGroup, WealthSpread } from '@/lib/const';
 import { Parser } from '@/parser/Parser';
-import { TRTBListSnapshot } from '@rtbnext/schema/src/model/list';
 
 
 export class Stats implements IStats {
