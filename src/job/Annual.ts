@@ -1,6 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Parser } from '@/parser/Parser';
 import type { TAnnualJobOptions, TJobDefinition } from '@/type/job';
+import { Annual } from '@/util/Annual';
 
 
 export class AnnualJob extends Job< TAnnualJobOptions > {
@@ -9,7 +10,7 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
   // --- job runner ---
 
   public async run () : Promise< void > {
-    await this.protect( async () => {} );
+    await this.protect( async () => Annual.generateAll( this.options.year ) );
   }
 
   // --- command definition ---
