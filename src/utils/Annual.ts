@@ -12,14 +12,11 @@ export class Annual {
       sort: ( a: number, b: number ) => a - b,
       parse: ( v: number ) => Parser.number( v, 0 ),
       flag: ( raw: TAnnualRawData ) : TChangeFlag => {
-        if ( raw.prevRank !== undefined ) {
-          if ( raw.networth[ 0 ] < 1000 ) return 'dropoff';
+        if ( raw.networth?.length && raw.networth[ 0 ] < 1000 ) return 'dropoff';
+        if ( raw.prevRank === undefined ) return raw.hadBefore ? 'returned' : 'new';
 
-          const diff = raw.prevRank - raw.rank[ 0 ];
-          return diff > 0 ? 'up' : diff < 0 ? 'down' : 'unchanged';
-        } else {
-          return raw.hadBefore ? 'returned' : 'new';
-        }
+        const diff = raw.prevRank - raw.rank[ 0 ];
+        return diff > 0 ? 'up' : diff < 0 ? 'down' : 'unchanged';
       }
     },
     networth: {
