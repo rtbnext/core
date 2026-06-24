@@ -2,10 +2,10 @@ import type { TAnnual, TAnnualRecord } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TProfileHistory } from '@rtbnext/schema/src/model/profile';
 
+import { log } from '@/core/Logger';
+import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import type { TAnnualRawData } from '@/type/annual';
-import { Profile } from '@/model/Profile';
-import { log } from '@/core/Logger';
 
 
 export class Annual {
