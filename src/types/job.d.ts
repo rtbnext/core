@@ -24,6 +24,10 @@ export type TJobClsOptions< T extends object = {} > = Expand< {
   safeMode?: boolean;
 } & T >;
 
+export type TAnnualJobOptions = TJobClsOptions< {
+  year: number;
+} >;
+
 export type TMergeJobOptions = TJobClsOptions< {
   list?: string[];
   source?: string;
