@@ -1,5 +1,3 @@
-import type { TTop10List } from '@rtbnext/schema/src/model/stats';
-
 import { Job } from '@/abstract/Job';
 import { Utils } from '@/core/Utils';
 import { List } from '@/model/List';
@@ -22,17 +20,10 @@ export class Top10Job extends Job< TTop10JobOptions > {
       const [ year, month ] = this.options.date ?? Utils.date( 'ym' ).split( '-', 2 );
       const date = Parser.date( Utils.lastMonthDay( month, year ), 'ymd' )!;
 
-      this.log( `Searching for real-time billionaires list snapshot for ${ month }/${ year } (${ date })` );
       const snapshot = list.getSnapshot( date, false );
       if ( ! snapshot ) throw new Error( `No snapshot found for ${ month }/${ year }` );
 
-      const top10: TTop10List = [];
-      for ( const { uri, rank, networth } of snapshot.items.slice( 0, 10 ) ) {
-        top10.push( { uri, rank, networth, flag: 'unknown' } );
-      }
-
-      this.log( `Saving top 10 ranking for ${ month }/${ year }` );
-      Top10Job.stats.updateTop10( year, month, top10 );
+      Top10Job.stats.generateTop10Entry( snapshot );
     } );
   }
 

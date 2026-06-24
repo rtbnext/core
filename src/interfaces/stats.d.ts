@@ -1,5 +1,5 @@
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
-import type { TRTBListSnapshot } from '@rtbnext/schema/src/model/list';
+import type { TListSnapshot } from '@rtbnext/schema/src/model/list';
 import type {
   TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory, TProfileStats,
   TProfileStatsData, TScatter, TScatterItem, TStatsGroup, TStatsGroupItem, TTop10,
@@ -27,6 +27,6 @@ export interface IStats {
   setGroupedStats< T extends string = string > ( group: TStatsGroupType, raw: Record< T, TStatsGroupItem > ) : boolean;
   updateHistory ( data: Partial< TGlobalStats > ) : boolean;
   generateWealthStats ( scatter: TScatterItem[] ) : boolean;
-  generateTop10Entry ( snapshot: TRTBListSnapshot ) : boolean;
+  generateTop10Entry ( snapshot: TListSnapshot ) : boolean;
   generateDBStats () : boolean;
 }
