@@ -1,9 +1,15 @@
+import type { TAnnualRecord } from '@rtbnext/schema/src/base/assets';
 import type { TProfileHistory } from '@rtbnext/schema/src/model/profile';
 
 import type { TAnnualRawData } from '@/type/annual';
 
 
 export class Annual {
+  private static readonly handler = {
+    rank: {},
+    networth: {}
+  } as const;
+
   private static aggregate ( history: TProfileHistory, year: number ) : TAnnualRawData {
     const rank: number[] = [], networth: number[] = [];
     let prevRank: number | undefined = undefined;
@@ -30,5 +36,9 @@ export class Annual {
     }
 
     return { rank, networth, prevRank, prevNetworth, hadBefore };
+  }
+
+  private static record ( raw: TAnnualRawData ) : TAnnualRecord {
+    //
   }
 }
