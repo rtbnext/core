@@ -130,9 +130,11 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   // --- (YTD) rank diff ---
 
   public rankDiff ( data?: Partial< TProfileData > ) : { flag: TChangeFlag, rankDiff?: number } {
+    if ( this.rank() === undefined || ( this.networth() ?? 0 ) < 1000 ) return { flag: 'dropoff' };
+
     const item = data?.annual?.find( i => i.year === this.year() - 1 );
     if ( ! item ) return { flag: data?.annual?.filter( i => i.rank?.last !== undefined ).length ? 'returned' : 'new' };
-    if ( item.rank?.last === undefined || this.rank() === undefined ) return { flag: 'unknown' };
+    if ( item.rank?.last === undefined ) return { flag: 'unknown' };
 
     const rankDiff = item.rank.last - this.rank()!;
     return { flag: rankDiff > 0 ? 'up' : rankDiff < 0 ? 'down' : 'unchanged', rankDiff };
