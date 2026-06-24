@@ -26,6 +26,7 @@ export type TJobClsOptions< T extends object = {} > = Expand< {
 
 export type TAnnualJobOptions = TJobClsOptions< {
   year: number;
+  profiles?: string[];
 } >;
 
 export type TMergeJobOptions = TJobClsOptions< {
