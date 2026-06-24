@@ -68,14 +68,17 @@ export class Annual {
 
     const { sort, parse, flag } = Annual.handler[ type ];
     const first = data[ len - 1 ], last = data[ 0 ];
-    const sorted = data.sort( sort );
+    const sorted = [ ...data ].sort( sort );
     const max = sorted[ 0 ], min = sorted[ len - 1 ];
     const mean = sorted.reduce( ( sum, v ) => sum + v, 0 ) / len;
+
+    const idx = Math.floor( len / 2 );
+    const median = len % 2 === 0 ? ( sorted[ idx - 1 ] + sorted[ idx ] ) / 2 : sorted[ idx ];
 
     return {
       first: parse( first ), last: parse( last ), max: parse( max ), min: parse( min ),
       diff: parse( sort( first, last ) ), flag: flag( raw ), mean: parse( mean ),
-      median: parse( sorted[ Math.floor( len / 2 ) ] ), range: parse( Math.abs( max - min ) ),
+      median: parse( median ), range: parse( Math.abs( max - min ) ),
       stdDev: parse( Math.sqrt( sorted.reduce( ( sum, v ) => sum + ( v - mean ) ** 2, 0 ) / len ) )
     };
   }
