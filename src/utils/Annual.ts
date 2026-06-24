@@ -4,6 +4,7 @@ import type { TProfileHistory } from '@rtbnext/schema/src/model/profile';
 
 import { log } from '@/core/Logger';
 import { Profile } from '@/model/Profile';
+import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
 import type { TAnnualRawData } from '@/type/annual';
 
@@ -99,5 +100,14 @@ export class Annual {
       profile.save();
       return true;
     }, `Failed to generate annual report for ${ uriLike } @ ${ year }` ) ?? false;
+  }
+
+  public static generateAll ( year: number ) : number {
+    let count = 0;
+
+    for ( const uri of ProfileIndex.getInstance().keys )
+      if ( Annual.generate( uri, year ) ) count++;
+
+    return count;
   }
 }
