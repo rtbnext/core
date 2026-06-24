@@ -162,7 +162,7 @@ export class RTBJob extends Job {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'rtb',
     desc: 'Proceed daily real-time billionaires list',
     options: []

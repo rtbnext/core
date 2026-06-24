@@ -47,7 +47,7 @@ export class StatsJob extends Job {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'stats',
     desc: 'Generate stats and filtered lists',
     options: []

@@ -42,7 +42,7 @@ export class WikiJob extends Job< TWikiJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'wiki',
     desc: 'Update and assign wiki data to a profile',
     options: [ {

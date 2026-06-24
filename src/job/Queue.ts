@@ -30,7 +30,7 @@ export class QueueJob extends Job< TQueueJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'queue',
     desc: 'Managing list and profile queues',
     options: [ {

@@ -56,7 +56,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'profile',
     desc: 'Fetch and update Forbes profiles',
     options: [ {

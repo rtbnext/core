@@ -21,7 +21,7 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'annual',
     desc: 'Generate annual records for profiles',
     options: [ {

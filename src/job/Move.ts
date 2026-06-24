@@ -30,7 +30,7 @@ export class MoveJob extends Job< TMoveJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'move',
     desc: 'Move a profile from one URI to another',
     options: [ {

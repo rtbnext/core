@@ -53,7 +53,7 @@ export class MergeJob extends Job< TMergeJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'merge',
     desc: 'Merge two profiles safely',
     options: [ {

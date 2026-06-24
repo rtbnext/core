@@ -30,7 +30,7 @@ export class PerformanceJob extends Job {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'performance',
     desc: 'Generate profile performance data',
     options: []

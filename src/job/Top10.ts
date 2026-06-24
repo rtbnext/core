@@ -29,7 +29,7 @@ export class Top10Job extends Job< TTop10JobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobCommand = {
+  public static readonly command: TJobCommand = {
     id: 'top10',
     desc: 'Generate monthly top 10 ranking',
     options: [ {

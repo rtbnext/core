@@ -18,7 +18,7 @@ program
   .version( '2.0.0', '-v, --version' );
 
 for ( const JobClass of JOBS ) {
-  const { id, desc, options } = JobClass.definition;
+  const { id, desc, options } = JobClass.command;
   const command = program.command( id ).description( desc );
 
   for ( const { name, desc, parser, required } of options ) {
