@@ -301,12 +301,19 @@ export class Stats implements IStats {
     }, 'Failed to generate wealth stats' ) ?? false;
   }
 
-  // --- generate top 10 list ---
+  // --- generate top 10 entry ---
 
-  public generateTop10List ( snapshot: TRTBListSnapshot ) : boolean {
-    const [ year, month ] = snapshot.date.split( '-', 2 ).map( Number );
-    const key = `${ year }-${ String( month ).padStart( 2, '0' ) }`;
-    const prev = `${ month === 1 ? year - 1 : year }-${ String( month === 1 ? 12 : month - 1 ).padStart( 2, '0' ) }`;
+  public generateTop10Entry ( snapshot: TRTBListSnapshot ) : boolean {
+    return log.catch( () => {
+      const [ year, month ] = snapshot.date.split( '-', 2 ).map( Number );
+      const key = `${ year }-${ String( month ).padStart( 2, '0' ) }`;
+      const prev = `${ month === 1 ? year - 1 : year }-${ String( month === 1 ? 12 : month - 1 ).padStart( 2, '0' ) }`;
+
+      log.debug( `Generating top 10 entry for ${ key } ...` );
+      const { entries } = this.getTop10();
+      const last = entries[ prev ];
+      const top10: TTop10List = [];
+    }, 'Failed to generate top 10 entry' ) ?? false;
   }
 
   // --- generate DB stats ---
