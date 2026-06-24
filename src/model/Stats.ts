@@ -16,6 +16,7 @@ import { Utils } from '@/core/Utils';
 import type { IStats } from '@/interface/stats';
 import { Percentiles, StatsGroup, WealthSpread } from '@/lib/const';
 import { Parser } from '@/parser/Parser';
+import { TRTBListSnapshot } from '@rtbnext/schema/src/model/list';
 
 
 export class Stats implements IStats {
@@ -298,6 +299,14 @@ export class Stats implements IStats {
         max: scatter.at( -1 )!.networth, min: scatter[ 0 ].networth
       } )
     }, 'Failed to generate wealth stats' ) ?? false;
+  }
+
+  // --- generate top 10 list ---
+
+  public generateTop10List ( snapshot: TRTBListSnapshot ) : boolean {
+    const [ year, month ] = snapshot.date.split( '-', 2 ).map( Number );
+    const key = `${ year }-${ String( month ).padStart( 2, '0' ) }`;
+    const prev = `${ month === 1 ? year - 1 : year }-${ String( month === 1 ? 12 : month - 1 ).padStart( 2, '0' ) }`;
   }
 
   // --- generate DB stats ---
