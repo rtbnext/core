@@ -1,13 +1,10 @@
-import { Profile } from '@/model/Profile';
+import type { TProfileHistory } from '@rtbnext/schema/src/model/profile';
+
+import type { TAnnualRawData } from '@/type/annual';
+
 
 export class Annual {
-  public static generateOne ( uriLike: string ) {
-    const profile = Profile.get( uriLike );
-    if ( ! profile ) return false;
-
-    const history = profile.getHistory();
-    const annual = profile.getData().annual ?? [];
+  private static aggregate ( history: TProfileHistory, year: number ) : TAnnualRawData {
+    
   }
-
-  public static generateAll () {}
 }
