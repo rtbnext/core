@@ -6,7 +6,7 @@ import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
-import type { TJobClsOptions, TJobDefinition } from '@/type/job';
+import type { TJobClsOptions, TJobCommand } from '@/type/job';
 
 
 export class StatsJob extends Job {
@@ -47,7 +47,7 @@ export class StatsJob extends Job {
 
   // --- command definition ---
 
-  public static readonly definition: TJobDefinition = {
+  public static readonly definition: TJobCommand = {
     id: 'stats',
     desc: 'Generate stats and filtered lists',
     options: []

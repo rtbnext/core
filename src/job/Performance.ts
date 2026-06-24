@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import type { TJobClsOptions, TJobDefinition } from '@/type/job';
+import type { TJobClsOptions, TJobCommand } from '@/type/job';
 import { Performance } from '@/util/Performance';
 
 
@@ -30,7 +30,7 @@ export class PerformanceJob extends Job {
 
   // --- command definition ---
 
-  public static readonly definition: TJobDefinition = {
+  public static readonly definition: TJobCommand = {
     id: 'performance',
     desc: 'Generate profile performance data',
     options: []

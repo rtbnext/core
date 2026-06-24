@@ -3,7 +3,7 @@ import { Utils } from '@/core/Utils';
 import { List } from '@/model/List';
 import { Stats } from '@/model/Stats';
 import { Parser } from '@/parser/Parser';
-import type { TJobDefinition, TTop10JobOptions } from '@/type/job';
+import type { TJobCommand, TTop10JobOptions } from '@/type/job';
 
 
 export class Top10Job extends Job< TTop10JobOptions > {
@@ -29,7 +29,7 @@ export class Top10Job extends Job< TTop10JobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobDefinition = {
+  public static readonly definition: TJobCommand = {
     id: 'top10',
     desc: 'Generate monthly top 10 ranking',
     options: [ {

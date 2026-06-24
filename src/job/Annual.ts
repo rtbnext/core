@@ -1,6 +1,6 @@
 import { Job } from '@/abstract/Job';
 import { Parser } from '@/parser/Parser';
-import type { TAnnualJobOptions, TJobDefinition } from '@/type/job';
+import type { TAnnualJobOptions, TJobCommand } from '@/type/job';
 import { Annual } from '@/util/Annual';
 
 
@@ -21,7 +21,7 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobDefinition = {
+  public static readonly definition: TJobCommand = {
     id: 'annual',
     desc: 'Generate annual records for profiles',
     options: [ {

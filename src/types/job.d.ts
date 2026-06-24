@@ -13,7 +13,7 @@ export type TJobOption = {
 
 export type TJobOptions = ReadonlyArray< TJobOption >;
 
-export type TJobDefinition = {
+export type TJobCommand = {
   readonly id: string;
   desc: string;
   options: TJobOptions;
@@ -73,7 +73,7 @@ export type TWikiJobOptions = TJobClsOptions< {
 } >;
 
 export interface TJobCls {
-  readonly definition: TJobDefinition;
+  readonly command: TJobCommand;
   new ( options: TJobClsOptions< any > ) : IJob;
 }
 

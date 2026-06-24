@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Utils } from '@/core/Utils';
 import { Profile } from '@/model/Profile';
-import type { TJobDefinition, TMoveJobOptions } from '@/type/job';
+import type { TJobCommand, TMoveJobOptions } from '@/type/job';
 
 
 export class MoveJob extends Job< TMoveJobOptions > {
@@ -30,7 +30,7 @@ export class MoveJob extends Job< TMoveJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobDefinition = {
+  public static readonly definition: TJobCommand = {
     id: 'move',
     desc: 'Move a profile from one URI to another',
     options: [ {

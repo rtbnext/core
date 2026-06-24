@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { Parser } from '@/parser/Parser';
-import type { TJobDefinition, TQueueJobOptions } from '@/type/job';
+import type { TJobCommand, TQueueJobOptions } from '@/type/job';
 import type { TQueueType } from '@/type/queue';
 
 
@@ -30,7 +30,7 @@ export class QueueJob extends Job< TQueueJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobDefinition = {
+  public static readonly definition: TJobCommand = {
     id: 'queue',
     desc: 'Managing list and profile queues',
     options: [ {

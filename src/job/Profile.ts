@@ -4,7 +4,7 @@ import { ProfileQueue } from '@/core/Queue';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
-import type { TJobDefinition, TProfileJobOptions } from '@/type/job';
+import type { TJobCommand, TProfileJobOptions } from '@/type/job';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 import { Wiki } from '@/util/Wiki';
@@ -56,7 +56,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
   // --- command definition ---
 
-  public static readonly definition: TJobDefinition = {
+  public static readonly definition: TJobCommand = {
     id: 'profile',
     desc: 'Fetch and update Forbes profiles',
     options: [ {
