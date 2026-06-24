@@ -9,6 +9,8 @@ export class Performance {
     week: 7, month: 30, quarter: 90, halfYear: 182, year: 365, twoYear: 730, fiveYear: 1825
   } as const;
 
+  // --- extrema ---
+
   public static getProfileExtrema ( history: TProfileHistory ) : TExtrema {
     const map = ( [ date, rank, networth ]: TProfileHistoryItem ) => ( {
       date, rank: Parser.number( rank ), networth: Parser.money( networth )
@@ -21,6 +23,8 @@ export class Performance {
 
     return { low: low && map( low ), high: high && map( high ) };
   }
+
+  // --- returns ---
 
   public static generateProfileReturns ( history: TProfileHistory ) : TReturns {
     const latest = history.at( -1 );
@@ -50,6 +54,8 @@ export class Performance {
 
     return result;
   }
+
+  // --- performance ---
 
   public static generateProfilePerformance ( history: TProfileHistory ) : TPerformance {
     return {
