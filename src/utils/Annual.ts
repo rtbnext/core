@@ -14,13 +14,15 @@ export class Annual {
       const [ date, rnk, ntw ] = history[ i ];
       const y = +date.slice( 0, 4 );
 
-      if ( y < year - 1 ) break;
+      if ( y > year ) continue;
+
       if ( y === year - 1 ) {
         prevRank ??= rnk;
         prevNetworth ??= ntw;
       }
 
-      if ( y < year && ntw >= 1000 ) hadBefore = true;
+      if ( y < year ) hadBefore = true;
+      if ( hadBefore ) break;
       if ( y !== year ) continue;
 
       rank.push( rnk );
