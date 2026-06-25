@@ -23,7 +23,7 @@ export class RTBJob extends Job {
   private static readonly queue = ProfileQueue.getInstance();
   private static readonly stats = Stats.getInstance();
 
-  constructor ( options: TJobClsOptions ) { super( options, 'rtb' ) }
+  constructor ( options: TJobClsOptions = {} ) { super( options, 'rtb' ) }
 
   // --- job runner ---
 
@@ -170,5 +170,8 @@ export class RTBJob extends Job {
 
   // --- cron job definition ---
 
-  public static readonly cron: TCronJob = [] as const;
+  public static readonly cron: TCronJob = [ {
+    time: '0 2 * * *',
+    action: () => new RTBJob().run()
+  } ] as const;
 }
