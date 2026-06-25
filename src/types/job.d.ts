@@ -72,7 +72,7 @@ export type TCommandJob = {
   options: TJobOptions;
 };
 
-export type TCronJob< T extends object > = ReadonlyArray< {
+export type TCronJob< T extends object = {} > = ReadonlyArray< {
   time: string;
   options: ( date: Date ) => T;
 } >;
