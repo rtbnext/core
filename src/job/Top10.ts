@@ -8,7 +8,7 @@ import type { TCommandJob, TCronJob, TTop10JobOptions } from '@/type/job';
 
 export class Top10Job extends Job< TTop10JobOptions > {
   private static readonly stats = Stats.getInstance();
-  constructor ( options: TTop10JobOptions ) { super( options, 'top10' ) }
+  constructor ( options: TTop10JobOptions = {} ) { super( options, 'top10' ) }
 
   // --- job runner ---
 
@@ -44,5 +44,8 @@ export class Top10Job extends Job< TTop10JobOptions > {
 
   // --- cron job definition ---
 
-  public static readonly cron: TCronJob = [] as const;
+  public static readonly cron: TCronJob = [ {
+    time: '5 3 1 * *',
+    action: () => new Top10Job().run()
+  } ] as const;
 }
