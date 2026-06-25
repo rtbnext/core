@@ -21,7 +21,7 @@ for ( const JobClass of JOBS ) {
   const { id, desc, options } = JobClass.command;
   const command = program.command( id ).description( desc );
 
-  for ( const { name, desc, parser, required } of options ) {
+  for ( const { name, desc, parser, required } of options ?? [] ) {
     const fn = required
       ? command.requiredOption.bind( command )
       : command.option.bind( command );
