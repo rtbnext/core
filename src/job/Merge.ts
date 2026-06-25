@@ -2,7 +2,7 @@ import { Job } from '@/abstract/Job';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
-import type { TCommandJob, TMergeJobOptions } from '@/type/job';
+import type { TCommandJob, TCronJob, TMergeJobOptions } from '@/type/job';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
 
@@ -77,4 +77,8 @@ export class MergeJob extends Job< TMergeJobOptions > {
       desc: 'Whether to create an alias from the old URI to the new one after merge'
     } ]
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }

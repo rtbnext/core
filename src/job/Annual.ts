@@ -1,6 +1,6 @@
 import { Job } from '@/abstract/Job';
 import { Parser } from '@/parser/Parser';
-import type { TAnnualJobOptions, TJobCommand } from '@/type/job';
+import type { TAnnualJobOptions, TCommandJob, TCronJob } from '@/type/job';
 import { Annual } from '@/util/Annual';
 
 
@@ -21,7 +21,7 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
 
   // --- command definition ---
 
-  public static readonly command: TJobCommand = {
+  public static readonly command: TCommandJob = {
     id: 'annual',
     desc: 'Generate annual records for profiles',
     options: [ {
@@ -35,4 +35,8 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
       parser: ( v: string ) => Parser.list( v, 'string', ',' )
     } ]
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }

@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Utils } from '@/core/Utils';
 import { Profile } from '@/model/Profile';
-import type { TCommandJob, TMoveJobOptions } from '@/type/job';
+import type { TCommandJob, TCronJob, TMoveJobOptions } from '@/type/job';
 
 
 export class MoveJob extends Job< TMoveJobOptions > {
@@ -46,4 +46,8 @@ export class MoveJob extends Job< TMoveJobOptions > {
       desc: 'Whether to create an alias from the old URI to the new one'
     } ]
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }

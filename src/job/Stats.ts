@@ -6,7 +6,7 @@ import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
-import type { TJobClsOptions, TCommandJob } from '@/type/job';
+import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 
 
 export class StatsJob extends Job {
@@ -52,4 +52,8 @@ export class StatsJob extends Job {
     desc: 'Generate stats and filtered lists',
     options: []
   } as const;
+  
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }

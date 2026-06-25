@@ -3,7 +3,7 @@ import { Utils } from '@/core/Utils';
 import { List } from '@/model/List';
 import { Stats } from '@/model/Stats';
 import { Parser } from '@/parser/Parser';
-import type { TCommandJob, TTop10JobOptions } from '@/type/job';
+import type { TCommandJob, TCronJob, TTop10JobOptions } from '@/type/job';
 
 
 export class Top10Job extends Job< TTop10JobOptions > {
@@ -41,4 +41,8 @@ export class Top10Job extends Job< TTop10JobOptions > {
       }
     } ]
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }

@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import type { TJobClsOptions, TCommandJob } from '@/type/job';
+import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 import { Performance } from '@/util/Performance';
 
 
@@ -35,4 +35,8 @@ export class PerformanceJob extends Job {
     desc: 'Generate profile performance data',
     options: []
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }

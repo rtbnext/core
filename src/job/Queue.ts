@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { Parser } from '@/parser/Parser';
-import type { TCommandJob, TQueueJobOptions } from '@/type/job';
+import type { TCommandJob, TCronJob, TQueueJobOptions } from '@/type/job';
 import type { TQueueType } from '@/type/queue';
 
 
@@ -59,4 +59,8 @@ export class QueueJob extends Job< TQueueJobOptions > {
       desc: 'Clear the queue before adding new items'
     } ]
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }

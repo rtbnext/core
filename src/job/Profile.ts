@@ -4,7 +4,7 @@ import { ProfileQueue } from '@/core/Queue';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
-import type { TCommandJob, TProfileJobOptions } from '@/type/job';
+import type { TCommandJob, TCronJob, TProfileJobOptions } from '@/type/job';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 import { Wiki } from '@/util/Wiki';
@@ -74,4 +74,8 @@ export class ProfileJob extends Job< TProfileJobOptions > {
       desc: 'Skip wiki data enrichment'
     } ]
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [] as const;
 }
