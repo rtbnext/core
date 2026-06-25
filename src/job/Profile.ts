@@ -77,5 +77,8 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
   // --- cron job definition ---
 
-  public static readonly cron: TCronJob = [] as const;
+  public static readonly cron: TCronJob = [ {
+    time: '*/5 * * * *',
+    action: () => new ProfileJob( {} ).run()
+  } ] as const;
 }
