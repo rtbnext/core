@@ -72,8 +72,14 @@ export type TWikiJobOptions = TJobClsOptions< {
   assign?: string;
 } >;
 
+export type TJobCron = {
+  time: string;
+  run: () => void;
+};
+
 export interface TJobCls {
   readonly command: TJobCommand;
+  readonly cron: TJobCron;
   new ( options: TJobClsOptions< any > ) : IJob;
 }
 
