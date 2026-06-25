@@ -72,10 +72,10 @@ export type TWikiJobOptions = TJobClsOptions< {
   assign?: string;
 } >;
 
-export type TJobCron = {
+export type TJobCron = ReadonlyArray< {
   time: string;
-  run: () => void;
-};
+  action: () => void;
+} >;
 
 export interface TJobCls {
   readonly command: TJobCommand;
