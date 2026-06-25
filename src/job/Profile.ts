@@ -14,7 +14,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
   private static readonly fetch = Fetch.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
 
-  constructor ( options: TProfileJobOptions ) { super( options, 'profile' ) }
+  constructor ( options: TProfileJobOptions = {} ) { super( options, 'profile' ) }
 
   // --- job runner ---
 
@@ -79,6 +79,6 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
   public static readonly cron: TCronJob = [ {
     time: '*/5 * * * *',
-    action: () => new ProfileJob( {} ).run()
+    action: () => new ProfileJob().run()
   } ] as const;
 }
