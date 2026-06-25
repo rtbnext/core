@@ -8,7 +8,7 @@ import { Performance } from '@/util/Performance';
 export class PerformanceJob extends Job {
   private static readonly index = ProfileIndex.getInstance();
 
-  constructor ( options: TJobClsOptions ) { super( options, 'performance' ) }
+  constructor ( options: TJobClsOptions = {} ) { super( options, 'performance' ) }
 
   // --- job runner ---
 
