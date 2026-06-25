@@ -57,11 +57,6 @@ export type TWikiJobOptions = TJobClsOptions< {
   assign?: string;
 } >;
 
-export type TCronJob = ReadonlyArray< {
-  time: string;
-  action: () => void;
-} >;
-
 export type TJobOption = {
   name: string;
   desc: string;
@@ -77,10 +72,15 @@ export type TCommandJob = {
   options: TJobOptions;
 };
 
-export interface TJobCls {
+export type TCronJob< T extends object > = ReadonlyArray< {
+  time: string;
+  options: ( date: Date ) => T;
+} >;
+
+export interface TJobCls< T extends TJobClsOptions = TJobClsOptions > {
   readonly command: TCommandJob;
-  readonly cron: TCronJob;
-  new ( options: TJobClsOptions< any > ) : IJob;
+  readonly cron?: TCronJob< T >;
+  new ( options: T ) : IJob;
 }
 
 export type TJobRegistry = ReadonlyArray< TJobCls >;
