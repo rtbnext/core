@@ -56,7 +56,7 @@ export class StatsJob extends Job {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob = [ {
-    time: '0 3 * * *',
+    time: '30 1 * * *', // run at 1:30 AM on every day
     action: () => new StatsJob().run()
   } ] as const;
 }
