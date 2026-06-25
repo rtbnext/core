@@ -14,7 +14,7 @@ export class StatsJob extends Job {
   private static readonly index = ProfileIndex.getInstance();
   private static readonly stats = Stats.getInstance();
 
-  constructor ( options: TJobClsOptions ) { super( options, 'stats' ) }
+  constructor ( options: TJobClsOptions = {} ) { super( options, 'stats' ) }
 
   // --- job runner ---
 
@@ -55,5 +55,8 @@ export class StatsJob extends Job {
   
   // --- cron job definition ---
 
-  public static readonly cron: TCronJob = [] as const;
+  public static readonly cron: TCronJob = [ {
+    time: '0 3 * * *',
+    action: () => new StatsJob().run()
+  } ] as const;
 }
