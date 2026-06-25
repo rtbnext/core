@@ -79,6 +79,5 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
   public static readonly cron: TCronJob = [ {
     time: '*/5 2-23 * * *', // run every 5th minute past every hour from 2 through 23
-    action: () => new ProfileJob().run()
   } ] as const;
 }
