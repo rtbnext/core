@@ -172,6 +172,6 @@ export class RTBJob extends Job {
 
   public static readonly cron: TCronJob = [ {
     time: '15 0 * * *', // run at 0:15 AM on every day
-    action: () => new RTBJob().run()
+    options: () => ( {} )
   } ] as const;
 }
