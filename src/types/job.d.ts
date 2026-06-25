@@ -4,21 +4,6 @@ import type { IJob } from '@/interface/job';
 import type { TQueueType } from '@/type/queue';
 
 
-export type TJobOption = {
-  name: string;
-  desc: string;
-  parser?: ( value: string ) => any;
-  required?: boolean;
-};
-
-export type TJobOptions = ReadonlyArray< TJobOption >;
-
-export type TJobCommand = {
-  readonly id: string;
-  desc: string;
-  options: TJobOptions;
-};
-
 export type TJobClsOptions< T extends object = {} > = Expand< {
   silent?: boolean;
   safeMode?: boolean;
@@ -72,14 +57,29 @@ export type TWikiJobOptions = TJobClsOptions< {
   assign?: string;
 } >;
 
-export type TJobCron = ReadonlyArray< {
+export type TCronJob = ReadonlyArray< {
   time: string;
   action: () => void;
 } >;
 
+export type TJobOption = {
+  name: string;
+  desc: string;
+  parser?: ( value: string ) => any;
+  required?: boolean;
+};
+
+export type TJobOptions = ReadonlyArray< TJobOption >;
+
+export type TCommandJob = {
+  readonly id: string;
+  desc: string;
+  options: TJobOptions;
+};
+
 export interface TJobCls {
-  readonly command: TJobCommand;
-  readonly cron: TJobCron;
+  readonly command: TCommandJob;
+  readonly cron: TCronJob;
   new ( options: TJobClsOptions< any > ) : IJob;
 }
 
