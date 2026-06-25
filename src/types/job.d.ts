@@ -83,4 +83,4 @@ export interface TJobCls< T extends TJobClsOptions = TJobClsOptions > {
   new ( options: T ) : IJob;
 }
 
-export type TJobRegistry = ReadonlyArray< TJobCls >;
+export type TJobRegistry = ReadonlyArray< TJobCls< any > >;
