@@ -44,8 +44,11 @@ export class Top10Job extends Job< TTop10JobOptions > {
 
   // --- cron job definition ---
 
-  public static readonly cron: TCronJob = [ {
+  public static readonly cron: TCronJob< TTop10JobOptions > = [ {
     time: '35 0 1 * *', // run at 1:35 AM on the first day of every month
-    action: () => new Top10Job().run()
+    options: ( date ) => {
+      date.setMonth( date.getMonth() - 1 );
+      return { date: [ date.getFullYear(), date.getMonth() + 1 ] }
+    }
   } ] as const;
 }
