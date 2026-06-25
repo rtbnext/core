@@ -10,7 +10,7 @@ import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
 import { PersonListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
-import type { TJobClsOptions, TJobCommand } from '@/type/job';
+import type { TJobClsOptions, TCommandJob } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 import { Performance } from '@/util/Performance';
@@ -162,7 +162,7 @@ export class RTBJob extends Job {
 
   // --- command definition ---
 
-  public static readonly command: TJobCommand = {
+  public static readonly command: TCommandJob = {
     id: 'rtb',
     desc: 'Proceed daily real-time billionaires list',
     options: []

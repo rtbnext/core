@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
-import type { TJobCommand, TWikiJobOptions } from '@/type/job';
+import type { TCommandJob, TWikiJobOptions } from '@/type/job';
 import { Wiki } from '@/util/Wiki';
 
 
@@ -42,7 +42,7 @@ export class WikiJob extends Job< TWikiJobOptions > {
 
   // --- command definition ---
 
-  public static readonly command: TJobCommand = {
+  public static readonly command: TCommandJob = {
     id: 'wiki',
     desc: 'Update and assign wiki data to a profile',
     options: [ {

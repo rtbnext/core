@@ -2,7 +2,7 @@ import { Job } from '@/abstract/Job';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
-import type { TJobCommand, TMergeJobOptions } from '@/type/job';
+import type { TCommandJob, TMergeJobOptions } from '@/type/job';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
 
@@ -53,7 +53,7 @@ export class MergeJob extends Job< TMergeJobOptions > {
 
   // --- command definition ---
 
-  public static readonly command: TJobCommand = {
+  public static readonly command: TCommandJob = {
     id: 'merge',
     desc: 'Merge two profiles safely',
     options: [ {
