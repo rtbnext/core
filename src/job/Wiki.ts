@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
-import type { TCommandJob, TCronJob, TWikiJobOptions } from '@/type/job';
+import type { TCommandJob, TWikiJobOptions } from '@/type/job';
 import { Wiki } from '@/util/Wiki';
 
 
@@ -54,8 +54,4 @@ export class WikiJob extends Job< TWikiJobOptions > {
       desc: 'Assign wiki data from the specified wiki title to the profile'
     } ]
   } as const;
-
-  // --- cron job definition ---
-
-  public static readonly cron: TCronJob = [] as const;
 }
