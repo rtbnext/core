@@ -32,7 +32,6 @@ export class PerformanceJob extends Job {
 
   public static readonly command: TCommandJob = {
     id: 'performance',
-    desc: 'Generate profile performance data',
-    options: []
+    desc: 'Generate profile performance data'
   } as const;
 }

@@ -69,12 +69,12 @@ export type TJobOptions = ReadonlyArray< TJobOption >;
 export type TCommandJob = {
   readonly id: string;
   desc: string;
-  options: TJobOptions;
+  options?: TJobOptions;
 };
 
 export type TCronJob< T extends object = {} > = ReadonlyArray< {
   time: string;
-  options: ( date: Date ) => T;
+  options?: ( date: Date ) => T;
 } >;
 
 export interface TJobCls< T extends TJobClsOptions = TJobClsOptions > {

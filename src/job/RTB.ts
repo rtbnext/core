@@ -164,14 +164,12 @@ export class RTBJob extends Job {
 
   public static readonly command: TCommandJob = {
     id: 'rtb',
-    desc: 'Proceed daily real-time billionaires list',
-    options: []
+    desc: 'Proceed daily real-time billionaires list'
   } as const;
 
   // --- cron job definition ---
 
   public static readonly cron: TCronJob = [ {
     time: '15 0 * * *', // run at 0:15 AM on every day
-    options: () => ( {} )
   } ] as const;
 }

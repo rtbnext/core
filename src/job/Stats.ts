@@ -49,8 +49,7 @@ export class StatsJob extends Job {
 
   public static readonly command: TCommandJob = {
     id: 'stats',
-    desc: 'Generate stats and filtered lists',
-    options: []
+    desc: 'Generate stats and filtered lists'
   } as const;
   
   // --- cron job definition ---
