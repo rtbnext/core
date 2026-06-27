@@ -4,4 +4,6 @@ import { Storage } from '@/core/Storage';
 
 
 const storage = Storage.getInstance();
+
 const lastRun = storage.readJSON< { lastRun: string } >( 'cron.json' );
+const after = new Date( lastRun ? lastRun.lastRun : 0 );
