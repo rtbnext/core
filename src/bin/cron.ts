@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import { prev } from 'nxtcron';
+
 import { Storage } from '@/core/Storage';
 import { JOBS } from '@/job/index';
 
@@ -14,7 +16,8 @@ for ( const JobClass of JOBS ) {
   if ( ! ( 'cron' in JobClass ) ) continue;
 
   for ( const { cronexpr, options } of JobClass.cron ) {
-    //
+    const date = prev( cronexpr, { count: 1, timezone: 'UTC', after, before } );
+    console.log( date );
   }
 }
 
