@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
-import { next } from 'nxtcron';
+import { Storage } from '@/core/Storage';
 
-import { JOBS } from '../job';
+
+const storage = Storage.getInstance();
+const lastRun = storage.readJSON< { lastRun: string } >( 'cron.json' );
