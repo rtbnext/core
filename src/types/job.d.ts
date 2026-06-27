@@ -73,7 +73,7 @@ export type TCommandJob = {
 };
 
 export type TCronJob< T extends object = {} > = ReadonlyArray< {
-  time: string;
+  cronexpr: string;
   options?: ( date: Date ) => T;
 } >;
 
