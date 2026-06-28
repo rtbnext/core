@@ -1,4 +1,5 @@
 import { Storage } from '@/core/Storage';
+import { JOBS } from '@/job/index';
 
 
 export class Cron {
@@ -28,5 +29,15 @@ export class Cron {
     return false;
   }
 
-  public run () : void {}
+  public run () : void {
+    this.ensureLastRun();
+
+    for ( const JobClass of JOBS ) {
+      if ( ! ( 'cron' in JobClass ) ) continue;
+
+      for ( const { cronexpr, options } of JobClass.cron ) {
+        //
+      }
+    }
+  }
 }
