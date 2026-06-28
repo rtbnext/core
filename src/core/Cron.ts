@@ -2,12 +2,13 @@ import { prev } from 'nxtcron';
 
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
+import type { ICron } from '@/interface/cron';
 import { JOBS } from '@/job/index';
 
 
-export class Cron {
+export class Cron implements ICron {
   private static readonly storage = Storage.getInstance();
-  private static instance: Cron;
+  private static instance: ICron;
 
   private constructor () {}
 
@@ -55,7 +56,7 @@ export class Cron {
 
   // --- instantiate ---
 
-  public static getInstance () : Cron {
+  public static getInstance () : ICron {
     return Cron.instance ??= new Cron();
   }
 }
