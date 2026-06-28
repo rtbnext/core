@@ -20,4 +20,13 @@ export class Cron {
   private saveRunTime () : boolean {
     return Cron.storage.writeJSON( 'cron.json', { lastRun: this.now.toISOString() } );
   }
+
+  private ensureLastRun () : boolean {
+    if ( this.lastRun instanceof Date ) return true;
+
+    this.saveRunTime();
+    return false;
+  }
+
+  public run () : void {}
 }
