@@ -18,7 +18,6 @@ export class Cron {
   }
 
   private saveRunTime () : boolean {
-    if ( ! this.lastRun ) return false;
-    return Cron.storage.writeJSON( 'cron.json', { lastRun: this.lastRun.toISOString() } );
+    return Cron.storage.writeJSON( 'cron.json', { lastRun: this.now.toISOString() } );
   }
 }
