@@ -16,4 +16,9 @@ export class Cron {
     const lastRun = Cron.storage.readJSON< { lastRun: string } >( 'cron.json' );
     return lastRun && lastRun.lastRun ? new Date( lastRun.lastRun ) : false;
   }
+
+  private saveRunTime () : boolean {
+    if ( ! this.lastRun ) return false;
+    return Cron.storage.writeJSON( 'cron.json', { lastRun: this.lastRun.toISOString() } );
+  }
 }
