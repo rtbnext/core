@@ -18,6 +18,8 @@ export class Cron implements ICron {
     this.config = Config.getInstance().cron;
   }
 
+  // --- helper ---
+
   private getLastRun () : Date | undefined {
     const lastRun = Cron.storage.readJSON< { lastRun: string } >( 'cron.json' );
     return lastRun && lastRun.lastRun ? new Date( lastRun.lastRun ) : undefined;
@@ -34,6 +36,8 @@ export class Cron implements ICron {
     this.setLastRun( new Date() );
     throw new Error( 'Initial Cron job run - will not execute any scheduled events' );
   }
+
+  // --- cron runner ---
 
   public async run () : Promise< void > {
     await log.catchAsync( async () => {
