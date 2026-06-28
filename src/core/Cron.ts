@@ -1,16 +1,22 @@
 import { prev } from 'nxtcron';
 
+import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import type { ICron } from '@/interface/cron';
 import { JOBS } from '@/job/index';
+import type { TCronConfig } from '@/type/config';
 
 
 export class Cron implements ICron {
   private static readonly storage = Storage.getInstance();
   private static instance: ICron;
 
-  private constructor () {}
+  private readonly config: TCronConfig;
+
+  private constructor () {
+    this.config = Config.getInstance().cron;
+  }
 
   private getLastRun () : Date | undefined {
     const lastRun = Cron.storage.readJSON< { lastRun: string } >( 'cron.json' );
@@ -34,7 +40,7 @@ export class Cron implements ICron {
       log.debug( 'Run scheduled Cron jobs ...' );
 
       const after = this.ensureLastRun(), before = new Date();
-      const cronOptions = { after, before, count: 1, timezone: 'UTC' };
+      const cronOptions = { timezone: this.config.timezone, count: 1, after, before };
 
       for ( const JobClass of JOBS ) {
         if ( ! ( 'cron' in JobClass ) ) continue;
