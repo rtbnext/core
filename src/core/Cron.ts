@@ -7,6 +7,9 @@ import { JOBS } from '@/job/index';
 
 export class Cron {
   private static readonly storage = Storage.getInstance();
+  private static instance: Cron;
+
+  private constructor () {}
 
   private getLastRun () : Date | undefined {
     const lastRun = Cron.storage.readJSON< { lastRun: string } >( 'cron.json' );
@@ -48,5 +51,11 @@ export class Cron {
       log.debug( `Shut down Cron job runner, set last run time to ${ before.toISOString() }` );
       this.setLastRun( before );
     }, 'Failed to run cron jobs' );
+  }
+
+  // --- instantiate ---
+
+  public static getInstance () : Cron {
+    return Cron.instance ??= new Cron();
   }
 }
