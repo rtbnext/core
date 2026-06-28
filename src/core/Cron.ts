@@ -31,7 +31,7 @@ export class Cron {
     return false;
   }
 
-  public run () : void {
+  public async run () : Promise< void > {
     this.ensureLastRun();
     const cronOptions = { after: this.lastRun as Date, before: this.now, count: 1, timezone: 'UTC' };
 
@@ -40,6 +40,10 @@ export class Cron {
 
       for ( const { cronexpr, options } of JobClass.cron ) {
         const date = prev( cronexpr, cronOptions );
+        if ( ! date.length || ! ( date[ 0 ] instanceof Date ) ) continue;
+
+        await new JobClass( options?.( date[ 0 ] ) ?? {} as any ).run();
+        break;
       }
     }
   }
