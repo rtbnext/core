@@ -14,7 +14,7 @@
     "LICENSE"
   ],
   "bin": {
-    "rtbnext": "./dist/bin/rtbnext.js",
+    "rtbnext-cli": "./dist/bin/cli.js",
     "rtbnext-cron": "./dist/bin/cron.js"
   },
   "type": "module",
