@@ -7,45 +7,39 @@ import { JOBS } from '@/job/index';
 
 export class Cron {
   private static readonly storage = Storage.getInstance();
+  private lastRun?: Date;
 
-  private readonly now: Date;
-  private readonly lastRun: Date | false;
-
-  constructor () {
-    this.now = new Date();
-    this.lastRun = this.getLastRun();
-  }
-
-  private getLastRun () : Date | false {
+  private getLastRun () : Date | undefined {
     const lastRun = Cron.storage.readJSON< { lastRun: string } >( 'cron.json' );
-    return lastRun && lastRun.lastRun ? new Date( lastRun.lastRun ) : false;
+    return lastRun && lastRun.lastRun ? new Date( lastRun.lastRun ) : undefined;
   }
 
-  private saveRunTime () : boolean {
-    return Cron.storage.writeJSON( 'cron.json', { lastRun: this.now.toISOString() } );
+  private setLastRun ( date: Date ) : boolean {
+    return Cron.storage.writeJSON( 'cron.json', { lastRun: date.toISOString() } );
   }
 
-  private ensureLastRun () : boolean {
-    if ( this.lastRun instanceof Date ) return true;
+  private ensureLastRun () : Date | never {
+    const lastRun = this.getLastRun();
+    if ( lastRun instanceof Date ) return lastRun;
 
-    this.saveRunTime();
-    return false;
+    this.setLastRun( new Date() );
+    throw new Error( 'Initial Cron job run - will not execute any scheduled events' );
   }
 
   public async run () : Promise< void > {
     await log.catchAsync( async () => {
       this.ensureLastRun();
-      const cronOptions = { after: this.lastRun as Date, before: this.now, count: 1, timezone: 'UTC' };
+      const cronOptions = { after: this.lastRun, before: this.now, count: 1, timezone: 'UTC' };
 
       for ( const JobClass of JOBS ) {
         if ( ! ( 'cron' in JobClass ) ) continue;
 
         for ( const { cronexpr, options } of JobClass.cron ) {
-          const date = prev( cronexpr, cronOptions );
-          if ( ! date.length || ! ( date[ 0 ] instanceof Date ) ) continue;
+          const [ date ] = prev( cronexpr, cronOptions );
+          if ( date === undefined || ! ( date instanceof Date ) ) continue;
 
-          log.info( `[CRON] Run cron job ${ JobClass.command.id } sheduled @ ${ date[ 0 ].toISOString() }` );
-          await new JobClass( options?.( date[ 0 ] ) ?? {} as any ).run();
+          log.info( `[CRON] Run cron job ${ JobClass.command.id } sheduled @ ${ date.toISOString() }` );
+          await new JobClass( options?.( date ) ?? {} as any ).run();
           break;
         }
       }
