@@ -53,7 +53,7 @@ export class Cron implements ICron {
           const [ date ] = prev( cronexpr, cronOptions );
           if ( date === undefined || ! ( date instanceof Date ) ) continue;
 
-          log.info( `[CRON] Run Cron job ${ JobClass.command.id } sheduled @ ${ date.toISOString() }` );
+          log.info( `[CRON] Run Cron job ${ JobClass.command.id } scheduled @ ${ date.toISOString() }` );
           await new JobClass( options?.( date ) ?? {} as any ).run();
           break;
         }
