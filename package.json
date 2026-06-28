@@ -32,7 +32,7 @@
     "devtypes": "^2.2.0",
     "i18n-iso-countries": "^7.14.0",
     "js-sha256": "^0.11.1",
-    "nxtcron": "^1.0.0",
+    "nxtcron": "^1.0.1",
     "us-state-converter": "^1.0.8",
     "yaml": "^2.9.0"
   },
