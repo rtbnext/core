@@ -7,6 +7,9 @@ job:
   silent: false
   safeMode: true
 
+cron:
+  timezone: "UTC"
+
 storage:
   baseDir: "data"
   compression: true

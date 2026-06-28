@@ -11,6 +11,10 @@ export type TJobConfig = {
   safeMode: boolean;
 };
 
+export type TCronConfig = {
+  timezone: string;
+};
+
 export type TStorageConfig = {
   baseDir: string;
   compression: boolean;
@@ -55,6 +59,7 @@ export type TQueueConfig = {
 export type TConfigObject = {
   logging: TLoggingConfig;
   job: TJobConfig;
+  cron: TCronConfig;
   storage: TStorageConfig;
   fetch: TFetchConfig;
   queue: TQueueConfig;
