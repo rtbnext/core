@@ -1,3 +1,5 @@
+import { prev } from 'nxtcron';
+
 import { Storage } from '@/core/Storage';
 import { JOBS } from '@/job/index';
 
@@ -31,12 +33,13 @@ export class Cron {
 
   public run () : void {
     this.ensureLastRun();
+    const cronOptions = { after: this.lastRun as Date, before: this.now, count: 1, timezone: 'UTC' };
 
     for ( const JobClass of JOBS ) {
       if ( ! ( 'cron' in JobClass ) ) continue;
 
       for ( const { cronexpr, options } of JobClass.cron ) {
-        //
+        const date = prev( cronexpr, cronOptions );
       }
     }
   }
