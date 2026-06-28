@@ -7,7 +7,6 @@ import { JOBS } from '@/job/index';
 
 export class Cron {
   private static readonly storage = Storage.getInstance();
-  private lastRun?: Date;
 
   private getLastRun () : Date | undefined {
     const lastRun = Cron.storage.readJSON< { lastRun: string } >( 'cron.json' );
@@ -28,8 +27,10 @@ export class Cron {
 
   public async run () : Promise< void > {
     await log.catchAsync( async () => {
-      this.ensureLastRun();
-      const cronOptions = { after: this.lastRun, before: this.now, count: 1, timezone: 'UTC' };
+      log.debug( 'Run scheduled Cron jobs ...' );
+
+      const after = this.ensureLastRun(), before = new Date();
+      const cronOptions = { after, before, count: 1, timezone: 'UTC' };
 
       for ( const JobClass of JOBS ) {
         if ( ! ( 'cron' in JobClass ) ) continue;
@@ -38,11 +39,14 @@ export class Cron {
           const [ date ] = prev( cronexpr, cronOptions );
           if ( date === undefined || ! ( date instanceof Date ) ) continue;
 
-          log.info( `[CRON] Run cron job ${ JobClass.command.id } sheduled @ ${ date.toISOString() }` );
+          log.info( `[CRON] Run Cron job ${ JobClass.command.id } sheduled @ ${ date.toISOString() }` );
           await new JobClass( options?.( date ) ?? {} as any ).run();
           break;
         }
       }
+
+      log.debug( `Shut down Cron job runner, set last run time to ${ before.toISOString() }` );
+      this.setLastRun( before );
     }, 'Failed to run cron jobs' );
   }
 }
