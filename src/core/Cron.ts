@@ -31,7 +31,7 @@ export class Cron implements ICron {
 
   private ensureLastRun () : Date | never {
     const lastRun = this.getLastRun();
-    if ( lastRun instanceof Date ) return lastRun;
+    if ( lastRun instanceof Date && ! Number.isNaN( lastRun.getTime() ) ) return lastRun;
 
     this.setLastRun( new Date() );
     throw new Error( 'Initial Cron job run - will not execute any scheduled events' );
