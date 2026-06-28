@@ -1,5 +1,6 @@
 import { prev } from 'nxtcron';
 
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { JOBS } from '@/job/index';
 
@@ -32,19 +33,22 @@ export class Cron {
   }
 
   public async run () : Promise< void > {
-    this.ensureLastRun();
-    const cronOptions = { after: this.lastRun as Date, before: this.now, count: 1, timezone: 'UTC' };
+    await log.catchAsync( async () => {
+      this.ensureLastRun();
+      const cronOptions = { after: this.lastRun as Date, before: this.now, count: 1, timezone: 'UTC' };
 
-    for ( const JobClass of JOBS ) {
-      if ( ! ( 'cron' in JobClass ) ) continue;
+      for ( const JobClass of JOBS ) {
+        if ( ! ( 'cron' in JobClass ) ) continue;
 
-      for ( const { cronexpr, options } of JobClass.cron ) {
-        const date = prev( cronexpr, cronOptions );
-        if ( ! date.length || ! ( date[ 0 ] instanceof Date ) ) continue;
+        for ( const { cronexpr, options } of JobClass.cron ) {
+          const date = prev( cronexpr, cronOptions );
+          if ( ! date.length || ! ( date[ 0 ] instanceof Date ) ) continue;
 
-        await new JobClass( options?.( date[ 0 ] ) ?? {} as any ).run();
-        break;
+          log.info( `[CRON] Run cron job ${ JobClass.command.id } sheduled @ ${ date[ 0 ].toISOString() }` );
+          await new JobClass( options?.( date[ 0 ] ) ?? {} as any ).run();
+          break;
+        }
       }
-    }
+    }, 'Failed to run cron jobs' );
   }
 }
