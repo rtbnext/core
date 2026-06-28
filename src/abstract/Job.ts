@@ -4,7 +4,7 @@ import { Utils } from '@/core/Utils';
 import type { IJob } from '@/interface/job';
 import { Parser } from '@/parser/Parser';
 import type { TLoggingLevel } from '@/type/config';
-import { TJobClsOptions } from '@/type/job';
+import type { TJobClsOptions } from '@/type/job';
 
 
 export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implements IJob< T > {
