@@ -191,7 +191,7 @@ export class Profile implements IProfile {
       if ( ! Profile.storage.move( oldPath, this.path ) )
         throw new Error( 'Failed to move profile storage' );
 
-      this.updateData( { uri: uri } );
+      this.updateData( { uri: uri }, item.aliases, false, ArrayMode.Replace, ArrayMode.Replace );
       this.save();
       return true;
     }, `Failed to move profile: ${ this.uri } -> ${ uri }` ) ?? false;
