@@ -48,6 +48,13 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     return [ ...this.index.values() ].find( ( { aliases } ) => aliases.includes( alias ) )?.uri || false;
   }
 
+  public checkAvailableAlias ( alias: string, whitelist: string[] = [] ) : void {
+    if ( this.has( alias ) ) throw new Error( `Alias ${ alias } conflicts with existing profile URI` );
+
+    const owner = this.hasAlias( alias );
+    if ( owner && ! whitelist.includes( owner ) ) throw new Error( `Alias ${ alias } already exists for profile ${ owner }` );
+  }
+
   public removeAlias ( alias: string ) : boolean {
     alias = Utils.sanitize( alias );
     log.debug( `Removing profile alias ${ alias }` );
