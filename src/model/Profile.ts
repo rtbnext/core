@@ -223,8 +223,10 @@ export class Profile implements IProfile {
   // --- factory ---
 
   public static factory ( data?: Partial< TProfileData > ) : Partial< TProfileData > {
-    return { ...{ info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: [] },
-      ...data } as Partial< TProfileData >;
+    return {
+      ...{ aliases: [], info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: [] },
+      ...data
+    } as Partial< TProfileData >;
   };
 
   // --- create profile ---
