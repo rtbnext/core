@@ -41,9 +41,9 @@ export class Profile implements IProfile {
     return Profile.storage.readJSON< TProfileMetaData >( this.resolvePath( 'meta.json' ) ) || Utils.metaData();
   }
 
-  private touch ( lookup: boolean = false ) : void {
+  private touch ( lookupFlag: boolean = false ) : void {
     this.meta.$metadata.lastModified = Utils.date( 'iso' );
-    if ( lookup ) this.meta.$metadata.lastLookup = this.meta.$metadata.lastModified;
+    if ( lookupFlag ) this.meta.$metadata.lastLookup = this.meta.$metadata.lastModified;
   }
 
   private updateIndex ( aliases: string[] = [], mode: ArrayMode = ArrayMode.Unique ) : void {
@@ -108,21 +108,21 @@ export class Profile implements IProfile {
   }
 
   public setData (
-    data: TProfileData, aliases?: string[], lookup: boolean = false,
+    data: TProfileData, aliases?: string[], lookupFlag: boolean = false,
     aliasMode: ArrayMode = ArrayMode.Unique
   ) : void {
     this.data = data;
     this.updateIndex( aliases, aliasMode );
-    this.touch( lookup );
+    this.touch( lookupFlag );
   }
 
   public updateData (
-    data: Partial< TProfileData >, aliases?: string[], lookup: boolean = false,
+    data: Partial< TProfileData >, aliases?: string[], lookupFlag: boolean = false,
     mode: ArrayMode = ArrayMode.Replace, aliasMode: ArrayMode = ArrayMode.Unique
   ) : void {
     this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
     this.updateIndex( aliases, aliasMode );
-    this.touch( lookup );
+    this.touch( lookupFlag );
   }
 
   // --- profile history ---
