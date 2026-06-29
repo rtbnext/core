@@ -83,7 +83,10 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
       const item = this.index.get( uri );
       if ( ! item ) throw new Error( `Profile index item ${ uri } not found` );
 
-      item.aliases = Utils.mergeArray( item.aliases, aliases, ArrayMode.Unique );
+      const sanitized = aliases.map( a => Utils.sanitize( a ) ).filter( Boolean );
+      for ( const a of sanitized ) this.checkAvailableAlias( a, [ uri ] );
+
+      item.aliases = Utils.mergeArray( item.aliases, sanitized, ArrayMode.Unique );
       this.saveIndex();
 
       return item;
