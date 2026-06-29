@@ -54,12 +54,12 @@ export class ProfileManager {
   // --- perform profile operation ---
 
   public static process (
-    uriLike: string, id: string, profileData: Partial< TProfileData >,
-    aliases: string[] = [], method: 'setData' | 'updateData' = 'updateData'
+    uriLike: string, id: string, profileData: Partial< TProfileData >, aliases: string[] = [],
+    method: 'setData' | 'updateData' = 'updateData', lookupFlag: boolean = false
   ) : { profile: IProfile | false; action: TProfileOperation, success: boolean } {
     const lookup = this.lookup( uriLike, id, profileData );
     const action = this.determineAction( lookup );
-    const profile = this.execute( lookup, uriLike, profileData, aliases, method );
+    const profile = this.execute( lookup, uriLike, profileData, aliases, method, lookupFlag );
 
     if ( profile && action !== 'create' ) this.handleURIChange( profile, uriLike );
     return { profile, action, success: !! profile };
