@@ -1,8 +1,8 @@
+import usStates from '@isodb/us-states';
 import type { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
 import type { TLocation } from '@rtbnext/schema/src/base/generic';
 import type { Primitive } from 'devtypes/types/primitive';
 import countries from 'i18n-iso-countries';
-import states from 'us-state-converter';
 
 import { Gender, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
 import { REGEX_SPACES } from '@/lib/regex';
@@ -100,7 +100,7 @@ export class Parser {
   }
 
   public static state ( value: unknown ) : string | undefined {
-    return value ? ( states as any ).abbr( Parser.string( value ) ).toUpperCase() : undefined;
+    return usStates.byName( Parser.string( value ) )?.name;
   }
 
   public static latLng ( lat: unknown, lng: unknown ) : [ number, number ] | undefined {
