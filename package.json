@@ -23,6 +23,7 @@
     "build": "tsc && node scripts/copy-dts.mjs && tsc-alias && npm run format"
   },
   "dependencies": {
+    "@isodb/us-states": "^0.1.0",
     "@komed3/deepmerge": "^1.0.0",
     "@rtbnext/schema": "^2.0.0-alpha.13",
     "axios": "^1.18.0",
@@ -33,7 +34,6 @@
     "i18n-iso-countries": "^7.14.0",
     "js-sha256": "^0.11.1",
     "nxtcron": "^1.0.1",
-    "us-state-converter": "^1.0.8",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
