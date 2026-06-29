@@ -9,24 +9,24 @@ import { ProfileMerger } from '@/util/ProfileMerger';
 
 export class ProfileManager {
   private static execute (
-    lookup: TProfileLookupResult, uriLike: string, profileData: Partial< TProfileData >,
-    aliases: string[] = [], method: 'setData' | 'updateData' = 'updateData'
+    lookup: TProfileLookupResult, uriLike: string, profileData: Partial< TProfileData >, aliases: string[] = [],
+    method: 'setData' | 'updateData' = 'updateData', lookupFlag: boolean = false
   ) : IProfile | false {
     const { profile, isExisting, isSimilar } = lookup;
 
     if ( isExisting && profile ) {
-      profile[ method ]( profileData as TProfileData, aliases );
+      profile[ method ]( profileData as TProfileData, aliases, lookupFlag );
       profile.save();
       return profile;
     }
 
     if ( isSimilar && profile ) {
-      profile[ method ]( profileData as TProfileData, aliases );
+      profile[ method ]( profileData as TProfileData, aliases, lookupFlag );
       profile.move( uriLike, true );
       return profile;
     }
 
-    return Profile.create( uriLike, profileData as TProfileData, [], aliases );
+    return Profile.create( uriLike, profileData as TProfileData, [], aliases, lookupFlag );
   }
 
   // --- lookup profile by URI and ID, or find a similar matching profile ---
