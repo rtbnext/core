@@ -57,6 +57,9 @@ export class Profile implements IProfile {
       aliases: Utils.mergeArray( this.item.aliases, aliases, mode ),
       text: Utils.buildSearchText( cv )
     };
+
+    const data = this.getData();
+    data.aliases = this.item.aliases;
   }
 
   // --- public getter ---
