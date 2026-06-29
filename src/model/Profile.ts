@@ -232,7 +232,8 @@ export class Profile implements IProfile {
   // --- create profile ---
 
   public static create (
-    uriLike: string, data: TProfileData, history?: TProfileHistory, aliases: string[] = []
+    uriLike: string, data: TProfileData, history?: TProfileHistory,
+    aliases: string[] = [], lookupFlag: boolean = false
   ) : Profile | false {
     const uri = Utils.sanitize( uriLike );
     log.debug( `Creating profile: ${ uri }` );
@@ -247,7 +248,7 @@ export class Profile implements IProfile {
       if ( ! item ) throw new Error( 'Failed to add profile to index' );
 
       const profile = new Profile( item );
-      profile.setData( Profile.factory( data ) as TProfileData );
+      profile.setData( Profile.factory( data ) as TProfileData, item.aliases, lookupFlag );
       profile.setHistory( history ?? [] );
       profile.save();
 
