@@ -96,12 +96,12 @@ export class Profile implements IProfile {
     return this.touched;
   }
 
-  public save () : void {
+  public save ( syncIndex: boolean = true ) : void {
     if ( ! this.touched ) return;
 
     log.debug( `Saving profile: ${ this.uri }` );
     log.catch( () => {
-      if ( this.data && ! Profile.index.syncFromData( this.data ) )
+      if ( syncIndex && this.data && ! Profile.index.syncFromData( this.data ) )
         throw new Error( 'Failed to update profile index' );
 
       if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
@@ -157,6 +157,29 @@ export class Profile implements IProfile {
 
   public mergeHistory ( history: TProfileHistory ) : void {
     this.setHistory( this.resolveHistory( ...history ) );
+  }
+
+  // --- move profile ---
+
+  public move ( uriLike: string, makeAlias: boolean = true ) : boolean {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Moving profile: ${ this.uri } -> ${ uri }` );
+
+    return log.catch( () => {
+      const item = Profile.index.move( this.uri, uri, makeAlias );
+      if ( ! item ) throw new Error( 'Failed to move profile index item' );
+
+      const oldPath = this.path;
+      this.uri = uri;
+      this.path = join( 'profile', uri );
+
+      if ( ! Profile.storage.move( oldPath, this.path ) ) throw new Error( 'Failed to move profile storage' );
+
+      this.updateData( { uri: uri } );
+      this.save( false );
+
+      return true;
+    }, `Failed to move profile: ${ this.uri } -> ${ uri }` ) ?? false;
   }
 
   // --- factory ---
