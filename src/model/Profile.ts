@@ -43,7 +43,7 @@ export class Profile implements IProfile {
     return Profile.storage.readJSON< TProfileMetaData >( this.resolvePath( 'meta.json' ) ) || Utils.metaData();
   }
 
-  private resolveHistory ( ...history: TProfileHistoryItem[] ) : TProfileHistoryItem[] {
+  private resolveHistory ( ...history: TProfileHistory ) : TProfileHistory {
     return [ ...new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values() ]
       .sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
   }
@@ -90,10 +90,8 @@ export class Profile implements IProfile {
 
   // --- work flow ---
 
-  public touch ( lookup: boolean = true ) : void {
+  public touch () : void {
     this.meta.$metadata.lastModified = Utils.date( 'iso' );
-    if ( lookup ) this.meta.$metadata.lastLookup = this.meta.$metadata.lastModified;
-
     this.touched = true;
   }
 
@@ -125,6 +123,19 @@ export class Profile implements IProfile {
     return this.history ??= ( Profile.storage.readCSV< TProfileHistory >(
       this.resolvePath( 'history.csv' )
     ) ?? [] ) as TProfileHistory;
+  }
+
+  public setHistory ( history: TProfileHistory ) : void {
+    this.history = history;
+    this.touch();
+  }
+
+  public addHistory ( row: TProfileHistoryItem ) : void {
+    this.setHistory( this.resolveHistory( row ) );
+  }
+
+  public mergeHistory ( history: TProfileHistory ) : void {
+    this.setHistory( this.resolveHistory( ...history ) );
   }
 
   // --- factory ---
