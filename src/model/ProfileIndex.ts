@@ -64,12 +64,11 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
   }
 
   public syncFromData ( data: TProfileData ) : TProfileIndexItem | false {
-    const { uri, aliases, info: { name: { shortName: name } }, bio: { cv }, wiki: { desc, image } = {} } = data;
+    const { uri, info: { name: { shortName: name } }, bio: { cv }, wiki: { desc, image } = {} } = data;
     const item = this.get( uri );
 
     return this.update( uri, {
-      uri, name, desc, image: image?.thumb ?? image?.file,
-      aliases: this.resolveAliases( uri, item?.aliases ?? [], aliases ),
+      ...item, name, desc, image: image?.thumb ?? image?.file,
       text: Utils.buildSearchText( cv )
     } );
   }
