@@ -74,6 +74,27 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     catch { return false }
   }
 
+  public removeAlias ( aliasLike: string ) : boolean {
+    const alias = Utils.sanitize( aliasLike );
+    log.debug( `Removing profile alias ${ alias }` );
+
+    return log.catch( () => {
+      for ( const item of this.index.values() ) {
+        const index = item.aliases.indexOf( alias );
+
+        if ( index >= 0 ) {
+          item.aliases.splice( index, 1 );
+          this.saveIndex();
+
+          log.debug( `Removed alias ${ alias } from profile index item ${ item.uri }` );
+          return true;
+        }
+      }
+
+      return false;
+    }, `Failed to remove profile alias ${ alias }` ) ?? false;
+  }
+
   // --- instantitate ---
 
   public static getInstance () : IProfileIndex {
