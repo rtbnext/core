@@ -39,4 +39,38 @@ export class Profile implements IProfile {
   private metaData () : TProfileMetaData {
     return Profile.storage.readJSON< TProfileMetaData >( this.resolvePath( 'meta.json' ) ) || Utils.metaData();
   }
+
+  // --- public getter ---
+
+  public getUri () : string {
+    return this.uri;
+  }
+
+  public getItem () : TProfileIndexItem {
+    return this.item;
+  }
+
+  public getMeta () : TProfileMetaData[ '$metadata' ] {
+    return this.meta.$metadata;
+  }
+
+  public schemaVersion () : number {
+    return this.meta.$metadata.schemaVersion;
+  }
+
+  public lastModified () : string {
+    return this.meta.$metadata.lastModified;
+  }
+
+  public lastModifiedTime () : number {
+    return new Date( this.meta.$metadata.lastModified ).getTime();
+  }
+
+  public lastLookup () : string | undefined {
+    return this.meta.$metadata.lastLookup;
+  }
+
+  public lastLookupTime () : number | undefined {
+    return this.meta.$metadata.lastLookup ? new Date( this.meta.$metadata.lastLookup ).getTime() : undefined;
+  }
 }
