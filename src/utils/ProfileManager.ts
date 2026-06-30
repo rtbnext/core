@@ -10,17 +10,21 @@ import { ProfileMerger } from '@/util/ProfileMerger';
 export class ProfileManager {
   private static execute (
     profile: IProfile | false, action: TProfileOperation, uriLike: string, profileData: Partial< TProfileData >,
-    method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = true
+    method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
   ) : IProfile | false {
-    if ( profile ) switch ( action ) {
-      case 'update':
-        profile[ method ]( profileData as TProfileData );
-        profile.save();
-        return profile;
-      case 'move':
-        profile[ method ]( profileData as TProfileData );
-        profile.move( uriLike, makeAlias );
-        return profile;
+    if ( profile ) {
+      if ( touchLookup ) profile.touchLookup();
+
+      switch ( action ) {
+        case 'update':
+          profile[ method ]( profileData as TProfileData );
+          profile.save();
+          return profile;
+        case 'move':
+          profile[ method ]( profileData as TProfileData );
+          profile.move( uriLike, makeAlias );
+          return profile;
+      }
     }
 
     return Profile.create( uriLike, profileData as TProfileData );
@@ -45,12 +49,12 @@ export class ProfileManager {
   // --- perform profile operation ---
 
   public static process (
-    uriLike: string, id: string, profileData: Partial< TProfileData >,
-    method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = true
+    uriLike: string, id: string, profileData: Partial< TProfileData >, method: 'setData' | 'updateData' = 'updateData',
+    makeAlias: boolean = true, touchLookup: boolean = false
   ) : TProfileProcessResult {
     const lookup = this.lookup( uriLike, id, profileData );
     const action = this.determineAction( lookup );
-    const profile = this.execute( lookup.profile, action, uriLike, profileData, method, makeAlias );
+    const profile = this.execute( lookup.profile, action, uriLike, profileData, method, makeAlias, touchLookup );
 
     return { profile, action, success: !! profile };
   }
