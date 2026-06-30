@@ -4,7 +4,6 @@ import type { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexI
 
 export interface IProfile {
   getUri () : string;
-  getItem () : TProfileIndexItem;
   getMeta () : TProfileMetaData[ '$metadata' ];
   schemaVersion () : number;
   lastModified () : string;
@@ -12,15 +11,13 @@ export interface IProfile {
   lastLookup () : string | undefined;
   lastLookupTime () : number | undefined;
   verify ( id: string ) : boolean;
+  touch () : void;
+  touchLookup () : void;
+  needSave () : boolean;
+  save ( syncIndex: boolean = true ) : void;
   getData () : TProfileData;
-  setData (
-    data: TProfileData, aliases?: string[], lookup: boolean = false,
-    aliasMode: ArrayMode = ArrayMode.Unique
-  ) : void;
-  updateData (
-    data: Partial< TProfileData >, aliases?: string[], lookup: boolean = false,
-    mode: ArrayMode = ArrayMode.Replace, aliasMode: ArrayMode = ArrayMode.Unique
-  ) : void;
+  setData ( data: TProfileData ) : void;
+  updateData ( data: Partial< TProfileData >, mode: ArrayMode = ArrayMode.Replace ) : void;
   getHistory () : TProfileHistory;
   setHistory ( history: TProfileHistory ) : void;
   addHistory ( row: TProfileHistoryItem ) : void;
