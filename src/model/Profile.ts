@@ -16,7 +16,6 @@ export class Profile implements IProfile {
   private touched: boolean = false;
   private uri: string;
   private path: string;
-  private item: TProfileIndexItem;
   private meta: TProfileMetaData;
   private data?: TProfileData;
   private history?: TProfileHistory;
@@ -25,11 +24,8 @@ export class Profile implements IProfile {
     if ( ! item ) throw new Error( 'Profile index item not given' );
 
     this.uri = item.uri;
-    this.item = item;
-
     this.path = join( 'profile', item.uri );
     Profile.storage.ensurePath( this.path, true );
-
     this.meta = this.metaData();
   }
 
@@ -52,10 +48,6 @@ export class Profile implements IProfile {
 
   public getUri () : string {
     return this.uri;
-  }
-
-  public getItem () : TProfileIndexItem {
-    return this.item;
   }
 
   public getMeta () : TProfileMetaData[ '$metadata' ] {
