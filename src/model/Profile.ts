@@ -106,4 +106,12 @@ export class Profile implements IProfile {
     this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
     this.touch();
   }
+
+  // --- factory ---
+
+  public static factory ( data?: Partial< TProfileData > ) : Partial< TProfileData > {
+    return { ...{
+      aliases: [], info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: []
+    }, ...data } as Partial< TProfileData >;
+  }
 }
