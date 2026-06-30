@@ -2,6 +2,7 @@ import type { TProfileData, TProfileHistory, TProfileIndexItem, TProfileMetaData
 import { join } from 'node:path';
 
 import { Storage } from '@/core/Storage';
+import { Utils } from '@/core/Utils';
 import type { IProfile } from '@/interface/profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 
@@ -27,5 +28,15 @@ export class Profile implements IProfile {
     Profile.storage.ensurePath( this.path, true );
 
     this.meta = this.metaData();
+  }
+
+  // --- helper ---
+
+  private resolvePath ( path: string ) : string {
+    return join( this.path, path );
+  }
+
+  private metaData () : TProfileMetaData {
+    return Profile.storage.readJSON< TProfileMetaData >( this.resolvePath( 'meta.json' ) ) || Utils.metaData();
   }
 }
