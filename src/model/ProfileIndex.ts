@@ -11,27 +11,22 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
   protected static instance: IProfileIndex;
   private constructor () { super( 'profile', 'profile/index.json' ) }
 
-  // --- alias handling ---
+  // --- alias helper ---
 
-  public hasAlias ( aliasLike: string ) : string | false {
-    const alias = Utils.sanitize( aliasLike );
+  private getUriByAlias ( alias: string ) : string | false {
     return [ ...this.index.values() ].find( ( { aliases } ) => aliases.includes( alias ) )?.uri || false;
   }
 
-  public assertAvailableAlias ( aliasLike: string, whitelist: string[] = [] ) : void {
-    if ( this.has( aliasLike ) ) throw new Error( `Alias ${ aliasLike } conflicts with existing profile URI` );
+  private assertAvailableAlias ( alias: string, whitelist: string[] = [] ) : void {
+    if ( this.has( alias ) ) throw new Error( `Alias ${ alias } conflicts with existing profile URI` );
 
-    const owner = this.hasAlias( aliasLike );
-    if ( owner && ! whitelist.includes( owner ) ) throw new Error( `Alias ${ aliasLike } already exists for profile ${ owner }` );
+    const owner = this.getUriByAlias( alias );
+    if ( owner && ! whitelist.includes( owner ) ) throw new Error( `Alias ${ alias } already exists for profile ${ owner }` );
   }
 
-  public resolveAliases ( uriLike: string, aliases: string[], add: string[] = [], rmv: string[] = [] ) : string[] {
-    const uri = Utils.sanitize( uriLike );
-    const addAliases = add.map( a => Utils.sanitize( a ) ).filter( Boolean );
-    for ( const a of addAliases ) this.assertAvailableAlias( a, [ uri ] );
-
-    const rmvAliases = rmv.map( a => Utils.sanitize( a ) ).filter( Boolean );
-    return Utils.mergeArray( aliases.filter( alias => ! rmvAliases.includes( alias ) ), add, ArrayMode.Unique );
+  private resolveAliases ( uri: string, aliases: string[], add: string[] = [], rmv: string[] = [] ) : string[] {
+    for ( const a of add ) this.assertAvailableAlias( a, [ uri ] );
+    return Utils.mergeArray( aliases.filter( alias => ! rmv.includes( alias ) ), add, ArrayMode.Unique );
   }
 
   // --- special profile index operations ---
