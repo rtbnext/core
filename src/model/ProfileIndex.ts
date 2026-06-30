@@ -13,6 +13,10 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
 
   // --- alias helper ---
 
+  private sanitizeAliases ( aliases: string[] ) : string[] {
+    return aliases.map( a => Utils.sanitize( a ) ).filter( Boolean );
+  }
+
   private getUriByAlias ( alias: string ) : string | false {
     return [ ...this.index.values() ].find( ( { aliases } ) => aliases.includes( alias ) )?.uri || false;
   }
