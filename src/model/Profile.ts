@@ -101,7 +101,7 @@ export class Profile implements IProfile {
 
     log.debug( `Saving profile: ${ this.uri }` );
     log.catch( () => {
-      if ( this.data && ! Profile.index.setFromData( this.data ) )
+      if ( this.data && ! Profile.index.syncFromData( this.data ) )
         throw new Error( 'Failed to update profile index' );
 
       if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
