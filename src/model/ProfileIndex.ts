@@ -1,5 +1,5 @@
 import { ArrayMode } from '@komed3/deepmerge';
-import type { TProfileIndex, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileIndex, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
 
 import { Index } from '@/abstract/Index';
 import { log } from '@/core/Logger';
@@ -61,6 +61,17 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
 
       return item;
     }, `Failed to move profile index item ${ from } to ${ to }` ) ?? false;
+  }
+
+  public setFromData ( data: TProfileData, aliases?: string[] ) : TProfileIndex | false {
+    const { uri, info: { name: { shortName: name } }, bio: { cv }, wiki: { desc, image } = {} } = data;
+    const item = this.get( uri );
+
+    return this.update( uri, {
+      uri, name, desc, image: image?.thumb ?? image?.file,
+      aliases: this.resolveAliases( uri, item?.aliases ?? [], aliases ),
+      text: Utils.buildSearchText( cv )
+    } ) as TProfileIndex | false;
   }
 
   // --- alias handling ---
