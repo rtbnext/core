@@ -20,8 +20,8 @@ export class Profile implements IProfile {
   private data?: TProfileData;
   private history?: TProfileHistory;
 
-  private constructor ( item?: TProfileIndexItem ) {
-    if ( ! item ) throw new Error( 'Profile index item not given' );
+  private constructor ( item?: Partial< TProfileIndexItem > ) {
+    if ( ! item || ! item.uri ) throw new Error( 'No valid profile index item given' );
 
     this.uri = item.uri;
     this.path = join( 'profile', item.uri );
@@ -192,14 +192,24 @@ export class Profile implements IProfile {
 
   // --- create profile ---
 
-  public static create (
-    uriLike: string, data: TProfileData, history?: TProfileHistory,
-    aliases: string[] = [], lookup: boolean = false
-  ) : Profile | false {
+  public static create ( uriLike: string, data: TProfileData, history?: TProfileHistory, lookup: boolean = false ) : Profile | false {
     const uri = Utils.sanitize( uriLike );
     log.debug( `Creating profile: ${ uri }` );
 
-    return log.catch( () => {} );
+    return log.catch( () => {
+      if ( ! Profile.index.isAliasAvailable( uri ) )
+        throw new Error( `Profile URI ${ uri } is already taken` );
+
+      const profile = new Profile( { uri } );
+      profile.setData( Profile.factory( data ) as TProfileData );
+      profile.setHistory( history ?? [] );
+
+      if ( lookup ) profile.touchLookup();
+      profile.save();
+
+      log.debug( `Profile created: ${ uri }` );
+      return profile;
+    }, `Failed to create profile: ${ uri }` ) ?? false;
   }
 
   // --- delete profile ---
@@ -210,7 +220,9 @@ export class Profile implements IProfile {
 
     return log.catch( () => {
       const path = join( 'profile', uri );
-      if ( ! Profile.storage.remove( path ) ) throw new Error( 'Failed to remove profile from storage' );
+      if ( ! Profile.storage.remove( path ) )
+        throw new Error( 'Failed to remove profile from storage' );
+
       Profile.index.delete( uri );
 
       log.debug( `Profile deleted: ${ uri }` );
