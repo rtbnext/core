@@ -9,11 +9,9 @@ import { ProfileMerger } from '@/util/ProfileMerger';
 
 export class ProfileManager {
   private static execute (
-    lookup: TProfileLookupResult, action: TProfileOperation, uriLike: string, profileData: Partial< TProfileData >,
+    profile: IProfile | false, action: TProfileOperation, uriLike: string, profileData: Partial< TProfileData >,
     method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = true
   ) : IProfile | false {
-    const { profile } = lookup;
-
     if ( profile ) switch ( action ) {
       case 'update':
         profile[ method ]( profileData as TProfileData );
@@ -48,11 +46,11 @@ export class ProfileManager {
 
   public static process (
     uriLike: string, id: string, profileData: Partial< TProfileData >,
-    method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = false
+    method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = true
   ) : TProfileProcessResult {
     const lookup = this.lookup( uriLike, id, profileData );
     const action = this.determineAction( lookup );
-    const profile = this.execute( lookup, action, uriLike, profileData, method, makeAlias );
+    const profile = this.execute( lookup.profile, action, uriLike, profileData, method, makeAlias );
 
     return { profile, action, success: !! profile };
   }
