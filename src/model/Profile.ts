@@ -104,6 +104,30 @@ export class Profile implements IProfile {
     return this.touched;
   }
 
+  public save () : void {
+    if ( ! this.touched ) return;
+
+    log.debug( `Saving profile: ${ this.uri }` );
+    log.catch( () => {
+      if ( ! Profile.index.update( this.uri, this.item ) )
+        throw new Error( 'Failed to update profile index' );
+
+      if ( this.data && ! Profile.storage.writeJSON< TProfileData >(
+        this.resolvePath( 'profile.json' ), this.data
+      ) ) throw new Error( 'Failed to write profile data' );
+
+      if ( this.history && ! Profile.storage.writeCSV< TProfileHistory >(
+        this.resolvePath( 'history.csv' ), this.history
+      ) ) throw new Error( 'Failed to write profile history' );
+
+      if ( this.meta && ! Profile.storage.writeJSON< TProfileMetaData >(
+        this.resolvePath( 'meta.json' ), this.meta
+      ) ) throw new Error( 'Failed to write profile metadata' );
+
+      this.touched = false;
+    }, `Failed to save profile: ${ this.uri }` );
+  }
+
   // --- profile data ---
 
   public getData () : TProfileData {
