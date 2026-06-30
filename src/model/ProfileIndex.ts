@@ -51,10 +51,9 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
       const foundKey = test.keys().next().value;
       if ( foundKey && foundKey !== from ) throw new Error( 'Destination already exists' );
 
-      const item = { ...data, uri: to, aliases: [
-        ...data.aliases.filter( alias => alias !== to ),
-        ...( makeAlias ? [ from ] : [] )
-      ] };
+      const item = { ...data, uri: to, aliases: this.resolveAliases(
+        to, data.aliases, makeAlias ? [ from ] : [], [ to ]
+      ) };
 
       this.index.delete( from );
       this.index.set( to, item );
