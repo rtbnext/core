@@ -63,6 +63,12 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     }, `Failed to move profile index item ${ from } to ${ to }` ) ?? false;
   }
 
+  // --- alias handling ---
+
+  public hasAlias ( aliasLike: string ) : string | false {
+    return this.getUriByAlias( Utils.sanitize( aliasLike ) );
+  }
+
   // --- instantitate ---
 
   public static getInstance () : IProfileIndex {
