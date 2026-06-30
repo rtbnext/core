@@ -95,6 +95,11 @@ export class Profile implements IProfile {
     this.touched = true;
   }
 
+  public touchLookup () : void {
+    this.touch();
+    this.meta.$metadata.lastLookup = this.meta.$metadata.lastModified;
+  }
+
   public needSave () : boolean {
     return this.touched;
   }
