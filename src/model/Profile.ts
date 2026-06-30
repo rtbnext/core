@@ -189,4 +189,20 @@ export class Profile implements IProfile {
       `Failed to find profile: ${ uriLike }`
     ) ?? false;
   }
+
+  // --- delete profile ---
+
+  public static delete ( uriLike: string ) : boolean {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Deleting profile: ${ uri }` );
+
+    return log.catch( () => {
+      const path = join( 'profile', uri );
+      if ( ! Profile.storage.remove( path ) ) throw new Error( 'Failed to remove profile from storage' );
+      Profile.index.delete( uri );
+
+      log.debug( `Profile deleted: ${ uri }` );
+      return true;
+    }, `Failed to delete profile: ${ uri }` ) ?? false;
+  }
 }
