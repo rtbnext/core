@@ -1,5 +1,5 @@
 import type { ArrayMode } from '@komed3/deepmerge';
-import type { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
 
 
 export interface IProfile {
