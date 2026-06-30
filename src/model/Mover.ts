@@ -70,7 +70,7 @@ export class Mover extends Snapshot< TMover > implements IMover {
         percent: { winner: [], loser: [] }
       }
     };
-  };
+  }
 
   // --- aggregate mover data ---
 
