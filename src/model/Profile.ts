@@ -2,6 +2,7 @@ import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileHistory, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IProfile } from '@/interface/profile';
@@ -119,5 +120,28 @@ export class Profile implements IProfile {
     return { ...{
       aliases: [], info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: []
     }, ...data } as Partial< TProfileData >;
+  }
+
+  // --- instantiate ---
+
+  public static get ( uriLike: string ) : IProfile | false {
+    return log.catch(
+      () => new Profile( Profile.index.get( uriLike ) ),
+      `Failed to get profile: ${ uriLike }`
+    ) ?? false;
+  }
+
+  public static getByItem ( item: TProfileIndexItem ) : IProfile | false {
+    return log.catch(
+      () => new Profile( item ),
+      `Failed to get profile by item: ${ item.uri }`
+    ) ?? false;
+  }
+
+  public static find ( uriLike: string ) : IProfile | false {
+    return log.catch(
+      () => new Profile( Profile.index.find( uriLike ).values().next().value ),
+      `Failed to find profile: ${ uriLike }`
+    ) ?? false;
   }
 }
