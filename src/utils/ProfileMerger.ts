@@ -34,10 +34,10 @@ export class ProfileMerger {
   public static mergeableProfiles ( target: Partial< TProfileData >, source: Partial< TProfileData > ) : boolean {
     if ( target.id === source.id ) return true;
 
-    for ( const test of [ 'gender', 'birthDate', 'birthPlace', 'citizenship', 'industry' ] ) if (
-      target.info && test in target.info && source.info && test in source.info &&
-      JSON.stringify( target.info[ test as keyof TProfileInfo ] ) !==
-      JSON.stringify( source.info[ test as keyof TProfileInfo ] )
+    for ( const match of [ 'gender', 'birthDate', 'birthPlace', 'citizenship', 'industry' ] ) if (
+      target.info && match in target.info && source.info && match in source.info &&
+      JSON.stringify( target.info[ match as keyof TProfileInfo ] ) !==
+      JSON.stringify( source.info[ match as keyof TProfileInfo ] )
     ) return false;
 
     return true;
@@ -62,12 +62,13 @@ export class ProfileMerger {
   public static mergeProfiles ( target: IProfile, source: IProfile, force: boolean = false, makeAlias: boolean = true ) : boolean {
     if ( ! force && ! ProfileMerger.mergeableProfiles( target.getData(), source.getData() ) ) return false;
 
-    const aliases = makeAlias ? [ source.getUri() ] : [];
-    target.updateData( source.getData(), aliases, false, ArrayMode.Unique );
+    target.updateData( source.getData(), ArrayMode.Unique );
     target.mergeHistory( source.getHistory() );
     target.save();
 
-    return Profile.delete( source.getUri() );
+    return Profile.delete( source.getUri() ) && ( ! makeAlias ? true :
+      !! ProfileMerger.index.addAliases( target.getUri(), source.getUri() )
+    );
   }
 
   // --- list matching candidates ---
