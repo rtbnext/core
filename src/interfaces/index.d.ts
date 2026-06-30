@@ -21,6 +21,7 @@ export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex 
   find ( uriLike: string ) : TProfileIndex;
   move ( from: string, to: string, makeAlias: boolean = true ) : TProfileIndexItem | false;
   hasAlias ( alias: string ) : string | false;
+  isAliasAvailable ( aliasLike: string ) : boolean;
   removeAlias ( alias: string ) : boolean;
   addAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false;
   rmvAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false;

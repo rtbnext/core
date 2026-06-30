@@ -69,6 +69,11 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     return this.getUriByAlias( Utils.sanitize( aliasLike ) );
   }
 
+  public isAliasAvailable ( aliasLike: string ) : boolean {
+    try { this.assertAvailableAlias( Utils.sanitize( aliasLike ) ); return true }
+    catch { return false }
+  }
+
   // --- instantitate ---
 
   public static getInstance () : IProfileIndex {
