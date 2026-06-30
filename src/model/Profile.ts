@@ -1,3 +1,4 @@
+import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileHistory, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
@@ -11,6 +12,7 @@ export class Profile implements IProfile {
   private static readonly storage = Storage.getInstance();
   private static readonly index = ProfileIndex.getInstance();
 
+  private touched: boolean = false;
   private uri: string;
   private path: string;
   private item: TProfileIndexItem;
@@ -80,11 +82,28 @@ export class Profile implements IProfile {
     return Utils.verifyHash( id, this.getData().id );
   }
 
+  // --- work flow ---
+
+  public touch () : void {
+    this.meta.$metadata.lastModified = Utils.date( 'iso' );
+    this.touched = true;
+  }
+
   // --- profile data ---
 
   public getData () : TProfileData {
     return this.data ??= ( Profile.storage.readJSON< TProfileData >(
       this.resolvePath( 'profile.json' )
     ) ?? {} ) as TProfileData;
+  }
+
+  public setData ( data: TProfileData ) : void {
+    this.data = Profile.factory( data ) as TProfileData;
+    this.touch();
+  }
+
+  public updateData ( data: Partial< TProfileData >, mode: ArrayMode = ArrayMode.Replace ) : void {
+    this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
+    this.touch();
   }
 }
