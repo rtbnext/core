@@ -8,3 +8,9 @@ export type TProfileLookupResult = {
   isExisting: boolean;
   isSimilar: boolean;
 };
+
+export type TProfileProcessResult = {
+  profile: IProfile | false;
+  action: TProfileOperation;
+  success: boolean;
+};
