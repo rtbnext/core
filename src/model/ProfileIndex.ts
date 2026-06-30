@@ -45,14 +45,14 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
 
     return log.catch( () => {
       from = Utils.sanitize( from ), to = Utils.sanitize( to );
-      const data = this.index.get( from ), test = this.find( to );
-      if ( ! data || test.size > 1 ) throw new Error( 'Invalid move operation' );
+      const target = this.index.get( from ), match = this.find( to );
+      if ( ! target || match.size > 1 ) throw new Error( 'Invalid move operation' );
 
-      const foundKey = test.keys().next().value;
+      const foundKey = match.keys().next().value;
       if ( foundKey && foundKey !== from ) throw new Error( 'Destination already exists' );
 
-      const item = { ...data, uri: to, aliases: this.resolveAliases(
-        to, data.aliases, makeAlias ? [ from ] : [], [ to ]
+      const item = { ...target, uri: to, aliases: this.resolveAliases(
+        to, target.aliases, makeAlias ? [ from ] : [], [ to ]
       ) };
 
       this.index.delete( from );
