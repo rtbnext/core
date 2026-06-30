@@ -31,7 +31,7 @@ export class MergeJob extends Job< TMergeJobOptions > {
     this.log( `Merging profile ${ source.getUri() } into ${ target.getUri() }` );
 
     const res = ProfileMerger.mergeProfiles( target, source, force, makeAlias );
-    if ( ! res ) throw new Error( 'Merge failed: profiles are not mergeable.' );
+    if ( ! res ) throw new Error( 'Failed to merge profiles.' );
     this.log( 'Merge completed successfully.' );
   }
 
@@ -45,7 +45,7 @@ export class MergeJob extends Job< TMergeJobOptions > {
         const src = Profile.get( source ), tgt = Profile.get( target );
         if ( ! src || ! tgt ) throw new Error( 'One or both profiles not found' );
 
-        if ( dryRun ) this.isMergeable( src, tgt );
+        if ( dryRun ) this.isMergeable( tgt, src );
         else this.merge( tgt, src, Parser.boolean( force ), Parser.boolean( makeAlias ) );
       }
     } );
