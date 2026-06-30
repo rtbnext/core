@@ -23,7 +23,7 @@ export class ProfileManager {
         return profile;
     }
 
-    return Profile.create( uriLike, profileData as TProfileData, [] );
+    return Profile.create( uriLike, profileData as TProfileData );
   }
 
   // --- lookup profile by URI and ID, or find a similar matching profile ---
