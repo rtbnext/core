@@ -76,7 +76,7 @@ export class RTBJob extends Job {
         } );
 
         // --- process profile using ProfileManager ---
-        const { profile, action } = ProfileManager.process( uri, id, profileData, [], 'updateData' );
+        const { profile, action } = ProfileManager.process( uri, id, profileData, 'updateData' );
 
         if ( ! profile ) {
           this.log( `Failed to process profile for ${ uri }` );
