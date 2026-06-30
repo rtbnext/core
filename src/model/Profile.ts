@@ -1,5 +1,5 @@
 import { ArrayMode } from '@komed3/deepmerge';
-import type { TProfileData, TProfileHistory, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -41,6 +41,11 @@ export class Profile implements IProfile {
 
   private metaData () : TProfileMetaData {
     return Profile.storage.readJSON< TProfileMetaData >( this.resolvePath( 'meta.json' ) ) || Utils.metaData();
+  }
+
+  private resolveHistory ( ...history: TProfileHistoryItem[] ) : TProfileHistoryItem[] {
+    return [ ...new Map( [ ...this.getHistory(), ...history ].map( i => [ i[ 0 ], i ] ) ).values() ]
+      .sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
   }
 
   // --- public getter ---
@@ -112,6 +117,14 @@ export class Profile implements IProfile {
   public updateData ( data: Partial< TProfileData >, mode: ArrayMode = ArrayMode.Replace ) : void {
     this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
     this.touch();
+  }
+
+  // --- profile history ---
+
+  public getHistory () : TProfileHistory {
+    return this.history ??= ( Profile.storage.readCSV< TProfileHistory >(
+      this.resolvePath( 'history.csv' )
+    ) ?? [] ) as TProfileHistory;
   }
 
   // --- factory ---
