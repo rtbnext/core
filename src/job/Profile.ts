@@ -2,6 +2,7 @@ import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
 import { Profile } from '@/model/Profile';
+import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
 import type { TCommandJob, TCronJob, TProfileJobOptions } from '@/type/job';
@@ -49,7 +50,11 @@ export class ProfileJob extends Job< TProfileJobOptions > {
         // --- process profile using ProfileManager ---
         const { action, success } = ProfileManager.process( uri, id, profileData, method, true, true );
         if ( ! success ) this.log( `Failed to process profile with uri ${ uri }`, profileData, 'warn' );
-        else this.log( `Profile with uri ${ uri } processed in ${ action } mode` );
+
+        // --- add profile aliases ---
+        ProfileIndex.getInstance().addAliases( uri, ...parser.aliases() );
+
+        this.log( `Profile with uri ${ uri } processed in ${ action } mode` );
       }
     } );
   }
