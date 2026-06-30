@@ -2,8 +2,8 @@ import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
+import type { TProfileLookupResult, TProfileOperation, TProfileProcessResult } from '@/type/profile';
 import type { TQueueOptions } from '@/type/queue';
-import type { TProfileLookupResult, TProfileOperation } from '@/type/utils';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
 
@@ -42,7 +42,7 @@ export class ProfileManager {
   // --- determine action based on profile lookup ---
 
   public static determineAction ( lookup: TProfileLookupResult ) : TProfileOperation {
-    return lookup.isExisting ? 'update' : lookup.isSimilar ? 'merge' : 'create';
+    return lookup.isExisting ? 'update' : lookup.isSimilar ? 'move' : 'create';
   }
 
   // --- handle URI change ---
@@ -56,7 +56,7 @@ export class ProfileManager {
   public static process (
     uriLike: string, id: string, profileData: Partial< TProfileData >,
     method: 'setData' | 'updateData' = 'updateData', lookupFlag: boolean = false
-  ) : { profile: IProfile | false; action: TProfileOperation, success: boolean } {
+  ) : TProfileProcessResult {
     const lookup = this.lookup( uriLike, id, profileData );
     const action = this.determineAction( lookup );
     const profile = this.execute( lookup, uriLike, profileData, method, lookupFlag );
@@ -72,7 +72,7 @@ export class ProfileManager {
 
     switch ( action ) {
       case 'update': if ( ! th || ( profile.lastLookupTime() ?? 0 ) < th ) queue.push( { uriLike } ); break;
-      case 'merge': queue.push( { uriLike, prio: 5 } ); break;
+      case 'move': queue.push( { uriLike, prio: 5 } ); break;
       case 'create': queue.push( { uriLike, prio: 10 } ); break;
     }
   }
