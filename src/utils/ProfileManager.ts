@@ -9,24 +9,24 @@ import { ProfileMerger } from '@/util/ProfileMerger';
 
 export class ProfileManager {
   private static execute (
-    lookup: TProfileLookupResult, uriLike: string, profileData: Partial< TProfileData >, aliases: string[] = [],
-    method: 'setData' | 'updateData' = 'updateData', lookupFlag: boolean = false
+    lookup: TProfileLookupResult, uriLike: string, profileData: Partial< TProfileData >,
+    method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = true
   ) : IProfile | false {
     const { profile, isExisting, isSimilar } = lookup;
 
     if ( isExisting && profile ) {
-      profile[ method ]( profileData as TProfileData, aliases, lookupFlag );
+      profile[ method ]( profileData as TProfileData );
       profile.save();
       return profile;
     }
 
     if ( isSimilar && profile ) {
-      profile[ method ]( profileData as TProfileData, aliases, lookupFlag );
-      profile.move( uriLike, true );
+      profile[ method ]( profileData as TProfileData );
+      profile.move( uriLike, makeAlias );
       return profile;
     }
 
-    return Profile.create( uriLike, profileData as TProfileData, [], aliases, lookupFlag );
+    return Profile.create( uriLike, profileData as TProfileData, [] );
   }
 
   // --- lookup profile by URI and ID, or find a similar matching profile ---
@@ -54,12 +54,12 @@ export class ProfileManager {
   // --- perform profile operation ---
 
   public static process (
-    uriLike: string, id: string, profileData: Partial< TProfileData >, aliases: string[] = [],
+    uriLike: string, id: string, profileData: Partial< TProfileData >,
     method: 'setData' | 'updateData' = 'updateData', lookupFlag: boolean = false
   ) : { profile: IProfile | false; action: TProfileOperation, success: boolean } {
     const lookup = this.lookup( uriLike, id, profileData );
     const action = this.determineAction( lookup );
-    const profile = this.execute( lookup, uriLike, profileData, aliases, method, lookupFlag );
+    const profile = this.execute( lookup, uriLike, profileData, method, lookupFlag );
 
     if ( profile && action !== 'create' ) this.handleURIChange( profile, uriLike );
     return { profile, action, success: !! profile };
