@@ -84,9 +84,15 @@ export class Profile implements IProfile {
 
   // --- work flow ---
 
-  public touch () : void {
+  public touch ( lookup: boolean = true ) : void {
     this.meta.$metadata.lastModified = Utils.date( 'iso' );
+    if ( lookup ) this.meta.$metadata.lastLookup = this.meta.$metadata.lastModified;
+
     this.touched = true;
+  }
+
+  public needSave () : boolean {
+    return this.touched;
   }
 
   // --- profile data ---
