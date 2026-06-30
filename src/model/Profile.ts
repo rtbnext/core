@@ -190,6 +190,18 @@ export class Profile implements IProfile {
     ) ?? false;
   }
 
+  // --- create profile ---
+
+  public static create (
+    uriLike: string, data: TProfileData, history?: TProfileHistory,
+    aliases: string[] = [], lookup: boolean = false
+  ) : Profile | false {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Creating profile: ${ uri }` );
+
+    return log.catch( () => {} );
+  }
+
   // --- delete profile ---
 
   public static delete ( uriLike: string ) : boolean {
