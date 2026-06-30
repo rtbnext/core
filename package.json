@@ -26,7 +26,7 @@
     "@isodb/us-states": "^0.1.0",
     "@komed3/deepmerge": "^1.0.0",
     "@rtbnext/schema": "^2.0.0-alpha.15",
-    "axios": "^1.18.0",
+    "axios": "^1.18.1",
     "cmpstr": "^3.3.0",
     "commander": "^15.0.0",
     "csv-string": "^4.1.1",
@@ -37,8 +37,8 @@
     "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "@types/node": "^26.0.0",
-    "prettier": "^3.8.4",
+    "@types/node": "^26.0.1",
+    "prettier": "^3.9.4",
     "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3"
   }
