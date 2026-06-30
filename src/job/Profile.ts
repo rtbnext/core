@@ -47,7 +47,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
           profileData.wiki = await Wiki.fromProfileData( profileData );
 
         // --- process profile using ProfileManager ---
-        const { action, success } = ProfileManager.process( uri, id, profileData, parser.aliases(), method, true );
+        const { action, success } = ProfileManager.process( uri, id, profileData, method, true, true );
         if ( ! success ) this.log( `Failed to process profile with uri ${ uri }`, profileData, 'warn' );
         else this.log( `Profile with uri ${ uri } processed in ${ action } mode` );
       }
