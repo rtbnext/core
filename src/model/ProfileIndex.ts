@@ -63,7 +63,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     }, `Failed to move profile index item ${ from } to ${ to }` ) ?? false;
   }
 
-  public setFromData ( data: TProfileData, aliases?: string[] ) : TProfileIndex | false {
+  public setFromData ( data: TProfileData, aliases?: string[] ) : TProfileIndexItem | false {
     const { uri, info: { name: { shortName: name } }, bio: { cv }, wiki: { desc, image } = {} } = data;
     const item = this.get( uri );
 
@@ -71,7 +71,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
       uri, name, desc, image: image?.thumb ?? image?.file,
       aliases: this.resolveAliases( uri, item?.aliases ?? [], aliases ),
       text: Utils.buildSearchText( cv )
-    } ) as TProfileIndex | false;
+    } );
   }
 
   // --- alias handling ---

@@ -20,6 +20,7 @@ export interface IIndex< I extends TIndex, T extends Map< string, I > > {
 export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex > {
   find ( uriLike: string ) : TProfileIndex;
   move ( from: string, to: string, makeAlias: boolean = true ) : TProfileIndexItem | false;
+  setFromData ( data: TProfileData, aliases?: string[] ) : TProfileIndexItem | false;
   hasAlias ( aliasLike: string, uriLike?: string ) : string | false;
   isAliasAvailable ( aliasLike: string ) : boolean;
   removeAlias ( aliasLike: string ) : boolean;
