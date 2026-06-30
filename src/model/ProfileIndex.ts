@@ -63,8 +63,8 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     }, `Failed to move profile index item ${ from } to ${ to }` ) ?? false;
   }
 
-  public setFromData ( data: TProfileData, aliases?: string[] ) : TProfileIndexItem | false {
-    const { uri, info: { name: { shortName: name } }, bio: { cv }, wiki: { desc, image } = {} } = data;
+  public setFromData ( data: TProfileData ) : TProfileIndexItem | false {
+    const { uri, aliases, info: { name: { shortName: name } }, bio: { cv }, wiki: { desc, image } = {} } = data;
     const item = this.get( uri );
 
     return this.update( uri, {
