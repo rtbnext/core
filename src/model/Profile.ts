@@ -125,7 +125,7 @@ export class Profile implements IProfile {
   public getData () : TProfileData {
     return this.data ??= ( Profile.storage.readJSON< TProfileData >(
       this.resolvePath( 'profile.json' )
-    ) ?? {} ) as TProfileData;
+    ) ?? Profile.factory() ) as TProfileData;
   }
 
   public setData ( data: TProfileData ) : void {
