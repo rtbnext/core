@@ -40,4 +40,10 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
       return item;
     }, `Failed to move profile index item ${ from } to ${ to }` ) ?? false;
   }
+
+  // --- instantitate ---
+
+  public static getInstance () : IProfileIndex {
+    return ProfileIndex.instance ??= new ProfileIndex();
+  }
 }
