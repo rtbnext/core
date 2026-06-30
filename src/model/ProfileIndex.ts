@@ -110,6 +110,21 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     }, `Failed to add profile aliases to ${ uri }` ) ?? false;
   }
 
+  public rmvAliases ( uriLike: string, ...aliases: string[] ) : TProfileIndexItem | false {
+    const uri = Utils.sanitize( uriLike );
+    log.debug( `Removing profile aliases [${ aliases.join( ', ' ) }] from ${ uri }` );
+
+    return log.catch( () => {
+      const item = this.index.get( uri );
+      if ( ! item ) throw new Error( `Profile index item ${ uri } not found` );
+
+      item.aliases = this.resolveAliases( uri, item.aliases, [], this.sanitizeAliases( aliases ) );
+      this.saveIndex();
+
+      return item;
+    }, `Failed to remove profile aliases from ${ uri }` ) ?? false;
+  }
+
   // --- instantitate ---
 
   public static getInstance () : IProfileIndex {
