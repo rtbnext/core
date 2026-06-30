@@ -162,9 +162,10 @@ export class Profile implements IProfile {
   // --- factory ---
 
   public static factory ( data?: Partial< TProfileData > ) : Partial< TProfileData > {
-    return { ...{
-      aliases: [], info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: []
-    }, ...data } as Partial< TProfileData >;
+    return {
+      ...{ info: {}, bio: {}, related: [], media: [], ranking: [], annual: [], assets: [] },
+      ...data
+    } as Partial< TProfileData >;
   }
 
   // --- instantiate ---
@@ -197,8 +198,7 @@ export class Profile implements IProfile {
     log.debug( `Creating profile: ${ uri }` );
 
     return log.catch( () => {
-      if ( ! Profile.index.isAliasAvailable( uri ) )
-        throw new Error( `Profile URI ${ uri } is already taken` );
+      if ( ! Profile.index.isAliasAvailable( uri ) ) throw new Error( `Profile URI ${ uri } is already taken` );
 
       const profile = new Profile( { uri } );
       profile.setData( Profile.factory( data ) as TProfileData );
@@ -220,8 +220,7 @@ export class Profile implements IProfile {
 
     return log.catch( () => {
       const path = join( 'profile', uri );
-      if ( ! Profile.storage.remove( path ) )
-        throw new Error( 'Failed to remove profile from storage' );
+      if ( ! Profile.storage.remove( path ) ) throw new Error( 'Failed to remove profile from storage' );
 
       Profile.index.delete( uri );
 
