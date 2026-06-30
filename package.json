@@ -25,7 +25,7 @@
   "dependencies": {
     "@isodb/us-states": "^0.1.0",
     "@komed3/deepmerge": "^1.0.0",
-    "@rtbnext/schema": "^2.0.0-alpha.14",
+    "@rtbnext/schema": "^2.0.0-alpha.15",
     "axios": "^1.18.0",
     "cmpstr": "^3.3.0",
     "commander": "^15.0.0",
