@@ -1,6 +1,7 @@
-import type { TAsset, TRealtime } from '@rtbnext/schema/src/base/assets';
+import type { TAsset, TChange, TChangeItem, TRealtime } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import type { IRTBListParser } from '@/interface/parser';
 import { Parser } from '@/parser/Parser';
@@ -60,5 +61,20 @@ export class RTBListParser extends PersonListParser implements IRTBListParser {
 
     const rankDiff = item.rank.last - this.rank()!;
     return { flag: rankDiff > 0 ? 'up' : rankDiff < 0 ? 'down' : 'unchanged', rankDiff };
+  }
+
+  // --- prepare stats ---
+  
+  public static override stats ( data: Partial< TGenericStats > ) : TGenericStats {
+    return { ...super.stats( data ), ...Parser.container< TChange >( {
+      today: { value: Parser.container< TChangeItem >( {
+        value: { value: data.today?.value, type: 'money' },
+        percent: { value: data.today?.percent, type: 'pct' }
+      } ), type: 'container' },
+      ytd: { value: Parser.container< TChangeItem >( {
+        value: { value: data.ytd?.value, type: 'money' },
+        percent: { value: data.ytd?.percent, type: 'pct' }
+      } ), type: 'container' }
+    } ) };
   }
 }
