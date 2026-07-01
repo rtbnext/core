@@ -109,7 +109,10 @@ export type TPersonListEntry = {
   uri: string;
   position?: number;
   rank?: number;
+  previousRank?: number;
   finalWorth?: number;
+  change?: number;
+  changePercent?: number;
   person?: {
     name?: string;
     uri?: string;
@@ -121,6 +124,15 @@ export type TPersonListEntry = {
   source?: string;
   industries?: string[];
   countryOfCitizenship?: string;
+  organization?: string;
+  title?: string;
+  employment?: {
+    name: string;
+    title: string;
+    totalEarningEst: boolean;
+    salaryEst: boolean;
+    government: boolean;
+  };
   timestamp: number;
   gender?: 'M' | 'F';
   birthDate?: number;
