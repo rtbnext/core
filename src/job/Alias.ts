@@ -15,8 +15,8 @@ export class AliasJob extends Job< TAliasJobOptions > {
       for ( const a of this.options.removeGlobal ?? [] ) AliasJob.index.removeAlias( a );
 
       if ( this.options.profile ) {
-        AliasJob.index.rmvAliases( this.options.profile, ...( this.options.remove ?? [] ) );
-        AliasJob.index.addAliases( this.options.profile, ...( this.options.add ?? [] ) );
+        this.options.remove?.length && AliasJob.index.rmvAliases( this.options.profile, ...this.options.remove );
+        this.options.add?.length && AliasJob.index.addAliases( this.options.profile, ...this.options.add );
       }
     } );
   }
