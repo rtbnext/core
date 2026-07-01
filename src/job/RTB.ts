@@ -131,7 +131,6 @@ export class RTBJob extends Job {
         shortName: 'Real-Time Billionaires',
         desc: 'Today’s richest people in the world',
         text: 'todays richest people world',
-        date, count,
         columns: [ 'rank', 'diff', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
         filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
       } );
