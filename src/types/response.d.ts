@@ -115,6 +115,7 @@ export type TPersonListEntry = {
     uri?: string;
   },
   personName: string;
+  country?: string;
   state?: string;
   city?: string;
   source?: string;
