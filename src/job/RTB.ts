@@ -3,19 +3,18 @@ import type { TRTBListItem } from '@rtbnext/schema/src/model/list';
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ProfileQueue } from '@/core/Queue';
+import { LISTS } from '@/lib/list';
 import { List } from '@/model/List';
 import { Mover } from '@/model/Mover';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
-import { RTBListParser } from '@/parser/RTBListParser';
 import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 import { Performance } from '@/util/Performance';
 import { ProfileManager } from '@/util/ProfileManager';
-import { LISTS } from '@/lib/list';
 
 
 export class RTBJob extends Job {
@@ -58,7 +57,7 @@ export class RTBJob extends Job {
         raw.date = ts;
 
         // --- parse raw list data ---
-        const parser = new RTBListParser( raw );
+        const parser = new LISTS.rtb.parser( raw );
         const uri = parser.uri();
         const id = parser.id();
         const rank = parser.rank();
@@ -132,7 +131,7 @@ export class RTBJob extends Job {
       this.log( `Saving RTB list dated ${ date } (${ count } items)` );
 
       // --- create stats ---
-      const stats = RTBListParser.stats( {
+      const stats = LISTS.rtb.parser.stats( {
         date, count, total, woman,
         today: { value: mover.today.total.value, percent: mover.today.total.percent },
         ytd: { value: mover.ytd.total.value, percent: mover.ytd.total.percent }

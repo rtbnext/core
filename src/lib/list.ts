@@ -1,12 +1,11 @@
 import { RTBListParser } from '@/parser/RTBListParser';
 import type { TListRegistry } from '@/type/list';
-import type { TPersonListEntry } from '@/type/response';
 
 
 export const LISTS = {
   rtb: {
     uri: 'rtb',
-    parser: ( raw: TPersonListEntry ) => new RTBListParser( raw ),
+    parser: RTBListParser,
     entry: {
       uri: 'rtb',
       name: 'The World’s Real-Time Billionaires',
