@@ -138,13 +138,6 @@ export type TPersonListEntry = {
   title?: string;
   bios?: string[];
   abouts?: string[];
-  employment?: {
-    name: string;
-    title: string;
-    totalEarningEst: boolean;
-    salaryEst: boolean;
-    government: boolean;
-  };
   financialAssets?: Array< {
     exchange: string;
     ticker: string;
