@@ -15,6 +15,7 @@ import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 import { Performance } from '@/util/Performance';
 import { ProfileManager } from '@/util/ProfileManager';
+import { LISTS } from '@/lib/list';
 
 
 export class RTBJob extends Job {
@@ -125,15 +126,7 @@ export class RTBJob extends Job {
       }
 
       // --- create "rtb" list ---
-      const list = List.get( 'rtb' ) || List.create( 'rtb', {
-        uri: 'rtb',
-        name: 'The World’s Real-Time Billionaires',
-        shortName: 'Real-Time Billionaires',
-        desc: 'Today’s richest people in the world',
-        text: 'todays richest people world',
-        columns: [ 'rank', 'diff', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
-        filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
-      } );
+      const list = List.get( 'rtb' ) || List.create( 'rtb', LISTS.rtb.entry );
 
       if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
       this.log( `Saving RTB list dated ${ date } (${ count } items)` );
