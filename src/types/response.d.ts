@@ -107,6 +107,7 @@ export type TPersonListEntry = {
   year: number;
   listUri: string;
   uri: string;
+  position?: number;
   rank?: number;
   finalWorth?: number;
   person?: {
