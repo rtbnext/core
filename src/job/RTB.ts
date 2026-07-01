@@ -125,7 +125,7 @@ export class RTBJob extends Job {
       }
 
       // --- create "rtb" list ---
-      const list = List.get( 'rtb' ) || List.create( 'rtb', LISTS.rtb.entry );
+      const list = List.get( LISTS.rtb.uri ) || List.create( LISTS.rtb.uri, LISTS.rtb.entry );
 
       if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
       this.log( `Saving RTB list dated ${ date } (${ count } items)` );
