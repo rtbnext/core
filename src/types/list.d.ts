@@ -4,7 +4,7 @@ import type { TListIndexItem } from '@rtbnext/schema/src/model/list';
 
 export type TListConfig< K extends string > = {
   uri: K;
-  parser ( raw: object ) : IListParser;
+  parser: IListParser;
   entry: TListIndexItem & { uri: K };
 };
 
