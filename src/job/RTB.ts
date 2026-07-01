@@ -8,7 +8,7 @@ import { Mover } from '@/model/Mover';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
-import { RTBListParser } from '@/parser/ListParser';
+import { RTBListParser } from '@/parser/RTBListParser';
 import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
