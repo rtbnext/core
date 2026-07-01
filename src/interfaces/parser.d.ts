@@ -34,7 +34,7 @@ export interface IListParser< T extends object > extends ICache {
   rawData () : T;
 }
 
-export interface IParsonListParser extends IListParser< TPersonListEntry > {
+export interface IPersonListParser extends IListParser< TPersonListEntry > {
   uri () : string;
   id () : string;
   date () : string;
