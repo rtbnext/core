@@ -1,4 +1,5 @@
 import type { TAsset, TRealtime } from '@rtbnext/schema/src/base/assets';
+import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TEducation, TImage, TLocation, TOrganization, TRelation, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 
@@ -45,6 +46,12 @@ export interface IPersonListParser extends IListParser< TPersonListEntry > {
   info () : Partial< TProfileInfo >;
   bio () : TProfileBio;
   age () : number | undefined;
+}
+
+export interface IRTBListParser extends IPersonListParser {
   assets () : TAsset[];
   realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined;
+  rankDiff ( data?: Partial< TProfileData > ) : { flag: TChangeFlag, rankDiff?: number };
 }
+
+export interface IBillionairesListParser extends IPersonListParser {}
