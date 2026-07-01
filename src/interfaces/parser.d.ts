@@ -39,6 +39,7 @@ export interface IPersonListParser extends IListParser< TPersonListEntry > {
   uri () : string;
   id () : string;
   date () : string;
+  year () : number;
   rank () : number | undefined;
   networth () : number | undefined;
   dropOff () : boolean | undefined;
