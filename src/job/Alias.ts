@@ -13,6 +13,11 @@ export class AliasJob extends Job< TAliasJobOptions > {
   public async run () : Promise< void > {
     await this.protect( async () => {
       for ( const a of this.options.removeGlobal ?? [] ) AliasJob.index.removeAlias( a );
+
+      if ( this.options.profile ) {
+        AliasJob.index.rmvAliases( this.options.profile, ...( this.options.remove ?? [] ) );
+        AliasJob.index.addAliases( this.options.profile, ...( this.options.add ?? [] ) );
+      }
     } );
   }
 
