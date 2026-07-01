@@ -6,7 +6,7 @@ import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
-import type { IListParser, IPersonListParser } from '@/interface/parser';
+import type { IBillionairesListParser, IListParser, IPersonListParser, IRTBListParser } from '@/interface/parser';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
 import type { TPersonListEntry } from '@/type/response';
@@ -119,8 +119,29 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'age', () => Parser.strict( this.raw.birthDate, 'age' ) );
   }
 
-  // --- financial assets ---
+  // --- aggregate stats ---
 
+  public static stats ( data: Partial< TGenericStats > ) : TGenericStats {
+    return Parser.container< TGenericStats >( {
+      date: { value: data.date, type: 'string' },
+      count: { value: data.count, type: 'number' },
+      total: { value: data.total, type: 'money' },
+      woman: { value: data.woman, type: 'number' },
+      quota: { value: ( data.woman ?? 0 ) / ( data.count ?? 1 ) * 100, type: 'pct' },
+      today: { value: Parser.container< TChangeItem >( {
+        value: { value: data.today?.value, type: 'money' },
+        percent: { value: data.today?.percent, type: 'pct' }
+      } ), type: 'container' },
+      ytd: { value: Parser.container< TChangeItem >( {
+        value: { value: data.ytd?.value, type: 'money' },
+        percent: { value: data.ytd?.percent, type: 'pct' }
+      } ), type: 'container' }
+    } );
+  }
+}
+
+
+export class RTBListParser extends PersonListParser implements IRTBListParser {
   public assets () : TAsset[] {
     return this.cache( 'assets', () => ( this.raw.financialAssets ?? [] ).map( a =>
       Parser.container< TAsset >( {
@@ -140,8 +161,6 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
       } )
     ) );
   }
-
-  // --- realtime data ---
 
   public realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined {
     return this.cache( 'realtime', () => {
@@ -166,8 +185,6 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     } );
   }
 
-  // --- (YTD) rank diff ---
-
   public rankDiff ( data?: Partial< TProfileData > ) : { flag: TChangeFlag, rankDiff?: number } {
     if ( this.rank() === undefined || ( this.networth() ?? 0 ) < 1000 ) return { flag: 'dropoff' };
 
@@ -178,24 +195,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     const rankDiff = item.rank.last - this.rank()!;
     return { flag: rankDiff > 0 ? 'up' : rankDiff < 0 ? 'down' : 'unchanged', rankDiff };
   }
-
-  // --- aggregate stats ---
-
-  public static stats ( data: Partial< TGenericStats > ) : TGenericStats {
-    return Parser.container< TGenericStats >( {
-      date: { value: data.date, type: 'string' },
-      count: { value: data.count, type: 'number' },
-      total: { value: data.total, type: 'money' },
-      woman: { value: data.woman, type: 'number' },
-      quota: { value: ( data.woman ?? 0 ) / ( data.count ?? 1 ) * 100, type: 'pct' },
-      today: { value: Parser.container< TChangeItem >( {
-        value: { value: data.today?.value, type: 'money' },
-        percent: { value: data.today?.percent, type: 'pct' }
-      } ), type: 'container' },
-      ytd: { value: Parser.container< TChangeItem >( {
-        value: { value: data.ytd?.value, type: 'money' },
-        percent: { value: data.ytd?.percent, type: 'pct' }
-      } ), type: 'container' }
-    } );
-  }
 }
+
+
+export class BillionairesListParser extends PersonListParser implements IBillionairesListParser {}
