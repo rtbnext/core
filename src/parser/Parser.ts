@@ -100,7 +100,7 @@ export class Parser {
   }
 
   public static state ( value: unknown ) : string | undefined {
-    return usStates.byName( Parser.string( value ) )?.name;
+    return usStates.byName( Parser.string( value ) )?.code;
   }
 
   public static latLng ( lat: unknown, lng: unknown ) : [ number, number ] | undefined {
