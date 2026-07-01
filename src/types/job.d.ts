@@ -9,6 +9,13 @@ export type TJobClsOptions< T extends object = {} > = Expand< {
   safeMode?: boolean;
 } & T >;
 
+export type TAliasJobOptions = TJobClsOptions< {
+  removeGlobal?: string[];
+  profile?: string;
+  add?: string[];
+  remove?: string[];
+} >;
+
 export type TAnnualJobOptions = TJobClsOptions< {
   year: number;
   profiles?: string[];
