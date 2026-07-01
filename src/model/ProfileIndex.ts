@@ -28,7 +28,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     if ( owner && ! whitelist.includes( owner ) ) throw new Error( `Alias ${ alias } already exists for profile ${ owner }` );
   }
 
-  private resolveAliases ( uri: string, aliases: string[], add: string[] = [], rmv: string[] = [] ) : string[] {
+  private resolveAliases ( uri: string, aliases: string[] = [], add: string[] = [], rmv: string[] = [] ) : string[] {
     for ( const a of add ) this.assertAvailableAlias( a, [ uri ] );
     return Utils.mergeArray( aliases.filter( alias => ! rmv.includes( alias ) ), add, ArrayMode.Unique );
   }
