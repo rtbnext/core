@@ -116,6 +116,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     return log.catch( () => {
       const item = this.index.get( uri );
       if ( ! item ) throw new Error( `Profile index item ${ uri } not found` );
+      if ( ! aliases.length ) return item;
 
       item.aliases = this.resolveAliases( uri, item.aliases, this.sanitizeAliases( aliases ) );
       this.saveIndex();
@@ -131,6 +132,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     return log.catch( () => {
       const item = this.index.get( uri );
       if ( ! item ) throw new Error( `Profile index item ${ uri } not found` );
+      if ( ! aliases.length ) return item;
 
       item.aliases = this.resolveAliases( uri, item.aliases, [], this.sanitizeAliases( aliases ) );
       this.saveIndex();
