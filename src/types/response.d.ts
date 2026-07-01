@@ -104,6 +104,8 @@ export type TProfileResponse = {
 export type TPersonListEntry = {
   naturalId: string;
   name: string;
+  timestamp: number;
+  date?: number;
   year: number;
   listUri: string;
   uri: string;
@@ -111,6 +113,9 @@ export type TPersonListEntry = {
   rank?: number;
   previousRank?: number;
   finalWorth?: number;
+  estWorthPrev?: number;
+  privateAssetsWorth?: number;
+  archivedWorth?: number;
   change?: number;
   changePercent?: number;
   person?: {
@@ -118,14 +123,21 @@ export type TPersonListEntry = {
     uri?: string;
   },
   personName: string;
+  lastName?: string;
+  birthDate?: number;
+  gender?: 'M' | 'F';
+  countryOfCitizenship?: string;
   country?: string;
   state?: string;
   city?: string;
   source?: string;
   industries?: string[];
-  countryOfCitizenship?: string;
+  selfMadeRank?: number;
+  philanthropyScore?: number;
   organization?: string;
   title?: string;
+  bios?: string[];
+  abouts?: string[];
   employment?: {
     name: string;
     title: string;
@@ -133,10 +145,6 @@ export type TPersonListEntry = {
     salaryEst: boolean;
     government: boolean;
   };
-  timestamp: number;
-  gender?: 'M' | 'F';
-  birthDate?: number;
-  lastName?: string;
   financialAssets?: Array< {
     exchange: string;
     ticker: string;
@@ -147,13 +155,7 @@ export type TPersonListEntry = {
     exchangeRate?: number;
     currentPrice?: number;
   } >;
-  date?: number;
-  estWorthPrev?: number;
-  privateAssetsWorth?: number;
-  archivedWorth?: number;
   csfDisplayFields: string[];
-  bios?: string[];
-  abouts?: string[];
 };
 
 export type TListResponse< T extends object > = {
