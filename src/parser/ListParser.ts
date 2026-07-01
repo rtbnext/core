@@ -1,5 +1,6 @@
 import type { TAsset, TChangeItem, TRealtime } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
+import type { TLocation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileBio, TProfileData, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
@@ -69,12 +70,41 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
         industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
       } ),
-      residence: Parser.location( {
-        country: this.raw.country,
-        state: this.raw.state,
-        city: this.raw.city
-      } )
+      residence: this.residence(),
+      selfMade: this.selfMade(),
+      philanthropyScore: this.philanthropyScore(),
+      organization: this.organization()
     } ) ) as TProfileInfo;
+  }
+
+  public residence () : TLocation | undefined {
+    return Parser.location( {
+      country: this.raw.country,
+      state: this.raw.state,
+      city: this.raw.city
+    } );
+  }
+
+  public selfMade () : TSelfMade | undefined {
+    return this.cache( 'selfMade', () => {
+      if ( this.raw.selfMadeRank ) return Parser.container< TSelfMade >( {
+        is: { value: this.raw.selfMadeRank > 7, type: 'boolean' },
+        rank: { value: this.raw.selfMadeRank, type: 'number' }
+      } );
+    } );
+  }
+
+  public philanthropyScore () : number | undefined {
+    return this.cache( 'philanthropyScore', () => Parser.strict< number >( this.raw.philanthropyScore, 'number' ) );
+  }
+
+  public organization () : TOrganization | undefined {
+    return this.cache( 'organization', () => {
+      if ( this.raw.organization ) return Parser.container< TOrganization >( {
+        name: { value: this.raw.organization, type: 'string' },
+        title: { value: this.raw.title, type: 'string' }
+      } );
+    } );
   }
 
   public bio () : TProfileBio {
