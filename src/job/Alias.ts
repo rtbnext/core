@@ -1,15 +1,19 @@
 import { Job } from '@/abstract/Job';
+import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
 import type { TAliasJobOptions, TCommandJob } from '@/type/job';
 
 
 export class AliasJob extends Job< TAliasJobOptions > {
+  private static readonly index = ProfileIndex.getInstance();
   constructor ( options: TAliasJobOptions ) { super( options, 'alias' ) }
 
   // --- job runner ---
 
   public async run () : Promise< void > {
-    await this.protect( async () => {} );
+    await this.protect( async () => {
+      for ( const a of this.options.removeGlobal ?? [] ) AliasJob.index.removeAlias( a );
+    } );
   }
 
   // --- command definition ---
