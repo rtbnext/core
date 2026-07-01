@@ -6,7 +6,7 @@ import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
-import type { IListParser, IParsonListParser } from '@/interface/parser';
+import type { IListParser, IPersonListParser } from '@/interface/parser';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
 import type { TPersonListEntry } from '@/type/response';
@@ -18,7 +18,7 @@ export class ListParser< T extends object > extends Cache implements IListParser
 }
 
 
-export class PersonListParser extends ListParser< TPersonListEntry > implements IParsonListParser {
+export class PersonListParser extends ListParser< TPersonListEntry > implements IPersonListParser {
   public uri () : string {
     return this.cache( 'uri', () => Utils.sanitize( this.raw.uri ) );
   }
