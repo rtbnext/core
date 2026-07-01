@@ -117,7 +117,9 @@ export class RTBJob extends Job {
           ytd: realtime?.ytd,
           citizenship: profileData.info?.citizenship,
           industry: profileData.info?.industry!,
-          source: profileData.info?.source!
+          source: profileData.info?.source!,
+          selfMadeRank: parser.selfMade()?.rank,
+          philanthropyScore: parser.philanthropyScore()
         } );
 
         count++; total += networth;
