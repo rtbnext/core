@@ -8,7 +8,7 @@ import { Mover } from '@/model/Mover';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Stats } from '@/model/Stats';
-import { PersonListParser } from '@/parser/ListParser';
+import { RTBListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
@@ -57,7 +57,7 @@ export class RTBJob extends Job {
         raw.date = ts;
 
         // --- parse raw list data ---
-        const parser = new PersonListParser( raw );
+        const parser = new RTBListParser( raw );
         const uri = parser.uri();
         const id = parser.id();
         const rank = parser.rank();
@@ -140,7 +140,7 @@ export class RTBJob extends Job {
       this.log( `Saving RTB list dated ${ date } (${ count } items)` );
 
       // --- create stats ---
-      const stats = PersonListParser.stats( {
+      const stats = RTBListParser.stats( {
         date, count, total, woman,
         today: { value: mover.today.total.value, percent: mover.today.total.percent },
         ytd: { value: mover.ytd.total.value, percent: mover.ytd.total.percent }
