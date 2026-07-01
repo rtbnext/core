@@ -16,6 +16,7 @@ export class ListParser< T extends object > extends Cache implements IListParser
   public rawData () : T { return this.raw }
 }
 
+
 export class PersonListParser extends ListParser< TPersonListEntry > implements IParsonListParser {
   public uri () : string {
     return this.cache( 'uri', () => Utils.sanitize( this.raw.uri ) );
@@ -36,7 +37,10 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   }
 
   public rank () : number | undefined {
-    return this.cache( 'rank', () => Parser.strict( this.raw.rank, 'number' ) );
+    return this.cache( 'rank', () =>
+      Parser.strict( this.raw.rank, 'number' ) ??
+      Parser.strict( this.raw.position, 'number' )
+    );
   }
 
   public networth () : number | undefined {
