@@ -76,7 +76,7 @@ export class ProfileParser extends Cache implements IProfileParser {
         birthDate: { value: this.raw.birthDate, type: 'date' },
         maritalStatus: { value: this.raw.maritalStatus, type: 'maritalStatus' },
         children: { value: this.raw.numberOfChildren, type: 'number' },
-        industry: { value: this.raw.industries, type: 'industry' },
+        industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
       } ),
       flags: this.flags(),
