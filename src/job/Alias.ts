@@ -1,5 +1,5 @@
 import { Job } from '@/abstract/Job';
-import { TCommandJob } from '@/type/job';
+import type { TAliasJobOptions, TCommandJob } from '@/type/job';
 
 
 export class AliasJob extends Job< TAliasJobOptions > {
