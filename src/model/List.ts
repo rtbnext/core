@@ -12,7 +12,7 @@ export class List extends Snapshot< TListSnapshot > implements IList {
   private readonly uri: string;
 
   private constructor ( item?: TListIndexItem ) {
-    if ( ! item ) throw new Error( 'List index item not given' );
+    if ( ! item || ! item.uri ) throw new Error( 'No valid list index item given' );
 
     super( 'list' );
     this.uri = item.uri;
