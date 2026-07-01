@@ -1,4 +1,3 @@
-import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TLocation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
 import type { TProfileBio, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
@@ -112,7 +111,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'age', () => Parser.strict( this.raw.birthDate, 'age' ) );
   }
 
-  // --- aggregate stats ---
+  // --- prepare stats ---
 
   public static stats ( data: Partial< TGenericStats > ) : TGenericStats {
     return Parser.container< TGenericStats >( {
@@ -120,15 +119,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
       count: { value: data.count, type: 'number' },
       total: { value: data.total, type: 'money' },
       woman: { value: data.woman, type: 'number' },
-      quota: { value: ( data.woman ?? 0 ) / ( data.count ?? 1 ) * 100, type: 'pct' },
-      today: { value: Parser.container< TChangeItem >( {
-        value: { value: data.today?.value, type: 'money' },
-        percent: { value: data.today?.percent, type: 'pct' }
-      } ), type: 'container' },
-      ytd: { value: Parser.container< TChangeItem >( {
-        value: { value: data.ytd?.value, type: 'money' },
-        percent: { value: data.ytd?.percent, type: 'pct' }
-      } ), type: 'container' }
+      quota: { value: ( data.woman ?? 0 ) / ( data.count ?? 1 ) * 100, type: 'pct' }
     } );
   }
 }
