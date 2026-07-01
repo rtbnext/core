@@ -95,7 +95,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   }
 
   public philanthropyScore () : number | undefined {
-    return this.cache( 'philanthropyScore', () => Parser.strict< number >( this.raw.philanthropyScore, 'number' ) );
+    return this.cache( 'philanthropyScore', () => Parser.strict( this.raw.philanthropyScore, 'number' ) );
   }
 
   public organization () : TOrganization | undefined {
