@@ -152,19 +152,19 @@ export class ProfileParser extends Cache implements IProfileParser {
   }
 
   public cv () : string[] {
-    return this.cache( 'cv', () => Parser.list< string >(
+    return this.cache( 'cv', () => Parser.list(
       Utils.aggregate( this.lists, 'bios', 'first' ) as string[], 'safeStr'
     ) );
   }
 
   public facts () : string[] {
-    return this.cache( 'facts', () => Parser.list< string >(
+    return this.cache( 'facts', () => Parser.list(
       Utils.aggregate( this.lists, 'abouts', 'first' ) as string[], 'safeStr'
     ) );
   }
 
   public quotes () : string[] {
-    return this.cache( 'quotes', () => Parser.list< string >( [ this.raw.quote ?? '' ], 'safeStr' ) );
+    return this.cache( 'quotes', () => Parser.list( [ this.raw.quote ?? '' ], 'safeStr' ) );
   }
 
   // --- related entries ---
