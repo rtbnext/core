@@ -44,6 +44,10 @@ export interface IPersonListParser extends IListParser< TPersonListEntry > {
   dropOff () : boolean | undefined;
   name () : { name: TProfileName, family: boolean };
   info () : Partial< TProfileInfo >;
+  residence () : TLocation | undefined;
+  selfMade () : TSelfMade | undefined;
+  philanthropyScore () : number | undefined;
+  organization () : TOrganization | undefined;
   bio () : TProfileBio;
   age () : number | undefined;
 }
