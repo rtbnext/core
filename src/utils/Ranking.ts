@@ -1,14 +1,13 @@
 import type { TRanking, TRankingItem } from '@rtbnext/schema/src/base/assets';
 
 import { ListQueue } from '@/core/Queue';
-import { ListIndex } from '@/model/ListIndex';
+import { List } from '@/model/List';
 import { Parser } from '@/parser/Parser';
 import type { TQueueOptions } from '@/type/queue';
 import type { TProfileResponse } from '@/type/response';
 
 
 export class Ranking {
-  private static readonly index = ListIndex.getInstance();
   private static readonly queue = ListQueue.getInstance();
 
   public static generateProfileRanking (
@@ -79,9 +78,9 @@ export class Ranking {
 
       // --- queue list for future processing if needed ---
       if ( addQueue && main.rank && main.networth ) {
-        const indexItem = Ranking.index.get( listUri );
+        const list = List.get( listUri );
 
-        if ( ! indexItem || indexItem.date !== main.date ) queue.push( {
+        if ( ! list || ! list.hasDate( main.date ) ) queue.push( {
           uriLike: listUri, args: {
             name, desc: names.get( listUri )?.desc,
             year: main.date.split( '-' )[ 0 ]
