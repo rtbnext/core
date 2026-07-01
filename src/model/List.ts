@@ -9,16 +9,13 @@ import { ListIndex } from '@/model/ListIndex';
 
 export class List extends Snapshot< TListSnapshot > implements IList {
   private static readonly index = ListIndex.getInstance();
-
   private readonly uri: string;
-  private item: TListIndexItem;
 
   private constructor ( item?: TListIndexItem ) {
     if ( ! item ) throw new Error( 'List index item not given' );
 
     super( 'list' );
     this.uri = item.uri;
-    this.item = item;
   }
 
   // --- getter ---
@@ -27,19 +24,10 @@ export class List extends Snapshot< TListSnapshot > implements IList {
     return this.uri;
   }
 
-  public getItem () : TListIndexItem {
-    return this.item;
-  }
-
   // --- (override) save list snapshot ---
 
   public override saveSnapshot ( snapshot: TListSnapshotData, force: boolean = false ) : boolean {
-    const res = super.saveSnapshot( { ...Utils.metaData(), ...snapshot }, force );
-    if ( ! res || ! List.index.update( this.uri, { date: snapshot.date, count: snapshot.stats.count } ) ) return false;
-
-    this.item.date = snapshot.date;
-    this.item.count = snapshot.stats.count;
-    return true;
+    return super.saveSnapshot( { ...Utils.metaData(), ...snapshot }, force );
   }
 
   // --- instantiate ---
