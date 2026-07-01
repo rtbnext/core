@@ -1,7 +1,7 @@
 import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
 import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
-import type { TListSnapshot } from '@rtbnext/schema/src/model/list';
+import type { TListSnapshot, TPersonListItem } from '@rtbnext/schema/src/model/list';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type {
   TAgePyramidGroup, TDBStats, TDBStatsData, TGlobalStats, TGlobalStatsData, THistory,
@@ -303,7 +303,7 @@ export class Stats implements IStats {
 
   // --- generate top 10 entry ---
 
-  public generateTop10Entry ( snapshot: TListSnapshot ) : boolean {
+  public generateTop10Entry ( snapshot: TListSnapshot< TPersonListItem > ) : boolean {
     return log.catch( () => {
       const [ year, month ] = snapshot.date.split( '-', 2 ).map( Number );
       const key = `${ year }-${ String( month ).padStart( 2, '0' ) }`;
