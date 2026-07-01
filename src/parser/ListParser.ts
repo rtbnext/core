@@ -68,6 +68,11 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
         citizenship: { value: this.raw.countryOfCitizenship, type: 'country' },
         industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
+      } ),
+      residence: Parser.location( {
+        country: this.raw.country,
+        state: this.raw.state,
+        city: this.raw.city
       } )
     } ) ) as TProfileInfo;
   }
