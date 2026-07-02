@@ -2,7 +2,7 @@ import type { TBillionairesListItem, TPersonListItem } from '@rtbnext/schema/src
 
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
-import { ListQueue } from '@/core/Queue';
+import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { getListConfigByUri } from '@/lib/list';
 import { List } from '@/model/List';
 import { Profile } from '@/model/Profile';
@@ -17,6 +17,7 @@ type TListQueueItem = { uri: string, args: { year?: string, name?: string, desc?
 
 export class ListJob extends Job< TListJobOptions > {
   private static readonly fetch = Fetch.getInstance();
+  private static readonly profileQueue = ProfileQueue.getInstance();
   private static readonly queue = ListQueue.getInstance();
 
   constructor ( options: TListJobOptions = {} ) { super( options, 'list' ) }
@@ -98,7 +99,7 @@ export class ListJob extends Job< TListJobOptions > {
 
       // --- save data ---
       list.saveSnapshot( { date, count, items, stats } );
-      ListJob.queue.addMany( queue );
+      ListJob.profileQueue.addMany( queue );
     } );
   }
 
