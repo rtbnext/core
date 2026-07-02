@@ -123,6 +123,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     const entries = rawList.filter( filter ?? Boolean ).filter( Boolean )
       .sort( ( a, b ) => ( a.rank ?? a.position ?? Infinity ) - ( b.rank ?? b.position ?? Infinity ) );
 
+    if ( ! entries.length ) throw new Error( 'Response does not contain any valid list entries' );
     return { rawData: res.data, rawList, entries };
   }
 
