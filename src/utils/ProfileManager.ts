@@ -3,7 +3,7 @@ import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import type { TProfileDataMethod, TProfileLookupResult, TProfileOperation, TProfileProcessResult } from '@/type/profile';
+import type { TProfileUpdateMode, TProfileLookupResult, TProfileOperation, TProfileProcessResult } from '@/type/profile';
 import type { TQueueOptions } from '@/type/queue';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
@@ -13,7 +13,7 @@ export class ProfileManager {
 
   private static execute (
     profile: IProfile | false, action: TProfileOperation, uriLike: string, profileData: Partial< TProfileData >,
-    method: TProfileDataMethod = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
+    method: TProfileUpdateMode = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
   ) : IProfile | false {
     if ( profile ) {
       if ( touchLookup ) profile.touchLookup();
@@ -61,7 +61,7 @@ export class ProfileManager {
   // --- perform profile operation ---
 
   public static process (
-    uriLike: string, id: string, profileData: Partial< TProfileData >, method: TProfileDataMethod = 'updateData',
+    uriLike: string, id: string, profileData: Partial< TProfileData >, method: TProfileUpdateMode = 'updateData',
     makeAlias: boolean = true, touchLookup: boolean = false
   ) : TProfileProcessResult {
     const lookup = this.lookup( uriLike, id, profileData );
