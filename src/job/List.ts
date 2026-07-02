@@ -83,7 +83,9 @@ export class ListJob extends Job< TListJobOptions > {
         woman += +( profileData.info?.gender === 'f' );
       }
 
-      // ...
+      // --- create list (if not exists) ---
+      const ctx = { name: name ?? '', desc: desc ?? '' };
+      list ??= List.create( uri, indexItem( uri, ctx ) );
     } );
   }
 
