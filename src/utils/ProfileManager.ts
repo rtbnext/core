@@ -13,33 +13,30 @@ export class ProfileManager {
 
   private static execute (
     profile: IProfile | false, action: TProfileOperation, uriLike: string, profileData: Partial< TProfileData >,
-    method: TProfileUpdateMode = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
+    mode: TProfileUpdateMode = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
   ) : IProfile | false {
-    if ( profile ) {
-      if ( touchLookup ) profile.touchLookup();
+    if ( ! profile ) return Profile.create( uriLike, profileData as TProfileData );
+    if ( touchLookup ) profile.touchLookup();
 
-      switch ( action ) {
-        case 'update':
-          if ( method !== 'createOnly' ) {
-            profile[ method ]( profileData as TProfileData );
-            profile.save();
-          }
+    switch ( action ) {
+      case 'update':
+        if ( mode !== 'createOnly' ) {
+          profile[ mode ]( profileData as TProfileData );
+          profile.save();
+        }
+        break;
 
-          return profile;
-
-        case 'move':
-          if ( method !== 'createOnly' ) {
-            profile[ method ]( profileData as TProfileData );
-            profile.move( uriLike, makeAlias );
-          } else if ( makeAlias ) {
-            this.index.addAliases( profile.getUri(), uriLike );
-          }
-
-          return profile;
-      }
+      case 'move':
+        if ( mode !== 'createOnly' ) {
+          profile[ mode ]( profileData as TProfileData );
+          profile.move( uriLike, makeAlias );
+        } else if ( makeAlias ) {
+          this.index.addAliases( profile.getUri(), uriLike );
+        }
+        break;
     }
 
-    return Profile.create( uriLike, profileData as TProfileData );
+    return profile;
   }
 
   // --- lookup profile by URI and ID, or find a similar matching profile ---
@@ -61,12 +58,12 @@ export class ProfileManager {
   // --- perform profile operation ---
 
   public static process (
-    uriLike: string, id: string, profileData: Partial< TProfileData >, method: TProfileUpdateMode = 'updateData',
+    uriLike: string, id: string, profileData: Partial< TProfileData >, mode: TProfileUpdateMode = 'updateData',
     makeAlias: boolean = true, touchLookup: boolean = false
   ) : TProfileProcessResult {
     const lookup = this.lookup( uriLike, id, profileData );
     const action = this.determineAction( lookup );
-    const profile = this.execute( lookup.profile, action, uriLike, profileData, method, makeAlias, touchLookup );
+    const profile = this.execute( lookup.profile, action, uriLike, profileData, mode, makeAlias, touchLookup );
 
     return { profile, action, success: !! profile };
   }
