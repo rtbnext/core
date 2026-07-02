@@ -2,6 +2,7 @@ import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
+import type { TPersonListEntry } from '@/type/response';
 
 
 export class ListJob extends Job< TListJobOptions > {
@@ -14,8 +15,15 @@ export class ListJob extends Job< TListJobOptions > {
 
   public async run () : Promise< void > {
     await this.protect( async () => {
-      const { uri, args } = this.options.list ? { uri: this.options.list, args: this.options } : ListJob.queue.next()[ 0 ];
+      const { uri, args } = this.options.list ? { uri: this.options.list, args: this.options }
+        : ListJob.queue.next()[ 0 ] as { uri: string, args: any };
+
+      // --- if no URI is provided, exit the job ---
       if ( ! uri ) return;
+
+      // --- fetch raw list data from Forbes ---
+      const raw = await ListJob.fetch.list< TPersonListEntry >( uri, args.year ?? '0' );
+      if ( ! raw?.success || ! raw.data ) throw new Error( 'Request failed' );
     } );
   }
 
