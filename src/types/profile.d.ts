@@ -3,6 +3,8 @@ import type { IProfile } from '@/interface/profile';
 
 export type TProfileOperation = 'create' | 'update' | 'move';
 
+export type TProfileDataMethod = 'setData' | 'updateData' | 'createOnly';
+
 export type TProfileLookupResult = {
   profile: IProfile | false;
   isExisting: boolean;
