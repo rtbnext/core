@@ -32,10 +32,11 @@ export class ListJob extends Job< TListJobOptions > {
 
       // --- fetch raw list data from Forbes ---
       const res = await ListJob.fetch.list< TPersonListEntry >( uri, args.year ?? '0' );
+      if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
       const { parser, indexItem, listItem } = listConfigByUri( uri );
       const th = Date.now() - Job.config.queue.tsThreshold;
-      const { rawList, entries } = parser.prepareList( res );
+      const { entries } = parser.prepareList( res );
 
       this.log( `Processing ${ uri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
 
