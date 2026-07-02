@@ -88,8 +88,8 @@ export class ListJob extends Job< TListJobOptions > {
       }
 
       // --- create list (if not exists) ---
-      const ctx = { name: name ?? '', desc: desc ?? '' };
-      list ??= List.create( uri, indexItem( uri, ctx ) );
+      if ( ! name || ! desc ) throw new Error( `Failed to determine name or description for ${ uri } list` );
+      list ??= List.create( uri, indexItem( uri, { name, desc } ) );
 
       if ( ! list ) throw new Error( `Failed to create or retrieve ${ uri } list` );
       this.log( `Saving ${ uri } list for year ${ args.year ?? '-' } (${ count } items)` );
