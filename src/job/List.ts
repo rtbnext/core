@@ -74,7 +74,7 @@ export class ListJob extends Job< TListJobOptions > {
         profileData = profile.getData();
 
         // --- push list item ---
-        items.push( listItem( { parsed, profileData } ) );
+        items.push( listItem( { parsed, profileData } as any ) );
 
         count++; total += parsed.networth() ?? 0;
         woman += +( profileData.info?.gender === 'f' );
