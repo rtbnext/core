@@ -5,6 +5,8 @@ import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 import type { TPersonListEntry } from '@/type/response';
 
 
+type TListQueueItem = { uri: string, args: { year?: string, name?: string, desc?: string } };
+
 export class ListJob extends Job< TListJobOptions > {
   private static readonly fetch = Fetch.getInstance();
   private static readonly queue = ListQueue.getInstance();
@@ -16,7 +18,7 @@ export class ListJob extends Job< TListJobOptions > {
   public async run () : Promise< void > {
     await this.protect( async () => {
       const { uri, args } = this.options.list ? { uri: this.options.list, args: this.options }
-        : ListJob.queue.next()[ 0 ] as { uri: string, args: any };
+        : ListJob.queue.next()[ 0 ] as TListQueueItem;
 
       // --- if no URI is provided, exit the job ---
       if ( ! uri ) return;
