@@ -42,9 +42,7 @@ export class RTBJob extends Job {
 
       const { parser, indexItem, listItem } = LISTS.rtb;
       const th = Date.now() - Job.config.queue.tsThreshold;
-      const rawList = res.data.personList.personsLists;
-      const entries = rawList.filter( i => i.rank && i.finalWorth ).filter( Boolean )
-        .sort( ( a, b ) => a.rank! - b.rank! );
+      const { entries } = parser.prepareList( res );
 
       this.log( `Processing RTB list dated ${ date } (${ entries.length } items)` );
 
