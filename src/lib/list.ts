@@ -2,7 +2,7 @@ import { Utils } from '@/core/Utils';
 import { BillionairesListParser } from '@/parser/BillionairesListParser';
 import { PersonListParser } from '@/parser/PersonListParser';
 import { RTBListParser } from '@/parser/RTBListParser';
-import type { TListConfig, TListIndexItemCtx, TPersonListItemCtx, TRTBListItemCtx } from '@/type/list';
+import type { TListConfig, TListIndexItemCtx, TListTypes, TPersonListItemCtx, TRTBListItemCtx } from '@/type/list';
 
 
 const personListItem = ( ctx: TPersonListItemCtx ) => ( {
@@ -64,3 +64,11 @@ export const LISTS = {
     listItem: personListItem
   }
 } as const satisfies TListConfig;
+
+export const listConfigByUri = ( uri: string ) : ( typeof LISTS )[ TListTypes ] => {
+  for ( const config of Object.values( LISTS ) )
+    if ( 'lists' in config && ( config.lists as ReadonlyArray< string > ).includes( uri ) )
+      return config;
+
+  return LISTS.person;
+};
