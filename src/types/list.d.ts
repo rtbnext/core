@@ -42,7 +42,10 @@ export type TBillionairesListConfig = {
   listItem ( ctx: TBillionairesListItemCtx ) : TBillionairesListItem;
 };
 
-export type TPersonListItemCtx = {};
+export type TPersonListItemCtx = {
+  parsed: IRTBListParser;
+  profileData: Partial< TProfileData >;
+};
 
 export type TPersonListConfig = {
   lists: readonly [];
