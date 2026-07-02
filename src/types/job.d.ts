@@ -21,6 +21,15 @@ export type TAnnualJobOptions = TJobClsOptions< {
   profiles?: string[];
 } >;
 
+export type TListJobOptions = TJobClsOptions< {
+  allowOverride?: boolean;
+  profileUpdate?: boolean;
+  list?: string;
+  year?: number;
+  name?: string;
+  desc?: string;
+} >;
+
 export type TMergeJobOptions = TJobClsOptions< {
   list?: string[];
   source?: string;
