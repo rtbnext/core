@@ -3,8 +3,7 @@ import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TListIndexItem, TRTBListItem } from '@rtbnext/schema/src/model/list';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
-import type { IListParser, IRTBListParser } from '@/interface/parser';
-import { RTBListParser } from '@/parser/RTBListParser';
+import type { IBillionairesListParser, IListParser, IRTBListParser } from '@/interface/parser';
 
 
 export type TListTypes = 'rtb' | 'billionaires' | 'person';
@@ -12,7 +11,7 @@ export type TListTypes = 'rtb' | 'billionaires' | 'person';
 export type TListParserClass< T extends IListParser > = new ( ...args: any[] ) => T;
 
 export type TRTBListItemCtx = {
-  parsed: RTBListParser;
+  parsed: IRTBListParser;
   profileData: Partial< TProfileData >;
   flag: TChangeFlag;
   rankDiff?: number;
@@ -20,12 +19,25 @@ export type TRTBListItemCtx = {
 };
 
 export type TRTBListConfig = {
-  parser: TListParserClass< IRTBListParser >;
   lists: readonly [ 'rtb' ];
-  indexItem ( entry?: Partial< TListIndexItem > ) : TListIndexItem;
+  parser: TListParserClass< IRTBListParser >;
+  indexItem () : TListIndexItem;
   listItem ( ctx: TRTBListItemCtx ) : TRTBListItem;
+};
+
+export type TBillionairesListItemCtx = {
+  parsed: IRTBListParser;
+  profileData: Partial< TProfileData >;
+};
+
+export type TBillionairesListConfig = {
+  lists: readonly [ 'billionaires', 'forbes-400' ];
+  parser: TListParserClass< IBillionairesListParser >;
+  indexItem ( entry: Partial< TListIndexItem > ) : TListIndexItem;
+  listItem ( ctx: TBillionairesListItemCtx ) : TRTBListItem;
 };
 
 export type TListConfig = {
   rtb: TRTBListConfig;
+  billionaires: TBillionairesListConfig;
 };
