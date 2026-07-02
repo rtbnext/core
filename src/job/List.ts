@@ -1,9 +1,9 @@
 import { Job } from '@/abstract/Job';
-import type { TCommandJob, TCronJob } from '@/type/job';
+import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 
 
-export class ListJob extends Job< TListJobOptions > {
-  constructor ( options: TListJobOptions ) { super( options, 'list' ) }
+export class ListJob extends Job {
+  constructor ( options: TJobClsOptions ) { super( options, 'list' ) }
 
   // --- job runner ---
 
