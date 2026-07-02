@@ -1,6 +1,6 @@
 import type { TRealtime } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
-import type { TListIndexItem, TRTBListItem } from '@rtbnext/schema/src/model/list';
+import type { TBillionairesListItem, TListIndexItem, TRTBListItem } from '@rtbnext/schema/src/model/list';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import type { IBillionairesListParser, IListParser, IRTBListParser } from '@/interface/parser';
@@ -39,7 +39,7 @@ export type TBillionairesListConfig = {
   lists: readonly [ 'billionaires', 'forbes-400' ];
   parser: TListParserClass< IBillionairesListParser >;
   indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
-  listItem ( ctx: TBillionairesListItemCtx ) : TRTBListItem;
+  listItem ( ctx: TBillionairesListItemCtx ) : TBillionairesListItem;
 };
 
 export type TListConfig = {
