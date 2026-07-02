@@ -8,8 +8,8 @@ export type TListParserClass = new ( ...args: any[] ) => IListParser;
 
 export type TListConfig = {
   parser: TListParserClass;
-  entry ( entry: Partial< TListIndexItem > ) : TListIndexItem;
-  item < T extends TListItem > ( ctx: object ) : T;
+  indexItem ( entry?: Partial< TListIndexItem > ) : TListIndexItem;
+  listItem < T extends TListItem > ( ctx: object ) : T;
   lists?: string[];
 };
 
