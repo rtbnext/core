@@ -15,8 +15,7 @@ export class ListJob extends Job {
 
   public static readonly command: TCommandJob = {
     id: 'list',
-    desc: 'Fetch and process Forbes lists',
-    options: []
+    desc: 'Fetch and process Forbes lists'
   } as const;
 
   // --- cron job definition ---
