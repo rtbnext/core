@@ -22,6 +22,7 @@ export class ListJob extends Job< TListJobOptions > {
 
   public async run () : Promise< void > {
     await this.protect( async () => {
+      const method = this.options.profileUpdate ? 'updateData' : 'createOnly';
       const { uri, args } = this.options.list ? { uri: this.options.list, args: this.options }
         : ListJob.queue.next()[ 0 ] as TListQueueItem;
 
