@@ -54,7 +54,6 @@ export const LISTS = {
     } )
   },
   person: {
-    lists: [],
     parser: PersonListParser,
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
       uri, name: ctx.name, shortName: ctx.name, desc: ctx.desc,

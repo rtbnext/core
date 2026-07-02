@@ -42,7 +42,6 @@ export type TBillionairesListConfig = {
 };
 
 export type TPersonListConfig = {
-  lists: readonly [];
   parser: TListParserCls< IPersonListParser >;
   indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
   listItem ( ctx: TPersonListItemCtx ) : TPersonListItem;
