@@ -64,12 +64,6 @@ export class ListJob extends Job< TListJobOptions > {
     id: 'list',
     desc: 'Fetch and process Forbes lists',
     options: [ {
-      name: '-o, --override',
-      desc: 'If set, existing lists will be overridden with new data'
-    }, {
-      name: '-u, --update',
-      desc: 'If set, profile data will be updated when processing lists'
-    }, {
       name: '-l, --list <URI>',
       desc: 'Specify the list URI to process'
     }, {
@@ -81,6 +75,12 @@ export class ListJob extends Job< TListJobOptions > {
     }, {
       name: '--desc <DESC>',
       desc: 'Specify a description for the list'
+    }, {
+      name: '-o, --override',
+      desc: 'If set, existing lists will be overridden with new data'
+    }, {
+      name: '-u, --update',
+      desc: 'If set, profile data will be updated when processing lists'
     } ]
   } as const;
 
