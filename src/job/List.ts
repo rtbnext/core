@@ -48,7 +48,13 @@ export class ListJob extends Job< TListJobOptions > {
       const items: ( TPersonListItem | TBillionairesListItem )[] = [];
       const queue: TQueueOptions[] = [];
 
-      for ( const [ i, raw ] of Object.entries( entries ) ) {}
+      for ( const [ i, raw ] of Object.entries( entries ) ) {
+        const parsed = new parser( raw );
+
+        // ...
+      }
+
+      // ...
     } );
   }
 
