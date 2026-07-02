@@ -95,6 +95,10 @@ export class ListJob extends Job< TListJobOptions > {
 
       // --- create stats ---
       const stats = parser.stats( { date, count, total, woman } );
+
+      // --- save data ---
+      list.saveSnapshot( { date, count, items, stats } );
+      ListJob.queue.addMany( queue );
     } );
   }
 
