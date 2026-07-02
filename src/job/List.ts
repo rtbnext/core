@@ -49,6 +49,8 @@ export class ListJob extends Job< TListJobOptions > {
 
       // --- process list data ---
       let count = 0, total = 0, woman = 0, { name, desc } = args;
+      const ts = entries[ 0 ].date ?? entries[ 0 ].timestamp;
+      const date = Parser.date( ts, 'ymd' )!;
       const items: ( TPersonListItem | TBillionairesListItem )[] = [];
       const queue: TQueueOptions[] = [];
 
