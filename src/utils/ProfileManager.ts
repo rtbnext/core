@@ -2,27 +2,39 @@ import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
-import type { TProfileLookupResult, TProfileOperation, TProfileProcessResult } from '@/type/profile';
+import { ProfileIndex } from '@/model/ProfileIndex';
+import type { TProfileDataMethod, TProfileLookupResult, TProfileOperation, TProfileProcessResult } from '@/type/profile';
 import type { TQueueOptions } from '@/type/queue';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
 
 export class ProfileManager {
+  private static readonly index = ProfileIndex.getInstance();
+
   private static execute (
     profile: IProfile | false, action: TProfileOperation, uriLike: string, profileData: Partial< TProfileData >,
-    method: 'setData' | 'updateData' = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
+    method: TProfileDataMethod = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
   ) : IProfile | false {
     if ( profile ) {
       if ( touchLookup ) profile.touchLookup();
 
       switch ( action ) {
         case 'update':
-          profile[ method ]( profileData as TProfileData );
-          profile.save();
+          if ( method !== 'createOnly' ) {
+            profile[ method ]( profileData as TProfileData );
+            profile.save();
+          }
+
           return profile;
+
         case 'move':
-          profile[ method ]( profileData as TProfileData );
-          profile.move( uriLike, makeAlias );
+          if ( method !== 'createOnly' ) {
+            profile[ method ]( profileData as TProfileData );
+            profile.move( uriLike, makeAlias );
+          } else if ( makeAlias ) {
+            this.index.addAliases( profile.getUri(), uriLike );
+          }
+
           return profile;
       }
     }
@@ -49,7 +61,7 @@ export class ProfileManager {
   // --- perform profile operation ---
 
   public static process (
-    uriLike: string, id: string, profileData: Partial< TProfileData >, method: 'setData' | 'updateData' = 'updateData',
+    uriLike: string, id: string, profileData: Partial< TProfileData >, method: TProfileDataMethod = 'updateData',
     makeAlias: boolean = true, touchLookup: boolean = false
   ) : TProfileProcessResult {
     const lookup = this.lookup( uriLike, id, profileData );
