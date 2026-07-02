@@ -5,6 +5,7 @@ import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type { Expand } from 'devtypes/types/util';
 
 import type { IBillionairesListParser, IListParser, IPersonListParser, IRTBListParser } from '@/interface/parser';
+import type { TListResponse } from '@/type/response';
 
 
 export type TListTypes = 'rtb' | 'billionaires' | 'person';
@@ -51,4 +52,10 @@ export type TListConfig = {
   rtb: TRTBListConfig;
   billionaires: TBillionairesListConfig;
   person: TPersonListConfig;
+};
+
+export type TPreparedList< T extends object > = {
+  rawData: TListResponse< T >;
+  rawList: T[];
+  entries: T[];
 };
