@@ -1,6 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
+import { listConfigByUri } from '@/lib/list';
 import { List } from '@/model/List';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 import type { TPersonListEntry } from '@/type/response';
@@ -30,8 +31,18 @@ export class ListJob extends Job< TListJobOptions > {
         throw new Error( `List with URI ${ uri } already exists for year ${ args.year }` );
 
       // --- fetch raw list data from Forbes ---
-      const raw = await ListJob.fetch.list< TPersonListEntry >( uri, args.year ?? '0' );
-      if ( ! raw?.success || ! raw.data ) throw new Error( 'Request failed' );
+      const res = await ListJob.fetch.list< TPersonListEntry >( uri, args.year ?? '0' );
+      if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
+
+      const { parser, indexItem, listItem } = listConfigByUri( uri );
+      const th = Date.now() - Job.config.queue.tsThreshold;
+      const rawList = res.data.personList.personsLists;
+      const entries = rawList.filter( i => i.rank && i.finalWorth ).filter( Boolean )
+        .sort( ( a, b ) => a.rank! - b.rank! );
+
+      this.log( `Processing ${ uri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
+
+      // ...
     } );
   }
 
