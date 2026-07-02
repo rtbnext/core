@@ -54,6 +54,7 @@ export class ListJob extends Job< TListJobOptions > {
 
       for ( const raw of Object.values( entries ) ) {
         name ??= Parser.string( raw.name );
+        desc ??= Parser.string( raw.listDescription );
 
         const parsed = new parser( raw );
         const uri = parsed.uri();
