@@ -18,11 +18,12 @@ export type TListIndexItemCtx = {
 };
 
 export type TPersonListItemCtx = {
-  parsed: IRTBListParser;
+  parsed: IPersonListParser;
   profileData: Partial< TProfileData >;
 };
 
 export type TRTBListItemCtx = Expand< TPersonListItemCtx & {
+  parsed: IRTBListParser;
   flag: TChangeFlag;
   rankDiff?: number;
   realtime?: TRealtime;
