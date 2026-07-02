@@ -7,7 +7,8 @@ import type { IPersonListParser } from '@/interface/parser';
 import { ListParser } from '@/parser/ListParser';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
-import type { TPersonListEntry } from '@/type/response';
+import type { TPreparedList } from '@/type/list';
+import type { TListResponse, TPersonListEntry, TResponse } from '@/type/response';
 
 
 export class PersonListParser extends ListParser< TPersonListEntry > implements IPersonListParser {
@@ -109,6 +110,20 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
 
   public age () : number | undefined {
     return this.cache( 'age', () => Parser.strict( this.raw.birthDate, 'age' ) );
+  }
+
+  // --- prepare raw list data ---
+
+  public static prepareList (
+    res: TResponse< TListResponse< TPersonListEntry > >, filter?: ( item: TPersonListEntry ) => boolean
+  ) : TPreparedList< TPersonListEntry > {
+    if ( ! res?.success || ! res.data ) throw new Error( 'Response does not contain valid list data' );
+
+    const rawList = res.data.personList.personsLists;
+    const entries = rawList.filter( filter ?? Boolean ).filter( Boolean )
+      .sort( ( a, b ) => ( a.rank ?? a.position ?? Infinity ) - ( b.rank ?? b.position ?? Infinity ) );
+
+    return { rawData: res.data, rawList, entries };
   }
 
   // --- prepare stats ---
