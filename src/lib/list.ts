@@ -5,6 +5,18 @@ import { RTBListParser } from '@/parser/RTBListParser';
 import type { TListConfig, TListIndexItemCtx, TPersonListItemCtx, TRTBListItemCtx } from '@/type/list';
 
 
+const personListItem = ( ctx: TPersonListItemCtx ) => ( {
+  uri: ctx.parsed.uri(),
+  rank: ctx.parsed.rank()!,
+  networth: ctx.parsed.networth()!,
+  name: ctx.profileData.info!.name.shortName,
+  gender: ctx.profileData.info?.gender,
+  age: ctx.parsed.age(),
+  citizenship: ctx.profileData.info?.citizenship,
+  industry: ctx.profileData.info?.industry!,
+  source: ctx.profileData.info?.source!
+} );
+
 export const LISTS = {
   rtb: {
     lists: [ 'rtb' ],
@@ -19,19 +31,11 @@ export const LISTS = {
       filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
     } ),
     listItem: ( ctx: TRTBListItemCtx ) => ( {
-      uri: ctx.parsed.uri(),
-      rank: ctx.parsed.rank()!,
-      networth: ctx.parsed.networth()!,
-      name: ctx.profileData.info!.name.shortName,
+      ...personListItem( ctx ),
       flag: ctx.flag,
       rankDiff: ctx.rankDiff,
-      gender: ctx.profileData.info?.gender,
-      age: ctx.parsed.age(),
       today: ctx.realtime?.today,
-      ytd: ctx.realtime?.ytd,
-      citizenship: ctx.profileData.info?.citizenship,
-      industry: ctx.profileData.info?.industry!,
-      source: ctx.profileData.info?.source!
+      ytd: ctx.realtime?.ytd
     } )
   },
   billionaires: {
@@ -44,15 +48,7 @@ export const LISTS = {
       filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
     } ),
     listItem: ( ctx: TPersonListItemCtx ) => ( {
-      uri: ctx.parsed.uri(),
-      rank: ctx.parsed.rank()!,
-      networth: ctx.parsed.networth()!,
-      name: ctx.profileData.info!.name.shortName,
-      gender: ctx.profileData.info?.gender,
-      age: ctx.parsed.age(),
-      citizenship: ctx.profileData.info?.citizenship,
-      industry: ctx.profileData.info?.industry!,
-      source: ctx.profileData.info?.source!,
+      ...personListItem( ctx ),
       selfMadeRank: ctx.parsed.selfMade()?.rank,
       philanthropyScore: ctx.parsed.philanthropyScore()
     } )
@@ -66,16 +62,6 @@ export const LISTS = {
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age' ]
     } ),
-    listItem: ( ctx: TPersonListItemCtx ) => ( {
-      uri: ctx.parsed.uri(),
-      rank: ctx.parsed.rank()!,
-      networth: ctx.parsed.networth()!,
-      name: ctx.profileData.info!.name.shortName,
-      gender: ctx.profileData.info?.gender,
-      age: ctx.parsed.age(),
-      citizenship: ctx.profileData.info?.citizenship,
-      industry: ctx.profileData.info?.industry!,
-      source: ctx.profileData.info?.source!
-    } )
+    listItem: personListItem
   }
 } as const satisfies TListConfig;
