@@ -104,6 +104,7 @@ export type TProfileResponse = {
 export type TPersonListEntry = {
   naturalId: string;
   name: string;
+  listDescription?: string;
   timestamp: number;
   date?: number;
   year: number;
