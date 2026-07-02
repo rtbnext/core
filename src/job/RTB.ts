@@ -35,6 +35,7 @@ export class RTBJob extends Job {
       const date = Parser.date( undefined, 'ymd' )!;
       const ts = new Date( date ).getTime();
 
+      // --- if RTB list is already up to date, exit the job ---
       if ( RTBJob.stats.getGlobalStats().date === date ) {
         this.log( 'RTB list is already up to date' );
         return;

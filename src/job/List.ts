@@ -1,9 +1,12 @@
+import type { TBillionairesListItem, TPersonListItem } from '@rtbnext/schema/src/model/list';
+
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
-import { listConfigByUri } from '@/lib/list';
+import { getListConfigByUri } from '@/lib/list';
 import { List } from '@/model/List';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
+import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 
 
@@ -34,13 +37,18 @@ export class ListJob extends Job< TListJobOptions > {
       const res = await ListJob.fetch.list< TPersonListEntry >( uri, args.year ?? '0' );
       if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
-      const { parser, indexItem, listItem } = listConfigByUri( uri );
+      const { parser, indexItem, listItem } = getListConfigByUri( uri );
       const th = Date.now() - Job.config.queue.tsThreshold;
       const { entries } = parser.prepareList( res );
 
       this.log( `Processing ${ uri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
 
-      // ...
+      // --- process list data ---
+      let count = 0, total = 0, woman = 0;
+      const items: ( TPersonListItem | TBillionairesListItem )[] = [];
+      const queue: TQueueOptions[] = [];
+
+      for ( const [ i, raw ] of Object.entries( entries ) ) {}
     } );
   }
 
