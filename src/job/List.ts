@@ -25,16 +25,16 @@ export class ListJob extends Job< TListJobOptions > {
       desc: 'If set, profile data will be updated when processing lists'
     }, {
       name: '-l, --list <URI>',
-      desc: 'Specify a list URI to process (e.g. "billionaires")'
+      desc: 'Specify the list URI to process'
     }, {
       name: '-y, --year <YYYY>',
-      desc: 'Specify a year to process (e.g. "2023")',
+      desc: 'Specify the year to process the list for',
       parser: ( v: string ) => Parser.number( v )
     }, {
-      name: '-n, --name <NAME>',
+      name: '--name <NAME>',
       desc: 'Specify a name for the list'
     }, {
-      name: '-d, --desc <DESC>',
+      name: '--desc <DESC>',
       desc: 'Specify a description for the list'
     } ]
   } as const;
