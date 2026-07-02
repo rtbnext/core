@@ -3,7 +3,7 @@ import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 
 
 export class ListJob extends Job {
-  constructor ( options: TJobClsOptions ) { super( options, 'list' ) }
+  constructor ( options: TJobClsOptions = {} ) { super( options, 'list' ) }
 
   // --- job runner ---
 
