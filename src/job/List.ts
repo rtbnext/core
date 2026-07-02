@@ -46,12 +46,17 @@ export class ListJob extends Job< TListJobOptions > {
       const th = Date.now() - Job.config.queue.tsThreshold;
       const { entries } = parser.prepareList( res );
 
+      // --- determine list date ---
+      const d = new Date( entries[ 0 ].date ?? entries[ 0 ].timestamp );
+      if ( Number.isNaN( d.getTime() ) ) throw new Error( `Failed to determine date for ${ uri } list` );
+      if ( args.year && d.getFullYear() !== +args.year )
+        throw new Error( `List year ${ args.year } does not match data year ${ d.getFullYear() }` );
+
       this.log( `Processing ${ uri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
 
       // --- process list data ---
       let count = 0, total = 0, woman = 0, { name, desc } = args;
-      const ts = entries[ 0 ].date ?? entries[ 0 ].timestamp;
-      const date = Parser.date( ts, 'ymd' )!;
+      const date = Parser.date( d, 'ymd' )!;
       const items: ( TPersonListItem | TBillionairesListItem )[] = [];
       const queue: TQueueOptions[] = [];
 
