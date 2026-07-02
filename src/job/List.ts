@@ -5,9 +5,11 @@ import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
 import { getListConfigByUri } from '@/lib/list';
 import { List } from '@/model/List';
+import { Profile } from '@/model/Profile';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
+import { ProfileManager } from '@/util/ProfileManager';
 
 
 type TListQueueItem = { uri: string, args: { year?: string, name?: string, desc?: string } };
@@ -51,6 +53,22 @@ export class ListJob extends Job< TListJobOptions > {
 
       for ( const [ i, raw ] of Object.entries( entries ) ) {
         const parsed = new parser( raw );
+        const uri = parsed.uri();
+        const id = parsed.id();
+
+        let profileData = Profile.factory( {
+          uri, id,
+          info: parsed.info(),
+          bio: parsed.bio()
+        } );
+
+        // --- process profile using ProfileManager ---
+        const { profile } = ProfileManager.process( uri, id, profileData, method );
+
+        if ( ! profile ) {
+          this.log( `Failed to process profile for ${ uri }` );
+          continue;
+        }
 
         // ...
       }
