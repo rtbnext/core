@@ -14,7 +14,10 @@ export class ListJob extends Job< TListJobOptions > {
   // --- job runner ---
 
   public async run () : Promise< void > {
-    await this.protect( async () => {} );
+    await this.protect( async () => {
+      const { uri, args } = this.options.list ? { uri: this.options.list, args: this.options } : ListJob.queue.next()[ 0 ];
+      if ( ! uri ) return;
+    } );
   }
 
   // --- command definition ---
