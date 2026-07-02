@@ -10,6 +10,11 @@ export type TListTypes = 'rtb' | 'billionaires' | 'person';
 
 export type TListParserClass< T extends IListParser > = new ( ...args: any[] ) => T;
 
+export type TListIndexItemCtx = {
+  name: string;
+  desc: string;
+};
+
 export type TRTBListItemCtx = {
   parsed: IRTBListParser;
   profileData: Partial< TProfileData >;
@@ -33,7 +38,7 @@ export type TBillionairesListItemCtx = {
 export type TBillionairesListConfig = {
   lists: readonly [ 'billionaires', 'forbes-400' ];
   parser: TListParserClass< IBillionairesListParser >;
-  indexItem ( entry: Partial< TListIndexItem > ) : TListIndexItem;
+  indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
   listItem ( ctx: TBillionairesListItemCtx ) : TRTBListItem;
 };
 
