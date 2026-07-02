@@ -60,6 +60,10 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
     return this.dates.filter( date => date >= fromDate && date <= toDate );
   }
 
+  public datesInYear ( year: string | number ) : string[] {
+    return this.datesInRange( `${ year }-01-01`, `${ year }-12-31` );
+  }
+
   public firstInYear ( year: string | number ) : string | undefined {
     const target = Parser.string( year );
     return this.dates.find( date => date.substring( 0, 4 ) === target );

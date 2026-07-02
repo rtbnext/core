@@ -8,6 +8,7 @@ export interface ISnapshot< T extends TSnapshot > {
   latestDate () : string | undefined;
   nearestDate ( dateLike: string ) : string | undefined;
   datesInRange ( from: string, to: string ) : string[];
+  datesInYear ( year: string | number ) : string[];
   firstInYear ( year: string | number ) : string | undefined;
   latestInYear ( year: string | number ) : string | undefined;
   getSnapshot ( dateLike: string, exactMatch: boolean = true ) : T | false;
