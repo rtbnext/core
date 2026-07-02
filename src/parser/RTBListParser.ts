@@ -6,6 +6,8 @@ import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 import type { IRTBListParser } from '@/interface/parser';
 import { Parser } from '@/parser/Parser';
 import { PersonListParser } from '@/parser/PersonListParser';
+import { TPreparedList } from '@/type/list';
+import { TListResponse, TPersonListEntry, TResponse } from '@/type/response';
 
 
 export class RTBListParser extends PersonListParser implements IRTBListParser {
@@ -61,6 +63,12 @@ export class RTBListParser extends PersonListParser implements IRTBListParser {
 
     const rankDiff = item.rank.last - this.rank()!;
     return { flag: rankDiff > 0 ? 'up' : rankDiff < 0 ? 'down' : 'unchanged', rankDiff };
+  }
+
+  // --- prepare raw list data ---
+
+  public static override prepareList ( res: TResponse< TListResponse< TPersonListEntry > > ) : TPreparedList< TPersonListEntry > {
+    return super.prepareList( res, item => !! ( item.rank || item.position ) && !! item.finalWorth );
   }
 
   // --- prepare stats ---
