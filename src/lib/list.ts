@@ -1,11 +1,14 @@
+import type { TListIndexItem } from '@rtbnext/schema/src/model/list';
+
+import { BillionairesListParser } from '@/parser/BillionairesListParser';
 import { RTBListParser } from '@/parser/RTBListParser';
-import type { TListConfig, TRTBListItemCtx } from '@/type/list';
+import type { TBillionairesListItemCtx, TListConfig, TRTBListItemCtx } from '@/type/list';
 
 
 export const LISTS = {
   rtb: {
-    parser: RTBListParser,
     lists: [ 'rtb' ],
+    parser: RTBListParser,
     indexItem: () => ( {
       uri: 'rtb',
       name: 'The World’s Real-Time Billionaires',
@@ -30,5 +33,11 @@ export const LISTS = {
       industry: ctx.profileData.info?.industry!,
       source: ctx.profileData.info?.source!
     } )
+  },
+  billionaires: {
+    lists: [ 'billionaires', 'forbes-400' ],
+    parser: BillionairesListParser,
+    indexItem: ( entry: Partial< TListIndexItem > ) => ( {} ),
+    listItem: ( ctx: TBillionairesListItemCtx ) => ( {} )
   }
 } as const satisfies TListConfig;
