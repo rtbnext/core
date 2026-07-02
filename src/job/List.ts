@@ -90,6 +90,9 @@ export class ListJob extends Job< TListJobOptions > {
 
       if ( ! list ) throw new Error( `Failed to create or retrieve ${ uri } list` );
       this.log( `Saving ${ uri } list for year ${ args.year ?? '-' } (${ count } items)` );
+
+      // --- create stats ---
+      const stats = parser.stats( { date, count, total, woman } );
     } );
   }
 
