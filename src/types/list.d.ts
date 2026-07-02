@@ -13,7 +13,7 @@ export type TListParserClass< T extends IListParser > = new ( ...args: any[] ) =
 
 export type TRTBListItemCtx = {
   parsed: RTBListParser;
-  data: Partial< TProfileData >;
+  profileData: Partial< TProfileData >;
   flag: TChangeFlag;
   rankDiff?: number;
   realtime?: TRealtime;

@@ -19,16 +19,16 @@ export const LISTS = {
       uri: ctx.parsed.uri(),
       rank: ctx.parsed.rank()!,
       networth: ctx.parsed.networth()!,
-      name: ctx.data.info!.name.shortName,
+      name: ctx.profileData.info!.name.shortName,
       flag: ctx.flag,
       rankDiff: ctx.rankDiff,
-      gender: ctx.data.info?.gender,
+      gender: ctx.profileData.info?.gender,
       age: ctx.parsed.age(),
       today: ctx.realtime?.today,
       ytd: ctx.realtime?.ytd,
-      citizenship: ctx.data.info?.citizenship,
-      industry: ctx.data.info?.industry!,
-      source: ctx.data.info?.source!
+      citizenship: ctx.profileData.info?.citizenship,
+      industry: ctx.profileData.info?.industry!,
+      source: ctx.profileData.info?.source!
     } )
   }
 } as const satisfies TListConfig;
