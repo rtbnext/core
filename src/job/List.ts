@@ -98,7 +98,7 @@ export class ListJob extends Job< TListJobOptions > {
       const stats = parser.stats( { date, count, total, woman } );
 
       // --- save data ---
-      list.saveSnapshot( { date, count, items, stats } );
+      list.saveSnapshot( { date, count, items, stats }, this.options.override );
       ListJob.profileQueue.addMany( queue );
     } );
   }
