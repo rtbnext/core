@@ -51,7 +51,7 @@ export class ListJob extends Job< TListJobOptions > {
       const items: ( TPersonListItem | TBillionairesListItem )[] = [];
       const queue: TQueueOptions[] = [];
 
-      for ( const [ i, raw ] of Object.entries( entries ) ) {
+      for ( const raw of Object.values( entries ) ) {
         const parsed = new parser( raw );
         const uri = parsed.uri();
         const id = parsed.id();
@@ -63,14 +63,21 @@ export class ListJob extends Job< TListJobOptions > {
         } );
 
         // --- process profile using ProfileManager ---
-        const { profile } = ProfileManager.process( uri, id, profileData, method );
+        const { profile, action } = ProfileManager.process( uri, id, profileData, method );
 
         if ( ! profile ) {
           this.log( `Failed to process profile for ${ uri }` );
           continue;
         }
 
-        // ...
+        ProfileManager.updateQueue( queue, profile, action, th );
+        profileData = profile.getData();
+
+        // --- push list item ---
+        items.push( listItem( { parsed, profileData } ) );
+
+        count++; total += parsed.networth() ?? 0;
+        woman += +( profileData.info?.gender === 'f' );
       }
 
       // ...

@@ -65,6 +65,7 @@ export const LISTS = {
   }
 } as const satisfies TListConfig;
 
+
 export const getListConfigByUri = ( uri: string ) : ( typeof LISTS )[ TListTypes ] => {
   for ( const config of Object.values( LISTS ) )
     if ( 'lists' in config && ( config.lists as ReadonlyArray< string > ).includes( uri ) )
