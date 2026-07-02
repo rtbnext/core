@@ -37,7 +37,7 @@
     "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "@types/node": "^26.0.1",
+    "@types/node": "^26.1.0",
     "prettier": "^3.9.4",
     "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3"
