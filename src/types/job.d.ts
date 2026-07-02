@@ -25,7 +25,7 @@ export type TListJobOptions = TJobClsOptions< {
   override?: boolean;
   profileUpdate?: boolean;
   list?: string;
-  year?: number;
+  year?: string;
   name?: string;
   desc?: string;
 } >;

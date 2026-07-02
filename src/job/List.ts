@@ -1,7 +1,6 @@
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
-import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 
 
@@ -36,8 +35,7 @@ export class ListJob extends Job< TListJobOptions > {
       desc: 'Specify the list URI to process'
     }, {
       name: '-y, --year <YYYY>',
-      desc: 'Specify the year to process the list for',
-      parser: ( v: string ) => Parser.number( v )
+      desc: 'Specify the year to process the list for'
     }, {
       name: '--name <NAME>',
       desc: 'Specify a name for the list'
