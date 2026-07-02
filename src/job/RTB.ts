@@ -122,7 +122,7 @@ export class RTBJob extends Job {
       this.log( `Saving RTB list dated ${ date } (${ count } items)` );
 
       // --- create stats ---
-      const stats = LISTS.rtb.parser.stats( {
+      const stats = parser.stats( {
         date, count, total, woman,
         today: { value: mover.today.total.value, percent: mover.today.total.percent },
         ytd: { value: mover.ytd.total.value, percent: mover.ytd.total.percent }
