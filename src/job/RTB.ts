@@ -40,6 +40,7 @@ export class RTBJob extends Job {
         return;
       }
 
+      const { parser, indexItem, listItem } = LISTS.rtb;
       const th = Date.now() - Job.config.queue.tsThreshold;
       const rawList = res.data.personList.personsLists;
       const entries = rawList.filter( i => i.rank && i.finalWorth ).filter( Boolean )
@@ -57,11 +58,11 @@ export class RTBJob extends Job {
         raw.date = ts;
 
         // --- parse raw list data ---
-        const parser = new LISTS.rtb.parser( raw );
-        const uri = parser.uri();
-        const id = parser.id();
-        const rank = parser.rank();
-        const networth = parser.networth();
+        const parsed = new parser( raw );
+        const uri = parsed.uri();
+        const id = parsed.id();
+        const rank = parsed.rank();
+        const networth = parsed.networth();
 
         if ( ! rank || ! networth ) {
           this.log( `Skipping invalid RTB entry for ${ uri }` );
@@ -70,9 +71,9 @@ export class RTBJob extends Job {
 
         let profileData = Profile.factory( {
           uri, id,
-          info: parser.info(),
-          bio: parser.bio(),
-          assets: parser.assets()
+          info: parsed.info(),
+          bio: parsed.bio(),
+          assets: parsed.assets()
         } );
 
         // --- process profile using ProfileManager ---
@@ -89,8 +90,8 @@ export class RTBJob extends Job {
         // --- process realtime data ---
         const prev = entries[ Number( i ) - 1 ]?.uri;
         const next = entries[ Number( i ) + 1 ]?.uri;
-        const realtime = parser.realtime( profileData, prev, next );
-        const { flag, rankDiff } = parser.rankDiff( profileData );
+        const realtime = parsed.realtime( profileData, prev, next );
+        const { flag, rankDiff } = parsed.rankDiff( profileData );
         const { value = 0, percent = 0 } = realtime?.today ?? {};
 
         // --- update profile data ---
@@ -109,23 +110,14 @@ export class RTBJob extends Job {
         Mover.aggregate( realtime, uri, name, mover, total );
 
         // --- push list item ---
-        items.push( {
-          uri, rank, networth, name, flag, rankDiff,
-          gender: profileData.info?.gender,
-          age: parser.age(),
-          today: realtime?.today,
-          ytd: realtime?.ytd,
-          citizenship: profileData.info?.citizenship,
-          industry: profileData.info?.industry!,
-          source: profileData.info?.source!
-        } );
+        items.push( listItem( { parsed, profileData, flag, rankDiff, realtime } ) );
 
         count++; total += networth;
         woman += +( profileData.info?.gender === 'f' );
       }
 
       // --- create "rtb" list ---
-      const list = List.get( LISTS.rtb.uri ) || List.create( LISTS.rtb.uri, LISTS.rtb.entry );
+      const list = List.get( 'rtb' ) || List.create( 'rtb', indexItem() );
 
       if ( ! list ) throw new Error( 'Failed to create or retrieve RTB list' );
       this.log( `Saving RTB list dated ${ date } (${ count } items)` );
