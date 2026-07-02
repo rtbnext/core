@@ -1,8 +1,7 @@
-import type { TListIndexItem } from '@rtbnext/schema/src/model/list';
-
+import { Utils } from '@/core/Utils';
 import { BillionairesListParser } from '@/parser/BillionairesListParser';
 import { RTBListParser } from '@/parser/RTBListParser';
-import type { TBillionairesListItemCtx, TListConfig, TRTBListItemCtx } from '@/type/list';
+import type { TBillionairesListItemCtx, TListConfig, TListIndexItemCtx, TRTBListItemCtx } from '@/type/list';
 
 
 export const LISTS = {
@@ -37,7 +36,12 @@ export const LISTS = {
   billionaires: {
     lists: [ 'billionaires', 'forbes-400' ],
     parser: BillionairesListParser,
-    indexItem: ( entry: Partial< TListIndexItem > ) => ( {} ),
+    indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
+      uri, name: ctx.desc, shortName: ctx.name, desc: ctx.desc,
+      text: Utils.buildSearchText( ctx.desc ),
+      columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'selfMadeRank', 'philanthropyScore', 'source' ],
+      filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
+    } ),
     listItem: ( ctx: TBillionairesListItemCtx ) => ( {} )
   }
 } as const satisfies TListConfig;
