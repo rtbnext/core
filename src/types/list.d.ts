@@ -2,6 +2,8 @@ import type { IListParser } from '@/interface/parser';
 import type { TListIndexItem } from '@rtbnext/schema/src/model/list';
 
 
+export type TListTypes = 'rtb' | 'billionaires' | 'person';
+
 export type TListParserClass = new ( ...args: any[] ) => IListParser;
 
 export type TListConfig< K extends string > = {
