@@ -42,6 +42,18 @@ export const LISTS = {
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'selfMadeRank', 'philanthropyScore', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
     } ),
-    listItem: ( ctx: TBillionairesListItemCtx ) => ( {} )
+    listItem: ( ctx: TBillionairesListItemCtx ) => ( {
+      uri: ctx.parsed.uri(),
+      rank: ctx.parsed.rank()!,
+      networth: ctx.parsed.networth()!,
+      name: ctx.profileData.info!.name.shortName,
+      gender: ctx.profileData.info?.gender,
+      age: ctx.parsed.age(),
+      citizenship: ctx.profileData.info?.citizenship,
+      industry: ctx.profileData.info?.industry!,
+      source: ctx.profileData.info?.source!,
+      selfMadeRank: ctx.parsed.selfMade()?.rank,
+      philanthropyScore: ctx.parsed.philanthropyScore()
+    } )
   }
 } as const satisfies TListConfig;
