@@ -14,6 +14,7 @@ import { Wiki } from '@/util/Wiki';
 export class ProfileJob extends Job< TProfileJobOptions > {
   private static readonly fetch = Fetch.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
+  private static readonly index = ProfileIndex.getInstance();
 
   constructor ( options: TProfileJobOptions = {} ) { super( options, 'profile' ) }
 
@@ -52,7 +53,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
         if ( ! success ) this.log( `Failed to process profile with uri ${ uri }`, profileData, 'warn' );
 
         // --- add profile aliases ---
-        ProfileIndex.getInstance().addAliases( uri, ...parser.aliases() );
+        ProfileJob.index.addAliases( uri, ...parser.aliases() );
 
         this.log( `Profile with uri ${ uri } processed in ${ action } mode` );
       }
