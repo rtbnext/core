@@ -6,6 +6,7 @@ import { ListQueue } from '@/core/Queue';
 import { getListConfigByUri } from '@/lib/list';
 import { List } from '@/model/List';
 import { Profile } from '@/model/Profile';
+import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
@@ -47,11 +48,13 @@ export class ListJob extends Job< TListJobOptions > {
       this.log( `Processing ${ uri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
 
       // --- process list data ---
-      let count = 0, total = 0, woman = 0;
+      let count = 0, total = 0, woman = 0, { name, desc } = args;
       const items: ( TPersonListItem | TBillionairesListItem )[] = [];
       const queue: TQueueOptions[] = [];
 
       for ( const raw of Object.values( entries ) ) {
+        name ??= Parser.string( raw.name );
+
         const parsed = new parser( raw );
         const uri = parsed.uri();
         const id = parsed.id();
