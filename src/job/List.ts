@@ -1,6 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue } from '@/core/Queue';
+import { List } from '@/model/List';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 import type { TPersonListEntry } from '@/type/response';
 
@@ -22,6 +23,11 @@ export class ListJob extends Job< TListJobOptions > {
 
       // --- if no URI is provided, exit the job ---
       if ( ! uri ) return;
+
+      // --- check if the list already exists for the specified year ---
+      let list = List.get( uri );
+      if ( list && args.year && ! this.options.override && list.datesInYear( args.year ).length )
+        throw new Error( `List with URI ${ uri } already exists for year ${ args.year }` );
 
       // --- fetch raw list data from Forbes ---
       const raw = await ListJob.fetch.list< TPersonListEntry >( uri, args.year ?? '0' );
