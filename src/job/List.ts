@@ -1,9 +1,14 @@
 import { Job } from '@/abstract/Job';
+import { Fetch } from '@/core/Fetch';
+import { ListQueue } from '@/core/Queue';
 import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 
 
 export class ListJob extends Job< TListJobOptions > {
+  private static readonly fetch = Fetch.getInstance();
+  private static readonly queue = ListQueue.getInstance();
+
   constructor ( options: TListJobOptions = {} ) { super( options, 'list' ) }
 
   // --- job runner ---
