@@ -1,9 +1,10 @@
+import type { TRealtime } from '@rtbnext/schema/src/base/assets';
+import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
+import type { TListIndexItem, TRTBListItem } from '@rtbnext/schema/src/model/list';
+import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+
 import type { IListParser, IRTBListParser } from '@/interface/parser';
 import { RTBListParser } from '@/parser/RTBListParser';
-import { TRealtime } from '@rtbnext/schema/src/base/assets';
-import { TChangeFlag } from '@rtbnext/schema/src/base/const';
-import type { TListIndexItem, TRTBListItem } from '@rtbnext/schema/src/model/list';
-import { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 
 export type TListTypes = 'rtb' | 'billionaires' | 'person';
