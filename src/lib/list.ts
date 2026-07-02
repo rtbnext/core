@@ -1,7 +1,8 @@
 import { Utils } from '@/core/Utils';
 import { BillionairesListParser } from '@/parser/BillionairesListParser';
+import { PersonListParser } from '@/parser/PersonListParser';
 import { RTBListParser } from '@/parser/RTBListParser';
-import type { TBillionairesListItemCtx, TListConfig, TListIndexItemCtx, TRTBListItemCtx } from '@/type/list';
+import type { TListConfig, TListIndexItemCtx, TPersonListItemCtx, TRTBListItemCtx } from '@/type/list';
 
 
 export const LISTS = {
@@ -42,7 +43,7 @@ export const LISTS = {
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'selfMadeRank', 'philanthropyScore', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
     } ),
-    listItem: ( ctx: TBillionairesListItemCtx ) => ( {
+    listItem: ( ctx: TPersonListItemCtx ) => ( {
       uri: ctx.parsed.uri(),
       rank: ctx.parsed.rank()!,
       networth: ctx.parsed.networth()!,
@@ -54,6 +55,27 @@ export const LISTS = {
       source: ctx.profileData.info?.source!,
       selfMadeRank: ctx.parsed.selfMade()?.rank,
       philanthropyScore: ctx.parsed.philanthropyScore()
+    } )
+  },
+  person: {
+    lists: [],
+    parser: PersonListParser,
+    indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
+      uri, name: ctx.name, shortName: ctx.name, desc: ctx.desc,
+      text: Utils.buildSearchText( ctx.desc ),
+      columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
+      filters: [ 'gender', 'industry', 'citizenship', 'age' ]
+    } ),
+    listItem: ( ctx: TPersonListItemCtx ) => ( {
+      uri: ctx.parsed.uri(),
+      rank: ctx.parsed.rank()!,
+      networth: ctx.parsed.networth()!,
+      name: ctx.profileData.info!.name.shortName,
+      gender: ctx.profileData.info?.gender,
+      age: ctx.parsed.age(),
+      citizenship: ctx.profileData.info?.citizenship,
+      industry: ctx.profileData.info?.industry!,
+      source: ctx.profileData.info?.source!
     } )
   }
 } as const satisfies TListConfig;
