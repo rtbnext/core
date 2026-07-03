@@ -74,9 +74,7 @@ export class Mover extends Snapshot< TMover > implements IMover {
 
   // --- aggregate mover data ---
 
-  public static aggregate (
-    data: TRealtime | undefined, uri: string, name: string, mover: TMoverData, total: number = 0
-  ) : void {
+  public static aggregate ( data: TRealtime | undefined, uri: string, name: string, mover: TMoverData, total: number = 0 ) : void {
     if ( data?.today?.value ) {
       const type = data.today.value > 0 ? 'winner' : 'loser';
       mover.today.total.value += data.today.value;
