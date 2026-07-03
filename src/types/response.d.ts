@@ -160,8 +160,8 @@ export type TListResponse< T extends object > = {
 };
 
 export type TWikidataProp =
-  | 'gender' | 'birthdate' | 'deathdate' | 'article' | 'image' | 'iso2'
-  | 'occupation' | 'employer' | 'ownerOf' | 'netWorth';
+  | 'gender' | 'birthdate' | 'article' | 'image' | 'iso2' | 'occupation'
+  | 'employer' | 'ownerOf' | 'netWorth';
 
 export type TWikidataResponseItem = {
   item: { value: string };
