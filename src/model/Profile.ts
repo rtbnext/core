@@ -193,25 +193,25 @@ export class Profile implements IProfile {
 
   // --- instantiate ---
 
-  public static get ( uriLike: string ) : IProfile | false {
+  public static get ( uriLike: string ) : IProfile | undefined {
     return log.catch(
       () => new Profile( Profile.index.get( uriLike ) ),
       `Failed to get profile: ${ uriLike }`
-    ) ?? false;
+    );
   }
 
-  public static getByItem ( item: TProfileIndexItem ) : IProfile | false {
+  public static getByItem ( item: TProfileIndexItem ) : IProfile | undefined {
     return log.catch(
       () => new Profile( item ),
       `Failed to get profile by item: ${ item.uri }`
-    ) ?? false;
+    );
   }
 
-  public static find ( uriLike: string ) : IProfile | false {
+  public static find ( uriLike: string ) : IProfile | undefined {
     return log.catch(
       () => new Profile( Profile.index.find( uriLike ).values().next().value ),
       `Failed to find profile: ${ uriLike }`
-    ) ?? false;
+    );
   }
 
   // --- create profile ---
