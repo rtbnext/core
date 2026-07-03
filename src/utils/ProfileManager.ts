@@ -1,9 +1,10 @@
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
+import { log } from '@/core/Logger';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import type { TProfileUpdateMode, TProfileLookupResult, TProfileOperation, TProfileProcessResult } from '@/type/profile';
+import type { TProfileLookupResult, TProfileOperation, TProfileProcessResult, TProfileUpdateMode } from '@/type/profile';
 import type { TQueueOptions } from '@/type/queue';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
@@ -60,12 +61,14 @@ export class ProfileManager {
   public static process (
     uriLike: string, id: string, profileData: Partial< TProfileData >, mode: TProfileUpdateMode = 'updateData',
     makeAlias: boolean = true, touchLookup: boolean = false
-  ) : TProfileProcessResult {
-    const lookup = this.lookup( uriLike, id, profileData );
-    const action = this.determineAction( lookup );
-    const profile = this.execute( lookup.profile, action, uriLike, profileData, mode, makeAlias, touchLookup );
+  ) : TProfileProcessResult | false {
+    return log.catch( () => {
+      const lookup = this.lookup( uriLike, id, profileData );
+      const action = this.determineAction( lookup );
+      const profile = this.execute( lookup.profile, action, uriLike, profileData, mode, makeAlias, touchLookup );
 
-    return { profile, action, success: !! profile };
+      return { profile, action, success: !! profile };
+    }, `Failed to process profile for ${ uriLike }` ) ?? false;
   }
 
   // --- add queue item based on action ---
