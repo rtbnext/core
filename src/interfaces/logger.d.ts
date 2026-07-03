@@ -6,10 +6,10 @@ export interface ILogger {
   info ( msg: string, meta?: unknown ) : void;
   debug ( msg: string, meta?: unknown ) : void;
   catch < F extends ( ...args: any[] ) => any, R = ReturnType< F > > (
-    fn: F, msg: string, level: TLoggingLevel = 'error'
+    fn: F, msg: string, level?: TLoggingLevel
   ) : R | undefined;
   catchAsync < F extends ( ...args: any[] ) => Promise< any >, R = Awaited< ReturnType< F > > > (
-    fn: F, msg: string, level: TLoggingLevel = 'error'
+    fn: F, msg: string, level?: TLoggingLevel
   ) : Promise< R | undefined >;
   getLogFile ( date: string ) : string | undefined;
   getCurrentLogFile () : string | undefined;

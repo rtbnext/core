@@ -6,5 +6,5 @@ import type { TListSnapshotData } from '@/type/generic';
 
 export interface IList extends ISnapshot< TListSnapshot > {
   getUri () : string;
-  saveSnapshot ( snapshot: TListSnapshotData, force: boolean = false ) : boolean;
+  saveSnapshot ( snapshot: TListSnapshotData, force?: boolean ) : boolean;
 }
