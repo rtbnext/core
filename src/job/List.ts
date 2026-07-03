@@ -64,15 +64,8 @@ export class ListJob extends Job< TListJobOptions > {
         name ??= Parser.string( raw.name );
         desc ??= Parser.string( raw.listDescription );
 
-        const parsed = new parser( raw );
-        const uri = parsed.uri();
-        const id = parsed.id();
-
-        let profileData = Profile.factory( {
-          uri, id,
-          info: parsed.info(),
-          bio: parsed.bio()
-        } );
+        const parsed = new parser( raw ), uri = parsed.uri(), id = parsed.id();
+        let profileData = Profile.factory( { uri, id, info: parsed.info(), bio: parsed.bio() } );
 
         // --- process profile using ProfileManager ---
         const res = ProfileManager.process( uri, id, profileData, method );
