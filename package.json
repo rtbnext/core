@@ -19,8 +19,12 @@
   },
   "type": "module",
   "scripts": {
+    "clean": "rimraf dist",
     "format": "prettier --ignore-path \"\" --write \"./dist/**/*.@(js|d.ts)\" --log-level warn",
-    "build": "tsc && node scripts/copy-dts.mjs && tsc-alias && npm run format"
+    "build": "tsc && node scripts/copy-dts.mjs && tsc-alias",
+    "build:clean": "npm run clean && npm run build",
+    "postbuild": "npm run format",
+    "prepublishOnly": "npm run build:clean"
   },
   "dependencies": {
     "@isodb/us-states": "^0.1.0",
@@ -39,6 +43,7 @@
   "devDependencies": {
     "@types/node": "^26.1.0",
     "prettier": "^3.9.4",
+    "rimraf": "^6.1.3",
     "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3"
   }
