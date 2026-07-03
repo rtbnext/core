@@ -1,6 +1,6 @@
 import type {
   TAssetType, TChangeFlag, TChildrenGroup, TFilterGroup, TFilterSpecial, TGender, TIndustry,
-  TMaritalStatus, TPercentiles, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread
+  TMaritalStatus, TPercentile, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread
 } from '@rtbnext/schema/src/base/const';
 
 import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
@@ -48,7 +48,7 @@ export const ChildrenGroup: TChildrenGroup[] = [
   'none', 'one', 'two', 'three', 'four', '5-to-10', 'over-10'
 ] as const;
 
-export const Percentiles: TPercentiles[] = [
+export const Percentile: TPercentile[] = [
   '10th', '25th', '50th', '75th', '90th', '95th', '99th'
 ] as const;
 
