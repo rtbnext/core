@@ -2,15 +2,15 @@ export interface IStorage {
   readonly root: string;
   exists ( path: string ) : boolean;
   assertPath ( path: string ) : void | never;
-  ensurePath ( path: string, isDir: boolean = false ) : void;
+  ensurePath ( path: string, isDir?: boolean ) : void;
   stat ( path: string ) : Stats | false;
-  scanDir ( path: string, ext: string[] = [ 'json', 'csv' ] ) : string[];
+  scanDir ( path: string, ext?: string[] ) : string[];
   readJSON < T extends object > ( path: string ) : T | false;
   writeJSON < T extends object > ( path: string, content: T ) : boolean;
   readCSV < T extends any[] > ( path: string ) : T | false;
   writeCSV < T extends any[] > ( path: string, content: T ) : boolean;
-  appendCSV < T extends any[] > ( path: string, content: T, nl: boolean = true ) : boolean;
-  datedCSV < T extends any[] > ( path: string, content: T, force: boolean = false ) : boolean;
-  remove ( path: string, force: boolean = true ) : boolean;
-  move ( from: string, to: string, force: boolean = false ) : boolean;
+  appendCSV < T extends any[] > ( path: string, content: T, nl?: boolean ) : boolean;
+  datedCSV < T extends any[] > ( path: string, content: T, force?: boolean ) : boolean;
+  remove ( path: string, force?: boolean ) : boolean;
+  move ( from: string, to: string, force?: boolean ) : boolean;
 }
