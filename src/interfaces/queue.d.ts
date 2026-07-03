@@ -9,7 +9,7 @@ export interface IQueue {
   getByUri ( uriLike: string ) : TQueueItem[];
   hasUri ( uriLike: string ) : boolean;
   clear () : void;
-  add ( opt: TQueueOptions, save: boolean = true ) : boolean;
+  add ( opt: TQueueOptions, save?: boolean ) : boolean;
   addMany ( items: TQueueOptions[] ) : number;
   removeByKey ( key: string ) : boolean;
   remove ( ...uriLike: string[] ) : number;
