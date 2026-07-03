@@ -57,7 +57,8 @@ export class ProfileJob extends Job< TProfileJobOptions > {
         }
 
         // --- add profile aliases ---
-        ProfileJob.index.addAliases( uri, ...parser.aliases() );
+        try { ProfileJob.index.addAliases( uri, ...parser.aliases() ) }
+        catch ( err ) { this.log( `Failed to add aliases for ${ uri }`, err, 'warn' ) }
 
         this.log( `Profile with uri ${ uri } processed in ${ res.action } mode` );
       }
