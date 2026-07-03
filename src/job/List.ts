@@ -27,32 +27,32 @@ export class ListJob extends Job< TListJobOptions > {
   public async run () : Promise< void > {
     await this.protect( async () => {
       const method = this.options.profileUpdate ? 'updateData' : 'createOnly';
-      const { uri, args } = this.options.list ? { uri: this.options.list, args: this.options }
+      const { uri: listUri, args } = this.options.list ? { uri: this.options.list, args: this.options }
         : ListJob.queue.next()[ 0 ] as TListQueueItem;
 
       // --- if no URI is provided, exit the job ---
-      if ( ! uri ) return;
+      if ( ! listUri ) return;
 
       // --- check if the list already exists for the specified year ---
-      let list = List.get( uri );
+      let list = List.get( listUri );
       if ( list && args.year && ! this.options.override && list.datesInYear( args.year ).length )
-        throw new Error( `List with URI ${ uri } already exists for year ${ args.year }` );
+        throw new Error( `List with URI ${ listUri } already exists for year ${ args.year }` );
 
       // --- fetch raw list data from Forbes ---
-      const res = await ListJob.fetch.list< TPersonListEntry >( uri, args.year ?? '0' );
+      const res = await ListJob.fetch.list< TPersonListEntry >( listUri, args.year ?? '0' );
       if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
 
-      const { parser, indexItem, listItem } = getListConfigByUri( uri );
+      const { parser, indexItem, listItem } = getListConfigByUri( listUri );
       const th = Date.now() - Job.config.queue.tsThreshold;
       const { entries } = parser.prepareList( res );
 
       // --- determine list date ---
       const d = new Date( entries[ 0 ].date ?? entries[ 0 ].timestamp );
-      if ( Number.isNaN( d.getTime() ) ) throw new Error( `Failed to determine date for ${ uri } list` );
+      if ( Number.isNaN( d.getTime() ) ) throw new Error( `Failed to determine date for ${ listUri } list` );
       if ( args.year && d.getFullYear() !== +args.year )
         throw new Error( `List year ${ args.year } does not match data year ${ d.getFullYear() }` );
 
-      this.log( `Processing ${ uri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
+      this.log( `Processing ${ listUri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
 
       // --- process list data ---
       let count = 0, total = 0, woman = 0, { name, desc } = args;
@@ -87,11 +87,11 @@ export class ListJob extends Job< TListJobOptions > {
       }
 
       // --- create list (if not exists) ---
-      if ( ! name || ! desc ) throw new Error( `Failed to determine name or description for ${ uri } list` );
-      list ??= List.create( uri, indexItem( uri, { name, desc } ) );
+      if ( ! name || ! desc ) throw new Error( `Failed to determine name or description for ${ listUri } list` );
+      list ??= List.create( listUri, indexItem( listUri, { name, desc } ) );
 
-      if ( ! list ) throw new Error( `Failed to create or retrieve ${ uri } list` );
-      this.log( `Saving ${ uri } list for year ${ args.year ?? '-' } (${ count } items)` );
+      if ( ! list ) throw new Error( `Failed to create or retrieve ${ listUri } list` );
+      this.log( `Saving ${ listUri } list for year ${ args.year ?? '-' } (${ count } items)` );
 
       // --- create stats ---
       const stats = parser.stats( { date, count, total, woman } );
