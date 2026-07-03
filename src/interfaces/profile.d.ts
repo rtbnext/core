@@ -14,13 +14,13 @@ export interface IProfile {
   touch () : void;
   touchLookup () : void;
   needSave () : boolean;
-  save ( syncIndex: boolean = true ) : void;
+  save ( syncIndex?: boolean ) : void;
   getData () : TProfileData;
   setData ( data: TProfileData ) : void;
-  updateData ( data: Partial< TProfileData >, mode: ArrayMode = ArrayMode.Replace ) : void;
+  updateData ( data: Partial< TProfileData >, mode?: ArrayMode ) : void;
   getHistory () : TProfileHistory;
   setHistory ( history: TProfileHistory ) : void;
   addHistory ( row: TProfileHistoryItem ) : void;
   mergeHistory ( history: TProfileHistory ) : void;
-  move ( uriLike: string, makeAlias: boolean = true ) : boolean;
+  move ( uriLike: string, makeAlias?: boolean ) : boolean;
 }
