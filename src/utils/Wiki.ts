@@ -47,7 +47,7 @@ export class Wiki {
     return Math.min( 1, Math.max( 0, score ) );
   }
 
-  public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {
+  public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< { item: TWikidata, raw: TWikidataResponse } | undefined > {
     log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName }` );
 
     return await log.catchAsync( async () => {
@@ -95,12 +95,15 @@ export class Wiki {
       if ( ! best || best.score < 0.65 ) throw new Error( 'No suitable Wikidata item found' );
       log.debug( `Best Wikidata item for ${ shortName } has score: ${ best.score }` );
 
-      return Parser.container< TWikidata >( {
-        qid: { value: best.item.item.value.split( '/' ).pop()!, type: 'string' },
-        confidence: { value: best.score, type: 'number', args: [ 3 ] },
-        article: { value: best.item.article?.value.split( '/' ).pop(), type: 'decodeURI' },
-        image: { value: best.item.image?.value.split( '/' ).pop(), type: 'decodeURI' }
-      } );
+      return {
+        raw: best.item,
+        item: Parser.container< TWikidata >( {
+          qid: { value: best.item.item.value.split( '/' ).pop()!, type: 'string' },
+          confidence: { value: best.score, type: 'number', args: [ 3 ] },
+          article: { value: best.item.article?.value.split( '/' ).pop(), type: 'decodeURI' },
+          image: { value: best.item.image?.value.split( '/' ).pop(), type: 'decodeURI' }
+        } )
+      };
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 
