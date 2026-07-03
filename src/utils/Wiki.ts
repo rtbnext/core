@@ -67,6 +67,7 @@ export class Wiki {
           { { ?item rdfs:label ?name . } UNION { ?item skos:altLabel ?name . } }
           OPTIONAL { ?item wdt:P21 ?gender . }
           OPTIONAL { ?item wdt:P569 ?birthdate . }
+          OPTIONAL { ?item wdt:P570 ?deathdate . }
           OPTIONAL { ?article schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> . }
           OPTIONAL { ?item wdt:P18 ?image . }
           OPTIONAL { ?item wdt:P27 ?country . ?country wdt:P297 ?iso2 . }
