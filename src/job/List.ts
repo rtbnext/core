@@ -75,13 +75,14 @@ export class ListJob extends Job< TListJobOptions > {
         } );
 
         // --- process profile using ProfileManager ---
-        const { profile, action } = ProfileManager.process( uri, id, profileData, method );
+        const res = ProfileManager.process( uri, id, profileData, method );
 
-        if ( ! profile ) {
+        if ( ! res || ! res.profile ) {
           this.log( `Failed to process profile for ${ uri }` );
           continue;
         }
 
+        const { profile, action } = res;
         ProfileManager.updateQueue( queue, profile, action, th );
         profileData = profile.getData();
 
