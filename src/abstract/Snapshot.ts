@@ -76,15 +76,15 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
 
   // --- get snapshot data ---
 
-  public getSnapshot ( dateLike: string, exactMatch: boolean = true ) : T | false {
+  public getSnapshot ( dateLike: string, exactMatch: boolean = true ) : T | undefined {
     const target = Parser.date( dateLike )!;
     const date = this.hasDate( target ) ? target : exactMatch ? undefined : this.nearestDate( target );
 
-    return date ? Snapshot.storage.readJSON< T >( this.datedPath( date ) ) : false;
+    if ( date ) return Snapshot.storage.readJSON< T >( this.datedPath( date ) ) || undefined;
   }
 
-  public getLatest () : T | false {
-    return this.dates.length ? this.getSnapshot( this.latestDate()! ) : false;
+  public getLatest () : T | undefined {
+    if ( this.dates.length ) return this.getSnapshot( this.dates.at( -1 )! );
   }
 
   // --- save snapshot ---
