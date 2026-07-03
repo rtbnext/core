@@ -4,7 +4,7 @@ import { cp, glob, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 try {
-  const files = await glob( 'src/**/*.d.ts' );
+  const files = await Array.fromAsync( glob( 'src/**/*.d.ts' ) );
 
   if ( files.length === 0 ) {
     console.log( '[copy-dts] No .d.ts files found.' );
