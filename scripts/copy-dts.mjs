@@ -1,10 +1,24 @@
+// scripts/copy-dts.mjs
+
 import { cp, glob, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
+try {
+  const files = await glob( 'src/**/*.d.ts' );
 
-for await ( const file of glob( 'src/**/*.d.ts' ) ) {
-  const target = file.replace( /^src[\\/]/, 'dist/' );
+  if ( files.length === 0 ) {
+    console.log( '[copy-dts] No .d.ts files found.' );
+    process.exit( 0 );
+  }
 
-  await mkdir( dirname( target ), { recursive: true } );
-  await cp( file, target );
+  await Promise.all( files.map( async ( file ) => {
+    const target = file.replace( /^src[\\/]/, 'dist/' );
+    await mkdir( dirname( target ), { recursive: true } );
+    await cp( file, target );
+  } ) );
+
+  console.log( `[copy-dts] Copied ${ files.length } file(s).` );
+} catch ( err ) {
+  console.error( '[copy-dts] Failed:', err );
+  process.exit( 1 );
 }
