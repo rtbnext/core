@@ -14,7 +14,7 @@ export class List extends Snapshot< TListSnapshot > implements IList {
   private constructor ( item?: TListIndexItem ) {
     if ( ! item || ! item.uri ) throw new Error( 'No valid list index item given' );
 
-    super( 'list' );
+    super( `list/${ item.uri }` );
     this.uri = item.uri;
   }
 
