@@ -13,7 +13,7 @@ const addGlobalOptions = ( command: Command ) : void => void command
 const program = new Command();
 
 program
-  .name( 'ntbnext' )
+  .name( 'ntbnext-cli' )
   .description( 'CLI to maintain the @rtbnext billionaires database' )
   .version( '2.0.0', '-v, --version' );
 
