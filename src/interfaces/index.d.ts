@@ -10,16 +10,16 @@ export interface IIndex< I extends TIndex, T extends Map< string, I > > {
   getIndex () : T;
   has ( uriLike: string ) : boolean;
   get ( uriLike: string ) : I | undefined;
-  update ( uriLike: string, data: Partial< I >, allowUpdate: boolean = true, save: boolean = true ) : I | false;
-  delta ( items: Array< { uriLike: string, data: Partial< I > } >, allowUpdate: boolean = true ) : number;
+  update ( uriLike: string, data: Partial< I >, allowUpdate?: boolean, save?: boolean ) : I | false;
+  delta ( items: Array< { uriLike: string, data: Partial< I > } >, allowUpdate?: boolean ) : number;
   add ( uriLike: string, data: I ) : I | false;
   delete ( uriLike: string ) : void;
-  search ( query: string, looseMatch: boolean = false ) : T;
+  search ( query: string, looseMatch?: boolean ) : T;
 }
 
 export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex > {
   find ( uriLike: string ) : TProfileIndex;
-  move ( from: string, to: string, makeAlias: boolean = true ) : TProfileIndexItem | false;
+  move ( from: string, to: string, makeAlias?: boolean ) : TProfileIndexItem | false;
   syncFromData ( data: TProfileData ) : TProfileIndexItem | false;
   hasAlias ( aliasLike: string, uriLike?: string ) : string | false;
   isAliasAvailable ( aliasLike: string ) : boolean;
