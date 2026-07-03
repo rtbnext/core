@@ -15,7 +15,7 @@ import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IStats } from '@/interface/stats';
-import { Percentiles, StatsGroup, WealthSpread } from '@/lib/const';
+import { Percentile, StatsGroup, WealthSpread } from '@/lib/const';
 import { Parser } from '@/parser/Parser';
 
 
@@ -268,7 +268,7 @@ export class Stats implements IStats {
       const stdDev = Math.sqrt( variance );
 
       const percentiles: TWealthStatsData[ 'percentiles' ] = {};
-      Percentiles.forEach( p => {
+      Percentile.forEach( p => {
         const idx = Math.ceil( ( parseInt( p ) / 100 ) * count ) - 1;
         percentiles[ p ] = scatter[ idx ].networth;
       } );
