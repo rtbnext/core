@@ -32,9 +32,8 @@ export class List extends Snapshot< TListSnapshot > implements IList {
 
   // --- instantiate ---
 
-  public static get ( uriLike: string ) : IList | false {
-    try { return new List( List.index.get( uriLike ) ) }
-    catch { return false }
+  public static get ( uriLike: string ) : IList | undefined {
+    try { return new List( List.index.get( uriLike ) ) } catch {}
   }
 
   // --- create list ---
