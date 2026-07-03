@@ -17,8 +17,8 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     return aliases.map( a => Utils.sanitize( a ) ).filter( Boolean );
   }
 
-  private getUriByAlias ( alias: string ) : string | false {
-    return [ ...this.index.values() ].find( ( { aliases } ) => aliases.includes( alias ) )?.uri || false;
+  private getUriByAlias ( alias: string ) : string | undefined {
+    return [ ...this.index.values() ].find( ( { aliases } ) => aliases.includes( alias ) )?.uri;
   }
 
   private assertAvailableAlias ( alias: string, whitelist: string[] = [] ) : void {
@@ -80,7 +80,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
     const owner = this.getUriByAlias( Utils.sanitize( aliasLike ) );
 
     if ( uriLike !== undefined && owner !== Utils.sanitize( uriLike ) ) return false;
-    return owner;
+    return owner ?? false;
   }
 
   public isAliasAvailable ( aliasLike: string ) : boolean {
