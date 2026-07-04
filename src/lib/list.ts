@@ -7,6 +7,7 @@ import type { TListConfig, TListIndexItemCtx, TListTypes, TPersonListItemCtx, TR
 
 const personListItem = ( ctx: TPersonListItemCtx ) => ( {
   uri: ctx.profileData.uri ?? ctx.parsed.uri(),
+  sourceUri: ctx.parsed.uri(),
   rank: ctx.parsed.rank()!,
   networth: ctx.parsed.networth()!,
   name: ctx.profileData.info!.name.shortName,
