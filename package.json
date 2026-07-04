@@ -1,8 +1,8 @@
 {
   "name": "@rtbnext/core",
-  "description": "Internal core package for the rtbnext project",
+  "description": "Core infrastructure for the RTBNext project",
   "license": "MIT",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-rc.1",
   "author": {
     "name": "komed3 (Paul Köhler)",
     "email": "webmaster@komed3.de",
