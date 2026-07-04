@@ -11,7 +11,7 @@ cron:
   timezone: "UTC"
 
 storage:
-  baseDir: "data"
+  baseDir: "v2"
   compression: true
 
 fetch:
