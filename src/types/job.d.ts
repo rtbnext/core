@@ -100,3 +100,9 @@ export interface TJobCls< T extends TJobClsOptions = TJobClsOptions > {
 }
 
 export type TJobRegistry = ReadonlyArray< TJobCls< any > >;
+
+export type TScheduledJob = {
+  JobClass: TJobCls< any >;
+  date: Date;
+  options: TJobClsOptions< any >;
+};
