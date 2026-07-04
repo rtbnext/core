@@ -6,6 +6,7 @@ import { Storage } from '@/core/Storage';
 import type { ICron } from '@/interface/cron';
 import { JOBS } from '@/job/index';
 import type { TCronConfig } from '@/type/config';
+import { TScheduledJob } from '@/type/job';
 
 
 export class Cron implements ICron {
@@ -37,6 +38,14 @@ export class Cron implements ICron {
     throw new Error( 'Initial Cron job run - will not execute any scheduled events' );
   }
 
+  private getScheduledJobs () : { date: Date, jobs: TScheduledJob[] } {
+    const after = this.ensureLastRun(), before = new Date();
+    const cronOptions = { timezone: this.config.timezone, count: 1, after, before };
+    const jobs: TScheduledJob[] = [];
+
+    return { date: before, jobs };
+  }
+
   // --- cron runner ---
 
   public async run () : Promise< void > {
@@ -46,6 +55,9 @@ export class Cron implements ICron {
       const after = this.ensureLastRun(), before = new Date();
       const cronOptions = { timezone: this.config.timezone, count: 1, after, before };
 
+      // --- first loop: determine jobs to run ---
+
+      const jobs = [];
       for ( const JobClass of JOBS ) {
         if ( ! ( 'cron' in JobClass ) ) continue;
 
@@ -53,10 +65,16 @@ export class Cron implements ICron {
           const [ date ] = prev( cronexpr, cronOptions );
           if ( date === undefined || ! ( date instanceof Date ) ) continue;
 
-          log.info( `[CRON] Run Cron job ${ JobClass.command.id } scheduled @ ${ date.toISOString() }` );
-          await new JobClass( options?.( date ) ?? {} as any ).run();
+          jobs.push( { job: JobClass, date, options } );
           break;
         }
+      }
+
+      // --- second loop: run jobs in order ---
+
+      for ( const { job, date, options } of jobs.sort( ( a, b ) => a.date.getTime() - b.date.getTime() ) ) {
+        log.debug( `Run Cron job ${ job.command.id } scheduled for ${ date.toISOString() }` );
+        await new job( options?.( date ) ?? {} as any ).run();
       }
 
       log.debug( `Shut down Cron job runner, set last run time to ${ before.toISOString() }` );
