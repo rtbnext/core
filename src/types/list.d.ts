@@ -6,6 +6,7 @@ import type { Expand } from 'devtypes/types/util';
 
 import type { IBillionairesListParser, IListParser, IPersonListParser, IRTBListParser } from '@/interface/parser';
 import type { TListResponse } from '@/type/response';
+import type { IProfile } from '@/interface/profile';
 
 
 export type TListTypes = 'rtb' | 'billionaires' | 'person';
@@ -20,6 +21,7 @@ export type TListIndexItemCtx = {
 export type TPersonListItemCtx = {
   parsed: IPersonListParser;
   profileData: Partial< TProfileData >;
+  profile?: IProfile | false;
 };
 
 export type TRTBListItemCtx = Expand< TPersonListItemCtx & {
@@ -33,20 +35,20 @@ export type TRTBListConfig = {
   lists: readonly [ 'rtb' ];
   parser: TListParserCls< IRTBListParser >;
   indexItem () : TListIndexItem;
-  listItem ( ctx: TRTBListItemCtx, is: boolean ) : TRTBListItem;
+  listItem ( ctx: TRTBListItemCtx ) : TRTBListItem;
 };
 
 export type TBillionairesListConfig = {
   lists: readonly [ 'billionaires', 'forbes-400' ];
   parser: TListParserCls< IBillionairesListParser >;
   indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
-  listItem ( ctx: TPersonListItemCtx, is: boolean ) : TBillionairesListItem;
+  listItem ( ctx: TPersonListItemCtx ) : TBillionairesListItem;
 };
 
 export type TPersonListConfig = {
   parser: TListParserCls< IPersonListParser >;
   indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
-  listItem ( ctx: TPersonListItemCtx, is: boolean ) : TPersonListItem;
+  listItem ( ctx: TPersonListItemCtx ) : TPersonListItem;
 };
 
 export type TListConfig = {
