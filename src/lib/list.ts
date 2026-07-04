@@ -5,8 +5,8 @@ import { RTBListParser } from '@/parser/RTBListParser';
 import type { TListConfig, TListIndexItemCtx, TListTypes, TPersonListItemCtx, TRTBListItemCtx } from '@/type/list';
 
 
-const personListItem = ( ctx: TPersonListItemCtx, is: boolean ) => ( {
-  uri: is ? ctx.profileData.uri ?? ctx.parsed.uri() : undefined,
+const personListItem = ( ctx: TPersonListItemCtx ) => ( {
+  uri: ctx.profile ? ctx.profile.getUri() : undefined,
   sourceUri: ctx.parsed.uri(),
   rank: ctx.parsed.rank()!,
   networth: ctx.parsed.networth()!,
@@ -31,8 +31,8 @@ export const LISTS = {
       columns: [ 'rank', 'diff', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
     } ),
-    listItem: ( ctx: TRTBListItemCtx, is: boolean ) => ( {
-      ...personListItem( ctx, is ),
+    listItem: ( ctx: TRTBListItemCtx ) => ( {
+      ...personListItem( ctx ),
       flag: ctx.flag,
       rankDiff: ctx.rankDiff,
       today: ctx.realtime?.today,
@@ -48,8 +48,8 @@ export const LISTS = {
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'selfMadeRank', 'philanthropyScore', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
     } ),
-    listItem: ( ctx: TPersonListItemCtx, is: boolean ) => ( {
-      ...personListItem( ctx, is ),
+    listItem: ( ctx: TPersonListItemCtx ) => ( {
+      ...personListItem( ctx ),
       selfMadeRank: ctx.parsed.selfMade()?.rank,
       philanthropyScore: ctx.parsed.philanthropyScore()
     } )
