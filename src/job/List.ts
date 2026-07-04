@@ -68,16 +68,16 @@ export class ListJob extends Job< TListJobOptions > {
         let profileData = Profile.factory( { uri, id, info: parsed.info(), bio: parsed.bio() } );
 
         // --- process profile using ProfileManager ---
-        const res = ProfileManager.process( uri, id, profileData, method );
+        const { profile, action } = ProfileManager.process( uri, id, profileData, method ) || {};
 
-        if ( ! res || ! res.profile ) this.log( `Failed to process profile for ${ uri }`, undefined, 'warn' );
+        if ( ! profile || ! action ) this.log( `Failed to process profile for ${ uri }`, undefined, 'warn' );
         else {
-          ProfileManager.updateQueue( queue, res.profile, res.action, th );
-          profileData = res.profile.getData();
+          ProfileManager.updateQueue( queue, profile, action, th );
+          profileData = profile.getData();
         }
 
         // --- push list item ---
-        items.push( listItem( { parsed, profileData } as any, res && !! res.profile ) );
+        items.push( listItem( { parsed, profileData } as any, res && !! profile ) );
 
         count++; total += parsed.networth() ?? 0;
         woman += +( profileData.info?.gender === 'f' );
