@@ -314,10 +314,10 @@ export class Stats implements IStats {
       const last = entries[ prev ];
       const top10: TTop10List = [];
 
-      for ( const { uri, rank, networth } of snapshot.items.slice( 0, 10 ) ) {
+      for ( const { uri, rank, networth } of snapshot.items.filter( i => i.uri ).slice( 0, 10 ) ) {
         const prevItem = last?.find( i => i.uri === uri );
 
-        top10.push( { uri, rank, networth, flag: ! last ? 'unknown'
+        top10.push( { uri: uri!, rank, networth, flag: ! last ? 'unknown'
           : prevItem ? rank < prevItem.rank ? 'up' : rank > prevItem.rank ? 'down' : 'unchanged'
           : Object.entries( entries ).some( ( [ k, l ] ) => k !== key && l.some( i => i.uri === uri ) ) ? 'returned'
           : 'new'
