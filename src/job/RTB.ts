@@ -68,24 +68,16 @@ export class RTBJob extends Job {
           continue;
         }
 
-        let profileData = Profile.factory( {
-          uri, id,
-          info: parsed.info(),
-          bio: parsed.bio(),
-          assets: parsed.assets()
-        } );
+        let profileData = Profile.factory( { uri, id, info: parsed.info(), bio: parsed.bio(), assets: parsed.assets() } );
 
         // --- process profile using ProfileManager ---
-        const res = ProfileManager.process( uri, id, profileData, 'updateData' );
+        const { profile, action } = ProfileManager.process( uri, id, profileData, 'updateData' ) || {};
 
-        if ( ! res || ! res.profile ) {
-          this.log( `Failed to process profile for ${ uri }` );
-          continue;
+        if ( ! profile || ! action ) this.log( `Failed to process profile for ${ uri }`, undefined, 'warn' );
+        else {
+          ProfileManager.updateQueue( queue, profile, action, th );
+          profileData = profile.getData();
         }
-
-        const { profile, action } = res;
-        ProfileManager.updateQueue( queue, profile, action, th );
-        profileData = profile.getData();
 
         // --- process realtime data ---
         const prev = entries[ Number( i ) - 1 ]?.uri;
@@ -95,22 +87,23 @@ export class RTBJob extends Job {
         const { value = 0, percent = 0 } = realtime?.today ?? {};
 
         // --- update profile data ---
-        profile.addHistory( [ date, rank, networth, value, percent ] );
-        const performance = Performance.generateProfilePerformance( profile.getHistory() );
-        profile.updateData( { realtime, performance } );
-        profile.save();
+        if ( profile ) {
+          profile.addHistory( [ date, rank, networth, value, percent ] );
+          const performance = Performance.generateProfilePerformance( profile.getHistory() );
+          profile.updateData( { realtime, performance } );
+          profile.save();
 
-        profileData = profile.getData();
-        const name = profileData.info!.name.shortName;
+          profileData = profile.getData();
+        }
 
         // --- skip profiles if their networth is less than $1B ---
         if ( networth < 1000 && networth - value < 1000 ) continue;
 
         // --- aggregate mover data ---
-        Mover.aggregate( realtime, uri, name, mover, total );
+        Mover.aggregate( realtime, uri, profileData.info!.name.shortName, mover, total );
 
         // --- push list item ---
-        items.push( listItem( { parsed, profileData, flag, rankDiff, realtime } ) );
+        items.push( listItem( { parsed, profileData, flag, rankDiff, realtime }, !! profile ) );
 
         count++; total += networth;
         woman += +( profileData.info?.gender === 'f' );
