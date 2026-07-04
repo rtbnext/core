@@ -153,13 +153,13 @@ export class ProfileParser extends Cache implements IProfileParser {
 
   public cv () : string[] {
     return this.cache( 'cv', () => Parser.list(
-      Utils.aggregate( this.lists, 'bios', 'first' ) as string[], 'safeStr'
+      ( Utils.aggregate( this.lists, 'bios', 'first' ) ?? [] ) as string[], 'safeStr'
     ) );
   }
 
   public facts () : string[] {
     return this.cache( 'facts', () => Parser.list(
-      Utils.aggregate( this.lists, 'abouts', 'first' ) as string[], 'safeStr'
+      ( Utils.aggregate( this.lists, 'abouts', 'first' ) ?? [] ) as string[], 'safeStr'
     ) );
   }
 
