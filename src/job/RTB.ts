@@ -103,7 +103,7 @@ export class RTBJob extends Job {
         Mover.aggregate( realtime, uri, profileData.info!.name.shortName, mover, total );
 
         // --- push list item ---
-        items.push( listItem( { parsed, profileData, flag, rankDiff, realtime }, !! profile ) );
+        items.push( listItem( { parsed, profileData, profile, flag, rankDiff, realtime } ) );
 
         count++; total += networth;
         woman += +( profileData.info?.gender === 'f' );
