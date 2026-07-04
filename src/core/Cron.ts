@@ -69,7 +69,7 @@ export class Cron implements ICron {
       const { before, jobs } = this.schedule();
 
       for ( const { JobClass, date, options } of jobs ) {
-        log.debug( `Run Cron job ${ JobClass.command.id } scheduled for ${ date.toISOString() }` );
+        log.debug( `Run Cron job [${ JobClass.command.id.toUpperCase() }] scheduled for ${ date.toISOString() }` );
         await new JobClass( options ).run();
       }
 
