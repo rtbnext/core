@@ -33,20 +33,20 @@ export type TRTBListConfig = {
   lists: readonly [ 'rtb' ];
   parser: TListParserCls< IRTBListParser >;
   indexItem () : TListIndexItem;
-  listItem ( ctx: TRTBListItemCtx ) : TRTBListItem;
+  listItem ( ctx: TRTBListItemCtx, is: boolean ) : TRTBListItem;
 };
 
 export type TBillionairesListConfig = {
   lists: readonly [ 'billionaires', 'forbes-400' ];
   parser: TListParserCls< IBillionairesListParser >;
   indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
-  listItem ( ctx: TPersonListItemCtx ) : TBillionairesListItem;
+  listItem ( ctx: TPersonListItemCtx, is: boolean ) : TBillionairesListItem;
 };
 
 export type TPersonListConfig = {
   parser: TListParserCls< IPersonListParser >;
   indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
-  listItem ( ctx: TPersonListItemCtx ) : TPersonListItem;
+  listItem ( ctx: TPersonListItemCtx, is: boolean ) : TPersonListItem;
 };
 
 export type TListConfig = {
