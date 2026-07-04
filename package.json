@@ -1,13 +1,25 @@
 {
   "name": "@rtbnext/core",
   "description": "Core infrastructure for the RTBNext project",
-  "license": "MIT",
   "version": "2.0.0-rc.1",
+  "license": "MIT",
   "author": {
     "name": "komed3 (Paul Köhler)",
     "email": "webmaster@komed3.de",
     "url": "https://komed3.de"
   },
+  "homepage": "https://rtbnext.de",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtbnext/core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rtbnext/core/issues"
+  },
+  "keywords": [
+    "rtbnext",
+    "core"
+  ],
   "files": [
     "dist",
     "README.md",
