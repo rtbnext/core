@@ -33,17 +33,17 @@ export class ProfileJob extends Job< TProfileJobOptions > {
         }
 
         // --- parse raw profile data ---
-        const parser = new ProfileParser( raw.data );
-        const uri = parser.uri();
-        const id = parser.id();
+        const parsed = new ProfileParser( raw.data );
+        const uri = parsed.uri();
+        const id = parsed.id();
         const profileData = Profile.factory( {
-          uri, id, info: parser.info(), bio: parser.bio(),
-          related: parser.related(), media: parser.media()
+          uri, id, info: parsed.info(), bio: parsed.bio(),
+          related: parsed.related(), media: parsed.media()
         } );
 
         // --- enrich profile data with ranking and wiki ---
         if ( ! Parser.boolean( this.options.skipRanking ) )
-          profileData.ranking = Ranking.generateProfileRanking( parser.sortedLists(), profileData.ranking );
+          profileData.ranking = Ranking.generateProfileRanking( parsed.sortedLists(), profileData.ranking );
 
         if ( ! Parser.boolean( this.options.skipWiki ) )
           profileData.wiki = await Wiki.fromProfileData( profileData );
@@ -57,7 +57,7 @@ export class ProfileJob extends Job< TProfileJobOptions > {
         }
 
         // --- add profile aliases ---
-        try { ProfileJob.index.addAliases( uri, ...parser.aliases() ) }
+        try { ProfileJob.index.addAliases( uri, ...parsed.aliases() ) }
         catch ( err ) { this.log( `Failed to add aliases for ${ uri }`, err, 'warn' ) }
 
         this.log( `Profile with uri ${ uri } processed in ${ res.action } mode` );
