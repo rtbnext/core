@@ -66,34 +66,15 @@ export class Cron implements ICron {
   public async run () : Promise< void > {
     await log.catchAsync( async () => {
       log.debug( 'Run scheduled Cron jobs ...' );
+      const { date, jobs } = this.getScheduledJobs();
 
-      const after = this.ensureLastRun(), before = new Date();
-      const cronOptions = { timezone: this.config.timezone, count: 1, after, before };
-
-      // --- first loop: determine jobs to run ---
-
-      const jobs = [];
-      for ( const JobClass of JOBS ) {
-        if ( ! ( 'cron' in JobClass ) ) continue;
-
-        for ( const { cronexpr, options } of JobClass.cron ) {
-          const [ date ] = prev( cronexpr, cronOptions );
-          if ( date === undefined || ! ( date instanceof Date ) ) continue;
-
-          jobs.push( { job: JobClass, date, options } );
-          break;
-        }
+      for ( const { JobClass, date, options } of jobs ) {
+        log.debug( `Run Cron job ${ JobClass.command.id } scheduled for ${ date.toISOString() }` );
+        await new JobClass( options ).run();
       }
 
-      // --- second loop: run jobs in order ---
-
-      for ( const { job, date, options } of jobs.sort( ( a, b ) => a.date.getTime() - b.date.getTime() ) ) {
-        log.debug( `Run Cron job ${ job.command.id } scheduled for ${ date.toISOString() }` );
-        await new job( options?.( date ) ?? {} as any ).run();
-      }
-
-      log.debug( `Shut down Cron job runner, set last run time to ${ before.toISOString() }` );
-      this.setLastRun( before );
+      log.debug( `Shut down Cron job runner, set last run time to ${ date.toISOString() }` );
+      this.setLastRun( date );
     }, 'Failed to run cron jobs' );
   }
 
