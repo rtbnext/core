@@ -70,17 +70,14 @@ export class ListJob extends Job< TListJobOptions > {
         // --- process profile using ProfileManager ---
         const res = ProfileManager.process( uri, id, profileData, method );
 
-        if ( ! res || ! res.profile ) {
-          this.log( `Failed to process profile for ${ uri }` );
-          continue;
+        if ( ! res || ! res.profile ) this.log( `Failed to process profile for ${ uri }`, undefined, 'warn' );
+        else {
+          ProfileManager.updateQueue( queue, res.profile, res.action, th );
+          profileData = res.profile.getData();
         }
 
-        const { profile, action } = res;
-        ProfileManager.updateQueue( queue, profile, action, th );
-        profileData = profile.getData();
-
         // --- push list item ---
-        items.push( listItem( { parsed, profileData } as any ) );
+        items.push( listItem( { parsed, profileData } as any, res && !! res.profile ) );
 
         count++; total += parsed.networth() ?? 0;
         woman += +( profileData.info?.gender === 'f' );
