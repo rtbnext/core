@@ -18,7 +18,7 @@ export class ProfileParser extends Cache implements IProfileParser {
     super();
 
     this.raw = res.person;
-    this.lists = res.person.personLists.sort(
+    this.lists = ( res.person.personLists ?? [] ).sort(
       ( a, b ) => Number( b.date ?? 0 ) - Number( a.date ?? 0 )
     );
   }
