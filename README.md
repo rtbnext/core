@@ -1,10 +1,10 @@
 # @rtbnext/core
 
-Internal core package for the rtbnext project.
+**Core package for the RTBNext project.**
 
-Implements the [rtbnext database](#) model and provides services for accessing data via the [rtbnext API](#). It is based on and integrates the [@rtbnext/schema](https://github.com/rtbnext/schema).
+This package contains the shared infrastructure used by the RTBNext command-line tools and scheduled jobs. It is not intended to be used as a public library and does not provide a stable API.
 
-It serves as the backbone across all services in the project.
+----
 
 **Copyright © 2026 rtbnext**  
 Created and maintained by Paul Köhler (komed3).  
