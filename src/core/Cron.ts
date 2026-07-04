@@ -38,12 +38,27 @@ export class Cron implements ICron {
     throw new Error( 'Initial Cron job run - will not execute any scheduled events' );
   }
 
+  // --- determine jobs to run since last execution ---
+
   private getScheduledJobs () : { date: Date, jobs: TScheduledJob[] } {
     const after = this.ensureLastRun(), before = new Date();
     const cronOptions = { timezone: this.config.timezone, count: 1, after, before };
     const jobs: TScheduledJob[] = [];
 
-    return { date: before, jobs };
+    for ( const JobClass of JOBS ) {
+      if ( ! ( 'cron' in JobClass ) ) continue;
+
+      for ( const { cronexpr, options } of JobClass.cron ) {
+        const [ date ] = prev( cronexpr, cronOptions );
+        if ( ! ( date instanceof Date ) ) continue;
+
+        jobs.push( { JobClass, date, options: options?.( date ) ?? {} } );
+        break;
+      }
+    }
+
+    log.debug( `Found ${ jobs.length } scheduled Cron jobs expected to run since ${ after.toISOString() }` );
+    return { date: before, jobs: jobs.sort( ( a, b ) => a.date.getTime() - b.date.getTime() ) };
   }
 
   // --- cron runner ---
