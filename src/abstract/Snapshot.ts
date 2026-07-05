@@ -101,7 +101,7 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
         throw new Error( `Failed to write snapshot to ${ path }` );
 
       this.dates = this.scanDates();
-      return true;
+      return this.generateIndex();
     }, `Failed to save snapshot for date ${ snapshot.date }` ) ?? false;
   }
 
