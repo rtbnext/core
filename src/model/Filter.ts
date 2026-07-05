@@ -1,5 +1,5 @@
 import type { TFilterGroup, TFilterSpecial } from '@rtbnext/schema/src/base/const';
-import type { TFilter, TFilterCollection, TFilterItem, TFilterList } from '@rtbnext/schema/src/model/filter';
+import type { TFilter, TFilterCollection, TFilterIndex, TFilterItem, TFilterList } from '@rtbnext/schema/src/model/filter';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
@@ -131,11 +131,33 @@ export class Filter implements IFilter {
     return !! group && !! key && !! ( this.getFilter( group, key )?.items?.some( i => i.uri === uri ) );
   }
 
+  // --- filter index ---
+
+  public getIndex () : TFilterIndex | undefined {
+    return Filter.storage.readJSON< TFilterIndex >( 'filter/index.json' ) || undefined;
+  }
+
+  public generateIndex () : boolean {
+    return log.catch( () => {
+      const data = Utils.metaData() as TFilterIndex;
+
+      FilterGroup.forEach( group => {
+        ( data as any )[ group ] = Filter.storage.scanDir( join( 'filter', group ) )
+          .map( file => file.replace( '.json', '' ).split( '/' ).pop() )
+          .filter( ( key ) : key is string => !! key );
+      } );
+
+      return Filter.storage.writeJSON( 'filter/index.json', data );
+    }, 'Failed to generate filter index' ) ?? false;
+  }
+
   // --- save (partial) filter collection ---
 
-  public save ( col: Partial< TFilterList > ) : void {
+  public save ( col: Partial< TFilterList > ) : boolean {
     FilterGroup.forEach( g => g !== 'special' && col[ g ] && this.saveGroup( g, col[ g ] ) );
     FilterSpecial.forEach( s => col.special?.[ s ] && this.saveSpecial( s, col.special[ s ] ) );
+
+    return this.generateIndex();
   }
 
   // --- instantiate ---
