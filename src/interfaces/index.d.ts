@@ -11,14 +11,14 @@ export interface IIndex<
   readonly size: number;
   readonly values: IterableIterator< I >;
   readonly keys: IterableIterator< string >;
-  getIndex () : D;
+  getIndex () : M;
   has ( uriLike: string ) : boolean;
   get ( uriLike: string ) : I | undefined;
   update ( uriLike: string, data: Partial< I >, allowUpdate?: boolean, save?: boolean ) : I | false;
   delta ( items: Array< { uriLike: string, data: Partial< I > } >, allowUpdate?: boolean ) : number;
   add ( uriLike: string, data: I ) : I | false;
   delete ( uriLike: string ) : void;
-  search ( query: string, looseMatch?: boolean ) : D;
+  search ( query: string, looseMatch?: boolean ) : M;
 }
 
 export interface IProfileIndex extends IIndex< TProfileIndexItem, TProfileIndex, TProfileIndexMap > {
