@@ -3,6 +3,7 @@ import { Filter } from '@/model/Filter';
 import { List } from '@/model/List';
 import { ListIndex } from '@/model/ListIndex';
 import { Mover } from '@/model/Mover';
+import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TIndexJobOptions } from '@/type/job';
 
@@ -21,8 +22,10 @@ export class IndexJob extends Job< TIndexJobOptions > {
       if ( targets.includes( 'mover' ) ) Mover.getInstance().generateIndex();
 
       if ( targets.includes( 'list' ) )
-        for ( const uri in ListIndex.getInstance().getIndex() )
+        for ( const uri of ListIndex.getInstance().getIndex().keys() )
           List.get( uri )?.generateIndex();
+
+      if ( targets.includes( 'profile' ) ) ProfileIndex.rebuildIndex();
     } );
   }
 
