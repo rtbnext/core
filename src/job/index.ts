@@ -1,5 +1,6 @@
 import { AliasJob } from '@/job/Alias';
 import { AnnualJob } from '@/job/Annual';
+import { IndexJob } from '@/job/IndexJob';
 import { ListJob } from '@/job/List';
 import { MergeJob } from '@/job/Merge';
 import { MoveJob } from '@/job/Move';
@@ -14,6 +15,6 @@ import type { TJobRegistry } from '@/type/job';
 
 
 export const JOBS = [
-  AliasJob, AnnualJob, ListJob, MergeJob, MoveJob, PerformanceJob, ProfileJob,
-  QueueJob, RTBJob, StatsJob, Top10Job, WikiJob
+  AliasJob, AnnualJob, IndexJob, ListJob, MergeJob, MoveJob, PerformanceJob,
+  ProfileJob, QueueJob, RTBJob, StatsJob, Top10Job, WikiJob
 ] as const satisfies TJobRegistry;
