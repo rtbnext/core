@@ -22,7 +22,7 @@ export type TAnnualJobOptions = TJobClsOptions< {
 } >;
 
 export type TIndexJobOptions = TJobClsOptions< {
-  targets?: 'all' | ( 'filter' | 'mover' | 'list' | 'profile' )[];
+  targets?: ( 'all' | 'filter' | 'mover' | 'list' )[];
 } >;
 
 export type TListJobOptions = TJobClsOptions< {
