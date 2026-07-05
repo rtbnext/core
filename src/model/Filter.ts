@@ -148,6 +148,7 @@ export class Filter implements IFilter {
 
   public generateIndex () : boolean {
     return log.catch( () => {
+      log.debug( 'Rebuild filter index ...' );
       const data = Utils.metaData() as TFilterIndex;
 
       FilterGroup.forEach( group => {
