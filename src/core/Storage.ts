@@ -109,10 +109,14 @@ export class Storage implements IStorage {
 
   // --- scan dir ---
 
-  public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ] ) : string[] {
+  public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ], exclude?: string[] ) : string[] {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
-      return readdirSync( path ).filter( f => ext.includes( extname( f ).slice( 1 ).toLowerCase() ) );
+
+      return readdirSync( path ).filter( f =>
+        ext.includes( extname( f ).slice( 1 ).toLowerCase() ) &&
+        ( ! exclude || ! exclude.includes( f ) )
+      );
     }, `Failed to scan ${ path }` ) ?? [];
   }
 

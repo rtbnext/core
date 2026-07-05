@@ -4,7 +4,7 @@ export interface IStorage {
   assertPath ( path: string ) : void | never;
   ensurePath ( path: string, isDir?: boolean ) : void;
   stat ( path: string ) : Stats | false;
-  scanDir ( path: string, ext?: string[] ) : string[];
+  scanDir ( path: string, ext?: string[], exclude?: string[] ) : string[];
   readJSON < T extends object > ( path: string ) : T | false;
   writeJSON < T extends object > ( path: string, content: T ) : boolean;
   readCSV < T extends any[] > ( path: string ) : T | false;
