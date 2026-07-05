@@ -1,5 +1,5 @@
 import { ArrayMode } from '@komed3/deepmerge';
-import type { TProfileData, TProfileIndex, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileIndex, TProfileIndexItem, TProfileIndexMap } from '@rtbnext/schema/src/model/profile';
 
 import { Index } from '@/abstract/Index';
 import { log } from '@/core/Logger';
@@ -7,7 +7,7 @@ import { Utils } from '@/core/Utils';
 import type { IProfileIndex } from '@/interface/index';
 
 
-export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > implements IProfileIndex {
+export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProfileIndexMap > implements IProfileIndex {
   protected static instance: IProfileIndex;
   private constructor () { super( 'profile', 'profile/index.json' ) }
 
@@ -35,7 +35,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
 
   // --- special profile index operations ---
 
-  public find ( uriLike: string ) : TProfileIndex {
+  public find ( uriLike: string ) : TProfileIndexMap {
     const uri = Utils.sanitize( uriLike );
     return new Map( [ ...this.index ].filter( ( [ key, { aliases } ] ) => key === uri || aliases.includes( uri ) ) );
   }
