@@ -131,6 +131,15 @@ export class Filter implements IFilter {
     return !! group && !! key && !! ( this.getFilter( group, key )?.items?.some( i => i.uri === uri ) );
   }
 
+  // --- save (partial) filter collection ---
+
+  public save ( col: Partial< TFilterList > ) : boolean {
+    FilterGroup.forEach( g => g !== 'special' && col[ g ] && this.saveGroup( g, col[ g ] ) );
+    FilterSpecial.forEach( s => col.special?.[ s ] && this.saveSpecial( s, col.special[ s ] ) );
+
+    return this.generateIndex();
+  }
+
   // --- filter index ---
 
   public getIndex () : TFilterIndex | undefined {
@@ -149,15 +158,6 @@ export class Filter implements IFilter {
 
       return Filter.storage.writeJSON( 'filter/index.json', data );
     }, 'Failed to generate filter index' ) ?? false;
-  }
-
-  // --- save (partial) filter collection ---
-
-  public save ( col: Partial< TFilterList > ) : boolean {
-    FilterGroup.forEach( g => g !== 'special' && col[ g ] && this.saveGroup( g, col[ g ] ) );
-    FilterSpecial.forEach( s => col.special?.[ s ] && this.saveSpecial( s, col.special[ s ] ) );
-
-    return this.generateIndex();
   }
 
   // --- instantiate ---

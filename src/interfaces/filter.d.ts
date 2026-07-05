@@ -1,5 +1,5 @@
 import type { TFilterGroup, TFilterSpecial } from '@rtbnext/schema/src/base/const';
-import type { TFilter, TFilterList } from '@rtbnext/schema/src/model/filter';
+import type { TFilter, TFilterIndex, TFilterList } from '@rtbnext/schema/src/model/filter';
 
 
 export interface IFilter {
@@ -9,5 +9,7 @@ export interface IFilter {
   getGroup ( group: TFilterGroup ) : Record< string, TFilter > | undefined;
   getSpecial ( special: TFilterSpecial ) : TFilter | undefined;
   has ( path: string, uriLike: string ) : boolean;
-  save ( collection: Partial< TFilterList > ) : void;
+  save ( collection: Partial< TFilterList > ) : boolean;
+  getIndex () : TFilterIndex | undefined;
+  generateIndex () : boolean;
 }
