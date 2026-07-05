@@ -1,5 +1,5 @@
 import usStates from '@isodb/us-states';
-import type { TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
+import type { TAgeGroup, TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
 import type { TLocation } from '@rtbnext/schema/src/base/generic';
 import type { Primitive } from 'devtypes/types/primitive';
 import countries from 'i18n-iso-countries';
@@ -78,6 +78,10 @@ export class Parser {
   public static ageDecade ( value: any, min: number = 30, max: number = 90 ) : number | undefined {
     const age = Parser.age( value );
     return age === undefined ? undefined : Math.max( min, Math.min( max, Math.floor( age / 10 ) * 10 ) );
+  }
+
+  public static ageGroup ( value: any ) : TAgeGroup | undefined {
+    return this.ageDecade( value, 30, 90 )?.toString() as TAgeGroup;
   }
 
   public static gender ( value: unknown ) : TGender | undefined {
