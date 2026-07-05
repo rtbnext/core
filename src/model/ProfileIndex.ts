@@ -5,7 +5,6 @@ import { Index } from '@/abstract/Index';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import type { IProfileIndex } from '@/interface/index';
-import { Profile } from '@/model/Profile';
 
 
 export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > implements IProfileIndex {
@@ -146,28 +145,5 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex > impl
 
   public static getInstance () : IProfileIndex {
     return ProfileIndex.instance ??= new ProfileIndex();
-  }
-
-  // --- rebuild index ---
-
-  public static rebuildIndex () : boolean {
-    return log.catch( () => {
-      log.debug( 'Rebuild profile index ...' );
-      const index = ProfileIndex.getInstance();
-      let status = true;
-
-      for ( const item of index.getIndex().values() ) {
-        const profile = Profile.getByItem( item );
-
-        if ( ! profile ) {
-          log.warn( `Cannot index profile with URI ${ item.uri }` );
-          continue;
-        }
-
-        status = status === true ? !! index.syncFromData( profile.getData() ) : false;
-      }
-
-      return status;
-    }, 'Failed to rebuild profile index' ) ?? false;
   }
 }
