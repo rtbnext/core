@@ -112,6 +112,8 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
   }
 
   public generateIndex () : boolean {
+    log.debug( `Rebuild data index for snapshot data @ ${ this.path } (${ this.dates.length } entries)` );
+
     return Snapshot.storage.writeJSON< TSnapshotIndex >( join( this.path, 'index.json' ), {
       ...Utils.metaData(), dates: this.dates, latest: this.dates.at( -1 )
     } );
