@@ -1,5 +1,5 @@
 import { ArrayMode } from '@komed3/deepmerge';
-import type { TIndex } from '@rtbnext/schema/src/base/generic';
+import type { TIndex, TMetaData } from '@rtbnext/schema/src/base/generic';
 
 import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
@@ -7,12 +7,16 @@ import { Utils } from '@/core/Utils';
 import type { IIndex } from '@/interface/index';
 
 
-export abstract class Index< I extends TIndex, T extends Map< string, I > > implements IIndex< I, T > {
+export abstract class Index<
+  I extends TIndex,
+  D extends TMetaData & { count: number, items: I[] },
+  M extends Map< string, I >
+> implements IIndex< I, D, M > {
   protected static readonly storage = Storage.getInstance();
 
   protected readonly type: 'profile' | 'list';
   protected readonly path: string;
-  protected index: T;
+  protected index: M;
 
   protected constructor ( type: 'profile' | 'list', path: string ) {
     this.type = type;
@@ -23,16 +27,17 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
 
   // --- load & save index ---
 
-  protected loadIndex () : T {
-    const raw = Index.storage.readJSON< Record< string, I > > ( this.path ) ?? {};
-    log.debug( `Index [${ this.type }] loaded: ${ Object.keys( raw ).length } items` );
+  protected loadIndex () : M {
+    const raw = Index.storage.readJSON< D >( this.path ) || { count: 0, items: [] };
+    log.debug( `Index [${ this.type }] loaded: ${ raw.count } items` );
 
-    return new Map( Object.entries( raw ) ) as T;
+    return new Map( raw.items.map( i => [ i.uri, i ] ) ) as M;
   }
 
   protected saveIndex () : void {
-    const content = Object.fromEntries( this.index );
-    Index.storage.writeJSON< Record< string, I > >( this.path, content );
+    Index.storage.writeJSON< D >( this.path, {
+      ...Utils.metaData(), items: [ ...this.index.values() ], count: this.index.size
+    } as D );
   }
 
   // --- basic operations ---
@@ -49,7 +54,7 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
     return this.index.keys();
   }
 
-  public getIndex () : T {
+  public getIndex () : M {
     return this.index;
   }
 
@@ -100,8 +105,8 @@ export abstract class Index< I extends TIndex, T extends Map< string, I > > impl
 
   // --- search index items ---
 
-  public search ( query: string, looseMatch: boolean = false ) : T {
+  public search ( query: string, looseMatch: boolean = false ) : M {
     const tokens = Utils.buildSearchText( query ).split( ' ' ).filter( Boolean );
-    return new Map( [ ...this.index ].filter( ( [ _, { text } ] ) => Utils.tokenSearch( text, tokens, looseMatch ) ) ) as T;
+    return new Map( [ ...this.index ].filter( ( [ _, { text } ] ) => Utils.tokenSearch( text, tokens, looseMatch ) ) ) as M;
   }
 }
