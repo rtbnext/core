@@ -1,4 +1,4 @@
-import type { TSnapshot } from '@rtbnext/schema/src/base/generic';
+import type { TSnapshot, TSnapshotIndex } from '@rtbnext/schema/src/base/generic';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -103,5 +103,17 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
       this.dates = this.scanDates();
       return true;
     }, `Failed to save snapshot for date ${ snapshot.date }` ) ?? false;
+  }
+
+  // --- date index ---
+
+  public getIndex () : TSnapshotIndex | undefined {
+    return Snapshot.storage.readJSON< TSnapshotIndex >( join( this.path, 'index.json' ) ) || undefined;
+  }
+
+  public generateIndex () : boolean {
+    return Snapshot.storage.writeJSON< TSnapshotIndex >( join( this.path, 'index.json' ), {
+      ...Utils.metaData(), dates: this.dates, latest: this.dates.at( -1 )
+    } );
   }
 }
