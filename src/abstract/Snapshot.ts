@@ -23,11 +23,14 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
   // --- helper ---
 
   protected scanDates () : string[] {
-    return Utils.sort( Snapshot.storage.scanDir( this.path ) );
+    return Utils.sort(
+      Snapshot.storage.scanDir( this.path, [ 'json' ], [ 'index.json' ] )
+        .map( f => f.replace( '.json', '' ) )
+    );
   }
 
   protected datedPath ( date: string ) : string {
-    return join( this.path, `${ date }` );
+    return join( this.path, `${ date }.json` );
   }
 
   // --- basic getter ---
