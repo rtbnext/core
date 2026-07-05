@@ -1,4 +1,4 @@
-import type { TSnapshot } from '@rtbnext/schema/src/base/generic';
+import type { TSnapshot, TSnapshotIndex } from '@rtbnext/schema/src/base/generic';
 
 
 export interface ISnapshot< T extends TSnapshot > {
@@ -14,4 +14,6 @@ export interface ISnapshot< T extends TSnapshot > {
   getSnapshot ( dateLike: string, exactMatch?: boolean ) : T | undefined;
   getLatest () : T | undefined;
   saveSnapshot ( snapshot: T, force?: boolean ) : boolean;
+  getIndex () : TSnapshotIndex | undefined;
+  generateIndex () : boolean;
 }
