@@ -1,16 +1,16 @@
-import { AliasJob } from '@/job/Alias';
-import { AnnualJob } from '@/job/Annual';
+import { AliasJob } from '@/job/AliasJob';
+import { AnnualJob } from '@/job/AnnualJob';
 import { IndexJob } from '@/job/IndexJob';
-import { ListJob } from '@/job/List';
-import { MergeJob } from '@/job/Merge';
-import { MoveJob } from '@/job/Move';
-import { PerformanceJob } from '@/job/Performance';
-import { ProfileJob } from '@/job/Profile';
-import { QueueJob } from '@/job/Queue';
-import { RTBJob } from '@/job/RTB';
-import { StatsJob } from '@/job/Stats';
-import { Top10Job } from '@/job/Top10';
-import { WikiJob } from '@/job/Wiki';
+import { ListJob } from '@/job/ListJob';
+import { MergeJob } from '@/job/MergeJob';
+import { MoveJob } from '@/job/MoveJob';
+import { PerformanceJob } from '@/job/PerformanceJob';
+import { ProfileJob } from '@/job/ProfileJob';
+import { QueueJob } from '@/job/QueueJob';
+import { RTBJob } from '@/job/RTBJob';
+import { StatsJob } from '@/job/StatsJob';
+import { Top10Job } from '@/job/Top10Job';
+import { WikiJob } from '@/job/WikiJob';
 import type { TJobRegistry } from '@/type/job';
 
 
