@@ -363,7 +363,7 @@ export class Stats implements IStats {
   public static aggregate ( data: TProfileData, date: string, stats: any ) : void {
     return log.catch( () => {
       const { uri, info, realtime, realtime: { rank, networth } = {} } = data;
-      const age = Parser.age( info.birthDate ), decade = Parser.ageDecade( info.birthDate );
+      const age = Parser.age( info.birthDate ), decade = Parser.ageGroup( info.birthDate );
       const item = { uri, name: info.name.shortName };
 
       const set = ( path: string, n: any ) : void => Utils.update( 'set', stats, path, n );
