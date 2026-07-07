@@ -133,7 +133,7 @@ export class Profile implements IProfile {
     this.touch();
   }
 
-  public updateData ( data: Partial< TProfileData >, mode: ArrayMode = ArrayMode.Replace ) : void {
+  public updateData ( data: Partial< TProfileData >, mode: ArrayMode = ArrayMode.Unique ) : void {
     this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
     this.touch();
   }
