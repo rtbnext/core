@@ -9,6 +9,7 @@ job:
 
 cron:
   timezone: "UTC"
+  jitter: 10000
 
 storage:
   baseDir: "v2"
