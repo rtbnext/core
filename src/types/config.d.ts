@@ -13,6 +13,7 @@ export type TJobConfig = {
 
 export type TCronConfig = {
   timezone: string;
+  jitter: number;
 };
 
 export type TStorageConfig = {
