@@ -41,7 +41,10 @@ export class Cron implements ICron {
   // --- determine jobs to run since last execution ---
 
   private schedule () : { before: Date, after: Date, jobs: TScheduledJob[] } {
-    const after = this.ensureLastRun(), before = new Date();
+    const lastRun = this.ensureLastRun();
+    const after = new Date( Math.max( 0, lastRun.getTime() - this.config.jitter ) );
+    const before = new Date();
+
     const cronOptions = { timezone: this.config.timezone, count: 1, after, before };
     const jobs: TScheduledJob[] = [];
 
