@@ -79,6 +79,9 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
   public rebuildFromProfiles ( uris: string[] = [] ) : number {
     const existing = new Map( this.index );
     const targets = uris.length ? uris : Index.storage.scanDirs( 'profile' );
+    let count = 0;
+
+    this.index.clear();
   }
 
   // --- alias handling ---
