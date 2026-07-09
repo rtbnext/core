@@ -88,4 +88,4 @@ export class Cron implements ICron {
   }
 }
 
-export const run = () => Promise.resolve().then( () => Cron.getInstance().run() );
+export const run = () => Cron.getInstance().run();
