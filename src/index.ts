@@ -1,7 +1,7 @@
 // --- export core classes ---
 
 export { Config } from '@/core/Config';
-export { Cron } from '@/core/Cron';
+export { Cron, run } from '@/core/Cron';
 export { Fetch } from '@/core/Fetch';
 export { log, Logger } from '@/core/Logger';
 export { ListQueue, ProfileQueue, Queue } from '@/core/Queue';
