@@ -12,8 +12,7 @@ export class ProfileIndexJob extends Job< TProfileIndexJobOptions > {
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
-      const uris = this.options.profiles?.length ? this.options.profiles : undefined;
-      const count = ProfileIndexJob.index.rebuildFromProfiles( uris );
+      const count = ProfileIndexJob.index.rebuildFromProfiles( this.options.profiles );
       this.log( `Rebuilt profile index from ${ count } profile(s)` );
     } );
   }
