@@ -1,8 +1,6 @@
 import { parse, stringify } from 'csv-string';
-import {
-  appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync,
-  rmSync, statSync, writeFileSync, type Stats
-} from 'node:fs';
+import type { Stats } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 
 import { Config } from '@/core/Config';
@@ -10,7 +8,7 @@ import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
 import type { IStorage } from '@/interface/storage';
 import type { TStorageConfig } from '@/type/config';
-import type { TStorageRWType, TStorageWOptions } from '@/type/storage';
+import type { TStorageRWType, TStorageScanType, TStorageWOptions } from '@/type/storage';
 
 
 export class Storage implements IStorage {
