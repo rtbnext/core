@@ -4,7 +4,6 @@ import { join } from 'node:path';
 
 import { Index } from '@/abstract/Index';
 import { log } from '@/core/Logger';
-import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IProfileIndex } from '@/interface/index';
 
@@ -81,9 +80,16 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
 
     const count = log.catch( () => {
       const targets = uris.length ? uris : Index.storage.scanDirs( 'profile' );
-      let count = 0;
 
       this.index.clear();
+      let count = 0;
+
+      for ( const uriLike of targets ) {
+        const uri = Utils.sanitize( uriLike );
+        const data = Index.storage.readJSON< TProfileData >( join( 'profile', uri, 'profile.json' ) );
+        if ( ! data ) continue;
+      }
+
       return count;
     }, `Failed to rebuild profile index` ) ?? false;
 
