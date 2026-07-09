@@ -107,15 +107,28 @@ export class Storage implements IStorage {
 
   // --- scan dir ---
 
-  public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ], exclude?: string[] ) : string[] {
+  public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ], exclude?: string[], type: TStorageScanType = 'files' ) : string[] {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
 
-      return readdirSync( path ).filter( f =>
-        ext.includes( extname( f ).slice( 1 ).toLowerCase() ) &&
-        ( ! exclude || ! exclude.includes( f ) )
-      );
+      return readdirSync( path, { withFileTypes: true } ).filter( entry => {
+        const name = entry.name;
+
+        if ( exclude?.includes( name ) ) return false;
+        if ( type === 'dirs' ) return entry.isDirectory();
+        if ( type === 'files' ) return entry.isFile() && ext.includes( extname( name ).slice( 1 ).toLowerCase() );
+
+        return true;
+      } ).map( entry => entry.name );
     }, `Failed to scan ${ path }` ) ?? [];
+  }
+
+  public scanFiles ( path: string, ext: string[] = [ 'json', 'csv' ], exclude?: string[] ) : string[] {
+    return this.scanDir( path, ext, exclude, 'files' );
+  }
+
+  public scanDirs ( path: string, exclude?: string[] ) : string[] {
+    return this.scanDir( path, [], exclude, 'dirs' );
   }
 
   // --- JSON files ---
