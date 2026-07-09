@@ -24,7 +24,7 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
 
   protected scanDates () : string[] {
     return Utils.sort(
-      Snapshot.storage.scanDir( this.path, [ 'json' ], [ 'index.json' ] )
+      Snapshot.storage.scanFiles( this.path, [ 'json' ], [ 'index.json' ] )
         .map( f => f.replace( '.json', '' ) )
     );
   }
