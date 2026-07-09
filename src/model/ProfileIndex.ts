@@ -77,13 +77,13 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
 
   public rebuildFromProfiles ( uris: string[] = [] ) : number {
     log.debug( 'Rebuild profile index ...' );
+
     const oldIndex = new Map( this.index );
+    let count = 0;
 
-    const count = log.catch( () => {
+    const success = log.catch( () => {
       const targets = uris.length ? uris : Index.storage.scanDirs( 'profile' );
-
       this.index.clear();
-      let count = 0;
 
       for ( const uriLike of targets ) {
         const uri = Utils.sanitize( uriLike );
@@ -107,13 +107,13 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
       return count;
     }, `Failed to rebuild profile index` ) ?? false;
 
-    if ( count === false ) {
+    if ( ! success ) {
       log.warn( 'Profile index could not rebuild, reset to previous' );
       this.index = oldIndex;
       this.saveIndex();
     }
 
-    return +count;
+    return count;
   }
 
   // --- alias handling ---
