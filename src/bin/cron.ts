@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { Cron } from '@/core/Cron';
+import { run } from '@/core/Cron';
+import { log } from '@/core/Logger';
 
 
-const cron = Cron.getInstance();
-await cron.run();
+await run().catch( err => log.errMsg( err, 'Unhandled exception caught during job execution' ) );
