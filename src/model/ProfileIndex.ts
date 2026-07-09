@@ -76,12 +76,23 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
     } );
   }
 
-  public rebuildFromProfiles ( uris: string[] = [] ) : number {
+  public rebuildFromProfiles ( uris: string[] = [] ) : number | false {
     const existing = new Map( this.index );
-    const targets = uris.length ? uris : Index.storage.scanDirs( 'profile' );
-    let count = 0;
 
-    this.index.clear();
+    const count = log.catch( () => {
+      const targets = uris.length ? uris : Index.storage.scanDirs( 'profile' );
+      let count = 0;
+
+      this.index.clear();
+      return count;
+    }, `Failed to rebuild profile index` ) ?? false;
+
+    if ( count === false ) {
+      this.index = existing;
+      this.saveIndex();
+    }
+
+    return count;
   }
 
   // --- alias handling ---
