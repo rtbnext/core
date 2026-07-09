@@ -75,8 +75,9 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
     } );
   }
 
-  public rebuildFromProfiles ( uris: string[] = [] ) : number | false {
-    const existing = new Map( this.index );
+  public rebuildFromProfiles ( uris: string[] = [] ) : number {
+    log.debug( 'Rebuild profile index ...' );
+    const oldIndex = new Map( this.index );
 
     const count = log.catch( () => {
       const targets = uris.length ? uris : Index.storage.scanDirs( 'profile' );
@@ -89,7 +90,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
         const data = Index.storage.readJSON< TProfileData >( join( 'profile', uri, 'profile.json' ) );
         if ( ! data ) continue;
 
-        const item = existing.get( uri ) ?? { uri, aliases: [], name: '', text: '' } as TProfileIndexItem;
+        const item = oldIndex.get( uri ) ?? { uri, aliases: [], name: '', text: '' } as TProfileIndexItem;
         this.update( uri, { ...item, uri,
           name: data.info?.name?.shortName ?? item.name,
           desc: data.wiki?.desc ?? item.desc,
@@ -101,15 +102,18 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
         count += 1;
       }
 
+      this.saveIndex();
+      log.debug( `Profile index rebuild done (${ count } entries)` );
       return count;
     }, `Failed to rebuild profile index` ) ?? false;
 
     if ( count === false ) {
-      this.index = existing;
+      log.warn( 'Profile index could not rebuild, reset to previous' );
+      this.index = oldIndex;
       this.saveIndex();
     }
 
-    return count;
+    return +count;
   }
 
   // --- alias handling ---
