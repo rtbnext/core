@@ -335,19 +335,13 @@ export class Stats implements IStats {
       log.debug( 'Generating DB stats ...' );
       const stats = { files: 0, size: 0 };
 
-      const scan = ( path: string ) : void => {
-        readdirSync( path, { recursive: true } ).forEach( p => {
-          if ( p === '.' || p === '..' || typeof p !== 'string' ) return;
-          const fullPath = join( path, p );
-          const stat = Stats.storage.stat( fullPath );
+      for ( const p of readdirSync( Stats.storage.root, { recursive: true } ) ) {
+        if ( typeof p !== 'string' ) continue;
 
-          if ( stat ) stat.isDirectory() ? scan( fullPath ) : (
-            stats.files++, stats.size += stat.size
-          );
-        } );
-      };
+        const stat = Stats.storage.stat( join( Stats.storage.root, p ) );
+        if ( stat?.isFile() ) { stats.files++, stats.size += stat.size }
+      }
 
-      scan( Stats.storage.root );
       return this.setDBStats( stats );
     }, 'Failed to generate DB stats' ) ?? false;
   }
