@@ -1,5 +1,5 @@
 import type { TChangeItem } from '@rtbnext/schema/src/base/assets';
-import type { TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
+import type { TAgeGroup, TStatsGroup as TStatsGroupType } from '@rtbnext/schema/src/base/const';
 import type { TMetaData } from '@rtbnext/schema/src/base/generic';
 import type { TListSnapshot, TPersonListItem } from '@rtbnext/schema/src/model/list';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
@@ -284,14 +284,12 @@ export class Stats implements IStats {
       const spread: TWealthStatsData[ 'spread' ] = {};
 
       scatter.forEach( item => {
-        const { gender: g, age, networth } = item;
-        const decade = Math.max( 30, Math.min( 90, Math.floor( age / 10 ) * 10 ) );
-        decades[ decade ] = ( decades[ decade ] ?? 0 ) + networth;
-        gender[ g ] = ( gender[ g ] ?? 0 ) + networth;
+        const { gender: g, age, networth: n } = item;
+        const decade = Math.max( 30, Math.min( 90, Math.floor( age / 10 ) * 10 ) ).toString() as TAgeGroup;
+        decades[ decade ] = ( decades[ decade ] ?? 0 ) + n;
+        gender[ g ] = ( gender[ g ] ?? 0 ) + n;
 
-        WealthSpread.forEach( n => {
-          if ( networth >= Number( n ) * 1000 ) spread[ n ] = ( spread[ n ] ?? 0 ) + 1;
-        } );
+        WealthSpread.forEach( s => { if ( n >= Number( s ) * 1000 ) spread[ s ] = ( spread[ s ] ?? 0 ) + 1 } );
       } );
 
       return this.setWealthStats( {
