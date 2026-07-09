@@ -1,8 +1,10 @@
 import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileIndex, TProfileIndexItem, TProfileIndexMap } from '@rtbnext/schema/src/model/profile';
+import { join } from 'node:path';
 
 import { Index } from '@/abstract/Index';
 import { log } from '@/core/Logger';
+import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IProfileIndex } from '@/interface/index';
 
@@ -72,6 +74,11 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
       aliases: this.resolveAliases( uri, item?.aliases ),
       text: Utils.buildSearchText( cv )
     } );
+  }
+
+  public rebuildFromProfiles ( uris: string[] = [] ) : number {
+    const existing = new Map( this.index );
+    const targets = uris.length ? uris : Index.storage.scanDirs( 'profile' );
   }
 
   // --- alias handling ---
