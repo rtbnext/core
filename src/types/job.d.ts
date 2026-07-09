@@ -56,10 +56,6 @@ export type TProfileJobOptions = TJobClsOptions< {
   skipWiki?: boolean;
 } >;
 
-export type TProfileIndexJobOptions = TJobClsOptions< {
-  profiles?: string[];
-} >;
-
 export type TQueueJobOptions = TJobClsOptions< {
   type: TQueueType;
   add?: string[];
@@ -67,6 +63,10 @@ export type TQueueJobOptions = TJobClsOptions< {
   prio?: number;
   args?: any;
   clear?: boolean;
+} >;
+
+export type TRebuildJobOptions = TJobClsOptions< {
+  profiles?: string[];
 } >;
 
 export type TTop10JobOptions = TJobClsOptions< {

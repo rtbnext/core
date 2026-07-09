@@ -1,18 +1,18 @@
 import { Job } from '@/abstract/Job';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
-import type { TCommandJob, TProfileIndexJobOptions } from '@/type/job';
+import type { TCommandJob, TRebuildJobOptions } from '@/type/job';
 
 
-export class ProfileIndexJob extends Job< TProfileIndexJobOptions > {
+export class RebuildJob extends Job< TRebuildJobOptions > {
   private static readonly index = ProfileIndex.getInstance();
-  constructor ( options: TProfileIndexJobOptions = {} ) { super( options, 'profile-index' ) }
+  constructor ( options: TRebuildJobOptions = {} ) { super( options, 'rebuild' ) }
 
   // --- job runner ---
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
-      const count = ProfileIndexJob.index.rebuildFromProfiles( this.options.profiles );
+      const count = RebuildJob.index.rebuildFromProfiles( this.options.profiles );
       this.log( `Rebuilt profile index from ${ count } profile(s)` );
     } );
   }
@@ -20,7 +20,7 @@ export class ProfileIndexJob extends Job< TProfileIndexJobOptions > {
   // --- command definition ---
 
   public static readonly command: TCommandJob = {
-    id: 'profile-index',
+    id: 'rebuild',
     desc: 'Rebuild the profile index from stored profile data',
     options: [ {
       name: '-p, --profiles <URIs>',
