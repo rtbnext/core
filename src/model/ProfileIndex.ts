@@ -88,6 +88,17 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
         const uri = Utils.sanitize( uriLike );
         const data = Index.storage.readJSON< TProfileData >( join( 'profile', uri, 'profile.json' ) );
         if ( ! data ) continue;
+
+        const item = existing.get( uri ) ?? { uri, aliases: [], name: '', text: '' } as TProfileIndexItem;
+        this.update( uri, { ...item, uri,
+          name: data.info?.name?.shortName ?? item.name,
+          desc: data.wiki?.desc ?? item.desc,
+          image: data.wiki?.image?.thumb ?? data.wiki?.image?.file ?? item.image,
+          aliases: item.aliases ?? [],
+          text: Utils.buildSearchText( data.bio?.cv ?? '' )
+        }, true, false );
+
+        count += 1;
       }
 
       return count;
