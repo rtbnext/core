@@ -105,7 +105,7 @@ export class Filter implements IFilter {
   }
 
   public getGroup ( group: TFilterGroup ) : Record< string, TFilter > | undefined {
-    Filter.storage.scanDir( join( 'filter', group ) ).forEach( file => {
+    Filter.storage.scanFiles( join( 'filter', group ) ).forEach( file => {
       const key = file.replace( '.json', '' ).split( '/' ).pop();
       if ( key && ! ( this.data[ group ] as any )?.[ key ] ) this.loadFilter( group, key );
     } );
@@ -114,7 +114,7 @@ export class Filter implements IFilter {
   }
 
   public getSpecial ( special: TFilterSpecial ) : TFilter | undefined {
-    Filter.storage.scanDir( 'filter/special' ).forEach( file => {
+    Filter.storage.scanFiles( 'filter/special' ).forEach( file => {
       const key = file.replace( '.json', '' ).split( '/' ).pop();
       if ( key && ! this.data.special?.[ special ] ) this.loadFilter( 'special', special );
     } );
@@ -152,7 +152,7 @@ export class Filter implements IFilter {
       const data = Utils.metaData() as TFilterIndex;
 
       FilterGroup.forEach( group => {
-        ( data as any )[ group ] = Filter.storage.scanDir( join( 'filter', group ) )
+        ( data as any )[ group ] = Filter.storage.scanFiles( join( 'filter', group ) )
           .map( file => file.replace( '.json', '' ).split( '/' ).pop() )
           .filter( ( key ) : key is string => !! key );
       } );
