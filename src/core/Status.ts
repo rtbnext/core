@@ -10,7 +10,7 @@ export class Status implements IStatus {
 
   private constructor () {}
 
-  public log ( service: TService, job: string, success: boolean, duration: number, err?: unknown ) : void {
+  public log ( groups: TService[], job: string, success: boolean, duration: number, err?: unknown ) : void {
     //
   }
 
