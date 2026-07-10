@@ -1,6 +1,6 @@
 import type {
   TAssetType, TChangeFlag, TChildrenGroup, TFilterGroup, TFilterSpecial, TGender, TIndustry,
-  TMaritalStatus, TPercentile, TRelationType, TSelfMadeRank, TStatsGroup, TWealthSpread
+  TMaritalStatus, TPercentile, TRelationType, TSelfMadeRank, TService, TStatsGroup, TWealthSpread
 } from '@rtbnext/schema/src/base/const';
 
 import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
@@ -98,3 +98,9 @@ export const IndustryResolver: TIndustryResolver = {
   'real-estate': 'property',
   'service': 'service'
 } as const;
+
+// --- status ---
+
+export const Services: TService[] = [
+  'profiles', 'lists', 'movers', 'filters', 'statistics'
+];
