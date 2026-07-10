@@ -23,11 +23,12 @@ export class Status implements IStatus {
 
   // --- log job status ---
 
-  public log ( services: TService[], job: string, success: boolean, duration: number, err?: unknown ) : void {
-    this.entries.push( {
-      timestamp: new Date().toISOString(), services, job, success, duration,
-      errMsg: err instanceof Error ? err.message : undefined
-    } );
+  public log ( services: TService[], job: string, success: boolean, duration: number, err?: unknown, save: boolean = true ) : void {
+    const entry: TStatusLogItem = { timestamp: new Date().toISOString(), services, job, success, duration };
+    if ( err instanceof Error ) entry.errMsg = err.message;
+
+    this.entries.push( entry );
+    if ( save ) Status.storage.appendJSONL< TStatusLogItem >( 'jobs.jsonl', [ entry ] );
   }
 
   // --- instantiate ---
