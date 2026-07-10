@@ -39,6 +39,7 @@ export { QueueJob } from '@/job/QueueJob';
 export { RebuildJob } from '@/job/RebuildJob';
 export { RTBJob } from '@/job/RTBJob';
 export { StatsJob } from '@/job/StatsJob';
+export { StatusJob } from '@/job/StatusJob';
 export { Top10Job } from '@/job/Top10Job';
 export { WikiJob } from '@/job/WikiJob';
 
