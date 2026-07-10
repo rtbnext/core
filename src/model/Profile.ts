@@ -44,7 +44,7 @@ export class Profile implements IProfile {
       .sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
   }
 
-  // --- public getter ---
+  // --- meta data ---
 
   public getUri () : string {
     return this.uri;
@@ -54,23 +54,27 @@ export class Profile implements IProfile {
     return this.meta.$metadata;
   }
 
-  public schemaVersion () : number {
+  public get schemaVersion () : TProfileMetaData[ '$metadata' ][ 'schemaVersion' ] {
     return this.meta.$metadata.schemaVersion;
   }
 
-  public lastModified () : string {
+  public get generator () : TProfileMetaData[ '$metadata' ][ 'generator' ] {
+    return this.meta.$metadata.generator;
+  }
+
+  public get lastModified () : string {
     return this.meta.$metadata.lastModified;
   }
 
-  public lastModifiedTime () : number {
+  public get lastModifiedTime () : number {
     return new Date( this.meta.$metadata.lastModified ).getTime();
   }
 
-  public lastLookup () : string | undefined {
+  public get lastLookup () : string | undefined {
     return this.meta.$metadata.lastLookup;
   }
 
-  public lastLookupTime () : number | undefined {
+  public get lastLookupTime () : number | undefined {
     return this.meta.$metadata.lastLookup ? new Date( this.meta.$metadata.lastLookup ).getTime() : undefined;
   }
 
