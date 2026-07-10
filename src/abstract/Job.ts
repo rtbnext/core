@@ -1,3 +1,5 @@
+import type { TService } from '@rtbnext/schema/src/base/const';
+
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
 import { Utils } from '@/core/Utils';
@@ -12,12 +14,14 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
 
   protected readonly options: T;
   protected readonly job: string;
+  protected readonly group: TService;
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
 
-  constructor ( options: T, job: string ) {
+  constructor ( options: T, job: string, group: TService ) {
     this.options = options;
     this.job = job;
+    this.group = group;
 
     const { silent, safeMode } = Job.config.job;
     this.silent = this.options.silent !== undefined ? Parser.boolean( this.options.silent ) : silent;
@@ -53,6 +57,10 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
 
   public getJobName () : string {
     return this.job;
+  }
+
+  public getJobGroup () : TService {
+    return this.group;
   }
 
   public getOptions () : T {
