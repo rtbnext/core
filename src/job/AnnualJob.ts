@@ -39,7 +39,7 @@ export class AnnualJob extends Job< TAnnualJobOptions > {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob< TAnnualJobOptions > = [ {
-    cronexpr: '40 0 1 1 *', // run at 0:40 AM on January 1st every year
-    options: ( date: Date ) => ( { year: date.getFullYear() - 1 } )
+    cronexpr: '40 0 31 12 *', // run at 23:40 AM on December 31st every year
+    options: ( date: Date ) => ( { year: date.getFullYear() } )
   } ] as const;
 }
