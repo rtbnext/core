@@ -44,6 +44,14 @@ export class Status implements IStatus {
     return 'healthy';
   }
 
+  private calculateOverallStatus ( statuses: TStatusFlag[] ) : TStatusFlag {
+    if ( statuses.includes( 'outage' ) ) return 'outage';
+    if ( statuses.includes( 'degraded' ) ) return 'degraded';
+    if ( statuses.includes( 'maintenance' ) ) return 'maintenance';
+    if ( statuses.includes( 'unknown' ) ) return 'unknown';
+    return 'healthy';
+  }
+
   public getStatus () : TStatus {
     const services = Object.fromEntries( Services.map( s => [ s, this.calculateServiceStatus( s ) ] ) ) as TStatus[ 'services' ];
     return { ...Utils.metaData(), services, status: this.calculateOverallStatus( Object.values( services ) ) };
