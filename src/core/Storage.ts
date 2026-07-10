@@ -51,7 +51,7 @@ export class Storage implements IStorage {
       switch ( type ?? this.fileExt( path ) ) {
         case 'raw': return content as T;
         case 'json': return JSON.parse( content ) as T;
-        case 'jsonl': return content.split( '\n' ).filter( line => line.trim() ).map( line => JSON.parse( line ) ) as T;
+        case 'jsonl': return content.split( '\n' ).filter( l => l.trim() ).map( l => JSON.parse( l ) ) as T;
         case 'csv': return parse( content ) as T;
       }
 
