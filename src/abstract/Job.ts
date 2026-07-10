@@ -16,14 +16,14 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
 
   protected readonly options: T;
   protected readonly job: string;
-  protected readonly groups: TService[];
+  protected readonly services: TService[];
   protected readonly silent: boolean;
   protected readonly safeMode: boolean;
 
-  constructor ( options: T, job: string, groups: TService[] ) {
+  constructor ( options: T, job: string, services: TService[] ) {
     this.options = options;
     this.job = job;
-    this.groups = groups;
+    this.services = services;
 
     const { silent, safeMode } = Job.config.job;
     this.silent = this.options.silent !== undefined ? Parser.boolean( this.options.silent ) : silent;
@@ -48,11 +48,11 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
     try {
       const res = await Utils.measure< F, R >( fn );
       this.log( `Finished in ${ ( res.ms / 1000 ).toFixed( 3 ) } sec` );
-      Job.status.log( this.groups, this.job, true, res.ms );
+      Job.status.log( this.services, this.job, true, res.ms );
       return res.result;
     } catch ( err ) {
       this.err( err );
-      Job.status.log( this.groups, this.job, false, 0, err );
+      Job.status.log( this.services, this.job, false, 0, err );
       if ( ! this.safeMode ) throw err;
     }
   }
@@ -63,8 +63,8 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
     return this.job;
   }
 
-  public getJobGroups () : TService[] {
-    return this.groups;
+  public getJobServices () : TService[] {
+    return this.services;
   }
 
   public getOptions () : T {

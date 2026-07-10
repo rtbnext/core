@@ -5,7 +5,7 @@ import type { TJobClsOptions } from '@/type/job';
 
 export interface IJob< T extends TJobClsOptions = TJobClsOptions > {
   getJobName () : string;
-  getJobGroups () : TService[];
+  getJobServices () : TService[];
   getOptions () : T;
   isSilent () : boolean;
   isSafeMode () : boolean;
