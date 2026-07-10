@@ -6,7 +6,7 @@ import type { TCommandJob, TRebuildJobOptions } from '@/type/job';
 
 export class RebuildJob extends Job< TRebuildJobOptions > {
   private static readonly index = ProfileIndex.getInstance();
-  constructor ( options: TRebuildJobOptions = {} ) { super( options, 'rebuild' ) }
+  constructor ( options: TRebuildJobOptions = {} ) { super( options, 'rebuild', [ 'profiles' ] ) }
 
   // --- job runner ---
 

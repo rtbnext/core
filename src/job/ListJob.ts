@@ -20,7 +20,7 @@ export class ListJob extends Job< TListJobOptions > {
   private static readonly profileQueue = ProfileQueue.getInstance();
   private static readonly queue = ListQueue.getInstance();
 
-  constructor ( options: TListJobOptions = {} ) { super( options, 'list' ) }
+  constructor ( options: TListJobOptions = {} ) { super( options, 'list', [ 'profiles', 'lists' ] ) }
 
   // --- job runner ---
 

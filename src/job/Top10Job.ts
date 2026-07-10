@@ -8,7 +8,7 @@ import type { TCommandJob, TCronJob, TTop10JobOptions } from '@/type/job';
 
 export class Top10Job extends Job< TTop10JobOptions > {
   private static readonly stats = Stats.getInstance();
-  constructor ( options: TTop10JobOptions ) { super( options, 'top10' ) }
+  constructor ( options: TTop10JobOptions ) { super( options, 'top10', [ 'statistics' ] ) }
 
   // --- job runner ---
 

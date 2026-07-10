@@ -14,7 +14,7 @@ export class StatsJob extends Job {
   private static readonly index = ProfileIndex.getInstance();
   private static readonly stats = Stats.getInstance();
 
-  constructor ( options: TJobClsOptions = {} ) { super( options, 'stats' ) }
+  constructor ( options: TJobClsOptions = {} ) { super( options, 'stats', [ 'filters', 'statistics' ] ) }
 
   // --- job runner ---
 

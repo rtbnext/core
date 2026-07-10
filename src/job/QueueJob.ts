@@ -11,7 +11,7 @@ export class QueueJob extends Job< TQueueJobOptions > {
     profile: ProfileQueue.getInstance()
   } as const;
 
-  constructor ( options: TQueueJobOptions ) { super( options, 'queue' ) }
+  constructor ( options: TQueueJobOptions ) { super( options, 'queue', [ 'profiles', 'lists' ] ) }
 
   // --- job runner ---
 
