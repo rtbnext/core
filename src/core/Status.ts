@@ -64,12 +64,12 @@ export class Status implements IStatus {
     if ( err instanceof Error ) entry.errMsg = err.message;
 
     this.entries.push( entry );
-    if ( save ) this.save( [ entry ] );
+    if ( save ) this.flush( [ entry ] );
   }
 
   // --- save logs ---
 
-  public save ( entries?: TStatusLog ) : void {
+  public flush ( entries?: TStatusLog ) : void {
     if ( entries?.length ) Status.storage.appendJSONL< TStatusLogItem >( 'jobs.jsonl', entries );
     else Status.storage.writeJSONL< TStatusLogItem >( 'jobs.jsonl', this.entries );
 
