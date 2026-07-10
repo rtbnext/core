@@ -24,10 +24,10 @@ export class Status implements IStatus {
   // --- log job status ---
 
   public log ( services: TService[], job: string, success: boolean, duration: number, err?: unknown ) : void {
-    const entry: TStatusLogItem = { timestamp: new Date().toISOString(), services, job, success, duration };
-    if ( err instanceof Error ) entry.errMsg = err.message;
-
-    this.entries.push( entry );
+    this.entries.push( {
+      timestamp: new Date().toISOString(), services, job, success, duration,
+      errMsg: err instanceof Error ? err.message : undefined
+    } );
   }
 
   // --- instantiate ---
