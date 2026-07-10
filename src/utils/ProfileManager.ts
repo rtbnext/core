@@ -77,7 +77,7 @@ export class ProfileManager {
     const uriLike = profile.getUri();
 
     switch ( action ) {
-      case 'update': if ( ! th || ( profile.lastLookupTime() ?? 0 ) < th ) queue.push( { uriLike } ); break;
+      case 'update': if ( ! th || ( profile.lastLookupTime ?? 0 ) < th ) queue.push( { uriLike } ); break;
       case 'move': queue.push( { uriLike, prio: 5 } ); break;
       case 'create': queue.push( { uriLike, prio: 10 } ); break;
     }
