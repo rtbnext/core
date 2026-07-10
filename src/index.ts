@@ -5,6 +5,7 @@ export { Cron, run } from '@/core/Cron';
 export { Fetch } from '@/core/Fetch';
 export { log, Logger } from '@/core/Logger';
 export { ListQueue, ProfileQueue, Queue } from '@/core/Queue';
+export { Status } from '@/core/Status';
 export { Storage } from '@/core/Storage';
 export { Utils } from '@/core/Utils';
 
