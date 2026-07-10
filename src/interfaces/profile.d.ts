@@ -5,12 +5,7 @@ import type { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileMetaDa
 export interface IProfile {
   getUri () : string;
   getMeta () : TProfileMetaData[ '$metadata' ];
-  readonly schemaVersion: TProfileMetaData[ '$metadata' ][ 'schemaVersion' ];
-  readonly generator: TProfileMetaData[ '$metadata' ][ 'generator' ];
-  readonly lastModified: string;
-  readonly lastModifiedTime: number;
-  readonly lastLookup: string | undefined;
-  readonly lastLookupTime: number | undefined;
+  lastLookup () : number | undefined;
   verify ( id: string ) : boolean;
   touch () : void;
   touchLookup () : void;

@@ -54,27 +54,7 @@ export class Profile implements IProfile {
     return this.meta.$metadata;
   }
 
-  public get schemaVersion () : TProfileMetaData[ '$metadata' ][ 'schemaVersion' ] {
-    return this.meta.$metadata.schemaVersion;
-  }
-
-  public get generator () : TProfileMetaData[ '$metadata' ][ 'generator' ] {
-    return this.meta.$metadata.generator;
-  }
-
-  public get lastModified () : string {
-    return this.meta.$metadata.lastModified;
-  }
-
-  public get lastModifiedTime () : number {
-    return new Date( this.meta.$metadata.lastModified ).getTime();
-  }
-
-  public get lastLookup () : string | undefined {
-    return this.meta.$metadata.lastLookup;
-  }
-
-  public get lastLookupTime () : number | undefined {
+  public lastLookup () : number | undefined {
     return this.meta.$metadata.lastLookup ? new Date( this.meta.$metadata.lastLookup ).getTime() : undefined;
   }
 
