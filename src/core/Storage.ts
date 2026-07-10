@@ -143,6 +143,20 @@ export class Storage implements IStorage {
     return this.write( path, Utils.sortKeysDeep( content ), 'json' );
   }
 
+  // --- JSONL files ---
+
+  public readJSONL < T extends object > ( path: string ) : T[] | false {
+    return this.read< T[] >( path, 'jsonl' );
+  }
+
+  public writeJSONL < T extends object > ( path: string, content: T[] ) : boolean {
+    return this.write( path, content.map( c => Utils.sortKeysDeep( c ) ), 'jsonl' );
+  }
+
+  public appendJSONL < T extends object > ( path: string, content: T[], nl: boolean = true ) : boolean {
+    return this.write( path, content.map( c => Utils.sortKeysDeep( c ) ), 'jsonl', { append: true, nl } );
+  }
+
   // --- CSV files ---
 
   public readCSV < T extends any[] > ( path: string ) : T | false {
