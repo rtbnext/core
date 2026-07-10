@@ -109,7 +109,7 @@ export class Storage implements IStorage {
 
   // --- scan dir ---
 
-  public scanDir ( path: string, ext: string[] = [ 'json', 'csv' ], exclude?: string[], type: TStorageScanType = 'files' ) : string[] {
+  public scanDir ( path: string, ext: string[] = [ 'json', 'jsonl', 'csv' ], exclude?: string[], type: TStorageScanType = 'files' ) : string[] {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
 
@@ -125,7 +125,7 @@ export class Storage implements IStorage {
     }, `Failed to scan ${ path }` ) ?? [];
   }
 
-  public scanFiles ( path: string, ext: string[] = [ 'json', 'csv' ], exclude?: string[] ) : string[] {
+  public scanFiles ( path: string, ext: string[] = [ 'json', 'jsonl', 'csv' ], exclude?: string[] ) : string[] {
     return this.scanDir( path, ext, exclude, 'files' );
   }
 
