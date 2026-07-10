@@ -4,6 +4,7 @@ import type {
 } from '@rtbnext/schema/src/base/const';
 
 import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
+import type { TStatusConfig } from '@/type/status';
 
 
 // --- basics ---
@@ -103,4 +104,32 @@ export const IndustryResolver: TIndustryResolver = {
 
 export const Services: TService[] = [
   'profiles', 'lists', 'movers', 'filters', 'statistics'
-];
+] as const;
+
+export const StatusConfig: TStatusConfig = {
+  profiles: {
+    samples: 40,
+    degradedThreshold: 0.25,
+    outageThreshold: 0.5
+  },
+  lists: {
+    samples: 10,
+    degradedThreshold: 0.2,
+    outageThreshold: 0.4
+  },
+  movers: {
+    samples: 10,
+    degradedThreshold: 0.2,
+    outageThreshold: 0.4
+  },
+  filters: {
+    samples: 10,
+    degradedThreshold: 0.1,
+    outageThreshold: 0.2
+  },
+  statistics: {
+    samples: 10,
+    degradedThreshold: 0.1,
+    outageThreshold: 0.2
+  }
+} as const;

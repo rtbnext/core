@@ -14,8 +14,8 @@ export type TStatusLog = TStatusLogItem[];
 
 export type TStatusPolicy = {
   samples: number;
-  degradedRatio: number;
-  outageRatio: number;
+  degradedThreshold: number;
+  outageThreshold: number;
 };
 
 export type TStatusConfig = Record< TService, TStatusPolicy >;
