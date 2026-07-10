@@ -2,6 +2,7 @@ import type { TService } from '@rtbnext/schema/src/base/const';
 
 import { Config } from '@/core/Config';
 import { log } from '@/core/Logger';
+import { Status } from '@/core/Status';
 import { Utils } from '@/core/Utils';
 import type { IJob } from '@/interface/job';
 import { Parser } from '@/parser/Parser';
@@ -11,6 +12,7 @@ import type { TJobClsOptions } from '@/type/job';
 
 export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implements IJob< T > {
   protected static readonly config = Config.getInstance();
+  protected static readonly status = Status.getInstance();
 
   protected readonly options: T;
   protected readonly job: string;
@@ -46,9 +48,11 @@ export abstract class Job< T extends TJobClsOptions = TJobClsOptions > implement
     try {
       const res = await Utils.measure< F, R >( fn );
       this.log( `Finished in ${ ( res.ms / 1000 ).toFixed( 3 ) } sec` );
+      Job.status.log( this.group, this.job, true, res.ms );
       return res.result;
     } catch ( err ) {
       this.err( err );
+      Job.status.log( this.group, this.job, false, 0, err );
       if ( ! this.safeMode ) throw err;
     }
   }
