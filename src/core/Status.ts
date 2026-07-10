@@ -12,6 +12,8 @@ export class Status implements IStatus {
   private static readonly storage = Storage.getInstance();
   private static instance: IStatus;
 
+  private readonly path = 'system/status.json';
+  private readonly logPath = 'system/jobs.jsonl';
   private readonly entries: TStatusLog;
 
   private constructor () {
@@ -21,7 +23,7 @@ export class Status implements IStatus {
   // --- helper ---
 
   private loadLog () : TStatusLog {
-    return Status.storage.readJSONL< TStatusLogItem >( 'jobs.jsonl' ) || [];
+    return Status.storage.readJSONL< TStatusLogItem >( this.logPath ) || [];
   }
 
   private getServiceEntries ( service: TService ) : TStatusLog {
@@ -60,7 +62,7 @@ export class Status implements IStatus {
   // --- getter ---
 
   public getStatus () : TStatus | undefined {
-    return Status.storage.readJSON< TStatus >( 'status.json' ) || undefined;
+    return Status.storage.readJSON< TStatus >( this.path ) || undefined;
   }
 
   public getServiceStatus ( service: TService ) : TStatusFlag {
@@ -84,10 +86,10 @@ export class Status implements IStatus {
   // --- save logs ---
 
   public flush ( entries?: TStatusLog ) : void {
-    if ( entries?.length ) Status.storage.appendJSONL< TStatusLogItem >( 'jobs.jsonl', entries );
-    else Status.storage.writeJSONL< TStatusLogItem >( 'jobs.jsonl', this.entries );
+    if ( entries?.length ) Status.storage.appendJSONL< TStatusLogItem >( this.logPath, entries );
+    else Status.storage.writeJSONL< TStatusLogItem >( this.logPath, this.entries );
 
-    Status.storage.writeJSON< TStatus >( 'status.json', this.calculateStatus() );
+    Status.storage.writeJSON< TStatus >( this.path, this.calculateStatus() );
   }
 
   // --- instantiate ---

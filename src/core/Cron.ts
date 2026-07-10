@@ -13,6 +13,7 @@ export class Cron implements ICron {
   private static readonly storage = Storage.getInstance();
   private static instance: ICron;
 
+  private readonly path = 'system/cron.json';
   private readonly config: TCronConfig;
 
   private constructor () {
@@ -22,12 +23,12 @@ export class Cron implements ICron {
   // --- helper ---
 
   private getLastRun () : Date | undefined {
-    const lastRun = Cron.storage.readJSON< { lastRun: string } >( 'cron.json' );
+    const lastRun = Cron.storage.readJSON< { lastRun: string } >( this.path );
     return lastRun && lastRun.lastRun ? new Date( lastRun.lastRun ) : undefined;
   }
 
   private setLastRun ( date: Date ) : boolean {
-    return Cron.storage.writeJSON( 'cron.json', { lastRun: date.toISOString() } );
+    return Cron.storage.writeJSON( this.path, { lastRun: date.toISOString() } );
   }
 
   private ensureLastRun () : Date | never {
