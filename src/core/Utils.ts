@@ -58,6 +58,13 @@ export class Utils {
 
   // --- meta data ---
 
+  public static get schemaVersion () : '2' { return '2' }
+  public static get version () : string { return '2.1.0' }
+
+  public static generator () : TMetaData[ '$metadata' ][ 'generator' ] {
+    return `rtbnext/${ Utils.version }`;
+  }
+
   public static metaData < T extends Record< string, unknown > > ( obj?: T ) : TMetaData< T > {
     return { $metadata: { schemaVersion: 2, lastModified: Utils.date( 'iso' ), ...obj } } as TMetaData< T >;
   }
