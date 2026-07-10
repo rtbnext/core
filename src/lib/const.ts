@@ -103,33 +103,38 @@ export const IndustryResolver: TIndustryResolver = {
 // --- status ---
 
 export const Services: TService[] = [
-  'profiles', 'lists', 'movers', 'filters', 'statistics'
+  'profile', 'list', 'mover', 'filter', 'stats', 'system'
 ] as const;
 
 export const StatusConfig: TStatusConfig = {
-  profiles: {
-    samples: 40,
+  profile: {
+    samples: 80,
     degradedThreshold: 0.25,
     outageThreshold: 0.5
   },
-  lists: {
+  list: {
     samples: 10,
     degradedThreshold: 0.2,
     outageThreshold: 0.4
   },
-  movers: {
+  mover: {
     samples: 10,
     degradedThreshold: 0.2,
     outageThreshold: 0.4
   },
-  filters: {
+  filter: {
     samples: 10,
     degradedThreshold: 0.1,
     outageThreshold: 0.2
   },
-  statistics: {
+  stats: {
     samples: 10,
     degradedThreshold: 0.1,
     outageThreshold: 0.2
+  },
+  system: {
+    samples: 200,
+    degradedThreshold: 0.2,
+    outageThreshold: 0.4
   }
 } as const;
