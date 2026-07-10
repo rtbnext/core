@@ -1,9 +1,11 @@
 import type { TService, TStatusFlag } from '@rtbnext/schema/src/base/const';
+import type { TStatus } from '@rtbnext/schema/src/model/status';
 
 import { Storage } from '@/core/Storage';
+import { Utils } from '@/core/Utils';
 import type { IStatus } from '@/interface/status';
+import { Services, StatusConfig } from '@/lib/const';
 import type { TStatusLog, TStatusLogItem } from '@/type/status';
-import { StatusConfig } from '@/lib/const';
 
 
 export class Status implements IStatus {
@@ -40,6 +42,11 @@ export class Status implements IStatus {
     if ( ratio >= config.outageThreshold ) return 'outage';
     if ( ratio >= config.degradedThreshold ) return 'degraded';
     return 'healthy';
+  }
+
+  public getStatus () : TStatus {
+    const services = Object.fromEntries( Services.map( s => [ s, this.calculateServiceStatus( s ) ] ) ) as TStatus[ 'services' ];
+    return { ...Utils.metaData(), services, status: this.calculateOverallStatus( Object.values( services ) ) };
   }
 
   // --- log job status ---
