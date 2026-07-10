@@ -29,7 +29,7 @@ export class Storage implements IStorage {
     log.debug( `Initializing storage at ${ this.path }` );
     this.ensurePath( this.path );
 
-    [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue' ]
+    [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue', 'system' ]
       .forEach( path => this.ensurePath( path, true ) );
   }
 
