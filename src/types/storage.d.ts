@@ -1,4 +1,4 @@
-export type TStorageRWType = 'raw' | 'json' | 'csv';
+export type TStorageRWType = 'raw' | 'json' | 'jsonl' | 'csv';
 
 export type TStorageScanType = 'files' | 'dirs' | 'all';
 
