@@ -66,7 +66,12 @@ export class Utils {
   }
 
   public static metaData < T extends Record< string, unknown > > ( obj?: T ) : TMetaData< T > {
-    return { $metadata: { schemaVersion: 2, lastModified: Utils.date( 'iso' ), ...obj } } as TMetaData< T >;
+    return { $metadata: {
+      schemaVersion: Utils.schemaVersion,
+      generator: Utils.generator(),
+      lastModified: Utils.date( 'iso' ),
+      ...obj
+    } } as TMetaData< T >;
   }
 
   // --- aggregate from object arrays ---
