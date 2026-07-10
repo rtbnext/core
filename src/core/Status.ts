@@ -1,11 +1,12 @@
 import type { TService } from '@rtbnext/schema/src/base/const';
 
 import { Storage } from '@/core/Storage';
+import type { IStatus } from '@/interface/status';
 
 
-export class Status {
+export class Status implements IStatus {
   private static readonly storage = Storage.getInstance();
-  private static instance: Status;
+  private static instance: IStatus;
 
   private constructor () {}
 
@@ -15,7 +16,7 @@ export class Status {
 
   // --- instantiate ---
 
-  public static getInstance () : Status {
+  public static getInstance () : IStatus {
     return Status.instance ??= new Status();
   }
 }
