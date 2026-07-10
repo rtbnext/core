@@ -51,6 +51,7 @@ export class Storage implements IStorage {
       switch ( type ?? this.fileExt( path ) ) {
         case 'raw': return content as T;
         case 'json': return JSON.parse( content ) as T;
+        case 'jsonl': return content.split( '\n' ).filter( line => line.trim() ).map( line => JSON.parse( line ) ) as T;
         case 'csv': return parse( content ) as T;
       }
 
@@ -68,6 +69,7 @@ export class Storage implements IStorage {
       switch ( type ?? this.fileExt( path ) ) {
         case 'raw': content = String( content ); break;
         case 'json': content = JSON.stringify( content, null, this.config.compression ? undefined : 2 ).trim(); break;
+        case 'jsonl': content = content.map( ( c: any ) => JSON.stringify( c ) ).join( '\n' ).trim(); break;
         case 'csv': content = stringify( content ).trim(); break;
         default: throw new Error( `Unsupported file extension: ${ extname( path ) }` );
       }
