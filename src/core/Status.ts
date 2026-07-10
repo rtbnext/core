@@ -48,7 +48,7 @@ export class Status implements IStatus {
     if ( statuses.includes( 'outage' ) ) return 'outage';
     if ( statuses.includes( 'degraded' ) ) return 'degraded';
     if ( statuses.includes( 'maintenance' ) ) return 'maintenance';
-    if ( statuses.includes( 'unknown' ) ) return 'unknown';
+    if ( statuses.every( s => s === 'unknown' ) ) return 'unknown';
     return 'healthy';
   }
 
