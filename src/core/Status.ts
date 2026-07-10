@@ -72,6 +72,8 @@ export class Status implements IStatus {
   public save ( entries?: TStatusLog ) : void {
     if ( entries?.length ) Status.storage.appendJSONL< TStatusLogItem >( 'jobs.jsonl', entries );
     else Status.storage.writeJSONL< TStatusLogItem >( 'jobs.jsonl', this.entries );
+
+    Status.storage.writeJSON< TStatus >( 'status.json', this.getStatus() );
   }
 
   // --- instantiate ---
