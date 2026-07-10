@@ -21,6 +21,10 @@ export class Status implements IStatus {
     return Status.storage.readJSONL< TStatusLogItem >( 'jobs.jsonl' ) || [];
   }
 
+  private getServiceEntries ( service: TService ) : TStatusLog {
+    return this.entries.filter( e => e.services.includes( service ) );
+  }
+
   // --- log job status ---
 
   public log ( services: TService[], job: string, success: boolean, duration: number, err?: unknown, save: boolean = true ) : void {
