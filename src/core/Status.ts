@@ -8,7 +8,17 @@ export class Status implements IStatus {
   private static readonly storage = Storage.getInstance();
   private static instance: IStatus;
 
-  private constructor () {}
+  private readonly jsonl;
+
+  private constructor () {
+    this.jsonl = this.loadJSONL();
+  }
+
+  // --- helper ---
+
+  private loadJSONL () {
+    return Status.storage.readJSONL( 'jobs.jsonl' );
+  }
 
   public log ( services: TService[], job: string, success: boolean, duration: number, err?: unknown ) : void {
     //
