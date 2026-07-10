@@ -4,7 +4,7 @@ import type { TCommandJob, TJobClsOptions } from '@/type/job';
 
 
 export class StatusJob extends Job {
-  constructor ( options: TJobClsOptions = {} ) { super( options, 'status', [] ) }
+  constructor ( options: TJobClsOptions = {} ) { super( options, 'status', [ 'system' ] ) }
 
   // --- job runner ---
 

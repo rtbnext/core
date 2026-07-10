@@ -7,7 +7,7 @@ import { ProfileMerger } from '@/util/ProfileMerger';
 
 
 export class MergeJob extends Job< TMergeJobOptions > {
-  constructor ( options: TMergeJobOptions ) { super( options, 'merge', [ 'profiles' ] ) }
+  constructor ( options: TMergeJobOptions ) { super( options, 'merge', [ 'profile' ] ) }
 
   // --- job runner ---
 

@@ -5,7 +5,7 @@ import { Annual } from '@/util/Annual';
 
 
 export class AnnualJob extends Job< TAnnualJobOptions > {
-  constructor ( options: TAnnualJobOptions ) { super( options, 'annual', [ 'profiles' ] ) }
+  constructor ( options: TAnnualJobOptions ) { super( options, 'annual', [ 'profile' ] ) }
 
   // --- job runner ---
 

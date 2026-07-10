@@ -6,7 +6,7 @@ import type { TAliasJobOptions, TCommandJob } from '@/type/job';
 
 export class AliasJob extends Job< TAliasJobOptions > {
   private static readonly index = ProfileIndex.getInstance();
-  constructor ( options: TAliasJobOptions ) { super( options, 'alias', [ 'profiles' ] ) }
+  constructor ( options: TAliasJobOptions ) { super( options, 'alias', [ 'profile' ] ) }
 
   // --- job runner ---
 

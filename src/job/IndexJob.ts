@@ -9,7 +9,7 @@ import type { TCommandJob, TIndexJobOptions } from '@/type/job';
 
 export class IndexJob extends Job< TIndexJobOptions > {
   private static readonly TARGETS = [ 'filter', 'mover', 'list' ] as const;
-  constructor ( options: TIndexJobOptions ) { super( options, 'index', [ 'lists', 'movers', 'filters' ] ) }
+  constructor ( options: TIndexJobOptions ) { super( options, 'index', [ 'list', 'mover', 'filter' ] ) }
 
   // --- job runner ---
 

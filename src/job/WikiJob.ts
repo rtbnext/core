@@ -6,7 +6,7 @@ import { Wiki } from '@/util/Wiki';
 
 
 export class WikiJob extends Job< TWikiJobOptions > {
-  constructor ( options: TWikiJobOptions ) { super( options, 'Wiki', [ 'profiles' ] ) }
+  constructor ( options: TWikiJobOptions ) { super( options, 'Wiki', [ 'profile' ] ) }
 
   // --- job runner ---
 

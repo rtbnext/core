@@ -23,7 +23,7 @@ export class RTBJob extends Job {
   private static readonly queue = ProfileQueue.getInstance();
   private static readonly stats = Stats.getInstance();
 
-  constructor ( options: TJobClsOptions = {} ) { super( options, 'rtb', [ 'profiles', 'lists', 'movers', 'statistics' ] ) }
+  constructor ( options: TJobClsOptions = {} ) { super( options, 'rtb', [ 'profile', 'list', 'mover', 'stats' ] ) }
 
   // --- job runner ---
 
