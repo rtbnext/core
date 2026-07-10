@@ -12,6 +12,9 @@ export interface IStorage {
   scanDirs ( path: string, exclude?: string[] ) : string[];
   readJSON < T extends object > ( path: string ) : T | false;
   writeJSON < T extends object > ( path: string, content: T ) : boolean;
+  readJSONL < T extends object > ( path: string ) : T[] | false;
+  writeJSONL < T extends object > ( path: string, content: T[] ) : boolean;
+  appendJSONL < T extends object > ( path: string, content: T[], nl?: boolean ) : boolean;
   readCSV < T extends any[] > ( path: string ) : T | false;
   writeCSV < T extends any[] > ( path: string, content: T ) : boolean;
   appendCSV < T extends any[] > ( path: string, content: T, nl?: boolean ) : boolean;
