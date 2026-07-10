@@ -52,9 +52,23 @@ export class Status implements IStatus {
     return 'healthy';
   }
 
-  public getStatus () : TStatus {
+  public calculateStatus () : TStatus {
     const services = Object.fromEntries( Services.map( s => [ s, this.calculateServiceStatus( s ) ] ) ) as TStatus[ 'services' ];
     return { ...Utils.metaData(), services, status: this.calculateOverallStatus( Object.values( services ) ) };
+  }
+
+  // --- getter ---
+
+  public getStatus () : TStatus | undefined {
+    return Status.storage.readJSON< TStatus >( 'status.json' ) || undefined;
+  }
+
+  public getServiceStatus ( service: TService ) : TStatusFlag {
+    return this.getStatus()?.services[ service ] ?? 'unknown';
+  }
+
+  public getOverallStatus () : TStatusFlag {
+    return this.getStatus()?.status ?? 'unknown';
   }
 
   // --- log job status ---
@@ -73,7 +87,7 @@ export class Status implements IStatus {
     if ( entries?.length ) Status.storage.appendJSONL< TStatusLogItem >( 'jobs.jsonl', entries );
     else Status.storage.writeJSONL< TStatusLogItem >( 'jobs.jsonl', this.entries );
 
-    Status.storage.writeJSON< TStatus >( 'status.json', this.getStatus() );
+    Status.storage.writeJSON< TStatus >( 'status.json', this.calculateStatus() );
   }
 
   // --- instantiate ---
