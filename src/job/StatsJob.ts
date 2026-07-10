@@ -55,6 +55,6 @@ export class StatsJob extends Job {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob = [ {
-    cronexpr: '30 23 * * *', // run at 23:30 AM on every day
+    cronexpr: '5 0 * * *', // run at 0:05 AM on every day
   } ] as const;
 }

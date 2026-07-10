@@ -128,6 +128,6 @@ export class ListJob extends Job< TListJobOptions > {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob = [ {
-    cronexpr: '*/15 0 * * *', // run every 15 minutes between 00:00 and 00:59 AM
+    cronexpr: '*/15 1 * * *', // run every 15 minutes between 1:00 and 1:59 AM
   } ] as const;
 }

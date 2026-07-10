@@ -146,6 +146,6 @@ export class RTBJob extends Job {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob = [ {
-    cronexpr: '15 23 * * *', // run at 23:15 AM on every day
+    cronexpr: '30 23 * * *', // run at 11:30 PM on every day
   } ] as const;
 }
