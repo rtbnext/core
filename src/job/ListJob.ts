@@ -33,10 +33,15 @@ export class ListJob extends Job< TListJobOptions > {
       // --- if no URI is provided, exit the job ---
       if ( ! listUri ) return;
 
-      // --- check if the list already exists for the specified year ---
+      // --- get list instance (if exists) ---
       let list = List.get( listUri );
-      if ( list && args.year && ! this.options.override && list.datesInYear( args.year ).length )
-        throw new Error( `List with URI ${ listUri } already exists for year ${ args.year }` );
+
+      // --- check if the list already exists for the specified year ---
+      if ( list && args.year && ! this.options.override && list.datesInYear( args.year ).length ) {
+        this.log( `List with URI ${ listUri } already exists for year ${ args.year }`, { listUri, year: args.year }, 'warn' );
+        return;
+      }
+        
 
       // --- fetch raw list data from Forbes ---
       const res = await ListJob.fetch.list< TPersonListEntry >( listUri, args.year ?? '0' );
