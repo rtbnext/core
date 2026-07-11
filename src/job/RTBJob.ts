@@ -37,7 +37,7 @@ export class RTBJob extends Job {
 
       // --- if RTB list is already up to date, exit the job ---
       if ( RTBJob.stats.getGlobalStats().date === date ) {
-        this.log( 'RTB list is already up to date' );
+        this.log( 'RTB list is already up to date', { date }, 'warn' );
         return;
       }
 
