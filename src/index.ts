@@ -15,6 +15,10 @@ export { Index } from '@/abstract/Index';
 export { Job } from '@/abstract/Job';
 export { Snapshot } from '@/abstract/Snapshot';
 
+// --- export constants ---
+
+export * from '@/lib/const';
+
 // --- export model classes ---
 
 export { Filter } from '@/model/Filter';
