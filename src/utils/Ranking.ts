@@ -26,8 +26,8 @@ export class Ranking {
 
       const item = Parser.container< TRankingItem >( {
         date: { value: date ?? timestamp, type: 'date', args: [ 'ymd' ], strict: false },
-        rank: { value: rank, type: 'number' },
-        networth: { value: finalWorth, type: 'money' }
+        rank: { value: rank || undefined, type: 'number' },
+        networth: { value: finalWorth || undefined, type: 'money' }
       } );
 
       if ( ! entries.has( listUri ) ) entries.set( listUri, [] );
