@@ -38,7 +38,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   }
 
   public networth () : number | undefined {
-    return this.cache( 'networth', () => Parser.strict( this.raw.finalWorth, 'money' ) );
+    return this.cache( 'networth', () => Parser.strict( this.raw.finalWorth, 'money' ) || undefined );
   }
 
   public dropOff () : boolean | undefined {
