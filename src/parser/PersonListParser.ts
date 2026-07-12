@@ -1,5 +1,5 @@
 import type { TLocation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
-import type { TProfileBio, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
 import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import { Utils } from '@/core/Utils';
@@ -55,7 +55,10 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
 
   public info () : TProfileInfo {
     return this.cache( 'info', () => ( {
-      flags: { dropOff: this.dropOff() }, ...this.name(),
+      flags: Parser.container< TProfileFlags >( {
+        dropOff: { value: this.dropOff(), type: 'boolean' },
+        family: { value: this.name().family, type: 'boolean' }
+      } ),
       ...Parser.container< Partial< TProfileInfo > >( {
         gender: { value: this.raw.gender, type: 'gender' },
         birthDate: { value: this.raw.birthDate, type: 'date' },
@@ -63,6 +66,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
         industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
         source: { value: this.raw.source, type: 'list' }
       } ),
+      name: this.name().name,
       residence: this.residence(),
       selfMade: this.selfMade(),
       philanthropyScore: this.philanthropyScore(),
