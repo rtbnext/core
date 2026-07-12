@@ -22,7 +22,7 @@ export class RTBListParser extends PersonListParser implements IRTBListParser {
         info: { value: a.exchange && a.ticker ? Parser.container< TAsset[ 'info' ] >( {
           exchange: { value: a.exchange, type: 'string' },
           ticker: { value: a.ticker, type: 'string' },
-          shares: { value: a.numberOfShares, type: 'number' },
+          shares: { value: a.numberOfShares || undefined, type: 'number' },
           price: { value: a.currentPrice ?? a.sharePrice, type: 'number', args: [ 6 ] },
           currency: { value: a.currencyCode, type: 'string' },
           exRate: { value: a.exchangeRate, type: 'number', args: [ 6 ] }
