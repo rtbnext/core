@@ -50,6 +50,6 @@ fetch:
       maxRequests: 20
 
 queue:
-  tsThreshold: 2592000
+  tsThreshold: 2592000000
   maxSize: 10000
   defaultPrio: 0
