@@ -1,6 +1,7 @@
 import type { TFilterList } from '@rtbnext/schema/src/model/filter';
 
 import { Job } from '@/abstract/Job';
+import { ProfileQueue } from '@/core/Queue';
 import { StatsGroup } from '@/lib/const';
 import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
@@ -12,6 +13,7 @@ import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 export class StatsJob extends Job {
   private static readonly filter = Filter.getInstance();
   private static readonly index = ProfileIndex.getInstance();
+  private static readonly queue = ProfileQueue.getInstance();
   private static readonly stats = Stats.getInstance();
 
   constructor ( options: TJobClsOptions = {} ) { super( options, 'stats', [ 'filter', 'stats' ] ) }
@@ -29,6 +31,13 @@ export class StatsJob extends Job {
       for ( const item of StatsJob.index.values ) {
         const profile = Profile.getByItem( item );
         if ( ! profile ) continue;
+
+        // --- if profile data is missing, skip and add to queue for re-fetching ---
+        if ( profile.check().missingFiles?.includes( 'profile.json' ) ) {
+          this.log( `Invalid profile skipped: ${ item.uri }`, undefined, 'warn' );
+          StatsJob.queue.add( { uriLike: item.uri, prio: 10 } );
+          continue;
+        }
 
         const data = profile.getData();
         Stats.aggregate( data, date, stats );

@@ -7,6 +7,7 @@ export interface IProfile {
   getMeta () : TProfileMetaData[ '$metadata' ];
   lastLookup () : number | undefined;
   verify ( id: string ) : boolean;
+  check ( data?: boolean ) : any;
   touch () : void;
   touchLookup () : void;
   needSave () : boolean;
