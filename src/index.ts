@@ -41,6 +41,15 @@ export { PersonListParser } from '@/parser/PersonListParser';
 export { ProfileParser } from '@/parser/ProfileParser';
 export { RTBListParser } from '@/parser/RTBListParser';
 
+// --- export utility classes ---
+
+export { Annual } from '@/util/Annual';
+export { Performance } from '@/util/Performance';
+export { ProfileManager } from '@/util/ProfileManager';
+export { ProfileMerger } from '@/util/ProfileMerger';
+export { Ranking } from '@/util/Ranking';
+export { Wiki } from '@/util/Wiki';
+
 // --- export job classes ---
 
 export { AliasJob } from '@/job/AliasJob';
