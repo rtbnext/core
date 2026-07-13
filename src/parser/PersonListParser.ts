@@ -31,10 +31,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   }
 
   public rank () : number | undefined {
-    return this.cache( 'rank', () =>
-      Parser.strict( this.raw.rank, 'number' ) ??
-      Parser.strict( this.raw.position, 'number' )
-    );
+    return this.cache( 'rank', () => Parser.strict( this.raw.rank ?? this.raw.position, 'number' ) );
   }
 
   public networth () : number | undefined {
@@ -86,13 +83,13 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'selfMade', () => {
       if ( this.raw.selfMadeRank ) return Parser.container< TSelfMade >( {
         is: { value: this.raw.selfMadeRank > 7, type: 'boolean' },
-        rank: { value: this.raw.selfMadeRank, type: 'number' }
+        rank: { value: this.raw.selfMadeRank, type: 'clamp', args: [ [ 1, 10 ] ] }
       } );
     } );
   }
 
   public philanthropyScore () : number | undefined {
-    return this.cache( 'philanthropyScore', () => Parser.strict( this.raw.philanthropyScore, 'number' ) );
+    return this.cache( 'philanthropyScore', () => Parser.strict< number >( this.raw.philanthropyScore, 'clamp', [ 0, 5 ] ) );
   }
 
   public organization () : TOrganization | undefined {

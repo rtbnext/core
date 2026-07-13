@@ -126,13 +126,13 @@ export class ProfileParser extends Cache implements IProfileParser {
     return this.cache( 'selfMade', () => Parser.container< TSelfMade >( {
       type: { value: this.raw.selfMadeType, type: 'string' },
       is: { value: this.raw.selfMade, type: 'boolean' },
-      rank: { value: this.raw.selfMadeRank, type: 'number' }
+      rank: { value: this.raw.selfMadeRank, type: 'clamp', args: [ [ 1, 10 ] ] }
     } ) );
   }
 
   public philanthropyScore () : number | undefined {
     return this.cache( 'philanthropyScore', () =>
-      Utils.aggregate( this.lists, 'philanthropyScore', 'first' ) as number | undefined
+      Parser.strict( Utils.aggregate( this.lists, 'philanthropyScore', 'first' ), 'clamp', [ 0, 5 ] )
     );
   }
 
