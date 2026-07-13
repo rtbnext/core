@@ -38,6 +38,10 @@ export class Parser {
     return Number( Number( value ).toFixed( digits ) );
   }
 
+  public static clamp ( value: unknown, limits: [ min: number, max: number ], digits: number = 0 ) : number {
+    return Parser.number( Math.max( limits[ 0 ], Math.min( limits[ 1 ], Number( value ) ) ), digits );
+  }
+
   public static money ( value: unknown ) : number {
     return Parser.number( value, 3 );
   }
@@ -77,7 +81,7 @@ export class Parser {
 
   public static ageDecade ( value: any, min: number = 30, max: number = 90 ) : number | undefined {
     const age = Parser.age( value );
-    return age === undefined ? undefined : Math.max( min, Math.min( max, Math.floor( age / 10 ) * 10 ) );
+    return age === undefined ? undefined : Parser.clamp( Math.floor( age / 10 ) * 10, [ min, max ] );
   }
 
   public static ageGroup ( value: any ) : TAgeGroup | undefined {
