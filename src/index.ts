@@ -50,12 +50,16 @@ export { WikiJob } from '@/job/WikiJob';
 
 // --- export types ---
 
+export type * from '@/type/annual';
 export type * from '@/type/config';
 export type * from '@/type/fetch';
+export type * from '@/type/generic';
 export type * from '@/type/job';
 export type * from '@/type/list';
 export type * from '@/type/parser';
 export type * from '@/type/profile';
 export type * from '@/type/queue';
 export type * from '@/type/response';
+export type * from '@/type/status';
 export type * from '@/type/storage';
+export type * from '@/type/wiki';
