@@ -1,10 +1,12 @@
 import type { TService, TStatusFlag } from '@rtbnext/schema/src/base/const';
 import type { TStatus } from '@rtbnext/schema/src/model/status';
 
+import { Config } from '@/core/Config';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IStatus } from '@/interface/status';
 import { Services, StatusPolicy } from '@/lib/const';
+import type { TStatusConfig } from '@/type/config';
 import type { TStatusLog, TStatusLogItem } from '@/type/status';
 
 
@@ -14,9 +16,11 @@ export class Status implements IStatus {
 
   private readonly path = 'system/status.json';
   private readonly logPath = 'system/jobs.jsonl';
+  private readonly config: TStatusConfig;
   private readonly entries: TStatusLog;
 
   private constructor () {
+    this.config = Config.getInstance().status;
     this.entries = this.loadLog();
   }
 
@@ -33,6 +37,8 @@ export class Status implements IStatus {
   // --- status calculation ---
 
   private calculateServiceStatus ( service: TService ) : TStatusFlag {
+    if ( this.config.maintenance?.includes( service ) ) return 'maintenance';
+
     const config = StatusPolicy[ service ];
     const entries = this.getServiceEntries( service ).slice( -config.samples );
 
