@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { log } from '@/core/Logger';
 import { ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
+import type { IProfile } from '@/interface/profile';
 import { Gender, Industry, MaritalStatus } from '@/lib/const';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
@@ -50,35 +51,32 @@ export class Integrity {
 
   // --- check profile ---
 
-  private static checkProfile ( item: TProfileIndexItem ) : boolean {
-    const profile = Profile.getByItem( item ), flags: string[] = [];
+  private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, flags: string[] ) : boolean {
+    const healthy = flags.length === 0;
+    const status: TProfileStatus = { state: ! profile ? 'missing' : healthy ? 'healthy' : 'invalid', flags };
 
-    // --- check missing profile ---
-    if ( ! profile ) flags.push( 'missing-profile' );
-
-    // --- check missing files ---
-    if ( profile ) this.validateFiles( item.uri, flags );
-
-    // --- check invalid profile data ---
-    if ( profile && ! flags.includes( 'missing-profile.json' ) )
-      this.validateData( profile.getData(), flags );
-
-    const status: TProfileStatus = {
-      state: flags.includes( 'missing-profile' ) ? 'missing' : flags.length ? 'invalid' : 'healthy',
-      flags
-    };
-
-    if ( status.state !== 'healthy' ) {
+    if ( ! healthy ) {
       log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) })` );
       this.queue.add( { uriLike: item.uri, prio: 10 } );
     }
 
-    if ( profile ) Integrity.storage.writeJSON< TProfileMetaData >(
+    if ( profile ) this.storage.writeJSON< TProfileMetaData >(
       join( 'profile', item.uri, 'meta.json' ),
       { $metadata: { ...profile.getMeta(), status } }
     );
 
-    return status.state === 'healthy';
+    return healthy;
+  }
+
+  private static checkProfile ( item: TProfileIndexItem ) : boolean {
+    const profile = Profile.getByItem( item ), flags: string[] = [];
+
+    if ( ! profile ) return this.finish( item, undefined, [ 'missing-profile' ] );
+
+    this.validateFiles( item.uri, flags );
+    if ( ! flags.includes( 'missing-profile.json' ) ) this.validateData( profile.getData(), flags );
+
+    return this.finish( item, profile, flags );
   }
 
   // --- run integrity check ---
