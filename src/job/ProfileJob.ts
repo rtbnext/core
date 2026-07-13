@@ -89,6 +89,6 @@ export class ProfileJob extends Job< TProfileJobOptions > {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob< TProfileJobOptions > = [ {
-    cronexpr: '*/5 2-22 * * *', // run every 5 minutes between 2:00 AM and 10:59 PM
+    cronexpr: '*/10 2-22 * * *', // run every 10 minutes between 2:00 AM and 10:59 PM
   } ] as const;
 }
