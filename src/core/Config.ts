@@ -8,7 +8,7 @@ import { Utils } from '@/core/Utils';
 import type { IConfig } from '@/interface/config';
 import type {
   TConfigObject, TCronConfig, TFetchConfig, TJobConfig, TLoggingConfig,
-  TQueueConfig, TStorageConfig
+  TQueueConfig, TStatusConfig, TStorageConfig
 } from '@/type/config';
 
 
@@ -48,6 +48,7 @@ export class Config implements IConfig {
     public get environment () : string { return this.env }
     public get config () : TConfigObject { return this.cfg }
     public get logging () : TLoggingConfig { return this.cfg.logging }
+    public get status () : TStatusConfig { return this.cfg.status }
     public get job () : TJobConfig { return this.cfg.job }
     public get cron () : TCronConfig { return this.cfg.cron }
     public get storage () : TStorageConfig { return this.cfg.storage }
