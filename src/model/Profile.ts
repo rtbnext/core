@@ -64,6 +64,16 @@ export class Profile implements IProfile {
     return Utils.verifyHash( id, this.getData().id );
   }
 
+  // --- check integrity ---
+
+  public check ( data: boolean = false ) : any {
+    const missingFiles = [ 'meta.json', 'profile.json', 'history.csv' ].filter(
+      file => ! Profile.storage.exists( this.resolvePath( file ) )
+    );
+
+    return { missingFiles };
+  }
+
   // --- work flow ---
 
   public touch () : void {
