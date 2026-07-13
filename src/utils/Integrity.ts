@@ -1,4 +1,4 @@
-import type { TProfileData, TProfileIndexItem, TProfileMetaData, TProfileStatus } from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileIndexItem, TProfileStatus } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -60,11 +60,7 @@ export class Integrity {
       Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
     }
 
-    if ( profile ) Integrity.storage.writeJSON< TProfileMetaData >(
-      join( 'profile', item.uri, 'meta.json' ),
-      { $metadata: { ...profile.getMeta(), status } }
-    );
-
+    if ( profile ) profile.saveStatus( status );
     return healthy;
   }
 
