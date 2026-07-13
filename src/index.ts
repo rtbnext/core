@@ -44,6 +44,7 @@ export { RTBListParser } from '@/parser/RTBListParser';
 // --- export utility classes ---
 
 export { Annual } from '@/util/Annual';
+export { Integrity } from '@/util/Integrity';
 export { Performance } from '@/util/Performance';
 export { ProfileManager } from '@/util/ProfileManager';
 export { ProfileMerger } from '@/util/ProfileMerger';
@@ -56,6 +57,7 @@ export { AliasJob } from '@/job/AliasJob';
 export { AnnualJob } from '@/job/AnnualJob';
 export { JOBS } from '@/job/index';
 export { IndexJob } from '@/job/IndexJob';
+export { IntegrityJob } from '@/job/IntegrityJob';
 export { ListJob } from '@/job/ListJob';
 export { MergeJob } from '@/job/MergeJob';
 export { MoveJob } from '@/job/MoveJob';
