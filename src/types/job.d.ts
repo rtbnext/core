@@ -69,6 +69,10 @@ export type TRebuildJobOptions = TJobClsOptions< {
   profiles?: string[];
 } >;
 
+export type TStatusJobOptions = TJobClsOptions< {
+  cleanup?: boolean;
+} >;
+
 export type TTop10JobOptions = TJobClsOptions< {
   date?: readonly [
     year: number,
