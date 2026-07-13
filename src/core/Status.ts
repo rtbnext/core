@@ -92,6 +92,36 @@ export class Status implements IStatus {
     Status.storage.writeJSON< TStatus >( this.path, this.calculateStatus() );
   }
 
+  // --- clean up log ---
+
+  public cleanup ( months: number = 3 ) : void {
+    const th = new Date(); th.setMonth( th.getMonth() - months );
+    const archive = new Map< string, TStatusLog >();
+
+    const active = this.entries.filter( entry => {
+      const date = new Date( entry.timestamp );
+      if ( date >= th ) return true;
+
+      const month = entry.timestamp.slice( 0, 7 );
+      archive.set( month, [ ...( archive.get( month ) ?? [] ), entry ] );
+
+      return false;
+    } );
+
+    for ( const [ month, entries ] of archive ) {
+      const path = `system/archive/${ month }.jsonl`;
+      const existing = Status.storage.readJSONL< TStatusLogItem >( path ) || [];
+      const unique = [ ...new Map( [ ...existing, ...entries ].map(
+        entry => [ JSON.stringify( entry ), entry ]
+      ) ).values() ];
+
+      Status.storage.writeJSONL< TStatusLogItem >( path, unique );
+    }
+
+    this.entries.splice( 0, this.entries.length, ...active );
+    this.flush();
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IStatus {
