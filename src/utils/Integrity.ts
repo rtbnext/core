@@ -83,10 +83,9 @@ export class Integrity {
 
   public static run () : void {
     log.info( 'Run profile integrity check ...' );
-    let checked = 0, invalid = 0;
 
-    for ( const item of this.index.values )
-      checked++, invalid += +! this.checkProfile( item );
+    let checked = 0, invalid = 0;
+    for ( const item of this.index.values ) checked++, invalid += +! this.checkProfile( item );
 
     log.info( `Integrity check completed: ${ checked } checked, ${ invalid } invalid` );
   }
