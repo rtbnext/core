@@ -1,9 +1,10 @@
-import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
 import { ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
 import { Gender, Industry, MaritalStatus } from '@/lib/const';
+import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 
 export class Integrity {
@@ -11,6 +12,8 @@ export class Integrity {
   private static readonly storage = Storage.getInstance();
   private static readonly index = ProfileIndex.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
+
+  // --- integrity checks ---
 
   private static validateFiles ( uri: string, flags: string[] ) : void {
     for ( const file of this.files )
@@ -35,5 +38,23 @@ export class Integrity {
     if ( ! Array.isArray( data.media ) ) flags.push( 'invalid-media' );
     if ( ! Array.isArray( data.assets ) ) flags.push( 'invalid-assets' );
     if ( ! Array.isArray( data.annual ) ) flags.push( 'invalid-annual' );
+  }
+
+  // --- check profile ---
+
+  private static checkProfile ( item: TProfileIndexItem ) : void {
+    const profile = Profile.getByItem( item ), flags: string[] = [];
+
+    // --- check missing profile ---
+    if ( ! profile ) flags.push( 'missing-profile' );
+
+    // --- check missing files ---
+    if ( profile ) this.validateFiles( item.uri, flags );
+
+    // --- check invalid profile data ---
+    if ( profile && ! flags.includes( 'missing-profile.json' ) )
+      this.validateData( profile.getData(), flags );
+
+    //
   }
 }
