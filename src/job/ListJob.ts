@@ -3,6 +3,7 @@ import type { TBillionairesListItem, TPersonListItem } from '@rtbnext/schema/src
 import { Job } from '@/abstract/Job';
 import { Fetch } from '@/core/Fetch';
 import { ListQueue, ProfileQueue } from '@/core/Queue';
+import type { IList } from '@/interface/list';
 import { getListConfigByUri } from '@/lib/list';
 import { List } from '@/model/List';
 import { Profile } from '@/model/Profile';
@@ -11,7 +12,6 @@ import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 import { ProfileManager } from '@/util/ProfileManager';
-import type { IList } from '@/interface/list';
 
 
 type TListQueueItem = { uri: string, args: { year?: string, name?: string, desc?: string } };
@@ -29,7 +29,7 @@ export class ListJob extends Job< TListJobOptions > {
     return !! ( list && year && ! this.options.override && list.datesInYear( year ).length );
   }
 
-  public async proceedList ( { uri: listUri, args }: TListQueueItem ) : Promise< void > {
+  public async proceedList ( { uri: listUri, args }: TListQueueItem ) : Promise< boolean > {
     const method = this.options.profileUpdate ? 'updateData' : 'createOnly';
 
     // --- get list instance (if exists) ---
@@ -38,7 +38,7 @@ export class ListJob extends Job< TListJobOptions > {
     // --- check if the list already exists for the specified year ---
     if ( list && this.hasSnapshot( list, args.year ) ) {
       this.log( `List with URI ${ listUri } already exists for year ${ args.year }`, { uri: listUri, year: args.year }, 'warn' );
-      return;
+      return false;
     }
 
     // --- fetch raw list data from Forbes ---
@@ -99,6 +99,27 @@ export class ListJob extends Job< TListJobOptions > {
     // --- save data ---
     list.saveSnapshot( { date, count, items, stats }, this.options.override );
     ListJob.profileQueue.addMany( queue );
+
+    return true;
+  }
+
+  public async run () : Promise< void > {
+    await this.protect( async () => {
+      if ( this.options.list ) return await this.proceedList( { uri: this.options.list, args: this.options } );
+
+      // --- if no uri is specified, run the queue ---
+      let attempts = 100;
+
+      while ( attempts-- > 0 ) {
+        const item = ListJob.queue.next()[ 0 ] as TListQueueItem;
+
+        // --- if there is no queue item, exit the job ---
+        if ( ! item?.uri ) return;
+
+        // --- run the queue item
+        if ( await this.proceedList( item ) ) return;
+      }
+    } );
   }
 
   // --- command definition ---
