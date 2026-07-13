@@ -4,6 +4,7 @@ logging:
   file: true
 
 status:
+  maintenance: []
 
 job:
   silent: false
