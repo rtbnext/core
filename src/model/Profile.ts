@@ -118,7 +118,7 @@ export class Profile implements IProfile {
   }
 
   public updateData ( data: Partial< TProfileData >, mode: ArrayMode = ArrayMode.Unique ) : void {
-    this.data = Utils.merge< TProfileData >( mode, this.getData(), data );
+    this.data = Utils.merge< TProfileData >( mode, Utils.sortKeysDeep( this.getData() ), Utils.sortKeysDeep( data ) );
     this.touch();
   }
 

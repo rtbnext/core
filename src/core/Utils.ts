@@ -158,9 +158,7 @@ export class Utils {
   // --- merging ---
 
   public static merge < T > ( mode: ArrayMode, ...objects: any[] ) : T {
-    return ( Utils.mergeInstances[ mode ] ??= new Merger( { arrayMode: mode } ) ).merge< T >(
-      objects[ 0 ] ?? {} as T, ...objects.slice( 1 )
-    ) as T;
+    return ( Utils.mergeInstances[ mode ] ??= new Merger( { arrayMode: mode } ) ).merge< T >( {} as T, ...objects );
   }
 
   public static unique < T = unknown > ( arr: T[] ) : T[] {
