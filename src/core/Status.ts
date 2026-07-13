@@ -37,7 +37,7 @@ export class Status implements IStatus {
   // --- status calculation ---
 
   private calculateServiceStatus ( service: TService ) : TStatusFlag {
-    if ( this.config.maintenance?.includes( service ) ) return 'maintenance';
+    if ( this.config?.maintenance?.includes( service ) ) return 'maintenance';
 
     const config = StatusPolicy[ service ];
     const entries = this.getServiceEntries( service ).slice( -config.samples );

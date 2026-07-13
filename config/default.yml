@@ -3,6 +3,8 @@ logging:
   console: false
   file: true
 
+status:
+
 job:
   silent: false
   safeMode: true
