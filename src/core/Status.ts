@@ -4,7 +4,7 @@ import type { TStatus } from '@rtbnext/schema/src/model/status';
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
 import type { IStatus } from '@/interface/status';
-import { Services, StatusConfig } from '@/lib/const';
+import { Services, StatusPolicy } from '@/lib/const';
 import type { TStatusLog, TStatusLogItem } from '@/type/status';
 
 
@@ -33,7 +33,7 @@ export class Status implements IStatus {
   // --- status calculation ---
 
   private calculateServiceStatus ( service: TService ) : TStatusFlag {
-    const config = StatusConfig[ service ];
+    const config = StatusPolicy[ service ];
     const entries = this.getServiceEntries( service ).slice( -config.samples );
 
     if ( ! entries.length ) return 'unknown';

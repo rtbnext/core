@@ -4,7 +4,7 @@ import type {
 } from '@rtbnext/schema/src/base/const';
 
 import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
-import type { TStatusConfig } from '@/type/status';
+import type { TStatusPolicy } from '@/type/status';
 
 
 // --- basics ---
@@ -106,7 +106,7 @@ export const Services: TService[] = [
   'profile', 'list', 'mover', 'filter', 'stats', 'system'
 ] as const;
 
-export const StatusConfig: TStatusConfig = {
+export const StatusPolicy: TStatusPolicy = {
   profile: {
     samples: 80,
     degradedThreshold: 0.25,

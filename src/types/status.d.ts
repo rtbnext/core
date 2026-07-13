@@ -12,10 +12,10 @@ export type TStatusLogItem = {
 
 export type TStatusLog = TStatusLogItem[];
 
-export type TStatusPolicy = {
+export type TStatusServicePolicy = {
   samples: number;
   degradedThreshold: number;
   outageThreshold: number;
 };
 
-export type TStatusConfig = Record< TService, TStatusPolicy >;
+export type TStatusPolicy = Record< TService, TStatusServicePolicy >;
