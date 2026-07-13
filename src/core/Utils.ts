@@ -172,6 +172,7 @@ export class Utils {
       case ArrayMode.Replace: return source;
       case ArrayMode.Keep: return target;
       case ArrayMode.Concat: return [ ...target, ...source ];
+      case ArrayMode.Reference: return [ ...new Set( [ ...target, ...source ] ) ];
       case ArrayMode.Unique: return Utils.unique< T >( [ ...target, ...source ] );
     }
   }
