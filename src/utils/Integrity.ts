@@ -1,15 +1,22 @@
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+import { join } from 'node:path';
 
 import { ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
-import { ProfileIndex } from '@/model/ProfileIndex';
 import { Gender, Industry, MaritalStatus } from '@/lib/const';
+import { ProfileIndex } from '@/model/ProfileIndex';
 
 export class Integrity {
   private static readonly files = [ 'meta.json', 'profile.json', 'history.csv' ] as const;
   private static readonly storage = Storage.getInstance();
   private static readonly index = ProfileIndex.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
+
+  private static validateFiles ( uri: string, flags: string[] ) : void {
+    for ( const file of this.files )
+      if ( ! Integrity.storage.exists( join( 'profile', uri, file ) ) )
+        flags.push( `missing-${ file }` );
+  }
 
   private static validateData ( data: TProfileData, flags: string[] ) : void {
     if ( ! data.id ) flags.push( 'missing-id' );
