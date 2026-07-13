@@ -14,31 +14,38 @@ export class Integrity {
   private static readonly index = ProfileIndex.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
 
-  // --- integrity checks ---
+  // --- validation ---
+
+  private static validate ( flags: string[], checks: readonly ( readonly [ unknown, string ] )[] ) : void {
+    for ( const [ ok, flag ] of checks ) if ( ! ok ) flags.push( flag );
+  }
 
   private static validateFiles ( uri: string, flags: string[] ) : void {
-    for ( const file of this.files )
-      if ( ! Integrity.storage.exists( join( 'profile', uri, file ) ) )
-        flags.push( `missing-${ file }` );
+    this.validate( flags, this.files.map( file => [
+      this.storage.exists( join( 'profile', uri, file ) ),
+      `missing-${ file }`
+    ] as const ) );
   }
 
   private static validateData ( data: TProfileData, flags: string[] ) : void {
-    if ( ! data.id ) flags.push( 'missing-id' );
-    if ( ! data.uri ) flags.push( 'missing-uri' );
+    this.validate( flags, [
+      [ data.id, 'missing-id' ],
+      [ data.uri, 'missing-uri' ],
 
-    if ( ! data.info?.name?.fullName ) flags.push( 'missing-name' );
-    if ( ! Gender.includes( data.info?.gender ) ) flags.push( 'invalid-gender' );
-    if ( data.info?.birthDate && Number.isNaN( new Date( data.info?.birthDate ) ) ) flags.push( 'invalid-birthDate' );
-    if ( data.info?.maritalStatus && ! MaritalStatus.includes( data.info?.maritalStatus ) ) flags.push( 'invalid-maritalStatus' );
-    if ( data.info?.children && Number.isNaN( data.info?.children ) ) flags.push( 'invalid-children' );
+      [ data.info?.name?.fullName, 'missing-name' ],
+      [ Gender.includes( data.info?.gender ), 'invalid-gender' ],
+      [ ! data.info?.birthDate || !Number.isNaN( new Date( data.info.birthDate ).getTime() ), 'invalid-birthDate' ],
+      [ ! data.info?.maritalStatus || MaritalStatus.includes( data.info.maritalStatus ), 'invalid-maritalStatus' ],
+      [ data.info?.children == null || !Number.isNaN( data.info.children ), 'invalid-children' ],
 
-    if ( ! Industry.includes( data.info?.industry ) ) flags.push( 'invalid-industry' );
-    if ( ! Array.isArray( data.info?.source ) ) flags.push( 'invalid-source' );
+      [ Industry.includes( data.info?.industry ), 'invalid-industry' ],
+      [ Array.isArray( data.info?.source ), 'invalid-source' ],
 
-    if ( ! Array.isArray( data.related ) ) flags.push( 'invalid-related' );
-    if ( ! Array.isArray( data.media ) ) flags.push( 'invalid-media' );
-    if ( ! Array.isArray( data.assets ) ) flags.push( 'invalid-assets' );
-    if ( ! Array.isArray( data.annual ) ) flags.push( 'invalid-annual' );
+      [ Array.isArray( data.related ), 'invalid-related' ],
+      [ Array.isArray( data.media ), 'invalid-media' ],
+      [ Array.isArray( data.assets ), 'invalid-assets' ],
+      [ Array.isArray( data.annual ), 'invalid-annual' ]
+    ] );
   }
 
   // --- check profile ---
