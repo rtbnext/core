@@ -22,14 +22,14 @@ export class Integrity {
   }
 
   private static validateFiles ( uri: string, flags: string[] ) : void {
-    this.validate( flags, this.files.map( file => [
-      this.storage.exists( join( 'profile', uri, file ) ),
+    Integrity.validate( flags, Integrity.files.map( file => [
+      Integrity.storage.exists( join( 'profile', uri, file ) ),
       `missing-${ file }`
     ] as const ) );
   }
 
   private static validateData ( data: TProfileData, flags: string[] ) : void {
-    this.validate( flags, [
+    Integrity.validate( flags, [
       [ data.id, 'missing-id' ],
       [ data.uri, 'missing-uri' ],
 
@@ -57,10 +57,10 @@ export class Integrity {
 
     if ( ! healthy ) {
       log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) })` );
-      this.queue.add( { uriLike: item.uri, prio: 10 } );
+      Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
     }
 
-    if ( profile ) this.storage.writeJSON< TProfileMetaData >(
+    if ( profile ) Integrity.storage.writeJSON< TProfileMetaData >(
       join( 'profile', item.uri, 'meta.json' ),
       { $metadata: { ...profile.getMeta(), status } }
     );
@@ -71,12 +71,12 @@ export class Integrity {
   private static checkProfile ( item: TProfileIndexItem ) : boolean {
     const profile = Profile.getByItem( item ), flags: string[] = [];
 
-    if ( ! profile ) return this.finish( item, undefined, [ 'missing-profile' ] );
+    if ( ! profile ) return Integrity.finish( item, undefined, [ 'missing-profile' ] );
 
-    this.validateFiles( item.uri, flags );
-    if ( ! flags.includes( 'missing-profile.json' ) ) this.validateData( profile.getData(), flags );
+    Integrity.validateFiles( item.uri, flags );
+    if ( ! flags.includes( 'missing-profile.json' ) ) Integrity.validateData( profile.getData(), flags );
 
-    return this.finish( item, profile, flags );
+    return Integrity.finish( item, profile, flags );
   }
 
   // --- run integrity check ---
@@ -85,7 +85,7 @@ export class Integrity {
     log.info( 'Run profile integrity check ...' );
 
     let checked = 0, invalid = 0;
-    for ( const item of this.index.values ) checked++, invalid += +! this.checkProfile( item );
+    for ( const item of Integrity.index.values ) checked++, invalid += +! Integrity.checkProfile( item );
 
     log.info( `Integrity check completed: ${ checked } checked, ${ invalid } invalid` );
   }
