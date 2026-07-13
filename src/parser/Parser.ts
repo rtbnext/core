@@ -35,11 +35,12 @@ export class Parser {
   }
 
   public static number ( value: unknown, digits: number = 0 ) : number {
-    return Number( Number( value ).toFixed( digits ) );
+    const parsed = Number( value );
+    return Number( ( Number.isNaN( parsed ) ? 0 : parsed ).toFixed( digits ) );
   }
 
   public static clamp ( value: unknown, limits: [ min: number, max: number ], digits: number = 0 ) : number {
-    return Parser.number( Math.max( limits[ 0 ], Math.min( limits[ 1 ], Number( value ) ) ), digits );
+    return Math.max( limits[ 0 ], Math.min( limits[ 1 ], Parser.number( value, digits ) ) );
   }
 
   public static money ( value: unknown ) : number {
