@@ -1,5 +1,8 @@
 import { ArrayMode } from '@komed3/deepmerge';
-import type { TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
+import type {
+  TProfileData, TProfileHistory, TProfileHistoryItem, TProfileIndexItem,
+  TProfileMetaData, TProfileStatus
+} from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -58,20 +61,18 @@ export class Profile implements IProfile {
     return this.meta.$metadata.lastLookup ? new Date( this.meta.$metadata.lastLookup ).getTime() : undefined;
   }
 
+  public status () : TProfileStatus | undefined {
+    return this.meta.$metadata.status;
+  }
+
+  public healthy () : boolean | undefined {
+    return this.meta.$metadata.status ? this.meta.$metadata.status?.state === 'healthy' : undefined;
+  }
+
   // --- verify profile ---
 
   public verify ( id: string ) : boolean {
     return Utils.verifyHash( id, this.getData().id );
-  }
-
-  // --- check integrity ---
-
-  public check ( data: boolean = false ) : any {
-    const missingFiles = [ 'meta.json', 'profile.json', 'history.csv' ].filter(
-      file => ! Profile.storage.exists( this.resolvePath( file ) )
-    );
-
-    return { missingFiles };
   }
 
   // --- work flow ---
@@ -112,6 +113,11 @@ export class Profile implements IProfile {
 
       this.touched = false;
     }, `Failed to save profile: ${ this.uri }` );
+  }
+
+  public saveStatus ( status: TProfileStatus ) : void {
+    this.meta.$metadata.status = status;
+    Profile.storage.writeJSON< TProfileMetaData >( this.resolvePath( 'meta.json' ), this.meta );
   }
 
   // --- profile data ---
