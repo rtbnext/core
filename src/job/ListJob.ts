@@ -29,6 +29,78 @@ export class ListJob extends Job< TListJobOptions > {
     return !! ( list && year && ! this.options.override && list.datesInYear( year ).length );
   }
 
+  public async proceedList ( { uri: listUri, args }: TListQueueItem ) : Promise< void > {
+    const method = this.options.profileUpdate ? 'updateData' : 'createOnly';
+
+    // --- get list instance (if exists) ---
+    let list = List.get( listUri );
+
+    // --- check if the list already exists for the specified year ---
+    if ( list && this.hasSnapshot( list, args.year ) ) {
+      this.log( `List with URI ${ listUri } already exists for year ${ args.year }`, { uri: listUri, year: args.year }, 'warn' );
+      return;
+    }
+
+    // --- fetch raw list data from Forbes ---
+    const res = await ListJob.fetch.list< TPersonListEntry >( listUri, args.year ?? '0' );
+    if ( ! res?.success || ! res.data ) throw new Error( 'Request failed' );
+
+    const { parser, indexItem, listItem } = getListConfigByUri( listUri );
+    const th = Date.now() - Job.config.queue.tsThreshold;
+    const { entries } = parser.prepareList( res );
+
+    // --- determine list date ---
+    const d = new Date( entries[ 0 ].date ?? entries[ 0 ].timestamp );
+    if ( Number.isNaN( d.getTime() ) ) throw new Error( `Failed to determine date for ${ listUri } list` );
+    if ( args.year && d.getFullYear() !== +args.year )
+      throw new Error( `List year ${ args.year } does not match data year ${ d.getFullYear() }` );
+
+    this.log( `Processing ${ listUri } list for year ${ args.year ?? '-' } (${ entries.length } items)` );
+
+    // --- process list data ---
+    let count = 0, total = 0, woman = 0, { name, desc } = args;
+    const date = Parser.date( d, 'ymd' )!;
+    const items: ( TPersonListItem | TBillionairesListItem )[] = [];
+    const queue: TQueueOptions[] = [];
+
+    for ( const raw of Object.values( entries ) ) {
+      name ??= Parser.string( raw.name );
+      desc ??= Parser.string( raw.listDescription );
+
+      const parsed = new parser( raw ), uri = parsed.uri(), id = parsed.id();
+      let profileData = Profile.factory( { uri, id, info: parsed.info(), bio: parsed.bio() } );
+
+      // --- process profile using ProfileManager ---
+      const { profile, action } = ProfileManager.process( uri, id, profileData, method ) || {};
+
+      if ( ! profile || ! action ) this.log( `Failed to process profile for ${ uri }`, undefined, 'warn' );
+      else {
+        ProfileManager.updateQueue( queue, profile, action, th );
+        profileData = profile.getData();
+      }
+
+      // --- push list item ---
+      items.push( listItem( { parsed, profileData, profile } as any ) );
+
+      count++; total += parsed.networth() ?? 0;
+      woman += +( profileData.info?.gender === 'f' );
+    }
+
+    // --- create list (if not exists) ---
+    if ( ! name || ! desc ) throw new Error( `Failed to determine name or description for ${ listUri } list` );
+    list ??= List.create( listUri, indexItem( listUri, { name, desc } ) ) || undefined;
+
+    if ( ! list ) throw new Error( `Failed to create or retrieve ${ listUri } list` );
+    this.log( `Saving ${ listUri } list for year ${ args.year ?? '-' } (${ count } items)` );
+
+    // --- create stats ---
+    const stats = parser.stats( { date, count, total, woman } );
+
+    // --- save data ---
+    list.saveSnapshot( { date, count, items, stats }, this.options.override );
+    ListJob.profileQueue.addMany( queue );
+  }
+
   // --- command definition ---
 
   public static readonly command: TCommandJob = {
