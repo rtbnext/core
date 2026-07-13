@@ -32,10 +32,9 @@ export class StatsJob extends Job {
         const profile = Profile.getByItem( item );
         if ( ! profile ) continue;
 
-        // --- if profile data is missing, skip and add to queue for re-fetching ---
-        if ( profile.check().missingFiles?.includes( 'profile.json' ) ) {
+        // --- skip unhealthy profiles ---
+        if ( ! profile.healthy() ) {
           this.log( `Invalid profile skipped: ${ item.uri }`, undefined, 'warn' );
-          StatsJob.queue.add( { uriLike: item.uri, prio: 10 } );
           continue;
         }
 
