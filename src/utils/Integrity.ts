@@ -1,6 +1,7 @@
-import type { TProfileData, TProfileIndexItem } from '@rtbnext/schema/src/model/profile';
+import type { TProfileData, TProfileIndexItem, TProfileMetaData, TProfileStatus } from '@rtbnext/schema/src/model/profile';
 import { join } from 'node:path';
 
+import { log } from '@/core/Logger';
 import { ProfileQueue } from '@/core/Queue';
 import { Storage } from '@/core/Storage';
 import { Gender, Industry, MaritalStatus } from '@/lib/const';
@@ -42,7 +43,7 @@ export class Integrity {
 
   // --- check profile ---
 
-  private static checkProfile ( item: TProfileIndexItem ) : void {
+  private static checkProfile ( item: TProfileIndexItem ) : boolean {
     const profile = Profile.getByItem( item ), flags: string[] = [];
 
     // --- check missing profile ---
@@ -55,6 +56,33 @@ export class Integrity {
     if ( profile && ! flags.includes( 'missing-profile.json' ) )
       this.validateData( profile.getData(), flags );
 
-    //
+    const status: TProfileStatus = {
+      state: flags.includes( 'missing-profile' ) ? 'missing' : flags.length ? 'invalid' : 'healthy',
+      flags
+    };
+
+    if ( status.state !== 'healthy' ) {
+      log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) })` );
+      this.queue.add( { uriLike: item.uri, prio: 10 } );
+    }
+
+    if ( profile ) Integrity.storage.writeJSON< TProfileMetaData >(
+      join( 'profile', item.uri, 'meta.json' ),
+      { $metadata: { ...profile.getMeta(), status } }
+    );
+
+    return status.state === 'healthy';
+  }
+
+  // --- run integrity check ---
+
+  public static run () : void {
+    log.info( 'Run profile integrity check ...' );
+    let checked = 0, invalid = 0;
+
+    for ( const item of this.index.values )
+      checked++, invalid += +! this.checkProfile( item );
+
+    log.info( `Integrity check completed: ${ checked } checked, ${ invalid } invalid` );
   }
 }
