@@ -11,4 +11,5 @@ export interface IStatus {
   getServiceStatus ( service: TService ) : TStatusFlag;
   getOverallStatus () : TStatusFlag;
   flush ( entries?: TStatusLog ) : void;
+  cleanup ( months?: number ) : void;
 }
