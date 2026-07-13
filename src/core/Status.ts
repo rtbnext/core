@@ -73,6 +73,14 @@ export class Status implements IStatus {
     return this.getStatus()?.status ?? 'unknown';
   }
 
+  public getLog () : TStatusLog {
+    return this.entries;
+  }
+
+  public getArchive ( month: string ) : TStatusLog {
+    return Status.storage.readJSONL< TStatusLogItem >( `system/archive/${ month }.jsonl` ) || [];
+  }
+
   // --- log job status ---
 
   public log ( services: TService[], job: string, success: boolean, duration: number, err?: unknown, save: boolean = true ) : void {

@@ -10,6 +10,8 @@ export interface IStatus {
   getStatus () : TStatus | undefined;
   getServiceStatus ( service: TService ) : TStatusFlag;
   getOverallStatus () : TStatusFlag;
+  getLog () : TStatusLog;
+  getArchive ( month: string ) : TStatusLog;
   flush ( entries?: TStatusLog ) : void;
   cleanup ( months?: number ) : void;
 }
