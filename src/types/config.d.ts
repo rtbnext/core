@@ -1,9 +1,15 @@
+import type { TService } from '@rtbnext/schema/src/base/const';
+
 export type TLoggingLevel = 'error' | 'warn' | 'info' | 'debug';
 
 export type TLoggingConfig = {
   level: TLoggingLevel;
   console?: boolean;
   file?: boolean;
+};
+
+export type TStatusConfig = {
+  maintenance?: TService[];
 };
 
 export type TJobConfig = {
@@ -59,6 +65,7 @@ export type TQueueConfig = {
 
 export type TConfigObject = {
   logging: TLoggingConfig;
+  status: TStatusConfig;
   job: TJobConfig;
   cron: TCronConfig;
   storage: TStorageConfig;
