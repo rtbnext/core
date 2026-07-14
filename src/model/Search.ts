@@ -13,7 +13,10 @@ export class Search implements ISearch {
 
   private readonly path = 'profile/search.json';
   private index: TSearchIndexItem[] = [];
-  private constructor () {}
+
+  private constructor () {
+    this.load();
+  }
 
   // --- helper ---
 
@@ -24,10 +27,24 @@ export class Search implements ISearch {
 
   // --- getter ---
 
+  public getIndex () : TSearchIndexItem[] {
+    return this.index;
+  }
+
+  public get size () : number {
+    return this.index.length;
+  }
+
+  // --- filter index ---
+
+  public filter ( predicate: ( item: TSearchIndexItem ) => boolean ) : TSearchIndexItem[] {
+    return this.index.filter( predicate );
+  }
+
   // --- save search index ---
 
-  public save ( index: TSearchIndexItem[] ) : void {
-    this.index = index;
+  public save ( items?: TSearchIndexItem[] ) : void {
+    if ( items !== undefined ) this.index = items;
 
     Search.storage.writeJSON< TSearchIndex >( this.path, {
       ...Utils.metaData(), count: this.index.length, items: this.index
@@ -42,8 +59,8 @@ export class Search implements ISearch {
 
   // --- aggregate search index data ---
 
-  public static aggregate ( data: TProfileData, meta: TProfileMetaData[ '$metadata' ], index: TSearchIndexItem[] ) : void {
-    index.push( {
+  public static aggregate ( data: TProfileData, meta: TProfileMetaData[ '$metadata' ], items: TSearchIndexItem[] ) : void {
+    items.push( {
       id: data.id,
       uri: data.uri,
 
