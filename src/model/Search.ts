@@ -15,6 +15,15 @@ export class Search implements ISearch {
   private index: TSearchIndexItem[] = [];
   private constructor () {}
 
+  // --- helper ---
+
+  private load () : void {
+    const data = Search.storage.readJSON< TSearchIndex >( this.path ) || undefined;
+    this.index = data?.items ?? [];
+  }
+
+  // --- getter ---
+
   // --- save search index ---
 
   public save ( index: TSearchIndexItem[] ) : void {
