@@ -89,7 +89,7 @@ export class Ranking {
       }
     }
 
-    if ( addQueue && queue.length ) this.queue.addMany( queue );
+    if ( addQueue && queue.length ) Ranking.queue.addMany( queue );
     return result;
   }
 }

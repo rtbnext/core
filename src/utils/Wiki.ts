@@ -156,7 +156,7 @@ export class Wiki {
 
       if ( ! image && raw.pageimage ) {
         log.debug( `Querying page image from Wikimedia Commons: ${ raw.pageimage }` );
-        image = await this.queryCommonsImage( raw.pageimage );
+        image = await Wiki.queryCommonsImage( raw.pageimage );
       }
 
       return { image, ...Parser.container< TWiki >( {
@@ -182,7 +182,7 @@ export class Wiki {
     );
 
     return article ? await Wiki.queryWikiPage( article, qid,
-      image ? await this.queryCommonsImage( image ) : undefined
+      image ? await Wiki.queryCommonsImage( image ) : undefined
     ) : undefined;
   }
 }

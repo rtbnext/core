@@ -32,7 +32,7 @@ export class ProfileManager {
           profile[ mode ]( profileData as TProfileData );
           profile.move( uriLike, makeAlias );
         } else if ( makeAlias ) {
-          this.index.addAliases( profile.getUri(), uriLike );
+          ProfileManager.index.addAliases( profile.getUri(), uriLike );
         }
         break;
     }
@@ -63,9 +63,9 @@ export class ProfileManager {
     makeAlias: boolean = true, touchLookup: boolean = false
   ) : TProfileProcessResult | false {
     return log.catch( () => {
-      const lookup = this.lookup( uriLike, id, profileData );
-      const action = this.determineAction( lookup );
-      const profile = this.execute( lookup.profile, action, uriLike, profileData, mode, makeAlias, touchLookup );
+      const lookup = ProfileManager.lookup( uriLike, id, profileData );
+      const action = ProfileManager.determineAction( lookup );
+      const profile = ProfileManager.execute( lookup.profile, action, uriLike, profileData, mode, makeAlias, touchLookup );
 
       return { profile, action, success: !! profile };
     }, `Failed to process profile for ${ uriLike }` ) ?? false;

@@ -81,7 +81,7 @@ export class ProfileMerger {
       const profile = Profile.get( uri );
       if ( ! profile ) continue;
 
-      const matches = this.findMatching( profile.getData() );
+      const matches = ProfileMerger.findMatching( profile.getData() );
       res[ profile.getUri() ] = matches.map( m => m.getUri() );
     }
 
