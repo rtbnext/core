@@ -66,7 +66,7 @@ export class Profile implements IProfile {
   }
 
   public healthy () : boolean | undefined {
-    return this.meta.$metadata.status ? this.meta.$metadata.status?.state === 'healthy' : undefined;
+    return this.meta.$metadata.status?.state === 'healthy';
   }
 
   // --- verify profile ---
