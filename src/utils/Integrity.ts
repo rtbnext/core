@@ -8,7 +8,8 @@ import type { IProfile } from '@/interface/profile';
 import { Gender, Industry, MaritalStatus } from '@/lib/const';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import type { TValidateState } from '@/type/integrity';
+import { Parser } from '@/parser/Parser';
+import type { TIntegrityCheck, TValidateState } from '@/type/integrity';
 
 
 export class Integrity {
