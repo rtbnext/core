@@ -51,14 +51,12 @@ export class Integrity {
 
   // --- check profile ---
 
-  private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, flags: string[] ) : boolean {
+  private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, flags: string[], enqueue: boolean ) : boolean {
     const healthy = flags.length === 0;
     const status: TProfileStatus = { state: ! profile ? 'missing' : healthy ? 'healthy' : 'invalid', flags };
 
-    if ( ! healthy ) {
-      log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) })` );
-      Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
-    }
+    if ( ! healthy ) log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) })` );
+    if ( enqueue ) Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
 
     if ( profile ) profile.saveStatus( status );
     return healthy;
@@ -67,12 +65,17 @@ export class Integrity {
   private static checkProfile ( item: TProfileIndexItem ) : boolean {
     const profile = Profile.getByItem( item ), flags: string[] = [];
 
-    if ( ! profile ) return Integrity.finish( item, undefined, [ 'missing-profile' ] );
+    // --- missing profile ---
+    if ( ! profile ) return Integrity.finish( item, undefined, [ 'missing-profile' ], true );
 
+    // --- missing files ---
     Integrity.validateFiles( item.uri, flags );
+    const enqueue = !! flags.length;
+
+    // --- missing or invalid data ---
     if ( ! flags.includes( 'missing-profile.json' ) ) Integrity.validateData( profile.getData(), flags );
 
-    return Integrity.finish( item, profile, flags );
+    return Integrity.finish( item, profile, flags, enqueue );
   }
 
   // --- run integrity check ---
