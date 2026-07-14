@@ -69,6 +69,12 @@ export class Integrity {
     ] );
   }
 
+  // --- calculate score ---
+
+  private static calculateScore ( penalty: number ) : number {
+    return Math.max( 0, 150 - penalty );
+  }
+
   // --- check profile ---
 
   private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, flags: string[], enqueue: boolean ) : boolean {
