@@ -22,6 +22,6 @@ export class IntegrityJob extends Job {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob = [ {
-    cronexpr: '0 0 * * SUN', // run every Sunday at 00:00
+    cronexpr: '0 0 * * *', // run every day at 00:00
   } ] as const;
 }
