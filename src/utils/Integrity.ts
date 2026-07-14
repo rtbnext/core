@@ -77,11 +77,14 @@ export class Integrity {
 
   // --- check profile ---
 
-  private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, flags: string[], enqueue: boolean ) : boolean {
-    const healthy = flags.length === 0;
-    const status: TProfileStatus = { status: ! profile ? 'missing' : healthy ? 'healthy' : 'invalid', flags };
+  private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, state: TValidateState, enqueue: boolean ) : boolean {
+    const healthy = state.flags.length === 0;
+    const status: TProfileStatus = {
+      status: ! profile ? 'missing' : healthy ? 'healthy' : 'invalid',
+      score: Integrity.calculateScore( state.penalty ), flags: state.flags
+    };
 
-    if ( ! healthy ) log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) })` );
+    if ( ! healthy ) log.warn( `Invalid profile: ${ item.uri } (${ state.flags.join( ', ' ) })` );
     if ( enqueue ) Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
 
     if ( profile ) profile.saveStatus( status );
@@ -89,19 +92,23 @@ export class Integrity {
   }
 
   private static checkProfile ( item: TProfileIndexItem ) : boolean {
-    const profile = Profile.getByItem( item ), flags: string[] = [];
+    const state: TValidateState = { flags: [], penalty: 0 };
+    const profile = Profile.getByItem( item );
 
     // --- missing profile ---
-    if ( ! profile ) return Integrity.finish( item, undefined, [ 'missing-profile' ], true );
+    if ( ! profile ) {
+      state.flags.push( 'missing-profile' ), state.penalty += 100;
+      return Integrity.finish( item, undefined, state, true );
+    }
 
     // --- missing files ---
-    Integrity.validateFiles( item.uri, flags );
+    Integrity.validateFiles( item.uri, state );
 
     // --- missing or invalid data ---
-    const missingProfile = flags.includes( 'missing-profile.json' );
-    if ( ! missingProfile ) Integrity.validateData( profile.getData(), flags );
+    const missingProfile = state.flags.includes( 'missing-profile.json' );
+    if ( ! missingProfile ) Integrity.validateData( profile.getData(), state );
 
-    return Integrity.finish( item, profile, flags, missingProfile );
+    return Integrity.finish( item, profile, state, missingProfile );
   }
 
   // --- run integrity check ---
