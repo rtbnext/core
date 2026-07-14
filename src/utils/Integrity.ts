@@ -35,9 +35,9 @@ export class Integrity {
 
       [ data.info?.name?.fullName, 'missing-name' ],
       [ Gender.includes( data.info?.gender ), 'invalid-gender' ],
-      [ ! data.info?.birthDate || !Number.isNaN( new Date( data.info.birthDate ).getTime() ), 'invalid-birthDate' ],
+      [ ! data.info?.birthDate || ! Number.isNaN( new Date( data.info.birthDate ).getTime() ), 'invalid-birthDate' ],
       [ ! data.info?.maritalStatus || MaritalStatus.includes( data.info.maritalStatus ), 'invalid-maritalStatus' ],
-      [ data.info?.children == null || !Number.isNaN( data.info.children ), 'invalid-children' ],
+      [ data.info?.children == null || ! Number.isNaN( data.info.children ), 'invalid-children' ],
 
       [ Industry.includes( data.info?.industry ), 'invalid-industry' ],
       [ Array.isArray( data.info?.source ), 'invalid-source' ],
