@@ -5,3 +5,4 @@ export const REGEX_NONUM = /[^\d]+/g;
 export const REGEX_SPACE_DELIMITER = /\s+/;
 export const REGEX_SPACES = /\s+/g;
 export const REGEX_URI_CLEANUP = /-(family|\d+)$/i;
+export const REGEX_NAME_CLEANUP = /[^a-z0-9\s-]/g;

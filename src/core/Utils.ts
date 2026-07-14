@@ -4,7 +4,7 @@ import type { ListLike } from 'devtypes/types/list';
 import { sha256 } from 'js-sha256';
 import { hrtime } from 'node:process';
 
-import { REGEX_DIACRITICS, REGEX_NOALNUM } from '@/lib/regex';
+import { REGEX_DIACRITICS, REGEX_NAME_CLEANUP, REGEX_NOALNUM, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TAggregator, TMeasuredResult, TObjOperator } from '@/type/generic';
 import type { TParserDateType } from '@/type/parser';
@@ -182,6 +182,11 @@ export class Utils {
   }
 
   // --- search index ---
+
+  public static normalizeSearchText ( value: string ) : string {
+    return value.trim().toLowerCase().normalize( 'NFD' ).replace( REGEX_DIACRITICS, '' )
+      .replace( REGEX_NAME_CLEANUP, '' ).replace( REGEX_SPACES, ' ' );
+  }
 
   public static buildSearchText ( value: unknown, minLength: number = 4 ) : string {
     return [ ...new Set( String( value )
