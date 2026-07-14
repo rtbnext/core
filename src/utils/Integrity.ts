@@ -9,7 +9,7 @@ import { Gender, Industry, MaritalStatus } from '@/lib/const';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
-import type { TIntegrityCheck, TValidateState } from '@/type/integrity';
+import type { TIntegrityCheck, TIntegrityReport, TValidateState } from '@/type/integrity';
 
 
 export class Integrity {
@@ -82,7 +82,7 @@ export class Integrity {
 
   // --- check profile ---
 
-  private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, state: TValidateState, enqueue: boolean ) : boolean {
+  private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, state: TValidateState, enqueue: boolean ) : TProfileStatus {
     const { flags, invalid, penalty } = state, score = Integrity.calculateScore( penalty );
     const status: TProfileStatus = { status: ! profile ? 'missing' : invalid ? 'invalid' : 'healthy', score, flags };
 
@@ -90,10 +90,10 @@ export class Integrity {
     if ( enqueue ) Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
 
     if ( profile ) profile.saveStatus( status );
-    return ! invalid;
+    return status;
   }
 
-  private static checkProfile ( item: TProfileIndexItem ) : boolean {
+  private static checkProfile ( item: TProfileIndexItem ) : TProfileStatus {
     const profile = Profile.getByItem( item );
 
     // --- missing profile ---
@@ -110,14 +110,32 @@ export class Integrity {
     return Integrity.finish( item, profile, state, missingProfile );
   }
 
+  // --- save report ---
+
+  private static saveReport ( report: TIntegrityReport ) : void {
+    Integrity.storage.writeJSON< TIntegrityReport >( 'system/integrity.json', report );
+  }
+
   // --- run integrity check ---
 
-  public static run () : void {
+  public static run ( saveReport: boolean = true ) : TIntegrityReport {
     log.info( 'Run profile integrity check ...' );
 
+    const report: TIntegrityReport = { generatedAt: new Date().toISOString(), items: [] };
     let checked = 0, invalid = 0;
-    for ( const item of Integrity.index.values ) checked++, invalid += +! Integrity.checkProfile( item );
+
+    for ( const item of Integrity.index.values ) {
+      const res = Integrity.checkProfile( item );
+
+      if ( res.status !== 'healthy' ) invalid++;
+      if ( res.flags?.length ) report.items.push( { uri: item.uri, ...res } );
+      checked++;
+    };
 
     log.info( `Integrity check completed: ${ checked } checked, ${ invalid } invalid` );
+
+    report.items.sort( ( a, b ) => a.score - b.score );
+    if ( saveReport ) Integrity.saveReport( report );
+    return report;
   }
 }

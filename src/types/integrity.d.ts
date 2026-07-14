@@ -1,3 +1,7 @@
+import type { TProfileStatus } from '@rtbnext/schema/src/model/profile';
+import type { Expand } from 'devtypes/types/util';
+
+
 export type TValidateState = {
   flags: string[];
   invalid: boolean;
@@ -10,3 +14,12 @@ export type TIntegrityCheck = readonly ( readonly [
   penalty: number,
   invalid: boolean
 ] )[];
+
+export type TIntegrityReportItem = Expand< TProfileStatus & {
+  uri: string;
+} >;
+
+export type TIntegrityReport = {
+  generatedAt: string;
+  items: TIntegrityReportItem[];
+};
