@@ -10,7 +10,7 @@ import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 
 export class Integrity {
-  private static readonly files = [ 'meta.json', 'profile.json', 'history.csv' ] as const;
+  private static readonly files = [ 'profile.json', 'history.csv' ] as const;
   private static readonly storage = Storage.getInstance();
   private static readonly index = ProfileIndex.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
@@ -70,12 +70,12 @@ export class Integrity {
 
     // --- missing files ---
     Integrity.validateFiles( item.uri, flags );
-    const enqueue = !! flags.length;
 
     // --- missing or invalid data ---
-    if ( ! flags.includes( 'missing-profile.json' ) ) Integrity.validateData( profile.getData(), flags );
+    const missingProfile = flags.includes( 'missing-profile.json' );
+    if ( ! missingProfile ) Integrity.validateData( profile.getData(), flags );
 
-    return Integrity.finish( item, profile, flags, enqueue );
+    return Integrity.finish( item, profile, flags, missingProfile );
   }
 
   // --- run integrity check ---
