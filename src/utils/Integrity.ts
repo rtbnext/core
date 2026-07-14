@@ -94,20 +94,24 @@ export class Integrity {
   }
 
   private static checkProfile ( item: TProfileIndexItem ) : TProfileStatus {
-    const profile = Profile.getByItem( item );
+    return log.catch( () => {
+      const profile = Profile.getByItem( item );
 
-    // --- missing profile ---
-    if ( ! profile ) return Integrity.finish( item, undefined, { flags: [ 'missing-profile' ], invalid: true, penalty: 200 }, true );
+      // --- missing profile ---
+      if ( ! profile ) return Integrity.finish( item, undefined, {
+        flags: [ 'missing-profile' ], invalid: true, penalty: 200
+      }, true );
 
-    // --- missing files ---
-    const state: TValidateState = { flags: [], invalid: false, penalty: 0 };
-    Integrity.validateFiles( item.uri, state );
+      // --- missing files ---
+      const state: TValidateState = { flags: [], invalid: false, penalty: 0 };
+      Integrity.validateFiles( item.uri, state );
 
-    // --- missing or invalid data ---
-    const missingProfile = state.flags.includes( 'missing-profile.json' );
-    if ( ! missingProfile ) Integrity.validateData( profile.getData(), state );
+      // --- missing or invalid data ---
+      const missingProfile = state.flags.includes( 'missing-profile.json' );
+      if ( ! missingProfile ) Integrity.validateData( profile.getData(), state );
 
-    return Integrity.finish( item, profile, state, missingProfile );
+      return Integrity.finish( item, profile, state, missingProfile );
+    }, `Failed to check profile: ${ item.uri }` ) ?? { status: 'unknown', score: 0 };
   }
 
   // --- save report ---
