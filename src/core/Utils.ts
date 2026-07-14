@@ -59,7 +59,7 @@ export class Utils {
   // --- meta data ---
 
   public static get schemaVersion () : '2' { return '2' }
-  public static get version () : string { return '2.1.5' }
+  public static get version () : string { return '2.2.0' }
 
   public static generator () : TMetaData[ '$metadata' ][ 'generator' ] {
     return `rtbnext/${ Utils.version }`;
