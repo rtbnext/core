@@ -83,30 +83,24 @@ export class Integrity {
   // --- check profile ---
 
   private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, state: TValidateState, enqueue: boolean ) : boolean {
-    const healthy = state.flags.length === 0;
-    const status: TProfileStatus = {
-      status: ! profile ? 'missing' : healthy ? 'healthy' : 'invalid',
-      score: Integrity.calculateScore( state.penalty ), flags: state.flags
-    };
+    const { flags, invalid, penalty } = state, score = Integrity.calculateScore( penalty );
+    const status: TProfileStatus = { status: ! profile ? 'missing' : invalid ? 'invalid' : 'healthy', score, flags };
 
-    if ( ! healthy ) log.warn( `Invalid profile: ${ item.uri } (${ state.flags.join( ', ' ) })` );
+    if ( invalid ) log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) }; score: ${ score }%)` );
     if ( enqueue ) Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
 
     if ( profile ) profile.saveStatus( status );
-    return healthy;
+    return ! invalid;
   }
 
   private static checkProfile ( item: TProfileIndexItem ) : boolean {
-    const state: TValidateState = { flags: [], penalty: 0 };
     const profile = Profile.getByItem( item );
 
     // --- missing profile ---
-    if ( ! profile ) {
-      state.flags.push( 'missing-profile' ), state.penalty += 100;
-      return Integrity.finish( item, undefined, state, true );
-    }
+    if ( ! profile ) return Integrity.finish( item, undefined, { flags: [ 'missing-profile' ], invalid: true, penalty: 200 }, true );
 
     // --- missing files ---
+    const state: TValidateState = { flags: [], invalid: false, penalty: 0 };
     Integrity.validateFiles( item.uri, state );
 
     // --- missing or invalid data ---
