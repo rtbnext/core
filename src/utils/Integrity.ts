@@ -8,6 +8,8 @@ import type { IProfile } from '@/interface/profile';
 import { Gender, Industry, MaritalStatus } from '@/lib/const';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
+import type { TValidateState } from '@/type/integrity';
+
 
 export class Integrity {
   private static readonly files = [ 'profile.json', 'history.csv' ] as const;
@@ -17,8 +19,8 @@ export class Integrity {
 
   // --- validation ---
 
-  private static validate ( flags: string[], checks: readonly ( readonly [ unknown, string ] )[] ) : void {
-    for ( const [ ok, flag ] of checks ) if ( ! ok ) flags.push( flag );
+  private static validate ( state: TValidateState, checks: readonly ( readonly [ unknown, string, number ] )[] ) : void {
+    for ( const [ ok, flag, p ] of checks ) if ( ! ok ) state.penalty += p, state.flags.push( flag );
   }
 
   private static validateFiles ( uri: string, flags: string[] ) : void {
@@ -53,7 +55,7 @@ export class Integrity {
 
   private static finish ( item: TProfileIndexItem, profile: IProfile | undefined, flags: string[], enqueue: boolean ) : boolean {
     const healthy = flags.length === 0;
-    const status: TProfileStatus = { state: ! profile ? 'missing' : healthy ? 'healthy' : 'invalid', flags };
+    const status: TProfileStatus = { status: ! profile ? 'missing' : healthy ? 'healthy' : 'invalid', flags };
 
     if ( ! healthy ) log.warn( `Invalid profile: ${ item.uri } (${ flags.join( ', ' ) })` );
     if ( enqueue ) Integrity.queue.add( { uriLike: item.uri, prio: 10 } );
