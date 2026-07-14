@@ -77,6 +77,7 @@ export type * from '@/type/annual';
 export type * from '@/type/config';
 export type * from '@/type/fetch';
 export type * from '@/type/generic';
+export type * from '@/type/integrity';
 export type * from '@/type/job';
 export type * from '@/type/list';
 export type * from '@/type/parser';
