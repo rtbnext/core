@@ -77,7 +77,7 @@ export class Integrity {
   // --- calculate score ---
 
   private static calculateScore ( penalty: number ) : number {
-    return Math.max( 0, 150 - penalty );
+    return Parser.clamp( Math.sqrt( Parser.clamp( 1 - penalty / 150, [ 0, 1 ], 6 ) ) * 100, [ 0, 100 ], 3 );
   }
 
   // --- check profile ---
