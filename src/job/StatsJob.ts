@@ -35,7 +35,7 @@ export class StatsJob extends Job {
 
         // --- skip unhealthy profiles ---
         if ( ! profile.healthy() ) {
-          this.log( `Invalid profile skipped: ${ item.uri }`, undefined, 'warn' );
+          this.log( `Skipped invalid profile: ${ item.uri }`, undefined, 'warn' );
           continue;
         }
 
