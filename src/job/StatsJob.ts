@@ -1,7 +1,6 @@
 import type { TFilterList } from '@rtbnext/schema/src/model/filter';
 
 import { Job } from '@/abstract/Job';
-import { ProfileQueue } from '@/core/Queue';
 import { StatsGroup } from '@/lib/const';
 import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
@@ -13,7 +12,6 @@ import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 export class StatsJob extends Job {
   private static readonly filter = Filter.getInstance();
   private static readonly index = ProfileIndex.getInstance();
-  private static readonly queue = ProfileQueue.getInstance();
   private static readonly stats = Stats.getInstance();
 
   constructor ( options: TJobClsOptions = {} ) { super( options, 'stats', [ 'filter', 'stats' ] ) }
@@ -63,6 +61,6 @@ export class StatsJob extends Job {
   // --- cron job definition ---
 
   public static readonly cron: TCronJob = [ {
-    cronexpr: '5 */4 * * *', // run at 5 minutes past every 4th hour
+    cronexpr: '5 */6 * * *', // run at 5 minutes past every 6th hour
   } ] as const;
 }
