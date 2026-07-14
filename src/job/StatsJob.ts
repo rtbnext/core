@@ -2,6 +2,7 @@ import type { TFilterList } from '@rtbnext/schema/src/model/filter';
 import type { TSearchIndexItem } from '@rtbnext/schema/src/model/search';
 
 import { Job } from '@/abstract/Job';
+import { log } from '@/core/Logger';
 import { StatsGroup } from '@/lib/const';
 import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
@@ -39,10 +40,13 @@ export class StatsJob extends Job {
           continue;
         }
 
-        const data = profile.getData();
-        Filter.aggregate( data, filter );
-        Search.aggregate( data, profile.getMeta(), search );
-        Stats.aggregate( data, date, stats );
+        // --- aggregate stats ---
+        log.catch( () => {
+          const data = profile.getData();
+          Filter.aggregate( data, filter );
+          Search.aggregate( data, profile.getMeta(), search );
+          Stats.aggregate( data, date, stats );
+        }, `Failed to aggregate stats for profile: ${ item.uri }` );
       }
 
       this.log( 'Saving aggregated filter lists and search index ...' );
