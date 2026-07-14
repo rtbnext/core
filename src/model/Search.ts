@@ -1,5 +1,5 @@
 import type { TProfileData, TProfileMetaData } from '@rtbnext/schema/src/model/profile';
-import type { TSearchIndexItem } from '@rtbnext/schema/src/model/search';
+import type { TSearchIndex, TSearchIndexItem } from '@rtbnext/schema/src/model/search';
 
 import { Storage } from '@/core/Storage';
 import { Utils } from '@/core/Utils';
@@ -11,7 +11,19 @@ export class Search implements ISearch {
   private static readonly storage = Storage.getInstance();
   private static instance: ISearch;
 
+  private readonly path = 'profile/search.json';
+  private index: TSearchIndexItem[] = [];
   private constructor () {}
+
+  // --- save search index ---
+
+  public save ( index: TSearchIndexItem[] ) : void {
+    this.index = index;
+
+    Search.storage.writeJSON< TSearchIndex >( this.path, {
+      ...Utils.metaData(), count: this.index.length, items: this.index
+    } );
+  }
 
   // --- instantiate ---
   
@@ -20,8 +32,6 @@ export class Search implements ISearch {
   }
 
   // --- aggregate search index data ---
-
-  
 
   public static aggregate ( data: TProfileData, meta: TProfileMetaData[ '$metadata' ], index: TSearchIndexItem[] ) : void {
     index.push( {
