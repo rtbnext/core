@@ -20,53 +20,57 @@ export class Integrity {
 
   // --- validation ---
 
-  private static validate ( state: TValidateState, checks: readonly ( readonly [ unknown, string, number ] )[] ) : void {
-    for ( const [ ok, flag, p ] of checks ) if ( ! ok ) state.penalty += p, state.flags.push( flag );
+  private static validate ( state: TValidateState, checks: TIntegrityCheck ) : void {
+    for ( const [ ok, flag, penalty, invalid ] of checks ) if ( ! ok ) {
+      state.flags.push( flag );
+      state.invalid = state.invalid || invalid;
+      state.penalty += penalty;
+    }
   }
 
   private static validateFiles ( uri: string, state: TValidateState ) : void {
     Integrity.validate( state, Integrity.files.map( file => [
       Integrity.storage.exists( join( 'profile', uri, file ) ),
-      `missing-${ file }`, 200
+      `missing-${ file }`, 200, true
     ] as const ) );
   }
 
   private static validateData ( data: TProfileData, state: TValidateState ) : void {
     Integrity.validate( state, [
-      [ !! data.id, 'missing-id', 150 ],
-      [ !! data.uri, 'missing-uri', 150 ],
+      [ !! data.id, 'missing-id', 150, true ],
+      [ !! data.uri, 'missing-uri', 150, true ],
 
-      [ !! data.info?.name?.fullName, 'missing-name', 25 ],
-      [ Gender.includes( data.info?.gender ), 'invalid-gender', 25 ],
-      [ ! data.info?.birthDate || ! Number.isNaN( new Date( data.info.birthDate ).getTime() ), 'invalid-birthDate', 25 ],
-      [ ! data.info?.maritalStatus || MaritalStatus.includes( data.info.maritalStatus ), 'invalid-maritalStatus', 25 ],
-      [ data.info?.children == null || ! Number.isNaN( data.info.children ), 'invalid-children', 25 ],
+      [ !! data.info?.name?.fullName, 'missing-name', 50, true ],
+      [ Gender.includes( data.info?.gender ), 'invalid-gender', 25, true ],
+      [ ! data.info?.birthDate || ! Number.isNaN( new Date( data.info.birthDate ).getTime() ), 'invalid-birthDate', 25, true ],
+      [ ! data.info?.maritalStatus || MaritalStatus.includes( data.info.maritalStatus ), 'invalid-maritalStatus', 25, true ],
+      [ data.info?.children == null || ! Number.isNaN( data.info.children ), 'invalid-children', 25, true ],
 
-      [ Industry.includes( data.info?.industry ), 'invalid-industry', 50 ],
-      [ Array.isArray( data.info?.source ), 'invalid-source', 25 ],
+      [ Industry.includes( data.info?.industry ), 'invalid-industry', 50, true ],
+      [ Array.isArray( data.info?.source ), 'invalid-source', 25, true ],
 
-      [ Array.isArray( data.related ), 'invalid-related', 20 ],
-      [ Array.isArray( data.media ), 'invalid-media', 20 ],
-      [ Array.isArray( data.assets ), 'invalid-assets', 20 ],
-      [ Array.isArray( data.annual ), 'invalid-annual', 20 ],
+      [ Array.isArray( data.related ), 'invalid-related', 20, true ],
+      [ Array.isArray( data.media ), 'invalid-media', 20, true ],
+      [ Array.isArray( data.assets ), 'invalid-assets', 20, true ],
+      [ Array.isArray( data.annual ), 'invalid-annual', 20, true ],
 
-      [ !! data.info?.name?.lastName, 'missing-lastName', 10 ],
-      [ !! data.info?.birthPlace, 'missing-birthPlace', 5 ],
-      [ !! data.info?.citizenship, 'missing-citizenship', 5 ],
-      [ !! data.info?.residence, 'missing-residence', 5 ],
+      [ !! data.info?.name?.lastName, 'missing-lastName', 10, false ],
+      [ !! data.info?.birthPlace, 'missing-birthPlace', 5, false ],
+      [ !! data.info?.citizenship, 'missing-citizenship', 5, false ],
+      [ !! data.info?.residence, 'missing-residence', 5, false ],
 
-      [ !! data.realtime?.networth, 'missing-networth', 5 ],
-      [ !! data.realtime?.rank, 'missing-rank', 5 ],
-      [ data.realtime?.networth == null || data.realtime.networth >= 0, 'invalid-networth', 20 ],
-      [ data.ranking.length > 0, 'missing-ranking', 5 ],
+      [ !! data.realtime?.networth, 'missing-networth', 5, false ],
+      [ !! data.realtime?.rank, 'missing-rank', 5, false ],
+      [ data.realtime?.networth == null || data.realtime.networth >= 0, 'invalid-networth', 20, true ],
+      [ data.ranking?.length > 0, 'missing-ranking', 5, false ],
 
-      [ data.bio?.cv.length > 0, 'missing-cv', 10 ],
-      [ data.bio?.facts.length > 0, 'missing-facts', 5 ],
+      [ data.bio?.cv?.length > 0, 'missing-cv', 10, false ],
+      [ data.bio?.facts?.length > 0, 'missing-facts', 5, false ],
 
-      [ data.media.length > 0, 'missing-profile-image', 10 ],
+      [ data.media?.length > 0, 'missing-profile-image', 10, false ],
 
-      [ !! data.wiki, 'missing-wiki', 5 ],
-      [ !! data.wiki?.wikidata, 'missing-wikidata', 5 ]
+      [ !! data.wiki, 'missing-wiki', 5, false ],
+      [ !! data.wiki?.wikidata, 'missing-wikidata', 5, false ]
     ] );
   }
 
