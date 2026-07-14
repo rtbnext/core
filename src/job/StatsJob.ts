@@ -1,18 +1,21 @@
 import type { TFilterList } from '@rtbnext/schema/src/model/filter';
+import type { TSearchIndexItem } from '@rtbnext/schema/src/model/search';
 
 import { Job } from '@/abstract/Job';
 import { StatsGroup } from '@/lib/const';
 import { Filter } from '@/model/Filter';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
+import { Search } from '@/model/Search';
 import { Stats } from '@/model/Stats';
 import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 
 
 export class StatsJob extends Job {
-  private static readonly filter = Filter.getInstance();
   private static readonly index = ProfileIndex.getInstance();
+  private static readonly filter = Filter.getInstance();
   private static readonly stats = Stats.getInstance();
+  private static readonly search = Search.getInstance();
 
   constructor ( options: TJobClsOptions = {} ) { super( options, 'stats', [ 'filter', 'stats' ] ) }
 
@@ -24,7 +27,7 @@ export class StatsJob extends Job {
       if ( ! date || ! StatsJob.index.size ) throw new Error( 'No data available' );
 
       this.log( `Generating stats for ${ date } with ${ StatsJob.index.size } profiles` );
-      const filter: Partial< TFilterList > = {}, stats: any = {};
+      const filter: Partial< TFilterList > = {}, stats: any = {}, index: TSearchIndexItem[] = [];
 
       for ( const item of StatsJob.index.values ) {
         const profile = Profile.getByItem( item );
@@ -37,8 +40,9 @@ export class StatsJob extends Job {
         }
 
         const data = profile.getData();
-        Stats.aggregate( data, date, stats );
         Filter.aggregate( data, filter );
+        Stats.aggregate( data, date, stats );
+        Search.aggregate( data, index );
       }
 
       this.log( `Saving stats for ${ date }` );
