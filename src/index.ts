@@ -30,6 +30,7 @@ export { ListIndex } from '@/model/ListIndex';
 export { Mover } from '@/model/Mover';
 export { Profile } from '@/model/Profile';
 export { ProfileIndex } from '@/model/ProfileIndex';
+export { Search } from '@/model/Search';
 export { Stats } from '@/model/Stats';
 
 // --- export parser classes ---
