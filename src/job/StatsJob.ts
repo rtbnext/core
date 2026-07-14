@@ -26,8 +26,8 @@ export class StatsJob extends Job {
       const date = StatsJob.stats.getGlobalStats().date;
       if ( ! date || ! StatsJob.index.size ) throw new Error( 'No data available' );
 
-      this.log( `Generating stats for ${ date } with ${ StatsJob.index.size } profiles` );
-      const filter: Partial< TFilterList > = {}, index: TSearchIndexItem[] = [], stats: any = {};
+      this.log( `Generating stats for ${ date } with ${ StatsJob.index.size } profiles ...` );
+      const filter: Partial< TFilterList > = {}, search: TSearchIndexItem[] = [], stats: any = {};
 
       for ( const item of StatsJob.index.values ) {
         const profile = Profile.getByItem( item );
@@ -41,12 +41,15 @@ export class StatsJob extends Job {
 
         const data = profile.getData();
         Filter.aggregate( data, filter );
-        Search.aggregate( data, profile.getMeta(), index );
+        Search.aggregate( data, profile.getMeta(), search );
         Stats.aggregate( data, date, stats );
       }
 
-      this.log( `Saving stats for ${ date }` );
+      this.log( 'Saving aggregated filter lists and search index ...' );
       StatsJob.filter.save( filter );
+      StatsJob.search.save( search );
+
+      this.log( `Saving stats for ${ date } ...` );
       StatsJob.stats.setProfileStats( stats.profile );
       StatsJob.stats.generateWealthStats( stats.scatter );
       StatsGroup.forEach( g => StatsJob.stats.setGroupedStats( g, stats.groups[ g ] ) );
