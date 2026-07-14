@@ -14,8 +14,8 @@ import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 export class StatsJob extends Job {
   private static readonly index = ProfileIndex.getInstance();
   private static readonly filter = Filter.getInstance();
-  private static readonly stats = Stats.getInstance();
   private static readonly search = Search.getInstance();
+  private static readonly stats = Stats.getInstance();
 
   constructor ( options: TJobClsOptions = {} ) { super( options, 'stats', [ 'filter', 'stats' ] ) }
 
@@ -27,7 +27,7 @@ export class StatsJob extends Job {
       if ( ! date || ! StatsJob.index.size ) throw new Error( 'No data available' );
 
       this.log( `Generating stats for ${ date } with ${ StatsJob.index.size } profiles` );
-      const filter: Partial< TFilterList > = {}, stats: any = {}, index: TSearchIndexItem[] = [];
+      const filter: Partial< TFilterList > = {}, index: TSearchIndexItem[] = [], stats: any = {};
 
       for ( const item of StatsJob.index.values ) {
         const profile = Profile.getByItem( item );
@@ -41,8 +41,8 @@ export class StatsJob extends Job {
 
         const data = profile.getData();
         Filter.aggregate( data, filter );
+        Search.aggregate( data, profile.getMeta(), index );
         Stats.aggregate( data, date, stats );
-        Search.aggregate( data, index );
       }
 
       this.log( `Saving stats for ${ date }` );
