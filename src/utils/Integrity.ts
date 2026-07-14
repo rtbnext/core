@@ -26,23 +26,23 @@ export class Integrity {
   private static validateFiles ( uri: string, state: TValidateState ) : void {
     Integrity.validate( state, Integrity.files.map( file => [
       Integrity.storage.exists( join( 'profile', uri, file ) ),
-      `missing-${ file }`, 100
+      `missing-${ file }`, 200
     ] as const ) );
   }
 
   private static validateData ( data: TProfileData, state: TValidateState ) : void {
     Integrity.validate( state, [
-      [ !! data.id, 'missing-id', 100 ],
-      [ !! data.uri, 'missing-uri', 100 ],
+      [ !! data.id, 'missing-id', 150 ],
+      [ !! data.uri, 'missing-uri', 150 ],
 
-      [ !! data.info?.name?.fullName, 'missing-name', 20 ],
-      [ Gender.includes( data.info?.gender ), 'invalid-gender', 20 ],
-      [ ! data.info?.birthDate || ! Number.isNaN( new Date( data.info.birthDate ).getTime() ), 'invalid-birthDate', 20 ],
-      [ ! data.info?.maritalStatus || MaritalStatus.includes( data.info.maritalStatus ), 'invalid-maritalStatus', 20 ],
-      [ data.info?.children == null || ! Number.isNaN( data.info.children ), 'invalid-children', 20 ],
+      [ !! data.info?.name?.fullName, 'missing-name', 25 ],
+      [ Gender.includes( data.info?.gender ), 'invalid-gender', 25 ],
+      [ ! data.info?.birthDate || ! Number.isNaN( new Date( data.info.birthDate ).getTime() ), 'invalid-birthDate', 25 ],
+      [ ! data.info?.maritalStatus || MaritalStatus.includes( data.info.maritalStatus ), 'invalid-maritalStatus', 25 ],
+      [ data.info?.children == null || ! Number.isNaN( data.info.children ), 'invalid-children', 25 ],
 
-      [ Industry.includes( data.info?.industry ), 'invalid-industry', 20 ],
-      [ Array.isArray( data.info?.source ), 'invalid-source', 20 ],
+      [ Industry.includes( data.info?.industry ), 'invalid-industry', 50 ],
+      [ Array.isArray( data.info?.source ), 'invalid-source', 25 ],
 
       [ Array.isArray( data.related ), 'invalid-related', 20 ],
       [ Array.isArray( data.media ), 'invalid-media', 20 ],
@@ -63,10 +63,9 @@ export class Integrity {
       [ data.bio?.facts.length > 0, 'missing-facts', 5 ],
 
       [ data.media.length > 0, 'missing-profile-image', 10 ],
-      [ data.related.length > 0, 'missing-related-data', 3 ],
 
       [ !! data.wiki, 'missing-wiki', 5 ],
-      [ !! data.wiki?.wikidata, 'missing-wikidata', 5 ],
+      [ !! data.wiki?.wikidata, 'missing-wikidata', 5 ]
     ] );
   }
 
