@@ -35,6 +35,10 @@ export abstract class Snapshot< T extends TSnapshot > implements ISnapshot< T > 
 
   // --- basic getter ---
 
+  public get size () : number {
+    return this.dates.length;
+  }
+
   public getDates () : string[] {
     return this.dates;
   }

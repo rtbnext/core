@@ -2,6 +2,7 @@ import type { TSnapshot, TSnapshotIndex } from '@rtbnext/schema/src/base/generic
 
 
 export interface ISnapshot< T extends TSnapshot > {
+  readonly size: number;
   getDates () : string[];
   hasDate ( dateLike: string ) : boolean;
   firstDate () : string | undefined;
