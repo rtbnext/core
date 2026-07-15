@@ -140,7 +140,7 @@ export class Integrity {
 
     items.sort( ( a, b ) => a.score - b.score );
     const report: TIntegrityReport = { generatedAt: new Date().toISOString(), items, stats: {
-      total, affected, flags, avgScore: total ? Parser.number( score / total * 100, 3 ) : 0
+      total, affected, flags, avgScore: total ? Parser.number( score / total, 3 ) : 0
     } };
 
     log.info( `Integrity check completed: ${ total } checked, ${ affected } affected` );
