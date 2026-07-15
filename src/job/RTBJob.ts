@@ -68,7 +68,10 @@ export class RTBJob extends Job {
           continue;
         }
 
-        let profileData = Profile.factory( { uri, id, info: parsed.info(), bio: parsed.bio(), assets: parsed.assets() } );
+        let profileData = Profile.factory( {
+          uri, id, info: parsed.info(), bio: parsed.bio(),
+          assets: parsed.assets()
+        } );
 
         // --- process profile using ProfileManager ---
         const { profile, action } = ProfileManager.process( uri, id, profileData, 'updateData' ) || {};
@@ -130,7 +133,7 @@ export class RTBJob extends Job {
       // --- update stats ---
       const globalStats = { ...stats, stats: {
         profiles: ProfileIndex.getInstance().size,
-        days: list.getDates().length
+        days: list.size
       } };
 
       RTBJob.stats.setGlobalStats( globalStats );
