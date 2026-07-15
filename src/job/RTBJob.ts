@@ -122,15 +122,17 @@ export class RTBJob extends Job {
         ytd: { value: mover.ytd.total.value, percent: mover.ytd.total.percent }
       } );
 
+      // --- save snapshot ---
+      list.saveSnapshot( { date, count, items, stats } );
+      RTBJob.mover.saveSnapshot( mover );
+      RTBJob.queue.addMany( queue );
+
+      // --- update stats ---
       const globalStats = { ...stats, stats: {
         profiles: ProfileIndex.getInstance().size,
         days: list.getDates().length
       } };
 
-      // --- save data ---
-      list.saveSnapshot( { date, count, items, stats } );
-      RTBJob.mover.saveSnapshot( mover );
-      RTBJob.queue.addMany( queue );
       RTBJob.stats.setGlobalStats( globalStats );
       RTBJob.stats.updateHistory( globalStats );
     } );
