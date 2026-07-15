@@ -20,11 +20,14 @@ export type TIntegrityReportItem = Expand< TProfileStatus & {
   uri: string;
 } >;
 
+export type TIntegrityReportFlags = { [ F in TProfileStatusFlag ]?: number };
+
 export type TIntegrityReport = {
   generatedAt: string;
   stats: {
     total: number;
-    flags: { [ F in TProfileStatusFlag ]?: number };
+    affected: number;
+    flags: TIntegrityReportFlags;
     avgScore: number;
   };
   items: TIntegrityReportItem[];
