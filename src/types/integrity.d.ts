@@ -1,3 +1,4 @@
+import type { TProfileStatusFlag } from '@rtbnext/schema/src/base/const';
 import type { TProfileStatus } from '@rtbnext/schema/src/model/profile';
 import type { Expand } from 'devtypes/types/util';
 
@@ -21,5 +22,10 @@ export type TIntegrityReportItem = Expand< TProfileStatus & {
 
 export type TIntegrityReport = {
   generatedAt: string;
+  stats: {
+    total: number;
+    flags: { [ F in TProfileStatusFlag ]?: number };
+    avgScore: number;
+  };
   items: TIntegrityReportItem[];
 };
