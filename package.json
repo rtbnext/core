@@ -1,7 +1,7 @@
 {
   "name": "@rtbnext/core",
   "description": "Core infrastructure for the RTBNext project",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "license": "MIT",
   "author": {
     "name": "komed3 (Paul Köhler)",
