@@ -62,6 +62,7 @@ export { IntegrityJob } from '@/job/IntegrityJob';
 export { ListJob } from '@/job/ListJob';
 export { MergeJob } from '@/job/MergeJob';
 export { MoveJob } from '@/job/MoveJob';
+export { OutdatedJob } from '@/job/OutdatedJob';
 export { PerformanceJob } from '@/job/PerformanceJob';
 export { ProfileJob } from '@/job/ProfileJob';
 export { QueueJob } from '@/job/QueueJob';
