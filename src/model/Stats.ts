@@ -196,9 +196,7 @@ export class Stats implements IStats {
 
   // --- grouped stats setter ---
 
-  public setGroupedStats< T extends string = string > (
-    group: TStatsGroupType, raw: Record< T, TStatsGroupItem >
-  ) : boolean {
+  public setGroupedStats< T extends string = string > ( group: TStatsGroupType, raw: Record< T, TStatsGroupItem > ) : boolean {
     return log.catch( () => {
       const items = Object.fromEntries(
         Object.entries< TStatsGroupItem >( raw ).map( ( [ key, item ] ) => {
