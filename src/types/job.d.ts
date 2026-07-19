@@ -49,6 +49,11 @@ export type TMoveJobOptions = TJobClsOptions< {
   makeAlias?: boolean;
 } >;
 
+export type TOutdatedJobOptions = TJobClsOptions< {
+  date?: string;
+  prio?: number;
+} >;
+
 export type TProfileJobOptions = TJobClsOptions< {
   profiles?: string[];
   replace?: boolean;
