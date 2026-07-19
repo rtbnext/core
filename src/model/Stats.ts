@@ -210,11 +210,11 @@ export class Stats implements IStats {
             quota: { value: item.quota, type: 'pct' },
             today: { value: Parser.container< TChangeItem >( {
               value: { value: item.today?.value, type: 'money' },
-              percent: { value: item.today?.percent, type: 'pct' }
+              percent: { value: item.total ? ( item.today?.value ?? 0 ) / item.total * 100 : 0, type: 'pct' }
             } ), type: 'container' },
             ytd: { value: Parser.container< TChangeItem >( {
               value: { value: item.ytd?.value, type: 'money' },
-              percent: { value: item.ytd?.percent, type: 'pct' }
+              percent: { value: item.total ? ( item.ytd?.value ?? 0 ) / item.total * 100 : 0, type: 'pct' }
             } ), type: 'container' }
           } ) } as TStatsGroupItem;
 
@@ -403,9 +403,7 @@ export class Stats implements IStats {
           set( `groups.${ key }.${ k }.quota`, ( stats.groups[ key ][ k ].woman / stats.groups[ key ][ k ].count * 100 ) );
 
           inc( `groups.${ key }.${ k }.today.value`, realtime.today?.value ?? 0 );
-          inc( `groups.${ key }.${ k }.today.percent`, realtime.today?.percent ?? 0 );
           inc( `groups.${ key }.${ k }.ytd.value`, realtime.ytd?.value ?? 0 );
-          inc( `groups.${ key }.${ k }.ytd.percent`, realtime.ytd?.percent ?? 0 );
 
           if ( rank < ( stats?.groups?.[ key ]?.[ k ]?.first?.rank ?? Infinity ) ) set(
             `groups.${ key }.${ k }.first`, { ...item, rank, networth }
