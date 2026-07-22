@@ -45,7 +45,7 @@ export class Performance {
 
         result[ key as keyof TReturns ] = {
           value: Parser.money( networth - item[ 2 ] ),
-          percent: Parser.pct( ( networth / ( item[ 2 ] ?? 1 ) ) * 100 )
+          percent: Parser.pct( networth / ( item[ 2 ] ?? 1 ) )
         };
 
         if ( --remaining === 0 ) return result;
