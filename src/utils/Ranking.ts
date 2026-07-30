@@ -79,12 +79,17 @@ export class Ranking {
       // --- queue list for future processing if needed ---
       if ( addQueue && main.rank && main.networth ) {
         const list = List.get( listUri );
+        const missingYears = new Set< string >();
 
-        if ( ! list || ! list.hasDate( main.date ) ) queue.push( {
-          uriLike: listUri, args: {
-            name, desc: names.get( listUri )?.desc,
-            year: main.date.split( '-' )[ 0 ]
-          }
+        for ( const item of allItems ) {
+          const year = item.date.split( '-' )[ 0 ];
+          if ( ! year || list?.datesInYear( year ).length ) continue;
+
+          missingYears.add( year );
+        }
+
+        for ( const year of missingYears ) queue.push( {
+          uriLike: listUri, args: { name, desc: names.get( listUri )?.desc, year }
         } );
       }
     }
