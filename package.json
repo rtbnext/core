@@ -49,20 +49,20 @@
   "dependencies": {
     "@isodb/us-states": "^0.1.0",
     "@komed3/deepmerge": "^1.1.0",
-    "@rtbnext/schema": "^2.3.1",
-    "axios": "^1.18.1",
+    "@rtbnext/schema": "^2.3.3",
+    "axios": "^1.19.0",
     "cmpstr": "^3.3.0",
     "commander": "^15.0.0",
     "csv-string": "^4.1.1",
     "devtypes": "^2.2.0",
     "i18n-iso-countries": "^7.14.0",
-    "js-sha256": "^0.12.0",
+    "js-sha256": "^1.0.0",
     "nxtcron": "^1.0.1",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
-    "prettier": "^3.9.5",
+    "@types/node": "^26.1.2",
+    "prettier": "^3.9.6",
     "rimraf": "^6.1.3",
     "tsc-alias": "^1.9.1",
     "typescript": "^7.0.2"
