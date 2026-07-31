@@ -18,6 +18,17 @@ export class Integrity {
   private static readonly index = ProfileIndex.getInstance();
   private static readonly queue = ProfileQueue.getInstance();
 
+  // --- validation helper ---
+
+  private static _undefOrValid ( value: unknown, cb: ( value: any ) => boolean ) : boolean {
+    return value === undefined || value === null ? true : cb( value );
+  }
+
+  private static _inRange ( value: number | string | undefined, range: [ number, number ] ) : boolean {
+    const n = Number( value );
+    return value !== undefined && ! Number.isNaN( n ) && n >= range[ 0 ] && n <= range[ 1 ];
+  }
+
   // --- validation ---
 
   private static validate ( state: TValidateState, checks: TIntegrityCheck ) : void {
