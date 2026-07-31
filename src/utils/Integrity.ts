@@ -70,6 +70,7 @@ export class Integrity {
 
       [ this._hasItem( info?.industry, Industry ), 'invalid-industry', 50, true ],
       [ Array.isArray( info?.source ), 'invalid-source', 25, true ],
+      [ this._isValid( info?.source, v => this._isArr( v ) ), 'missing-source', 10, false ],
 
       [ Array.isArray( data.related ), 'invalid-related', 20, true ],
       [ Array.isArray( data.media ), 'invalid-media', 20, true ],
@@ -79,7 +80,7 @@ export class Integrity {
       [ !! info?.name?.lastName, 'missing-lastName', 10, false ],
       [ !! info?.birthPlace, 'missing-birthPlace', 5, false ],
       [ !! info?.citizenship, 'missing-citizenship', 5, false ],
-      [ ! info?.citizenship || countries.getName( info.citizenship, 'en' ) !== undefined, 'invalid-citizenship', 20, false ],
+      [ this._isValid( info?.citizenship, v => !! countries.getName( v, 'en' ) ), 'invalid-citizenship', 20, false ],
       [ !! info?.residence, 'missing-residence', 5, false ],
 
       [ !! data.realtime?.networth, 'missing-networth', 0, false ],
@@ -87,12 +88,12 @@ export class Integrity {
       [ data.realtime?.networth == null || data.realtime.networth >= 0, 'invalid-networth', 20, true ],
       [ data.ranking?.length > 0, 'missing-ranking', 0, false ],
 
-      [ this._isValid( info?.source, v => this._isArr( v ) ), 'missing-source', 10, false ],
       [ this._isArr( bio?.cv ), 'missing-cv', 10, false ],
       [ this._isArr( bio?.facts ), 'missing-facts', 5, false ],
 
       [ !! info?.selfMade, 'missing-selfMade', 10, false ],
       [ this._isValid( info?.selfMade?.rank, v => this._inRange( v, [ 1, 10 ] ) ), 'invalid-selfMade', 20, false ],
+      [ this._isValid( info?.philanthropyScore, v => this._inRange( v, [ 1, 5 ] ) ), 'invalid-philanthropyScore', 10, false ],
 
       [ this._isArr( data.media ), 'missing-profile-image', 10, false ],
 
