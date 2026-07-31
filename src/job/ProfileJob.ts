@@ -6,7 +6,6 @@ import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
 import type { TCommandJob, TCronJob, TProfileJobOptions } from '@/type/job';
-import { DropOff } from '@/util/DropOff';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 import { Wiki } from '@/util/Wiki';
@@ -48,9 +47,6 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
         if ( ! Parser.boolean( this.options.skipWiki ) )
           profileData.wiki = await Wiki.fromProfileData( profileData );
-
-        // --- check dropped off profile ---
-        profileData.info!.flags.dropOff = DropOff.check( profileData );
 
         // --- process profile using ProfileManager ---
         const res = ProfileManager.process( uri, id, profileData, method, true, true );
