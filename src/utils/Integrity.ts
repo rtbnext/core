@@ -30,6 +30,10 @@ export class Integrity {
     return value !== undefined && ! Number.isNaN( n ) && n >= range[ 0 ] && n <= range[ 1 ];
   }
 
+  private static _validArr ( value: unknown, minLen: number = 1 ) : boolean {
+    return Array.isArray( value ) && value.length >= minLen;
+  }
+
   // --- validation ---
 
   private static validate ( state: TValidateState, checks: TIntegrityCheck ) : void {
@@ -48,7 +52,7 @@ export class Integrity {
   }
 
   private static validateData ( data: TProfileData, state: TValidateState ) : void {
-    const { info } = data;
+    const { info, bio } = data;
 
     Integrity.validate( state, [
       [ !! data.id, 'missing-id', 150, true ],
@@ -79,13 +83,14 @@ export class Integrity {
       [ data.realtime?.networth == null || data.realtime.networth >= 0, 'invalid-networth', 20, true ],
       [ data.ranking?.length > 0, 'missing-ranking', 0, false ],
 
-      [ Array.isArray( data.bio?.cv ) && data.bio?.cv?.length > 0, 'missing-cv', 10, false ],
-      [ Array.isArray( data.bio?.facts ) && data.bio?.facts?.length > 0, 'missing-facts', 5, false ],
+      [ this._undefOrValid( info?.source, v => this._validArr( v ) ), 'missing-source', 10, false ],
+      [ this._validArr( bio?.cv ), 'missing-cv', 10, false ],
+      [ this._validArr( bio?.facts ), 'missing-facts', 5, false ],
 
       [ !! info?.selfMade, 'missing-selfMade', 10, false ],
       [ this._undefOrValid( info?.selfMade?.rank, v => this._inRange( v, [ 1, 10 ] ) ), 'invalid-selfMade', 20, false ],
 
-      [ data.media?.length > 0, 'missing-profile-image', 10, false ],
+      [ this._validArr( data.media ), 'missing-profile-image', 10, false ],
 
       [ !! data.wiki, 'missing-wiki', 5, false ],
       [ !! data.wiki?.wikidata, 'missing-wikidata', 5, false ]
