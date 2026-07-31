@@ -75,9 +75,22 @@ export class Parser {
 
   // --- profile ---
 
+  public static birthDate ( value: any, format: TParserDateType = 'ymd' ) : string | undefined {
+    const iso = Parser.date( value, 'iso' );
+    if ( ! iso ) return undefined;
+
+    const date = new Date( iso );
+    if ( isNaN( date.getTime() ) ) return undefined;
+
+    const age = new Date( Date.now() - date.getTime() ).getUTCFullYear() - 1970;
+    return age < 15 || age > 125 ? undefined : Parser.date( iso, format );
+  }
+
   public static age ( value: any ) : number | undefined {
-    const date = new Date( value );
-    return isNaN( date.getTime() ) ? undefined : new Date( Date.now() - date.getTime() ).getUTCFullYear() - 1970;
+    const iso = Parser.birthDate( value, 'iso' );
+    if ( ! iso ) return undefined;
+
+    return new Date( Date.now() - new Date( iso ).getTime() ).getUTCFullYear() - 1970;
   }
 
   public static ageDecade ( value: any, min: number = 30, max: number = 90 ) : number | undefined {
