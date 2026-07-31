@@ -1,5 +1,6 @@
-import { Stats } from '@/model/Stats';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+
+import { Stats } from '@/model/Stats';
 
 
 export class DropOff {
