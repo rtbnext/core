@@ -21,7 +21,7 @@ export class Integrity {
 
   // --- validation helper ---
 
-  private static _undefOrValid ( value: unknown, cb: ( value: any ) => boolean ) : boolean {
+  private static _isValid ( value: unknown, cb: ( value: any ) => boolean ) : boolean {
     return value === undefined || value === null ? true : cb( value );
   }
 
@@ -30,8 +30,12 @@ export class Integrity {
     return value !== undefined && ! Number.isNaN( n ) && n >= range[ 0 ] && n <= range[ 1 ];
   }
 
-  private static _validArr ( value: unknown, minLen: number = 1 ) : boolean {
+  private static _isArr ( value: unknown, minLen: number = 1 ) : boolean {
     return Array.isArray( value ) && value.length >= minLen;
+  }
+
+  private static _hasItem ( value: unknown, arr: unknown[] ) : boolean {
+    return value !== undefined && arr.includes( value );
   }
 
   // --- validation ---
@@ -59,12 +63,12 @@ export class Integrity {
       [ !! data.uri, 'missing-uri', 150, true ],
 
       [ !! info?.name?.fullName, 'missing-name', 50, true ],
-      [ Gender.includes( info?.gender ), 'invalid-gender', 25, true ],
-      [ this._undefOrValid( info?.birthDate, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 15, 155 ] ) ) ), 'invalid-birthDate', 25, true ],
-      [ this._undefOrValid( info?.maritalStatus, v => MaritalStatus.includes( v ) ), 'invalid-maritalStatus', 25, true ],
-      [ this._undefOrValid( info?.children, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 1, 25 ] ) ) ), 'invalid-children', 25, true ],
+      [ this._hasItem( info?.gender, Gender ), 'invalid-gender', 25, true ],
+      [ this._isValid( info?.birthDate, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 15, 155 ] ) ) ), 'invalid-birthDate', 25, true ],
+      [ this._isValid( info?.maritalStatus, v => this._hasItem( v, MaritalStatus ) ), 'invalid-maritalStatus', 25, true ],
+      [ this._isValid( info?.children, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 1, 25 ] ) ) ), 'invalid-children', 25, true ],
 
-      [ Industry.includes( info?.industry ), 'invalid-industry', 50, true ],
+      [ this._hasItem( info?.industry, Industry ), 'invalid-industry', 50, true ],
       [ Array.isArray( info?.source ), 'invalid-source', 25, true ],
 
       [ Array.isArray( data.related ), 'invalid-related', 20, true ],
@@ -83,14 +87,14 @@ export class Integrity {
       [ data.realtime?.networth == null || data.realtime.networth >= 0, 'invalid-networth', 20, true ],
       [ data.ranking?.length > 0, 'missing-ranking', 0, false ],
 
-      [ this._undefOrValid( info?.source, v => this._validArr( v ) ), 'missing-source', 10, false ],
-      [ this._validArr( bio?.cv ), 'missing-cv', 10, false ],
-      [ this._validArr( bio?.facts ), 'missing-facts', 5, false ],
+      [ this._isValid( info?.source, v => this._isArr( v ) ), 'missing-source', 10, false ],
+      [ this._isArr( bio?.cv ), 'missing-cv', 10, false ],
+      [ this._isArr( bio?.facts ), 'missing-facts', 5, false ],
 
       [ !! info?.selfMade, 'missing-selfMade', 10, false ],
-      [ this._undefOrValid( info?.selfMade?.rank, v => this._inRange( v, [ 1, 10 ] ) ), 'invalid-selfMade', 20, false ],
+      [ this._isValid( info?.selfMade?.rank, v => this._inRange( v, [ 1, 10 ] ) ), 'invalid-selfMade', 20, false ],
 
-      [ this._validArr( data.media ), 'missing-profile-image', 10, false ],
+      [ this._isArr( data.media ), 'missing-profile-image', 10, false ],
 
       [ !! data.wiki, 'missing-wiki', 5, false ],
       [ !! data.wiki?.wikidata, 'missing-wikidata', 5, false ]
