@@ -7,8 +7,8 @@ export class DropOff {
   private static readonly stats = Stats.getInstance();
 
   public static check ( data: Partial< TProfileData > ) : boolean {
-    const { realtime } = data;
     const today = DropOff.stats.getGlobalStats()?.date;
+    const { realtime } = data;
 
     return ( ! realtime || realtime.date !== today || ! realtime.rank || ! realtime.networth || (
       realtime.networth < 1000 && realtime.networth - ( realtime.today?.value ?? 0 ) < 1000
