@@ -58,7 +58,7 @@ export class Integrity {
       [ Gender.includes( info?.gender ), 'invalid-gender', 25, true ],
       [ this._undefOrValid( info?.birthDate, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 15, 155 ] ) ) ), 'invalid-birthDate', 25, true ],
       [ this._undefOrValid( info?.maritalStatus, v => MaritalStatus.includes( v ) ), 'invalid-maritalStatus', 25, true ],
-      [ info?.children == null || ! Number.isNaN( info.children ), 'invalid-children', 25, true ],
+      [ this._undefOrValid( info?.children, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 1, 25 ] ) ) ), 'invalid-children', 25, true ],
 
       [ Industry.includes( info?.industry ), 'invalid-industry', 50, true ],
       [ Array.isArray( info?.source ), 'invalid-source', 25, true ],
@@ -83,7 +83,7 @@ export class Integrity {
       [ Array.isArray( data.bio?.facts ) && data.bio?.facts?.length > 0, 'missing-facts', 5, false ],
 
       [ !! info?.selfMade, 'missing-selfMade', 10, false ],
-      [ ! info?.selfMade?.rank || this._inRange( info.selfMade.rank, [ 1, 10 ] ), 'invalid-selfMade', 20, false ],
+      [ this._undefOrValid( info?.selfMade?.rank, v => this._inRange( v, [ 1, 10 ] ) ), 'invalid-selfMade', 20, false ],
 
       [ data.media?.length > 0, 'missing-profile-image', 10, false ],
 
