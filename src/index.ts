@@ -45,6 +45,7 @@ export { RTBListParser } from '@/parser/RTBListParser';
 // --- export utility classes ---
 
 export { Annual } from '@/util/Annual';
+export { DropOff } from '@/util/DropOff';
 export { Integrity } from '@/util/Integrity';
 export { Performance } from '@/util/Performance';
 export { ProfileManager } from '@/util/ProfileManager';
