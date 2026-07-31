@@ -6,6 +6,7 @@ import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import type { TProfileLookupResult, TProfileOperation, TProfileProcessResult, TProfileUpdateMode } from '@/type/profile';
 import type { TQueueOptions } from '@/type/queue';
+import { DropOff } from '@/util/DropOff';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
 
@@ -18,6 +19,8 @@ export class ProfileManager {
   ) : IProfile | false {
     if ( ! profile ) return Profile.create( uriLike, profileData as TProfileData );
     if ( touchLookup ) profile.touchLookup();
+
+    profileData.info!.flags.dropOff = DropOff.check( profile.getData() );
 
     switch ( action ) {
       case 'update':
