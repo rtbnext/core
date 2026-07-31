@@ -58,7 +58,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
       } ),
       ...Parser.container< Partial< TProfileInfo > >( {
         gender: { value: this.raw.gender, type: 'gender' },
-        birthDate: { value: this.raw.birthDate, type: 'date' },
+        birthDate: { value: this.raw.birthDate, type: 'birthDate' },
         citizenship: { value: this.raw.countryOfCitizenship, type: 'country' },
         industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
         source: { value: this.raw.source, type: 'list' }

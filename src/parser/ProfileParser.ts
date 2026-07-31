@@ -73,7 +73,7 @@ export class ProfileParser extends Cache implements IProfileParser {
     return this.cache( 'info', () => ( {
       ...Parser.container< Partial< TProfileInfo > >( {
         gender: { value: this.raw.gender, type: 'gender' },
-        birthDate: { value: this.raw.birthDate, type: 'date' },
+        birthDate: { value: this.raw.birthDate, type: 'birthDate' },
         maritalStatus: { value: this.raw.maritalStatus, type: 'maritalStatus' },
         children: { value: this.raw.numberOfChildren, type: 'number' },
         industry: { value: this.raw.industries?.[ 0 ], type: 'industry' },
