@@ -1,6 +1,6 @@
 import type { TProfileData, TProfileIndexItem, TProfileStatus } from '@rtbnext/schema/src/model/profile';
-import { join } from 'node:path';
 import countries from 'i18n-iso-countries';
+import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
 import { ProfileQueue } from '@/core/Queue';
@@ -59,44 +59,50 @@ export class Integrity {
     const { info, bio } = data;
 
     Integrity.validate( state, [
+      // --- identity ---
       [ !! data.id, 'missing-id', 150, true ],
       [ !! data.uri, 'missing-uri', 150, true ],
 
+      // --- personal information ---
       [ !! info?.name?.fullName, 'missing-name', 50, true ],
+      [ !! info?.name?.lastName, 'missing-lastName', 10, false ],
+
       [ this._hasItem( info?.gender, Gender ), 'invalid-gender', 25, true ],
       [ this._isValid( info?.birthDate, v => ! Number.isNaN( v = Parser.age( v ) ) && this._inRange( v, [ 15, 155 ] ) ), 'invalid-birthDate', 25, true ],
       [ this._isValid( info?.maritalStatus, v => this._hasItem( v, MaritalStatus ) ), 'invalid-maritalStatus', 25, true ],
-      [ this._isValid( info?.children, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 0, 25 ] ) ) ), 'invalid-children', 25, true ],
+      [ this._isValid( info?.children, v => this._inRange( v, [ 0, 25 ] ) ), 'invalid-children', 25, true ],
 
-      [ this._hasItem( info?.industry, Industry ), 'invalid-industry', 50, true ],
-      [ Array.isArray( info?.source ), 'invalid-source', 25, true ],
-      [ this._isValid( info?.source, v => this._isArr( v ) ), 'missing-source', 10, false ],
-
-      [ Array.isArray( data.related ), 'invalid-related', 20, true ],
-      [ Array.isArray( data.media ), 'invalid-media', 20, true ],
-      [ Array.isArray( data.assets ), 'invalid-assets', 20, true ],
-      [ Array.isArray( data.annual ), 'invalid-annual', 20, true ],
-
-      [ !! info?.name?.lastName, 'missing-lastName', 10, false ],
       [ !! info?.birthPlace, 'missing-birthPlace', 5, false ],
       [ !! info?.citizenship, 'missing-citizenship', 5, false ],
       [ this._isValid( info?.citizenship, v => !! countries.getName( v, 'en' ) ), 'invalid-citizenship', 20, false ],
       [ !! info?.residence, 'missing-residence', 5, false ],
 
-      [ !! data.realtime?.networth, 'missing-networth', 0, false ],
-      [ !! data.realtime?.rank, 'missing-rank', 0, false ],
-      [ data.realtime?.networth == null || data.realtime.networth >= 0, 'invalid-networth', 20, true ],
-      [ data.ranking?.length > 0, 'missing-ranking', 0, false ],
-
-      [ this._isArr( bio?.cv ), 'missing-cv', 10, false ],
-      [ this._isArr( bio?.facts ), 'missing-facts', 5, false ],
+      // --- profile metadata ---
+      [ this._hasItem( info?.industry, Industry ), 'invalid-industry', 50, true ],
+      [ Array.isArray( info?.source ), 'invalid-source', 25, true ],
+      [ this._isValid( info?.source, v => this._isArr( v ) ), 'missing-source', 10, false ],
 
       [ !! info?.selfMade, 'missing-selfMade', 10, false ],
       [ this._isValid( info?.selfMade?.rank, v => this._inRange( v, [ 1, 10 ] ) ), 'invalid-selfMade', 20, false ],
       [ this._isValid( info?.philanthropyScore, v => this._inRange( v, [ 1, 5 ] ) ), 'invalid-philanthropyScore', 10, false ],
 
+      // --- realtime data ---
+      [ !! data.realtime?.networth, 'missing-networth', 0, false ],
+      [ !! data.realtime?.rank, 'missing-rank', 0, false ],
+      [ data.realtime?.networth == null || data.realtime.networth >= 0, 'invalid-networth', 20, true ],
+      [ data.ranking?.length > 0, 'missing-ranking', 0, false ],
+
+      // --- content ---
+      [ Array.isArray( data.related ), 'invalid-related', 20, true ],
+      [ Array.isArray( data.media ), 'invalid-media', 20, true ],
+      [ Array.isArray( data.assets ), 'invalid-assets', 20, true ],
+      [ Array.isArray( data.annual ), 'invalid-annual', 20, true ],
+
+      [ this._isArr( bio?.cv ), 'missing-cv', 10, false ],
+      [ this._isArr( bio?.facts ), 'missing-facts', 5, false ],
       [ this._isArr( data.media ), 'missing-profile-image', 10, false ],
 
+      // --- external links ---
       [ !! data.wiki, 'missing-wiki', 5, false ],
       [ !! data.wiki?.wikidata, 'missing-wikidata', 5, false ]
     ] );
