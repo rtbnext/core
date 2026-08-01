@@ -66,7 +66,7 @@ export class Integrity {
       [ this._hasItem( info?.gender, Gender ), 'invalid-gender', 25, true ],
       [ this._isValid( info?.birthDate, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 15, 155 ] ) ) ), 'invalid-birthDate', 25, true ],
       [ this._isValid( info?.maritalStatus, v => this._hasItem( v, MaritalStatus ) ), 'invalid-maritalStatus', 25, true ],
-      [ this._isValid( info?.children, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 1, 25 ] ) ) ), 'invalid-children', 25, true ],
+      [ this._isValid( info?.children, v => ( ! Number.isNaN( v ) && this._inRange( v, [ 0, 25 ] ) ) ), 'invalid-children', 25, true ],
 
       [ this._hasItem( info?.industry, Industry ), 'invalid-industry', 50, true ],
       [ Array.isArray( info?.source ), 'invalid-source', 25, true ],
