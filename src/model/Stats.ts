@@ -177,8 +177,8 @@ export class Stats implements IStats {
     } ) );
   }
 
-  public setTop10 ( data: TTop10Data ) : boolean {
-    return this.saveStats( 'top10.json', 'json', this.prepStats( { data } ) );
+  public setTop10 ( entries: TTop10Data ) : boolean {
+    return this.saveStats( 'top10.json', 'json', this.prepStats( { entries } ) );
   }
 
   public updateTop10 ( key: string, list: TTop10List ) : boolean {
