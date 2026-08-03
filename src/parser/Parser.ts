@@ -4,6 +4,7 @@ import type { TLocation } from '@rtbnext/schema/src/base/generic';
 import type { Primitive } from 'devtypes/types/primitive';
 import countries from 'i18n-iso-countries';
 
+import { Utils } from '@/core/Utils';
 import { Gender, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
 import { REGEX_SPACES } from '@/lib/regex';
 import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
@@ -170,10 +171,10 @@ export class Parser {
     value: any, list: L, fb: T | undefined = undefined, exactMatch: boolean = false, useKey?: boolean
   ) : T | undefined {
     if ( useKey === undefined ) useKey = ! Array.isArray( list );
-    value = Parser.string( value ).toLowerCase();
+    value = Utils.sanitize( value );
 
     return Object.entries( list ).find( ( [ k, v ] ) => {
-      const test = Parser.string( useKey ? k : v ).toLowerCase();
+      const test = Utils.sanitize( useKey ? k : v );
       return exactMatch ? value === test : value.includes( test ) || test.includes( value );
     } )?.[ 1 ] ?? fb;
   }
