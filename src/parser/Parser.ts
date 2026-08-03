@@ -173,10 +173,11 @@ export class Parser {
     if ( useKey === undefined ) useKey = ! Array.isArray( list );
     value = Utils.sanitize( value );
 
-    return Object.entries( list ).find( ( [ k, v ] ) => {
-      const test = Utils.sanitize( useKey ? k : v );
-      return exactMatch ? value === test : value.includes( test ) || test.includes( value );
-    } )?.[ 1 ] ?? fb;
+    const entries = Object.entries( list );
+
+    return ( entries.find( ( [ k ] ) => Utils.sanitize( k ) === value ) ?? (
+      exactMatch ? undefined : entries.find( ( [ k ] ) => value.includes( Utils.sanitize( k ) ) )
+    ) )?.[ 1 ] ?? fb;
   }
 
   // --- container ---
