@@ -5,9 +5,9 @@ import type { Primitive } from 'devtypes/types/primitive';
 import countries from 'i18n-iso-countries';
 
 import { Utils } from '@/core/Utils';
-import { Gender, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
+import { GenderResolver, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
 import { REGEX_SPACES } from '@/lib/regex';
-import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
+import type { TGenderResolver, TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
 import type { TParserContainer, TParserDateType, TParserMethod } from '@/type/parser';
 
 
@@ -104,7 +104,7 @@ export class Parser {
   }
 
   public static gender ( value: unknown ) : TGender | undefined {
-    return Parser.map( value, Gender );
+    return Parser.map< TGender, TGenderResolver >( value, GenderResolver );
   }
 
   public static maritalStatus ( value: unknown ) : TMaritalStatus | undefined {
