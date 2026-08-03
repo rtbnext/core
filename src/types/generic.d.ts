@@ -14,5 +14,6 @@ export type TMeasuredResult< R > = {
   ms: number;
 };
 
+export type TGenderResolver = Record< string, TGender >;
 export type TMaritalStatusResolver = Record< string, TMaritalStatus >;
 export type TIndustryResolver = Record< string, TIndustry >;

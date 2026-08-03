@@ -3,7 +3,7 @@ import type {
   TMaritalStatus, TPercentile, TRelationType, TSelfMadeRank, TService, TStatsGroup, TWealthSpread
 } from '@rtbnext/schema/src/base/const';
 
-import type { TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
+import type { TGenderResolver, TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
 import type { TStatusPolicy } from '@/type/status';
 
 
@@ -68,6 +68,25 @@ export const FilterSpecial: TFilterSpecial[] = [
 ] as const;
 
 // --- resolver ---
+
+export const GenderResolver: TGenderResolver = {
+  'm': 'm',
+  'f': 'f',
+  'd': 'd',
+
+  'male': 'm',
+  'man': 'm',
+  'masculine': 'm',
+
+  'female': 'f',
+  'woman': 'f',
+  'feminine': 'f',
+
+  'diverse': 'd',
+  'non-binary': 'd',
+  'nonbinary': 'd',
+  'nonbinary-person': 'd'
+} as const;
 
 export const MaritalStatusResolver: TMaritalStatusResolver = {
   'single': 'single',
