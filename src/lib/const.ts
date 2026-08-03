@@ -198,29 +198,29 @@ export const Services: TService[] = [
 
 export const StatusPolicy: TStatusPolicy = {
   profile: {
-    samples: 80,
+    samples: 100,
     degradedThreshold: 0.25,
     outageThreshold: 0.5
   },
   list: {
-    samples: 10,
+    samples: 20,
     degradedThreshold: 0.2,
     outageThreshold: 0.4
   },
   mover: {
-    samples: 10,
+    samples: 4,
+    degradedThreshold: 0.25,
+    outageThreshold: 0.5
+  },
+  filter: {
+    samples: 8,
     degradedThreshold: 0.2,
     outageThreshold: 0.4
   },
-  filter: {
-    samples: 10,
-    degradedThreshold: 0.1,
-    outageThreshold: 0.2
-  },
   stats: {
-    samples: 10,
-    degradedThreshold: 0.1,
-    outageThreshold: 0.2
+    samples: 8,
+    degradedThreshold: 0.2,
+    outageThreshold: 0.4
   },
   system: {
     samples: 200,
