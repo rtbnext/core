@@ -71,7 +71,14 @@ export const FilterSpecial: TFilterSpecial[] = [
 
 export const MaritalStatusResolver: TMaritalStatusResolver = {
   'single': 'single',
+  'never-married': 'single',
+
   'in-relationship': 'relationship',
+  'in-a-relationship': 'relationship',
+  'relationship': 'relationship',
+  'partnered': 'relationship',
+  'long-term-relationship': 'relationship',
+
   'married': 'married',
   'remarried': 'remarried',
   'engaged': 'engaged',
