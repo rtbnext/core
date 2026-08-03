@@ -70,36 +70,36 @@ export const FilterSpecial: TFilterSpecial[] = [
 // --- resolver ---
 
 export const GenderResolver: TGenderResolver = {
-  'm': 'm',
-  'f': 'f',
-  'd': 'd',
+  'female': 'f',
+  'woman': 'f',
+  'feminine': 'f',
 
   'male': 'm',
   'man': 'm',
   'masculine': 'm',
 
-  'female': 'f',
-  'woman': 'f',
-  'feminine': 'f',
-
-  'diverse': 'd',
   'non-binary': 'd',
+  'nonbinary-person': 'd',
   'nonbinary': 'd',
-  'nonbinary-person': 'd'
+  'diverse': 'd',
+
+  'f': 'f',
+  'm': 'm',
+  'd': 'd'
 } as const;
 
 export const MaritalStatusResolver: TMaritalStatusResolver = {
-  'single': 'single',
-  'never-married': 'single',
-
-  'in-relationship': 'relationship',
-  'in-a-relationship': 'relationship',
-  'relationship': 'relationship',
-  'partnered': 'relationship',
   'long-term-relationship': 'relationship',
+  'in-a-relationship': 'relationship',
+  'in-relationship': 'relationship',
+  'partnered': 'relationship',
+  'relationship': 'relationship',
 
-  'married': 'married',
+  'never-married': 'single',
+  'single': 'single',
+
   'remarried': 'remarried',
+  'married': 'married',
   'engaged': 'engaged',
   'separated': 'separated',
   'divorced': 'divorced',
@@ -107,87 +107,87 @@ export const MaritalStatusResolver: TMaritalStatusResolver = {
 } as const;
 
 export const IndustryResolver: TIndustryResolver = {
-  'technology': 'technology',
-  'tech': 'technology',
-
-  'fashion-retail': 'retail',
   'fashion-and-retail': 'retail',
+  'fashion-retail': 'retail',
   'fashion': 'retail',
   'retail': 'retail',
 
-  'finance-investments': 'finance',
   'finance-and-investments': 'finance',
-  'finance': 'finance',
-  'investments': 'finance',
+  'finance-investments': 'finance',
   'financial-services': 'finance',
   'financial-service': 'finance',
+  'investments': 'finance',
   'banking': 'finance',
+  'finance': 'finance',
 
-  'diversified': 'diversified',
+  'construction-and-engineering': 'engineering',
+  'construction-engineering': 'engineering',
+  'construction': 'engineering',
+  'engineering': 'engineering',
 
-  'telecom': 'telecom',
-  'telecommunication': 'telecom',
-  'communications': 'telecom',
-  'telecommunications': 'telecom',
-  'telecom-services': 'telecom',
+  'sports-entertainment': 'sports',
+  'entertainment-sports': 'sports',
+  'sports': 'sports',
 
-  'energy': 'energy',
-  'oil-gas': 'energy',
-  'oil-and-gas': 'energy',
-  'utilities': 'energy',
+  'media-and-entertainment': 'media',
+  'media-entertainment': 'media',
+  'entertainment': 'media',
+  'media': 'media',
 
-  'metals-mining': 'mining',
+  'real-estate-development': 'property',
+  'real-estate': 'property',
+  'realestate': 'property',
+  'realty': 'property',
+  'property': 'property',
+
+  'gambling-and-casinos': 'gambling',
+  'gambling-casinos': 'gambling',
+  'casinos': 'gambling',
+  'gaming': 'gambling',
+  'gambling': 'gambling',
+
   'metals-and-mining': 'mining',
+  'metals-mining': 'mining',
   'metals': 'mining',
   'mining': 'mining',
 
-  'gambling-casinos': 'gambling',
-  'gambling-and-casinos': 'gambling',
-  'gambling': 'gambling',
-  'casinos': 'gambling',
-  'gaming': 'gambling',
+  'telecommunications': 'telecom',
+  'telecommunication': 'telecom',
+  'telecom-services': 'telecom',
+  'communications': 'telecom',
+  'telecom': 'telecom',
 
-  'healthcare': 'healthcare',
+  'automotive-industry': 'automotive',
+  'automotive': 'automotive',
+  'autos': 'automotive',
+  'auto': 'automotive',
+
   'health-care': 'healthcare',
+  'healthcare': 'healthcare',
   'pharmaceuticals': 'healthcare',
   'pharma': 'healthcare',
   'medical': 'healthcare',
 
-  'manufacturing': 'manufacturing',
-  'industrial': 'manufacturing',
-  'industrials': 'manufacturing',
+  'oil-and-gas': 'energy',
+  'oil-gas': 'energy',
+  'utilities': 'energy',
+  'energy': 'energy',
 
-  'logistics': 'logistics',
+  'industrials': 'manufacturing',
+  'industrial': 'manufacturing',
+  'manufacturing': 'manufacturing',
+
   'transportation': 'logistics',
   'transport': 'logistics',
+  'logistics': 'logistics',
 
-  'automotive': 'automotive',
-  'auto': 'automotive',
-  'autos': 'automotive',
-  'automotive-industry': 'automotive',
-
-  'media-entertainment': 'media',
-  'media-and-entertainment': 'media',
-  'media': 'media',
-  'entertainment': 'media',
-
-  'construction-engineering': 'engineering',
-  'construction-and-engineering': 'engineering',
-  'construction': 'engineering',
-  'engineering': 'engineering',
-
-  'sports': 'sports',
-  'sports-entertainment': 'sports',
-  'entertainment-sports': 'sports',
-
-  'real-estate': 'property',
-  'real-estate-development': 'property',
-  'property': 'property',
-  'realestate': 'property',
-  'realty': 'property',
-
+  'services': 'service',
   'service': 'service',
-  'services': 'service'
+
+  'technology': 'technology',
+  'tech': 'technology',
+
+  'diversified': 'diversified'
 } as const;
 
 // --- status ---
