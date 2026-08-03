@@ -82,22 +82,86 @@ export const MaritalStatusResolver: TMaritalStatusResolver = {
 
 export const IndustryResolver: TIndustryResolver = {
   'technology': 'technology',
+  'tech': 'technology',
+
   'fashion-retail': 'retail',
+  'fashion-and-retail': 'retail',
+  'fashion': 'retail',
+  'retail': 'retail',
+
   'finance-investments': 'finance',
+  'finance-and-investments': 'finance',
+  'finance': 'finance',
+  'investments': 'finance',
+  'financial-services': 'finance',
+  'financial-service': 'finance',
+  'banking': 'finance',
+
   'diversified': 'diversified',
+
   'telecom': 'telecom',
+  'telecommunication': 'telecom',
+  'communications': 'telecom',
+  'telecommunications': 'telecom',
+  'telecom-services': 'telecom',
+
   'energy': 'energy',
+  'oil-gas': 'energy',
+  'oil-and-gas': 'energy',
+  'utilities': 'energy',
+
   'metals-mining': 'mining',
+  'metals-and-mining': 'mining',
+  'metals': 'mining',
+  'mining': 'mining',
+
   'gambling-casinos': 'gambling',
+  'gambling-and-casinos': 'gambling',
+  'gambling': 'gambling',
+  'casinos': 'gambling',
+  'gaming': 'gambling',
+
   'healthcare': 'healthcare',
+  'health-care': 'healthcare',
+  'pharmaceuticals': 'healthcare',
+  'pharma': 'healthcare',
+  'medical': 'healthcare',
+
   'manufacturing': 'manufacturing',
+  'industrial': 'manufacturing',
+  'industrials': 'manufacturing',
+
   'logistics': 'logistics',
+  'transportation': 'logistics',
+  'transport': 'logistics',
+
   'automotive': 'automotive',
+  'auto': 'automotive',
+  'autos': 'automotive',
+  'automotive-industry': 'automotive',
+
   'media-entertainment': 'media',
+  'media-and-entertainment': 'media',
+  'media': 'media',
+  'entertainment': 'media',
+
   'construction-engineering': 'engineering',
+  'construction-and-engineering': 'engineering',
+  'construction': 'engineering',
+  'engineering': 'engineering',
+
   'sports': 'sports',
+  'sports-entertainment': 'sports',
+  'entertainment-sports': 'sports',
+
   'real-estate': 'property',
-  'service': 'service'
+  'real-estate-development': 'property',
+  'property': 'property',
+  'realestate': 'property',
+  'realty': 'property',
+
+  'service': 'service',
+  'services': 'service'
 } as const;
 
 // --- status ---
