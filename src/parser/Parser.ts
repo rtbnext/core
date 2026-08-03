@@ -174,7 +174,7 @@ export class Parser {
 
     return Object.entries( list ).find( ( [ k, v ] ) => {
       const test = Parser.string( useKey ? k : v ).toLowerCase();
-      return exactMatch ? value === test : ( value.includes( test ) ?? test.includes( value ) );
+      return exactMatch ? value === test : value.includes( test ) || test.includes( value );
     } )?.[ 1 ] ?? fb;
   }
 
