@@ -105,6 +105,7 @@ export class NameParser {
     ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
     if ( ! fN && ! lN ) ( { firstName: fN, lastName: lN } = this.detect( parts, asianFormat ) );
     ( { firstName: fN, lastName: lN } = this.fixLastName( parts, fN, lN ) );
+    ( { firstName: fN, lastName: lN } = this.fixSuffix( parts, fN, lN ) );
 
     return this.result( clean, family, fN, lN, asianFormat );
   }
