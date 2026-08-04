@@ -28,7 +28,7 @@ export class SchedulerJob extends Job {
         { profile, list }, 'debug'
       );
 
-      if ( list > profile ) return new ListJob().run();
+      if ( list >= profile ) return new ListJob().run();
       else return new ProfileJob().run();
     } );
   }
