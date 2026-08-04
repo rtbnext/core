@@ -53,6 +53,19 @@ export class NameParser {
     };
   }
 
+  private static fixLastName ( parts: string[], fN: string, lN: string ) : Pick< TProfileName, 'firstName' | 'lastName' > {
+    if ( !fN && lN && parts.length > 1 ) {
+      const index = parts.findIndex( part => part.toLowerCase() === lN.toLowerCase() );
+
+      if ( index > 0 ) {
+        fN = parts.slice( 0, index ).join( ' ' );
+        lN = parts.slice( index ).join( ' ' );
+      }
+    }
+
+    return { firstName: fN, lastName: lN };
+  }
+
   public static parse ( value: unknown, lastName: unknown = undefined, firstName: unknown = undefined, asianFormat: boolean = false ) : TNameResult {
     const raw = this.normalize( value );
     const family = REGEX_FAMILY.test( raw );
@@ -65,6 +78,9 @@ export class NameParser {
     let lN = Parser.string( lastName ).replace( REGEX_FAMILY, '' );
 
     ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
+
     if ( ! fN && ! lN ) ( { firstName: fN, lastName: lN } = this.detect( parts, asianFormat ) );
+
+    ( { firstName: fN, lastName: lN } = this.fixLastName( parts, fN, lN ) );
   }
 }
