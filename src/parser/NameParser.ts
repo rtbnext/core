@@ -1,4 +1,4 @@
-import { REGEX_FAMILY, REGEX_GROUP, REGEX_LOWER_START, REGEX_NAME_TRIM, REGEX_SPACE_DELIMITER, REGEX_SPACES } from '@/lib/regex';
+import { REGEX_FAMILY, REGEX_GROUP, REGEX_LOWER_START, REGEX_NAME_TRIM, REGEX_SPACE_DELIMITER, REGEX_SPACES, REGEX_SUFFIX } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TFirstLastName, TNameResult } from '@/type/parser';
 
@@ -64,6 +64,19 @@ export class NameParser {
     }
 
     return { firstName: fN, lastName: lN };
+  }
+
+  private static fixSuffix ( parts: string[], fN: string, lN: string ) : TFirstLastName {
+    if ( parts.length < 2 || ! REGEX_SUFFIX.test( parts.at( -1 ) ?? '' ) ) return { firstName: fN, lastName: lN };
+
+    const suffix = parts.at( -1 )!;
+    if ( lN.endsWith( ` ${ suffix }` ) ) return { firstName: fN, lastName: lN };
+    if ( lN ) return { firstName: fN, lastName: `${ lN } ${ suffix }` };
+
+    return {
+      firstName: parts.slice( 0, -2 ).join( ' ' ),
+      lastName: parts.slice( -2 ).join( ' ' )
+    };
   }
 
   private static result ( clean: string, family: boolean, fN: string, lN: string, asianFormat: boolean ) : TNameResult {
