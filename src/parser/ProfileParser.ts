@@ -216,5 +216,16 @@ export class ProfileParser extends Cache implements IProfileParser {
 
     // Single token names are always family names
     if ( ! fN && ! lN && parts.length === 1 ) lN = parts[ 0 ];
+
+    // Resolve missing parts
+    if ( ! fN || ! lN ) {
+      if ( asianFormat ) {
+        lN ||= parts[ 0 ] ?? '';
+        fN ||= parts.slice( 1 ).join( ' ' );
+      } else {
+        lN ||= parts.pop() ?? '';
+        fN ||= parts.join( ' ' );
+      }
+    }
   }
 }
