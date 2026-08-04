@@ -66,6 +66,15 @@ export class NameParser {
     return { firstName: fN, lastName: lN };
   }
 
+  private static result ( clean: string, family: boolean, fN: string, lN: string, asianFormat: boolean ) : TNameResult {
+    return { family, name: {
+      fullName: clean + ( family ? ' & family' : '' ), firstName: fN, lastName: lN,
+      shortName: asianFormat
+        ? [ lN, fN.split( ' ' )[ 0 ] ].filter( Boolean ).join( ' ' )
+        : [ fN.split( ' ' )[ 0 ], lN ].filter( Boolean ).join( ' ' )
+    } };
+  }
+
   public static parse ( value: unknown, lastName: unknown = undefined, firstName: unknown = undefined, asianFormat: boolean = false ) : TNameResult {
     const raw = this.normalize( value );
     const family = REGEX_FAMILY.test( raw );
@@ -78,9 +87,9 @@ export class NameParser {
     let lN = Parser.string( lastName ).replace( REGEX_FAMILY, '' );
 
     ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
-
     if ( ! fN && ! lN ) ( { firstName: fN, lastName: lN } = this.detect( parts, asianFormat ) );
-
     ( { firstName: fN, lastName: lN } = this.fixLastName( parts, fN, lN ) );
+
+    return this.result( clean, family, fN, lN, asianFormat );
   }
 }
