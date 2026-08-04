@@ -40,6 +40,7 @@ export class NameParser {
     if ( REGEX_LOWER_START.test( parts[ 0 ] ) ) return { firstName: '', lastName: parts.join( ' ' ) };
 
     let split = parts.length - 1;
+    if ( parts.length > 2 && REGEX_SUFFIX.test( parts.at( -1 ) ?? '' ) ) split--;
     while ( split > 0 && REGEX_LOWER_START.test( parts[ split - 1 ] ) ) split--;
 
     return {
@@ -54,7 +55,8 @@ export class NameParser {
       const size = lastParts.length;
 
       for ( let i = 0; i <= parts.length - size; i++ ) if (
-        parts.slice( i, i + size ).join( ' ' ).toLowerCase() === lN.toLowerCase()
+        parts.slice( i, i + size ).join( ' ' ).toLowerCase() ===
+        lN.toLowerCase()
       ) {
         fN = parts.slice( 0, i ).join( ' ' );
         lN = parts.slice( i ).join( ' ' );
@@ -64,19 +66,6 @@ export class NameParser {
     }
 
     return { firstName: fN, lastName: lN };
-  }
-
-  private static fixSuffix ( parts: string[], fN: string, lN: string ) : TFirstLastName {
-    if ( parts.length < 2 || ! REGEX_SUFFIX.test( parts.at( -1 ) ?? '' ) ) return { firstName: fN, lastName: lN };
-
-    const suffix = parts.at( -1 )!;
-    if ( lN.endsWith( ` ${ suffix }` ) ) return { firstName: fN, lastName: lN };
-    if ( lN ) return { firstName: fN, lastName: `${ lN } ${ suffix }` };
-
-    return {
-      firstName: parts.slice( 0, -2 ).join( ' ' ),
-      lastName: parts.slice( -2 ).join( ' ' )
-    };
   }
 
   private static result ( clean: string, family: boolean, fN: string, lN: string, asianFormat: boolean ) : TNameResult {
@@ -105,7 +94,6 @@ export class NameParser {
     ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
     if ( ! fN && ! lN ) ( { firstName: fN, lastName: lN } = this.detect( parts, asianFormat ) );
     ( { firstName: fN, lastName: lN } = this.fixLastName( parts, fN, lN ) );
-    ( { firstName: fN, lastName: lN } = this.fixSuffix( parts, fN, lN ) );
 
     return this.result( clean, family, fN, lN, asianFormat );
   }
