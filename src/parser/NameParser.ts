@@ -34,5 +34,9 @@ export class NameParser {
     const clean = this.dedup( this.cleanName( raw ) );
 
     if ( this.isGroup( clean ) ) return this.group( clean, family );
+
+    const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
+    let fN = Parser.string( firstName );
+    let lN = Parser.string( lastName ).replace( REGEX_FAMILY, '' );
   }
 }

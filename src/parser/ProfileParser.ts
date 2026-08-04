@@ -208,7 +208,7 @@ export class ProfileParser extends Cache implements IProfileParser {
 
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
 
-    let fN = firstName ? Parser.string( firstName ).trim() : '';
+    let fN = firstName ? Parser.string( firstName ) : '';
     let lN = lastName ? Parser.string( lastName ).replace( REGEX_FAMILY, '' ).trim() : '';
 
     // Ignore obviously broken explicit values
@@ -235,7 +235,6 @@ export class ProfileParser extends Cache implements IProfileParser {
       fullName: ( clean + ( family ? ' & family' : '' ) ).trim(),
       shortName: [ fN.split( ' ' )[ 0 ], lN ].filter( Boolean ).join( ' ' ).trim(),
       lastName: lN.trim(), firstName: fN.trim()
-    }
-  };
+    } };
   }
 }
