@@ -23,6 +23,11 @@ export class SchedulerJob extends Job {
       const profile = SchedulerJob.profileQueue.size / Job.config.queue.profilePressure;
       const list = SchedulerJob.listQueue.size / Job.config.queue.listPressure;
 
+      this.log(
+        `Current workload :: LIST=${ list.toFixed( 2 ) } PROFILE=${ profile.toFixed( 2 ) }`,
+        { profile, list }, 'debug'
+      );
+
       if ( list > profile ) return new ListJob().run();
       else return new ProfileJob().run();
     } );
