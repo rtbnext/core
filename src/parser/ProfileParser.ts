@@ -227,5 +227,8 @@ export class ProfileParser extends Cache implements IProfileParser {
         fN ||= parts.join( ' ' );
       }
     }
+
+    // Avoid duplicate names
+    if ( fN && lN && fN === lN ) fN = '';
   }
 }
