@@ -18,10 +18,6 @@ export class NameParser {
     return parts.length === 2 && parts[ 0 ].toLowerCase() === parts[ 1 ].toLowerCase() ? parts[ 0 ] : value;
   }
 
-  private static isGroup ( value: string ) : boolean {
-    return REGEX_GROUP.test( value );
-  }
-
   private static group ( value: string, family: boolean ) : TNameResult {
     return { family, name: {
       fullName: value + ( family ? ' & family' : '' ),
@@ -75,12 +71,15 @@ export class NameParser {
     } };
   }
 
-  public static parse ( value: unknown, lastName: unknown = undefined, firstName: unknown = undefined, asianFormat: boolean = false ) : TNameResult {
+  public static parse (
+    value: unknown, lastName: unknown = undefined, firstName: unknown = undefined,
+    asianFormat: boolean = false
+  ) : TNameResult {
     const raw = this.normalize( value );
     const family = REGEX_FAMILY.test( raw );
     const clean = this.dedup( this.cleanName( raw ) );
 
-    if ( this.isGroup( clean ) ) return this.group( clean, family );
+    if ( REGEX_GROUP.test( clean ) ) return this.group( clean, family );
 
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
     let fN = Parser.string( firstName );
