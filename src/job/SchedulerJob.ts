@@ -1,5 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { ListQueue, ProfileQueue } from '@/core/Queue';
+import { ListJob } from '@/job/ListJob';
+import { ProfileJob } from '@/job/ProfileJob';
 import type { TCommandJob, TJobClsOptions } from '@/type/job';
 
 
@@ -17,6 +19,12 @@ export class SchedulerJob extends Job {
         this.log( 'Both queues are empty, nothing to process', undefined, 'debug' );
         return;
       }
+
+      const profile = SchedulerJob.profileQueue.size / Job.config.queue.profilePressure;
+      const list = SchedulerJob.listQueue.size / Job.config.queue.listPressure;
+
+      if ( list > profile ) return new ListJob().run();
+      else return new ProfileJob().run();
     } );
   }
 
