@@ -1,9 +1,10 @@
 import type { TAsset, TRealtime } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TEducation, TImage, TLocation, TOrganization, TRelation, TSelfMade } from '@rtbnext/schema/src/base/generic';
-import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileBio, TProfileFlags, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 import type { ICache } from '@/type/cache';
+import type { TNameResult } from '@/type/parser';
 import type { TPersonListEntry, TProfileResponse } from '@/type/response';
 
 
@@ -13,7 +14,7 @@ export interface IProfileParser extends ICache {
   uri () : string;
   id () : string;
   aliases () : string[];
-  name () : { name: TProfileName, family: boolean };
+  name () : TNameResult;
   flags () : TProfileFlags;
   info () : TProfileInfo;
   citizenship () : string | undefined;
@@ -43,7 +44,7 @@ export interface IPersonListParser extends IListParser< TPersonListEntry > {
   rank () : number | undefined;
   networth () : number | undefined;
   dropOff () : boolean | undefined;
-  name () : { name: TProfileName, family: boolean };
+  name () : TNameResult;
   info () : Partial< TProfileInfo >;
   residence () : TLocation | undefined;
   selfMade () : TSelfMade | undefined;
