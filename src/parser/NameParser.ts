@@ -65,5 +65,6 @@ export class NameParser {
     let lN = Parser.string( lastName ).replace( REGEX_FAMILY, '' );
 
     ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
+    if ( ! fN && ! lN ) ( { firstName: fN, lastName: lN } = this.detect( parts, asianFormat ) );
   }
 }
