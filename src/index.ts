@@ -37,6 +37,7 @@ export { Stats } from '@/model/Stats';
 
 export { BillionairesListParser } from '@/parser/BillionairesListParser';
 export { ListParser } from '@/parser/ListParser';
+export { NameParser } from '@/parser/NameParser';
 export { Parser } from '@/parser/Parser';
 export { PersonListParser } from '@/parser/PersonListParser';
 export { ProfileParser } from '@/parser/ProfileParser';
