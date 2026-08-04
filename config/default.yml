@@ -56,3 +56,5 @@ queue:
   tsThreshold: 2592000000
   maxSize: 10000
   defaultPrio: 0
+  profilePressure: 1000
+  listPressure: 100
