@@ -5,7 +5,7 @@ import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import { Parser } from '@/parser/Parser';
 import { ProfileParser } from '@/parser/ProfileParser';
-import type { TCommandJob, TCronJob, TProfileJobOptions } from '@/type/job';
+import type { TCommandJob, TProfileJobOptions } from '@/type/job';
 import { ProfileManager } from '@/util/ProfileManager';
 import { Ranking } from '@/util/Ranking';
 import { Wiki } from '@/util/Wiki';
@@ -85,10 +85,4 @@ export class ProfileJob extends Job< TProfileJobOptions > {
       desc: 'Skip wiki data enrichment'
     } ]
   } as const;
-
-  // --- cron job definition ---
-
-  public static readonly cron: TCronJob< TProfileJobOptions > = [ {
-    cronexpr: '*/10 3-22 * * *', // run every 10 minutes between 3:00 AM and 10:59 PM
-  } ] as const;
 }

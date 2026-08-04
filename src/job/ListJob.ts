@@ -8,7 +8,7 @@ import { getListConfigByUri } from '@/lib/list';
 import { List } from '@/model/List';
 import { Profile } from '@/model/Profile';
 import { Parser } from '@/parser/Parser';
-import type { TCommandJob, TCronJob, TListJobOptions } from '@/type/job';
+import type { TCommandJob, TListJobOptions } from '@/type/job';
 import type { TQueueOptions } from '@/type/queue';
 import type { TPersonListEntry } from '@/type/response';
 import { ProfileManager } from '@/util/ProfileManager';
@@ -147,10 +147,4 @@ export class ListJob extends Job< TListJobOptions > {
       desc: 'If set, profile data will be updated when processing lists'
     } ]
   } as const;
-
-  // --- cron job definition ---
-
-  public static readonly cron: TCronJob = [ {
-    cronexpr: '*/5 1-2 * * *', // run every 5 minutes between 1:00 and 2:59 AM
-  } ] as const;
 }
