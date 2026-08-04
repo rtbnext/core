@@ -8,3 +8,4 @@ export const REGEX_URI_CLEANUP = /-(family|families|\d+)$/i;
 export const REGEX_NAME_CLEANUP = /[^a-z0-9\s-]/g;
 export const REGEX_NAME_TRIM = /^[\s"'`()\[\]{}<>.,;:!?]+|[\s"'`()\[\]{}<>.,;:!?]+$/g;
 export const REGEX_GROUP = /,|\sand\s/i;
+export const REGEX_LOWER_START = /^[a-z]/;

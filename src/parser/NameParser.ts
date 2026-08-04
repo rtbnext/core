@@ -1,4 +1,4 @@
-import { REGEX_FAMILY, REGEX_GROUP, REGEX_NAME_TRIM, REGEX_SPACE_DELIMITER, REGEX_SPACES } from '@/lib/regex';
+import { REGEX_FAMILY, REGEX_GROUP, REGEX_LOWER_START, REGEX_NAME_TRIM, REGEX_SPACE_DELIMITER, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TNameResult } from '@/type/parser';
 import { TProfileName } from '@rtbnext/schema/src/model/profile';
@@ -37,6 +37,20 @@ export class NameParser {
     if ( fN && lN && fN.toLowerCase() === lN.toLowerCase() ) fN = '', lN = '';
 
     return { firstName: fN, lastName: lN };
+  }
+
+  private static detect ( parts: string[], asianFormat: boolean ) : Pick< TProfileName, 'firstName' | 'lastName' > {
+    if ( parts.length === 1 ) return { firstName: '', lastName: parts[ 0 ] };
+    if ( asianFormat ) return { firstName: parts.slice( 1 ).join( ' ' ), lastName: parts[ 0 ] };
+    if ( REGEX_LOWER_START.test( parts[ 0 ] ) ) return { firstName: '', lastName: parts.join( ' ' ) };
+
+    let split = parts.length - 1;
+    while ( split > 0 && REGEX_LOWER_START.test( parts[ split - 1 ] ) ) split--;
+
+    return {
+      firstName: parts.slice( 0, split ).join( ' ' ),
+      lastName: parts.slice( split ).join( ' ' )
+    };
   }
 
   public static parse ( value: unknown, lastName: unknown = undefined, firstName: unknown = undefined, asianFormat: boolean = false ) : TNameResult {
