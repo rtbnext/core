@@ -125,6 +125,7 @@ export type TPersonListEntry = {
   },
   personName: string;
   lastName?: string;
+  firstName?: string;
   birthDate?: number;
   gender?: 'M' | 'F';
   countryOfCitizenship?: string;
