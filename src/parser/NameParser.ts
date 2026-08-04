@@ -17,5 +17,9 @@ export class NameParser {
     return parts.length === 2 && parts[ 0 ].toLowerCase() === parts[ 1 ].toLowerCase() ? parts[ 0 ] : value;
   }
 
-  public static parse ( value: unknown, lastName: unknown = undefined, firstName: unknown = undefined, asianFormat: boolean = false ) : TNameResult {}
+  public static parse ( value: unknown, lastName: unknown = undefined, firstName: unknown = undefined, asianFormat: boolean = false ) : TNameResult {
+    const raw = this.normalize( value );
+    const family = REGEX_FAMILY.test( raw );
+    const clean = this.dedup( this.cleanName( raw ) );
+  }
 }
