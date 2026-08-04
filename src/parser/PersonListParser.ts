@@ -44,7 +44,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
 
   public name () : { name: TProfileName, family: boolean } {
     return this.cache( 'name', () => ProfileParser.name(
-      this.raw.person?.name ?? this.raw.personName, this.raw.lastName
+      this.raw.person?.name ?? this.raw.personName, this.raw.lastName, this.raw.firstName
     ) );
   }
 
