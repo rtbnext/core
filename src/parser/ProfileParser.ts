@@ -213,5 +213,8 @@ export class ProfileParser extends Cache implements IProfileParser {
 
     // Ignore obviously broken explicit values
     if ( fN && lN && fN === lN && parts.length > 1 ) fN = '', lN = '';
+
+    // Single token names are always family names
+    if ( ! fN && ! lN && parts.length === 1 ) lN = parts[ 0 ];
   }
 }
