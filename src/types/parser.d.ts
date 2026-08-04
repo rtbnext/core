@@ -15,6 +15,6 @@ export type TParserContainer = {
 };
 
 export type TNameResult = {
-  family: boolean
-  name: TProfileName
+  family: boolean;
+  name: TProfileName;
 };
