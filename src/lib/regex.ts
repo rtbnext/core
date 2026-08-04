@@ -1,5 +1,5 @@
 export const REGEX_DIACRITICS = /[\u0300-\u036f]/g;
-export const REGEX_FAMILY = /\s*(?:&\s*)?famil(?:y|ies)\b\s*$/i;
+export const REGEX_FAMILY = /\s*(?:[&|and]\s*)?famil(?:y|ies)\b\s*$/i;
 export const REGEX_NOALNUM = /[^a-z0-9]+/g;
 export const REGEX_NONUM = /[^\d]+/g;
 export const REGEX_SPACE_DELIMITER = /\s+/;
@@ -7,5 +7,5 @@ export const REGEX_SPACES = /\s+/g;
 export const REGEX_URI_CLEANUP = /-(family|families|\d+)$/i;
 export const REGEX_NAME_CLEANUP = /[^a-z0-9\s-]/g;
 export const REGEX_NAME_TRIM = /^[\s"'`()\[\]{}<>.,;:!?]+|[\s"'`()\[\]{}<>.,;:!?]+$/g;
-export const REGEX_GROUP = /,|\sand\s/i;
+export const REGEX_GROUP = /,|\sand|&\s/i;
 export const REGEX_LOWER_START = /^[a-z]/;
