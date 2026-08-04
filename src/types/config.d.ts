@@ -1,5 +1,6 @@
 import type { TService } from '@rtbnext/schema/src/base/const';
 
+
 export type TLoggingLevel = 'error' | 'warn' | 'info' | 'debug';
 
 export type TLoggingConfig = {
@@ -61,6 +62,8 @@ export type TQueueConfig = {
   tsThreshold: number;
   maxSize: number;
   defaultPrio: number;
+  profilePressure: number;
+  listPressure: number;
 };
 
 export type TConfigObject = {
