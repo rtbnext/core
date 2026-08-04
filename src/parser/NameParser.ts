@@ -27,8 +27,8 @@ export class NameParser {
   private static validate ( clean: string, fN: string, lN: string ) : TFirstLastName {
     const valid = ( part: string ) => !! part && clean.toLowerCase().includes( part.toLowerCase() );
 
-    if ( fN && !valid( fN ) ) fN = '';
-    if ( lN && !valid( lN ) ) lN = '';
+    if ( fN && ! valid( fN ) ) fN = '';
+    if ( lN && ! valid( lN ) ) lN = '';
     if ( fN && lN && fN.toLowerCase() === lN.toLowerCase() ) fN = '', lN = '';
 
     return { firstName: fN, lastName: lN };
@@ -49,12 +49,17 @@ export class NameParser {
   }
 
   private static fixLastName ( parts: string[], fN: string, lN: string ) : TFirstLastName {
-    if ( !fN && lN && parts.length > 1 ) {
-      const index = parts.findIndex( part => part.toLowerCase() === lN.toLowerCase() );
+    if ( ! fN && lN && parts.length > 1 ) {
+      const lastParts = lN.split( REGEX_SPACE_DELIMITER );
+      const size = lastParts.length;
 
-      if ( index > 0 ) {
-        fN = parts.slice( 0, index ).join( ' ' );
-        lN = parts.slice( index ).join( ' ' );
+      for ( let i = 0; i <= parts.length - size; i++ ) if (
+        parts.slice( i, i + size ).join( ' ' ).toLowerCase() === lN.toLowerCase()
+      ) {
+        fN = parts.slice( 0, i ).join( ' ' );
+        lN = parts.slice( i ).join( ' ' );
+
+        break;
       }
     }
 
