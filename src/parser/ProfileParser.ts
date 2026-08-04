@@ -5,7 +5,7 @@ import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
 import type { IProfileParser } from '@/interface/parser';
 import { RelationType } from '@/lib/const';
-import { REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/lib/regex';
+import { REGEX_BRACE_CLEANUP, REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TProfileResponse } from '@/type/response';
 
@@ -202,22 +202,13 @@ export class ProfileParser extends Cache implements IProfileParser {
     value: unknown, lastName: unknown = undefined, firstName: unknown = undefined,
     asianFormat: boolean = false
   ) : { name: TProfileName, family: boolean } {
-    const name = Parser.string( value );
-    const clean = name.replace( REGEX_FAMILY, '' ).trim();
-    const family = REGEX_FAMILY.test( name );
+    const original = Parser.string( value ).replace( REGEX_BRACE_CLEANUP, '' ).trim();
+    const family = REGEX_FAMILY.test( original );
+    const clean = original.replace( REGEX_FAMILY, '' ).trim();
+
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
 
-    const fN = firstName ? Parser.string( firstName ) : (
-      asianFormat ? parts.slice( 1 ).join( ' ' ) : parts.slice( 0, -1 ).join( ' ' )
-    );
-    const lN = lastName ? Parser.string( lastName ).replace( REGEX_FAMILY, '' ) : (
-      asianFormat ? parts[ 0 ] ?? '' : parts.pop() ?? ''
-    );
-
-    return { family, name: {
-      fullName: clean + ( family ? ' & family' : '' ),
-      shortName: `${ fN.split( ' ' )[ 0 ] } ${ lN }`.trim(),
-      lastName: lN, firstName: fN
-    } };
+    let fN = firstName ? Parser.string( firstName ).trim() : '';
+    let lN = lastName ? Parser.string( lastName ).replace( REGEX_FAMILY, '' ).trim() : '';
   }
 }
