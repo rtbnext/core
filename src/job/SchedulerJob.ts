@@ -11,7 +11,14 @@ export class SchedulerJob extends Job {
 
   // --- job runner ---
 
-  public override async run() : Promise< void > {}
+  public override async run () : Promise< void > {
+    await this.protect( async () => {
+      if ( ! SchedulerJob.listQueue.size && ! SchedulerJob.profileQueue.size ) {
+        this.log( 'Both queues are empty, nothing to process', undefined, 'debug' );
+        return;
+      }
+    } );
+  }
 
   // --- command definition ---
 
