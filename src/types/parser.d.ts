@@ -14,6 +14,8 @@ export type TParserContainer = {
   args?: unknown[];
 };
 
+export type TFirstLastName = Pick< TProfileName, 'firstName' | 'lastName' >;
+
 export type TNameResult = {
   family: boolean;
   name: TProfileName;

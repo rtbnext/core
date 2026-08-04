@@ -1,7 +1,6 @@
 import { REGEX_FAMILY, REGEX_GROUP, REGEX_LOWER_START, REGEX_NAME_TRIM, REGEX_SPACE_DELIMITER, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
-import type { TNameResult } from '@/type/parser';
-import { TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TFirstLastName, TNameResult } from '@/type/parser';
 
 
 export class NameParser {
@@ -25,7 +24,7 @@ export class NameParser {
     } };
   }
 
-  private static validate ( clean: string, fN: string, lN: string ) : Pick< TProfileName, 'firstName' | 'lastName' > {
+  private static validate ( clean: string, fN: string, lN: string ) : TFirstLastName {
     const valid = ( part: string ) => !! part && clean.toLowerCase().includes( part.toLowerCase() );
 
     if ( fN && !valid( fN ) ) fN = '';
@@ -35,7 +34,7 @@ export class NameParser {
     return { firstName: fN, lastName: lN };
   }
 
-  private static detect ( parts: string[], asianFormat: boolean ) : Pick< TProfileName, 'firstName' | 'lastName' > {
+  private static detect ( parts: string[], asianFormat: boolean ) : TFirstLastName {
     if ( parts.length === 1 ) return { firstName: '', lastName: parts[ 0 ] };
     if ( asianFormat ) return { firstName: parts.slice( 1 ).join( ' ' ), lastName: parts[ 0 ] };
     if ( REGEX_LOWER_START.test( parts[ 0 ] ) ) return { firstName: '', lastName: parts.join( ' ' ) };
@@ -49,7 +48,7 @@ export class NameParser {
     };
   }
 
-  private static fixLastName ( parts: string[], fN: string, lN: string ) : Pick< TProfileName, 'firstName' | 'lastName' > {
+  private static fixLastName ( parts: string[], fN: string, lN: string ) : TFirstLastName {
     if ( !fN && lN && parts.length > 1 ) {
       const index = parts.findIndex( part => part.toLowerCase() === lN.toLowerCase() );
 
