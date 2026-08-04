@@ -1,6 +1,7 @@
 import { REGEX_FAMILY, REGEX_GROUP, REGEX_NAME_TRIM, REGEX_SPACE_DELIMITER, REGEX_SPACES } from '@/lib/regex';
 import { Parser } from '@/parser/Parser';
 import type { TNameResult } from '@/type/parser';
+import { TProfileName } from '@rtbnext/schema/src/model/profile';
 
 
 export class NameParser {
@@ -28,6 +29,16 @@ export class NameParser {
     } };
   }
 
+  private static validate ( clean: string, fN: string, lN: string ) : Pick< TProfileName, 'firstName' | 'lastName' > {
+    const valid = ( part: string ) => !! part && clean.toLowerCase().includes( part.toLowerCase() );
+
+    if ( fN && !valid( fN ) ) fN = '';
+    if ( lN && !valid( lN ) ) lN = '';
+    if ( fN && lN && fN.toLowerCase() === lN.toLowerCase() ) fN = '', lN = '';
+
+    return { firstName: fN, lastName: lN };
+  }
+
   public static parse ( value: unknown, lastName: unknown = undefined, firstName: unknown = undefined, asianFormat: boolean = false ) : TNameResult {
     const raw = this.normalize( value );
     const family = REGEX_FAMILY.test( raw );
@@ -38,5 +49,7 @@ export class NameParser {
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
     let fN = Parser.string( firstName );
     let lN = Parser.string( lastName ).replace( REGEX_FAMILY, '' );
+
+    ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
   }
 }
