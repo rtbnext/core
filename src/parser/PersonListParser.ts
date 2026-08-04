@@ -1,13 +1,14 @@
 import type { TLocation, TOrganization, TSelfMade } from '@rtbnext/schema/src/base/generic';
-import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileBio, TProfileFlags, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 
 import { Utils } from '@/core/Utils';
 import type { IPersonListParser } from '@/interface/parser';
 import { ListParser } from '@/parser/ListParser';
+import { NameParser } from '@/parser/NameParser';
 import { Parser } from '@/parser/Parser';
-import { ProfileParser } from '@/parser/ProfileParser';
 import type { TPreparedList } from '@/type/list';
+import type { TNameResult } from '@/type/parser';
 import type { TListResponse, TPersonListEntry, TResponse } from '@/type/response';
 
 
@@ -42,8 +43,8 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'dropOff', () => this.raw.finalWorth ? this.raw.finalWorth < 1e3 : undefined );
   }
 
-  public name () : { name: TProfileName, family: boolean } {
-    return this.cache( 'name', () => ProfileParser.name(
+  public name () : TNameResult {
+    return this.cache( 'name', () => NameParser.parse(
       this.raw.person?.name ?? this.raw.personName, this.raw.lastName, this.raw.firstName
     ) );
   }

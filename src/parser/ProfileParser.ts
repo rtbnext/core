@@ -1,12 +1,13 @@
 import type { TEducation, TImage, TLocation, TOrganization, TRelation, TSelfMade } from '@rtbnext/schema/src/base/generic';
-import type { TProfileBio, TProfileFlags, TProfileInfo, TProfileName } from '@rtbnext/schema/src/model/profile';
+import type { TProfileBio, TProfileFlags, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 
 import { Cache } from '@/abstract/Cache';
 import { Utils } from '@/core/Utils';
 import type { IProfileParser } from '@/interface/parser';
 import { RelationType } from '@/lib/const';
-import { REGEX_BRACE_CLEANUP, REGEX_FAMILY, REGEX_SPACE_DELIMITER } from '@/lib/regex';
+import { NameParser } from '@/parser/NameParser';
 import { Parser } from '@/parser/Parser';
+import type { TNameResult } from '@/type/parser';
 import type { TProfileResponse } from '@/type/response';
 
 
@@ -54,8 +55,8 @@ export class ProfileParser extends Cache implements IProfileParser {
 
   // --- profile info ---
 
-  public name () : { name: TProfileName, family: boolean } {
-    return this.cache( 'name', () => ProfileParser.name(
+  public name () : TNameResult {
+    return this.cache( 'name', () => NameParser.parse(
       this.raw.name, this.raw.lastName, this.raw.firstName, Parser.boolean( this.raw.asianFormat )
     ) );
   }
@@ -194,47 +195,5 @@ export class ProfileParser extends Cache implements IProfileParser {
         desc: { value: item.description, type: 'safeStr' }
       } ) )
     );
-  }
-
-  // --- static methods ---
-
-  public static name (
-    value: unknown, lastName: unknown = undefined, firstName: unknown = undefined,
-    asianFormat: boolean = false
-  ) : { name: TProfileName, family: boolean } {
-    const original = Parser.string( value ).replace( REGEX_BRACE_CLEANUP, '' ).trim();
-    const family = REGEX_FAMILY.test( original );
-    const clean = original.replace( REGEX_FAMILY, '' ).trim();
-
-    const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
-
-    let fN = firstName ? Parser.string( firstName ) : '';
-    let lN = lastName ? Parser.string( lastName ).replace( REGEX_FAMILY, '' ).trim() : '';
-
-    // Ignore obviously broken explicit values
-    if ( fN && lN && fN === lN && parts.length > 1 ) fN = '', lN = '';
-
-    // Single token names are always family names
-    if ( ! fN && ! lN && parts.length === 1 ) lN = parts[ 0 ];
-
-    // Resolve missing parts
-    if ( ! fN || ! lN ) {
-      if ( asianFormat ) {
-        lN ||= parts[ 0 ] ?? '';
-        fN ||= parts.slice( 1 ).join( ' ' );
-      } else {
-        lN ||= parts.pop() ?? '';
-        fN ||= parts.join( ' ' );
-      }
-    }
-
-    // Avoid duplicate names
-    if ( fN && lN && fN === lN ) fN = '';
-
-    return { family, name: {
-      fullName: ( clean + ( family ? ' & family' : '' ) ).trim(),
-      shortName: [ fN.split( ' ' )[ 0 ], lN ].filter( Boolean ).join( ' ' ).trim(),
-      lastName: lN.trim(), firstName: fN.trim()
-    } };
   }
 }
