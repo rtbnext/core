@@ -62,8 +62,8 @@ export type TQueueConfig = {
   tsThreshold: number;
   maxSize: number;
   defaultPrio: number;
-  profilePressure: number;
-  listPressure: number;
+  profileScale: number;
+  listScale: number;
 };
 
 export type TConfigObject = {

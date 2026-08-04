@@ -20,8 +20,8 @@ export class SchedulerJob extends Job {
         return;
       }
 
-      const profile = SchedulerJob.profileQueue.size / Job.config.queue.profilePressure;
-      const list = SchedulerJob.listQueue.size / Job.config.queue.listPressure;
+      const profile = SchedulerJob.profileQueue.size / Job.config.queue.profileScale;
+      const list = SchedulerJob.listQueue.size / Job.config.queue.listScale;
 
       this.log(
         `Current workload :: LIST=${ list.toFixed( 2 ) } PROFILE=${ profile.toFixed( 2 ) }`,
