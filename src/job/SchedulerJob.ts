@@ -2,7 +2,7 @@ import { Job } from '@/abstract/Job';
 import { ListQueue, ProfileQueue } from '@/core/Queue';
 import { ListJob } from '@/job/ListJob';
 import { ProfileJob } from '@/job/ProfileJob';
-import type { TCommandJob, TJobClsOptions } from '@/type/job';
+import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 
 
 export class SchedulerJob extends Job {
@@ -39,4 +39,10 @@ export class SchedulerJob extends Job {
     id: 'scheduler',
     desc: 'Processes either the profile or list queue, depends on workload'
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [ {
+    cronexpr: '*/10 1-22 * * *' // run every 10 minutes between 1:00 AM and 10:59 PM
+  } ] as const;
 }
