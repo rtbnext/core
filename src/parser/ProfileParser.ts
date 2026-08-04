@@ -230,5 +230,12 @@ export class ProfileParser extends Cache implements IProfileParser {
 
     // Avoid duplicate names
     if ( fN && lN && fN === lN ) fN = '';
+
+    return { family, name: {
+      fullName: ( clean + ( family ? ' & family' : '' ) ).trim(),
+      shortName: [ fN.split( ' ' )[ 0 ], lN ].filter( Boolean ).join( ' ' ).trim(),
+      lastName: lN.trim(), firstName: fN.trim()
+    }
+  };
   }
 }
