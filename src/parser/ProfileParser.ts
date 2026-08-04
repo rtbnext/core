@@ -210,5 +210,8 @@ export class ProfileParser extends Cache implements IProfileParser {
 
     let fN = firstName ? Parser.string( firstName ).trim() : '';
     let lN = lastName ? Parser.string( lastName ).replace( REGEX_FAMILY, '' ).trim() : '';
+
+    // Ignore obviously broken explicit values
+    if ( fN && lN && fN === lN && parts.length > 1 ) fN = '', lN = '';
   }
 }
