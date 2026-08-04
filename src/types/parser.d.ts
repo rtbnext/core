@@ -1,3 +1,5 @@
+import type { TProfileName } from '@rtbnext/schema/src/model/profile';
+
 import type { Parser } from '@/parser/Parser';
 
 
@@ -10,4 +12,9 @@ export type TParserContainer = {
   type: TParserMethod;
   strict?: boolean;
   args?: unknown[];
+};
+
+export type TNameResult = {
+  family: boolean
+  name: TProfileName
 };
