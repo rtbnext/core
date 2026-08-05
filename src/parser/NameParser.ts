@@ -101,16 +101,14 @@ export class NameParser {
     return { lastName: parts.slice( 0, -1 ).join( ' ' ), suffix };
   }
 
-  private static result ( clean: string, family: boolean, fN: string, lN: string, asianFormat: boolean ) : TNameResult {
-    const { lastName, suffix } = this.splitSuffix( this.normalize( this.repair( lN ) ) );
-    const firstName = this.normalize( this.repair( fN ) );
+  private static result ( clean: string, family: boolean, fN: string, lN: string, suffix: string, asianFormat: boolean ) : TNameResult {
+    fN = this.normalize( [ fN, suffix ].filter( Boolean ).join( ' ' ) );
+    lN = this.normalize( lN );
 
     return { family, name: {
       fullName: clean + ( family ? ' & family' : '' ),
-      firstName, lastName,
-      shortName: this.normalize( ( asianFormat
-        ? [ lastName, firstName.split( ' ' )[ 0 ], suffix ]
-        : [ firstName.split( ' ' )[ 0 ], lastName, suffix ]
+      firstName: fN, lastName: lN, shortName: this.normalize( ( asianFormat
+        ? [ lN, fN.split( ' ' )[ 0 ], suffix ] : [ fN.split( ' ' )[ 0 ], lN, suffix ]
       ).filter( Boolean ).join( ' ' ) )
     } };
   }
