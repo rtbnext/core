@@ -67,7 +67,6 @@ export class NameParser {
     if ( REGEX_LOWER_START.test( parts[ 0 ] ) ) return { firstName: '', lastName: parts.join( ' ' ) };
 
     let split = parts.length - 1;
-    if ( parts.length > 2 && REGEX_SUFFIX.test( parts.at( -1 ) ?? '' ) ) split--;
     while ( split > 0 && REGEX_LOWER_START.test( parts[ split - 1 ] ) ) split--;
 
     return {
