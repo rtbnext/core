@@ -37,10 +37,12 @@ export class NameParser {
     return parts.length === 2 && parts[ 0 ].toLowerCase() === parts[ 1 ].toLowerCase() ? parts[ 0 ] : value;
   }
 
-  private static group ( value: string, family: boolean ) : TNameResult {
+  private static group ( value: unknown, family: boolean ) : TNameResult {
+    const clean = this.cleanName( this.repair( Parser.string( value ) ) ).replace( REGEX_SPACES, ' ' ).trim();
+
     return { family, name: {
-      fullName: value + ( family ? ' & family' : '' ),
-      shortName: value, firstName: '', lastName: value
+      fullName: clean + ( family ? ' & family' : '' ),
+      shortName: clean, firstName: '', lastName: ''
     } };
   }
 
@@ -125,7 +127,7 @@ export class NameParser {
     const family = REGEX_FAMILY.test( raw );
     const clean = this.dedup( this.cleanName( raw ) );
 
-    if ( REGEX_GROUP.test( raw ) ) return this.group( raw, family );
+    if ( REGEX_GROUP.test( raw ) ) return this.group( value, family );
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
 
     let suffix = '';
