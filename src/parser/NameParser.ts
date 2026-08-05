@@ -1,4 +1,8 @@
-import { REGEX_FAMILY, REGEX_GROUP, REGEX_LOWER_START, REGEX_NAME_TRIM, REGEX_SPACE_DELIMITER, REGEX_SPACES, REGEX_SUFFIX } from '@/lib/regex';
+import {
+  REGEX_FAMILY, REGEX_GROUP, REGEX_LOWER_START, REGEX_NAME_CLEANUP, REGEX_NAME_TRIM,
+  REGEX_SPACE_DELIMITER, REGEX_SPACES, REGEX_SUFFIX
+} from '@/lib/regex';
+
 import { Parser } from '@/parser/Parser';
 import type { TFirstLastName, TNameResult, TSuffix } from '@/type/parser';
 
@@ -21,7 +25,7 @@ export class NameParser {
   }
 
   private static normalize ( value: string ) : string {
-    return value.replace( REGEX_NAME_TRIM, '' ).replace( REGEX_SPACES, ' ' ).trim();
+    return value.replace( REGEX_NAME_CLEANUP, '' ).replace( REGEX_NAME_TRIM, '' ).replace( REGEX_SPACES, ' ' ).trim();
   }
 
   private static cleanName ( value: string ) : string {
@@ -93,15 +97,16 @@ export class NameParser {
   }
 
   private static result ( clean: string, family: boolean, fN: string, lN: string, asianFormat: boolean ) : TNameResult {
-    const { lastName, suffix } = this.splitSuffix( this.repair( this.normalize( lN ) ) );
-    const firstName = this.repair( this.normalize( fN ) );
+    const { lastName, suffix } = this.splitSuffix( this.normalize( this.repair( lN ) ) );
+    const firstName = this.normalize( this.repair( fN ) );
 
     return { family, name: {
       fullName: clean + ( family ? ' & family' : '' ),
-      firstName, lastName, shortName: ( asianFormat
+      firstName, lastName,
+      shortName: this.normalize( ( asianFormat
         ? [ lastName, firstName.split( ' ' )[ 0 ], suffix ]
         : [ firstName.split( ' ' )[ 0 ], lastName, suffix ]
-      ).filter( Boolean ).join( ' ' )
+      ).filter( Boolean ).join( ' ' ) )
     } };
   }
 
