@@ -117,20 +117,29 @@ export class NameParser {
     value: unknown, lastName: unknown = undefined, firstName: unknown = undefined,
     asianFormat: boolean = false
   ) : TNameResult {
-    const raw = this.normalize( this.repair( Parser.string( value ) ) );
+    const raw = this.normalize( Parser.string( value ) );
     const family = REGEX_FAMILY.test( raw );
     const clean = this.dedup( this.cleanName( raw ) );
 
-    if ( REGEX_GROUP.test( clean ) ) return this.group( clean, family );
-
+    if ( REGEX_GROUP.test( raw ) ) return this.group( clean, family );
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
-    let fN = Parser.string( firstName );
-    let lN = Parser.string( lastName ).replace( REGEX_FAMILY, '' );
+
+    let suffix = '';
+    if ( REGEX_SUFFIX.test( parts.at( -1 ) ?? '' ) ) suffix = parts.pop() ?? '';
+
+    let fN = this.normalize( Parser.string( firstName ) );
+    let lN = this.normalize( Parser.string( lastName ).replace( REGEX_FAMILY, '' ) );
 
     ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
     if ( ! fN && ! lN ) ( { firstName: fN, lastName: lN } = this.detect( parts, asianFormat ) );
     ( { firstName: fN, lastName: lN } = this.fixLastName( parts, fN, lN ) );
 
-    return this.result( clean, family, fN, lN, asianFormat );
+    const split = this.splitSuffix( lN );
+    if ( split.suffix ) suffix = split.suffix;
+
+    return this.result(
+      clean, family, this.normalize( fN ), this.normalize( split.lastName ),
+      suffix, asianFormat
+    );
   }
 }
