@@ -94,11 +94,10 @@ export class NameParser {
     return { firstName: fN, lastName: lN };
   }
 
-  private static splitSuffix ( lastName: string ) : TSuffix {
-    const parts = lastName.split( REGEX_SPACE_DELIMITER );
-    const suffix = parts.at( -1 ) ?? '';
+  private static splitSuffix ( value: string ) : TSuffix {
+    const parts = value.split( REGEX_SPACE_DELIMITER ), suffix = parts.at( -1 ) ?? '';
 
-    if ( ! REGEX_SUFFIX.test( suffix ) ) return { lastName, suffix: '' };
+    if ( parts.length < 2 || ! REGEX_SUFFIX.test( suffix ) ) return { lastName: value, suffix: '' };
     return { lastName: parts.slice( 0, -1 ).join( ' ' ), suffix };
   }
 
