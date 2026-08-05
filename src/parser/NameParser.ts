@@ -24,7 +24,8 @@ export class NameParser {
   }
 
   private static normalize ( value: string ) : string {
-    return this.repair( value ).replace( REGEX_NAME_CLEANUP, '' ).replace( REGEX_NAME_TRIM, '' ).replace( REGEX_SPACES, ' ' );
+    return this.repair( value ).replace( REGEX_NAME_CLEANUP, '' )
+      .replace( REGEX_NAME_TRIM, '' ).replace( REGEX_SPACES, ' ' );
   }
 
   private static cleanName ( value: string ) : string {
@@ -101,7 +102,10 @@ export class NameParser {
     return { lastName: parts.slice( 0, -1 ).join( ' ' ), suffix };
   }
 
-  private static result ( clean: string, family: boolean, fN: string, lN: string, suffix: string, asianFormat: boolean ) : TNameResult {
+  private static result (
+    clean: string, family: boolean, fN: string, lN: string,
+    suffix: string, asianFormat: boolean
+  ) : TNameResult {
     fN = this.normalize( [ fN, suffix ].filter( Boolean ).join( ' ' ) );
     lN = this.normalize( lN );
 
