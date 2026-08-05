@@ -16,6 +16,11 @@ export type TParserContainer = {
 
 export type TFirstLastName = Pick< TProfileName, 'firstName' | 'lastName' >;
 
+export type TSuffix = {
+  lastName: string;
+  suffix: string;
+};
+
 export type TNameResult = {
   family: boolean;
   name: TProfileName;
