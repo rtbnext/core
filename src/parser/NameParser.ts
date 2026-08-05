@@ -32,13 +32,20 @@ export class NameParser {
     return value.replace( REGEX_FAMILY, '' ).replace( /^and\s+/i, '' ).trim();
   }
 
+  private static cleanFullName ( value: string ) : string {
+    return value.startsWith( '(' ) && value.endsWith( ')' ) ? value.slice( 1, -1 ).trim() : value;
+  }
+
   private static dedup ( value: string ) : string {
     const parts = value.split( REGEX_SPACE_DELIMITER );
     return parts.length === 2 && parts[ 0 ].toLowerCase() === parts[ 1 ].toLowerCase() ? parts[ 0 ] : value;
   }
 
   private static group ( value: unknown, family: boolean ) : TNameResult {
-    const clean = this.cleanName( this.repair( Parser.string( value ) ) ).replace( REGEX_SPACES, ' ' ).trim();
+    const clean = this.cleanFullName(
+      this.cleanName( this.repair( Parser.string( value ) ) )
+        .replace( REGEX_SPACES, ' ' ).trim()
+    );
 
     return { family, name: {
       fullName: clean + ( family ? ' & family' : '' ),
@@ -112,7 +119,7 @@ export class NameParser {
     lN = this.normalize( lN );
 
     return { family, name: {
-      fullName: clean + ( family ? ' & family' : '' ),
+      fullName: this.cleanFullName( clean.trim() ) + ( family ? ' & family' : '' ),
       firstName: fN, lastName: lN, shortName: this.normalize( ( asianFormat
         ? [ lN, fN.split( ' ' )[ 0 ], suffix ] : [ fN.split( ' ' )[ 0 ], lN, suffix ]
       ).filter( Boolean ).join( ' ' ) )
