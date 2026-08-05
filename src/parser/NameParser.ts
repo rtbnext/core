@@ -9,8 +9,7 @@ import type { TFirstLastName, TNameResult, TSuffix } from '@/type/parser';
 
 export class NameParser {
   private static repair ( value: string ) : string {
-    const chars = value.split( '' );
-    const stack: number[] = [];
+    const chars = Array.from( value ), stack: number[] = [];
 
     for ( let i = 0; i < chars.length; i++ ) {
       if ( chars[ i ] === '(' ) stack.push( i );
@@ -25,7 +24,7 @@ export class NameParser {
   }
 
   private static normalize ( value: string ) : string {
-    return value.replace( REGEX_NAME_CLEANUP, '' ).replace( REGEX_NAME_TRIM, '' ).replace( REGEX_SPACES, ' ' ).trim();
+    return this.repair( value ).replace( REGEX_NAME_CLEANUP, '' ).replace( REGEX_NAME_TRIM, '' ).replace( REGEX_SPACES, ' ' );
   }
 
   private static cleanName ( value: string ) : string {
