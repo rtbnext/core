@@ -125,7 +125,7 @@ export class NameParser {
     const family = REGEX_FAMILY.test( raw );
     const clean = this.dedup( this.cleanName( raw ) );
 
-    if ( REGEX_GROUP.test( raw ) ) return this.group( clean, family );
+    if ( REGEX_GROUP.test( raw ) ) return this.group( raw, family );
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
 
     let suffix = '';
