@@ -76,18 +76,18 @@ export class NameParser {
   }
 
   private static fixLastName ( parts: string[], fN: string, lN: string ) : TFirstLastName {
-    if ( ! fN && lN && parts.length > 1 ) {
-      const lastParts = lN.split( REGEX_SPACE_DELIMITER );
-      const size = lastParts.length;
+    if ( ! fN && lN ) {
+      const size = lN.split( REGEX_SPACE_DELIMITER ).length;
 
-      for ( let i = 0; i <= parts.length - size; i++ ) if (
-        parts.slice( i, i + size ).join( ' ' ).toLowerCase() ===
-        lN.toLowerCase()
-      ) {
-        fN = parts.slice( 0, i ).join( ' ' );
-        lN = parts.slice( i ).join( ' ' );
+      for ( let i = 0; i <= parts.length - size; i++ ) {
+        const value = parts.slice( i, i + size ).join( ' ' );
 
-        break;
+        if ( value.toLowerCase() === lN.toLowerCase() ) {
+          fN = parts.slice( 0, i ).join( ' ' );
+          lN = value;
+
+          break;
+        }
       }
     }
 
