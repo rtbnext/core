@@ -77,11 +77,14 @@ export class NameParser {
   }
 
   private static result ( clean: string, family: boolean, fN: string, lN: string, asianFormat: boolean ) : TNameResult {
+    const { lastName, suffix } = this.splitSuffix( lN );
+
     return { family, name: {
-      fullName: clean + ( family ? ' & family' : '' ), firstName: fN, lastName: lN,
-      shortName: asianFormat
-        ? [ lN, fN.split( ' ' )[ 0 ] ].filter( Boolean ).join( ' ' )
-        : [ fN.split( ' ' )[ 0 ], lN ].filter( Boolean ).join( ' ' )
+      fullName: clean + ( family ? ' & family' : '' ), firstName: fN, lastName,
+      shortName: ( asianFormat
+        ? [ lastName, fN.split( ' ' )[ 0 ], suffix ]
+        : [ fN.split( ' ' )[ 0 ], lastName, suffix ]
+      ).filter( Boolean ).join( ' ' )
     } };
   }
 
