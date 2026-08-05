@@ -48,8 +48,16 @@ export class NameParser {
 
     if ( fN && ! valid( fN ) ) fN = '';
     if ( lN && ! valid( lN ) ) lN = '';
-    if ( fN && lN && fN.toLowerCase() === lN.toLowerCase() ) fN = '', lN = '';
 
+    if ( ! lN && fN ) {
+      const parts = clean.split( REGEX_SPACE_DELIMITER );
+
+      if ( parts.length > 1 ) lN = parts.filter(
+        part => part.toLowerCase() !== fN.toLowerCase()
+      ).slice( -1 )[ 0 ] ?? '';
+    }
+
+    if ( fN && lN && fN.toLowerCase() === lN.toLowerCase() ) fN = '', lN = '';
     return { firstName: fN, lastName: lN };
   }
 
