@@ -76,6 +76,22 @@ export class NameParser {
     return { lastName: parts.slice( 0, -1 ).join( ' ' ), suffix };
   }
 
+  private static repair ( value: string ) : string {
+    const chars = value.split( '' );
+    const stack: number[] = [];
+
+    for ( let i = 0; i < chars.length; i++ ) {
+      if ( chars[ i ] === '(' ) stack.push( i );
+      else if ( chars[ i ] === ')' ) {
+        if ( stack.length ) stack.pop();
+        else chars[ i ] = '';
+      }
+    }
+
+    for ( const index of stack ) chars[ index ] = '';
+    return chars.join( '' );
+  }
+
   private static result ( clean: string, family: boolean, fN: string, lN: string, asianFormat: boolean ) : TNameResult {
     const { lastName, suffix } = this.splitSuffix( lN );
 
