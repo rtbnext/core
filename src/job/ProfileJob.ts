@@ -32,6 +32,11 @@ export class ProfileJob extends Job< TProfileJobOptions > {
           continue;
         }
 
+        if ( ! raw.data.person ) {
+          this.log( `Profile not found`, raw.data, 'warn' );
+          continue;
+        }
+
         // --- parse raw profile data ---
         const parsed = new ProfileParser( raw.data );
         const uri = parsed.uri();
