@@ -16,11 +16,13 @@ export class ReconcileJob extends Job {
       const seen = new Set( ReconcileJob.index.keys );
       const owner = new Map( [ ...ReconcileJob.index.keys ].map( uri => [ uri, uri ] ) );
       const conflicts: Array< { target: string, uri: string, conflict: string } > = [];
+      let item;
 
       for ( const { uri, aliases } of ReconcileJob.index.values ) for ( const conflict of aliases ) {
-        if ( seen.has( conflict ) )
-          conflicts.push( { target: owner.get( conflict )!, uri, conflict } );
-        else {
+        if ( seen.has( conflict ) ) {
+          conflicts.push( item = { target: owner.get( conflict )!, uri, conflict } );
+          this.log( `Conflict found: ${ conflict }`, item );
+        } else {
           seen.add( conflict );
           owner.set( conflict, uri );
         }
@@ -28,13 +30,18 @@ export class ReconcileJob extends Job {
 
       for ( const { target, uri, conflict } of conflicts ) {
         if ( target === uri && uri === conflict ) {
+          this.log( `Resolved self reference: ${ conflict }` );
           ReconcileJob.index.rmvAliases( uri, conflict );
           continue;
         }
 
         const profile = Profile.get( target ), test = Profile.get( uri );
-        if ( profile && test && ProfileMerger.mergeProfiles( profile, test, false, true ) ) continue;
+        if ( profile && test && ProfileMerger.mergeProfiles( profile, test, false, true ) ) {
+          this.log( `Merged profile: ${ uri } -> ${ target } (${ conflict })` );
+          continue;
+        }
 
+        this.log( `Remove unresolved alias ${ conflict } from ${ uri }` );
         ReconcileJob.index.rmvAliases( uri, conflict );
       }
     } );
