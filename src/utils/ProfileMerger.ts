@@ -55,12 +55,12 @@ export class ProfileMerger {
 
   // --- find matching profiles ---
 
-  public static findMatching ( profile: IProfile, fuzzy: boolean = false ) : IProfile[] {
+  public static findMatching ( uri: string, data: Partial< TProfileData >, fuzzy: boolean = false ) : IProfile[] {
     const res: IProfile[] = [];
 
-    for ( const uri of ProfileMerger.similarURIs( profile.getUri(), fuzzy ) ) {
-      const match = Profile.get( uri );
-      if ( match && ProfileMerger.mergeableProfiles( match.getData(), profile.getData() ) ) res.push( match );
+    for ( const matchUri of ProfileMerger.similarURIs( uri, fuzzy ) ) {
+      const match = Profile.get( matchUri );
+      if ( match && ProfileMerger.mergeableProfiles( match.getData(), data ) ) res.push( match );
     }
 
     return res;
@@ -90,7 +90,7 @@ export class ProfileMerger {
       const profile = Profile.get( uri );
       if ( ! profile ) continue;
 
-      const matches = ProfileMerger.findMatching( profile, true );
+      const matches = ProfileMerger.findMatching( profile.getUri(), profile.getData(), true );
       res[ profile.getUri() ] = matches.map( m => m.getUri() );
     }
 
