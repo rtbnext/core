@@ -2,8 +2,10 @@ import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileInfo } from '@rtbnext/schema/src/model/profile';
 import { CmpStrAsync, type CmpStrResult } from 'cmpstr';
 
+import type { IProfile } from '@/interface/profile';
 import { REGEX_URI_CLEANUP } from '@/lib/regex';
 import { ProfileIndex } from '@/model/ProfileIndex';
+import { Profile } from '@/model/Profile';
 
 CmpStrAsync.filter.add( 'input', 'normalizeUri', ( uri: string ) => uri.replace( REGEX_URI_CLEANUP, '' ) );
 
@@ -43,4 +45,18 @@ export class ProfileMerger {
 
     return true;
   }
+
+  // --- find matching profiles ---
+
+  public static findMatching ( profile: IProfile ) : IProfile[] {
+    const res: IProfile[] = [];
+
+    for ( const uri of ProfileMerger.similarURIs( profile.getUri() ) ) {
+      const match = Profile.get( uri );
+      if ( match && ProfileMerger.mergeableProfiles( match.getData(), profile.getData() ) ) res.push( match );
+    }
+
+    return res;
+  }
+
 }
