@@ -1,6 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { ProfileIndex } from '@/model/ProfileIndex';
 import type { TCommandJob, TJobClsOptions } from '@/type/job';
+import { ProfileMerger } from '@/util/ProfileMerger';
 
 
 export class ReconcileJob extends Job {
@@ -25,8 +26,8 @@ export class ReconcileJob extends Job {
       }
 
       for ( const { target, uri, conflict } of conflicts ) {
-        if ( target === uri ) {
-          ReconcileJob.index.rmvAliases( uri, conflict );
+        if ( target === conflict ) {
+          ReconcileJob.index.rmvAliases( target, conflict );
           continue;
         }
       }
