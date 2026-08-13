@@ -14,6 +14,12 @@ export class ReconcileJob extends Job {
       const seen = new Set( ReconcileJob.index.keys );
       const owner = new Map( [ ...ReconcileJob.index.keys ].map( uri => [ uri, uri ] ) );
       const conflicts: Array< { uriA: string, uriB: string, conflict: string } > = [];
+
+      for ( const { uri, aliases } of ReconcileJob.index.values ) {
+        for ( const conflict of [ uri, ...aliases ] ) {
+          //
+        }
+      }
     } );
   }
 
