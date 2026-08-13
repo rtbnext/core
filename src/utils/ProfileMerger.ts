@@ -18,6 +18,11 @@ export class ProfileMerger {
 
     const normalized = clean( uri ), reversed = normalized.split( '-' ).reverse().join( '-' );
     const entries = [ ...ProfileMerger.index.values ], owners = new Map< string, string >();
+
+    for ( const { uri: key, aliases } of entries ) for ( const name of [ key, ...aliases ] ) {
+      const value = clean( name );
+      if ( value ) owners.set( value, key );
+    }
   }
 
   // --- check mergeable profiles ---
