@@ -59,4 +59,14 @@ export class ProfileMerger {
     return res;
   }
 
+  // --- merge profiles ---
+
+  public static mergeProfiles ( target: IProfile, source: IProfile, force: boolean = false, makeAlias: boolean = true ) : boolean {
+    return false;
+  }
+
+  // --- list matching candidates ---
+
+  public static listCandidates ( ...uriLike: string[] ) : Record< string, string[] > {}
+
 }
