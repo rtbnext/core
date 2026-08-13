@@ -23,6 +23,13 @@ export class ProfileMerger {
       const value = clean( name );
       if ( value ) owners.set( value, key );
     }
+
+    const res = new Set< string >();
+
+    for ( const value of [ normalized, reversed ] ) {
+      const owner = owners.get( value );
+      if ( owner && owner !== uri ) res.add( owner );
+    }
   }
 
   // --- check mergeable profiles ---
