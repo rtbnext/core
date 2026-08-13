@@ -42,6 +42,8 @@ export class ProfileMerger {
         if ( owner && owner !== uri ) res.add( owner );
       }
     }
+
+    return [ ...res ];
   }
 
   // --- check mergeable profiles ---
