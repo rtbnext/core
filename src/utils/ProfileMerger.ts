@@ -19,7 +19,7 @@ export class ProfileMerger {
     const entries = [ ...ProfileMerger.index.values ], owners = new Map< string, Set< string > >();
 
     for ( const { uri: key, aliases } of entries ) for ( const name of [ key, ...aliases ] )
-        if ( clean( name ) ) owners.set( clean( name ), ( owners.get( clean( name ) ) ?? new Set() ).add( key ) );
+      if ( clean( name ) ) owners.set( clean( name ), ( owners.get( clean( name ) ) ?? new Set() ).add( key ) );
 
     const res = new Set< string >();
 
@@ -69,7 +69,15 @@ export class ProfileMerger {
   // --- merge profiles ---
 
   public static mergeProfiles ( target: IProfile, source: IProfile, force: boolean = false, makeAlias: boolean = true ) : boolean {
-    return false;
+    if ( ! force && ! ProfileMerger.mergeableProfiles( target.getData(), source.getData() ) ) return false;
+
+    target.updateData( source.getData(), ArrayMode.Unique );
+    target.mergeHistory( source.getHistory() );
+    target.save();
+
+    return Profile.delete( source.getUri() ) && ( ! makeAlias ? true :
+      !! ProfileMerger.index.addAliases( target.getUri(), source.getUri() )
+    );
   }
 
   // --- list matching candidates ---
