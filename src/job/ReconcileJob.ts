@@ -23,6 +23,8 @@ export class ReconcileJob extends Job {
           owner.set( conflict, uri );
         }
       }
+
+      for ( const { target, uri, conflict } of conflicts ) {}
     } );
   }
 
