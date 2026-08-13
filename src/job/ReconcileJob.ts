@@ -10,7 +10,11 @@ export class ReconcileJob extends Job {
   // --- job runner ---
 
   public override async run () : Promise< void > {
-    await this.protect( async () => {} );
+    await this.protect( async () => {
+      const seen = new Set( ReconcileJob.index.keys );
+      const owner = new Map( [ ...ReconcileJob.index.keys ].map( uri => [ uri, uri ] ) );
+      const conflicts: Array< { uriA: string, uriB: string, conflict: string } > = [];
+    } );
   }
 
   // --- command definition ---
