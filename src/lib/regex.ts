@@ -16,4 +16,4 @@ export const REGEX_SUFFIX = /^(?:jr\.?|sr\.?|sen\.?|m{0,3}(cm|cd|d?c{0,3})(xc|xl
 
 export const REGEX_LOWER_START = /^[a-z]/;
 
-export const REGEX_URI_CLEANUP = /-(family|families|\d+)$/i;
+export const REGEX_URI_CLEANUP = /(?:-(?:and-)?(?:family|families)|-\d+)+$/i;
