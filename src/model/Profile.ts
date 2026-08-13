@@ -125,7 +125,7 @@ export class Profile implements IProfile {
   public getData () : TProfileData {
     return this.data ??= ( Profile.storage.readJSON< TProfileData >(
       this.resolvePath( 'profile.json' )
-    ) ?? Profile.factory() ) as TProfileData;
+    ) || Profile.factory() ) as TProfileData;
   }
 
   public setData ( data: TProfileData ) : void {
@@ -143,7 +143,7 @@ export class Profile implements IProfile {
   public getHistory () : TProfileHistory {
     return this.history ??= ( Profile.storage.readCSV< TProfileHistory >(
       this.resolvePath( 'history.csv' )
-    ) ?? [] ) as TProfileHistory;
+    ) || [] ) as TProfileHistory;
   }
 
   public setHistory ( history: TProfileHistory ) : void {
