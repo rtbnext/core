@@ -18,10 +18,8 @@ export class ProfileMerger {
     const entries = [ ...ProfileMerger.index.values ];
     const names: string[] = [], owners = new Map< string, string >();
 
-    for ( const { uri: key, aliases } of entries ) for ( const name of [ key, ...aliases ] ) {
-      names.push( name );
-      owners.set( name, key );
-    }
+    for ( const { uri: key, aliases } of entries ) for ( const name of [ key, ...aliases ] )
+      names.push( name ), owners.set( name, key );
 
     const res = new Set( [
       ...ProfileMerger.cmp.match< CmpStrResult[] >( names, uri, 0.9 ).map( i => owners.get( i.source ) ),
