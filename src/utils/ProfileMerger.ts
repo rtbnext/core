@@ -18,15 +18,21 @@ export class ProfileMerger {
 
   private static similarURIs ( uri: string ) : string[] {
     const revUri = uri.split( '-' ).reverse().join( '-' );
-    const keys = [ ...ProfileMerger.index.keys ];
+    const entries = [ ...ProfileMerger.index.values ];
+    const names: string[] = [], owners = new Map< string, string >();
+
+    for ( const { uri: key, aliases } of entries ) for ( const name of [ key, ...aliases ] ) {
+      names.push( name );
+      owners.set( name, key );
+    }
 
     const res = new Set( [
-      ...ProfileMerger.cmp.match< CmpStrResult[] >( keys, uri, 0.9 ).map( i => i.source ),
-      ...ProfileMerger.cmp.match< CmpStrResult[] >( keys, revUri, 0.8 ).map( i => i.source )
+      ...ProfileMerger.cmp.match< CmpStrResult[] >( names, uri, 0.9 ).map( i => owners.get( i.source ) ),
+      ...ProfileMerger.cmp.match< CmpStrResult[] >( names, revUri, 0.8 ).map( i => owners.get( i.source ) )
     ] );
 
     res.delete( uri );
-    return [ ...res ];
+    return [ ...res ].filter( Boolean ) as string[];
   }
 
   // --- check mergeable profiles ---
