@@ -24,7 +24,12 @@ export class ReconcileJob extends Job {
         }
       }
 
-      for ( const { target, uri, conflict } of conflicts ) {}
+      for ( const { target, uri, conflict } of conflicts ) {
+        if ( target === uri ) {
+          ReconcileJob.index.rmvAliases( uri, conflict );
+          continue;
+        }
+      }
     } );
   }
 
