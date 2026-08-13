@@ -4,8 +4,8 @@ import { CmpStr, type CmpStrResult } from 'cmpstr';
 
 import type { IProfile } from '@/interface/profile';
 import { REGEX_URI_CLEANUP } from '@/lib/regex';
-import { ProfileIndex } from '@/model/ProfileIndex';
 import { Profile } from '@/model/Profile';
+import { ProfileIndex } from '@/model/ProfileIndex';
 
 export class ProfileMerger {
   private static readonly cmp = CmpStr.create( { metric: 'dice', safeEmpty: true } );
