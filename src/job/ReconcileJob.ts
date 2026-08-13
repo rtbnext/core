@@ -13,11 +13,14 @@ export class ReconcileJob extends Job {
     await this.protect( async () => {
       const seen = new Set( ReconcileJob.index.keys );
       const owner = new Map( [ ...ReconcileJob.index.keys ].map( uri => [ uri, uri ] ) );
-      const conflicts: Array< { uriA: string, uriB: string, conflict: string } > = [];
+      const conflicts: Array< { target: string, uri: string, conflict: string } > = [];
 
-      for ( const { uri, aliases } of ReconcileJob.index.values ) {
-        for ( const conflict of [ uri, ...aliases ] ) {
-          //
+      for ( const { uri, aliases } of ReconcileJob.index.values ) for ( const conflict of aliases ) {
+        if ( seen.has( conflict ) )
+          conflicts.push( { target: owner.get( conflict )!, uri, conflict } );
+        else {
+          seen.add( conflict );
+          owner.set( conflict, uri );
         }
       }
     } );
