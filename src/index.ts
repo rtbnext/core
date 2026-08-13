@@ -69,6 +69,7 @@ export { PerformanceJob } from '@/job/PerformanceJob';
 export { ProfileJob } from '@/job/ProfileJob';
 export { QueueJob } from '@/job/QueueJob';
 export { RebuildJob } from '@/job/RebuildJob';
+export { ReconcileJob } from '@/job/ReconcileJob';
 export { RTBJob } from '@/job/RTBJob';
 export { SchedulerJob } from '@/job/SchedulerJob';
 export { StatsJob } from '@/job/StatsJob';
