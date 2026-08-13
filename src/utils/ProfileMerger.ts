@@ -67,6 +67,19 @@ export class ProfileMerger {
 
   // --- list matching candidates ---
 
-  public static listCandidates ( ...uriLike: string[] ) : Record< string, string[] > {}
+  public static listCandidates ( ...uriLike: string[] ) : Record< string, string[] > {
+    if ( ! uriLike.length ) return {};
+    const res: Record< string, string[] > = {};
+
+    for ( const uri of uriLike ) {
+      const profile = Profile.get( uri );
+      if ( ! profile ) continue;
+
+      const matches = ProfileMerger.findMatching( profile );
+      res[ profile.getUri() ] = matches.map( m => m.getUri() );
+    }
+
+    return res;
+  }
 
 }
