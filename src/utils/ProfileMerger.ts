@@ -29,4 +29,18 @@ export class ProfileMerger {
     res.delete( uri );
     return [ ...res ].filter( Boolean ) as string[];
   }
+
+  // --- check mergeable profiles ---
+
+  public static mergeableProfiles ( target: Partial< TProfileData >, source: Partial< TProfileData > ) : boolean {
+    if ( target.id === source.id ) return true;
+
+    for ( const match of [ 'gender', 'birthDate', 'birthPlace', 'citizenship', 'industry' ] ) if (
+      target.info && match in target.info && source.info && match in source.info &&
+      JSON.stringify( target.info[ match as keyof TProfileInfo ] ) !==
+      JSON.stringify( source.info[ match as keyof TProfileInfo ] )
+    ) return false;
+
+    return true;
+  }
 }
