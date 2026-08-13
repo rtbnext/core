@@ -39,7 +39,7 @@ export class ProfileManager {
 
   public static lookup ( uriLike: string, id?: string, profileData?: Partial< TProfileData > ) : TProfileLookupResult {
     let profile = Profile.find( uriLike ) ?? false;
-    const isExisting = profile && profile.verify( id ?? '' );
+    const isExisting = !! profile && profile.verify( id ?? '' );
     const isSimilar = ! isExisting && !! ( profile = ProfileMerger.findMatching(
       profileData?.uri ?? uriLike, profileData ?? {}
     )[ 0 ] );
