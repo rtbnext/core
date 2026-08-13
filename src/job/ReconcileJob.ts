@@ -30,8 +30,9 @@ export class ReconcileJob extends Job {
 
       for ( const { target, uri, conflict } of conflicts ) {
         if ( target === uri && uri === conflict ) {
-          this.log( `Resolved self reference: ${ conflict }` );
           ReconcileJob.index.rmvAliases( uri, conflict );
+          this.log( `Removed self reference: ${ conflict }` );
+
           continue;
         }
 
@@ -41,8 +42,8 @@ export class ReconcileJob extends Job {
           continue;
         }
 
-        this.log( `Remove unresolved alias ${ conflict } from ${ uri }` );
         ReconcileJob.index.rmvAliases( uri, conflict );
+        this.log( `Remove unresolved alias ${ conflict } from ${ uri }` );
       }
     } );
   }
