@@ -30,6 +30,8 @@ export class ReconcileJob extends Job {
           ReconcileJob.index.rmvAliases( target, conflict );
           continue;
         }
+
+        ReconcileJob.index.rmvAliases( uri, conflict );
       }
     } );
   }
