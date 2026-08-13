@@ -1,6 +1,6 @@
 import { ArrayMode } from '@komed3/deepmerge';
 import type { TProfileData, TProfileInfo } from '@rtbnext/schema/src/model/profile';
-import { CmpStrAsync, type CmpStrResult } from 'cmpstr';
+import { CmpStr, type CmpStrResult } from 'cmpstr';
 
 import type { IProfile } from '@/interface/profile';
 import { REGEX_URI_CLEANUP } from '@/lib/regex';
@@ -8,7 +8,7 @@ import { ProfileIndex } from '@/model/ProfileIndex';
 import { Profile } from '@/model/Profile';
 
 export class ProfileMerger {
-  private static readonly cmp = CmpStrAsync.create( { metric: 'dice', safeEmpty: true } );
+  private static readonly cmp = CmpStr.create( { metric: 'dice', safeEmpty: true } );
   private static readonly index = ProfileIndex.getInstance();
 
   // --- helper ---
@@ -29,6 +29,18 @@ export class ProfileMerger {
     for ( const value of [ normalized, reversed ] ) {
       const owner = owners.get( value );
       if ( owner && owner !== uri ) res.add( owner );
+    }
+
+    if ( fuzzy ) {
+      for ( const match of ProfileMerger.cmp.match< CmpStrResult[] >( [ ...owners.keys() ], normalized, 0.9 ) ) {
+        const owner = owners.get( match.source );
+        if ( owner && owner !== uri ) res.add( owner );
+      }
+
+      for ( const match of ProfileMerger.cmp.match< CmpStrResult[] >( [ ...owners.keys() ], reversed, 0.8 ) ) {
+        const owner = owners.get( match.source );
+        if ( owner && owner !== uri ) res.add( owner );
+      }
     }
   }
 
