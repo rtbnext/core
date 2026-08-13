@@ -22,23 +22,15 @@ export class ProfileManager {
 
     profileData.info!.flags.dropOff = DropOff.check( profile.getData() );
 
-    switch ( action ) {
-      case 'update':
-        if ( mode !== 'createOnly' ) {
-          profile[ mode ]( profileData as TProfileData );
-          profile.save();
-        }
-        break;
-
-      case 'move':
-        if ( mode !== 'createOnly' ) {
-          profile[ mode ]( profileData as TProfileData );
-          profile.move( uriLike, makeAlias );
-        } else if ( makeAlias ) {
-          ProfileManager.index.addAliases( profile.getUri(), uriLike );
-        }
-        break;
+    if ( mode === 'createOnly' ) {
+      if ( action === 'move' && makeAlias ) ProfileManager.index.addAliases( profile.getUri(), uriLike );
+      return profile;
     }
+
+    profile[ mode ]( profileData as TProfileData );
+
+    if ( action === 'move' ) profile.move( uriLike, makeAlias );
+    else profile.save();
 
     return profile;
   }
