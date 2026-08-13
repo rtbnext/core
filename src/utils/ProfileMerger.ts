@@ -13,34 +13,27 @@ export class ProfileMerger {
 
   // --- helper ---
 
-  private static similarURIs ( uri: string, fuzzy: boolean ) : string[] {
+  private static similarURIs ( uri: string, fuzzy: boolean = false ) : string[] {
     const clean = ( value: string ) => value.replace( REGEX_URI_CLEANUP, '' );
-
     const normalized = clean( uri ), reversed = normalized.split( '-' ).reverse().join( '-' );
-    const entries = [ ...ProfileMerger.index.values ], owners = new Map< string, string >();
+    const entries = [ ...ProfileMerger.index.values ], owners = new Map< string, Set< string > >();
 
-    for ( const { uri: key, aliases } of entries ) for ( const name of [ key, ...aliases ] ) {
-      const value = clean( name );
-      if ( value ) owners.set( value, key );
-    }
+    for ( const { uri: key, aliases } of entries ) for ( const name of [ key, ...aliases ] )
+        if ( clean( name ) ) owners.set( clean( name ), ( owners.get( clean( name ) ) ?? new Set() ).add( key ) );
 
     const res = new Set< string >();
 
-    for ( const value of [ normalized, reversed ] ) {
-      const owner = owners.get( value );
-      if ( owner && owner !== uri ) res.add( owner );
-    }
+    for ( const value of [ normalized, reversed ] ) for ( const owner of owners.get( value ) ?? [] )
+      if ( owner !== uri ) res.add( owner );
 
     if ( fuzzy ) {
-      for ( const match of ProfileMerger.cmp.match< CmpStrResult[] >( [ ...owners.keys() ], normalized, 0.9 ) ) {
-        const owner = owners.get( match.source );
-        if ( owner && owner !== uri ) res.add( owner );
-      }
+      const names = [ ...owners.keys() ];
 
-      for ( const match of ProfileMerger.cmp.match< CmpStrResult[] >( [ ...owners.keys() ], reversed, 0.8 ) ) {
-        const owner = owners.get( match.source );
-        if ( owner && owner !== uri ) res.add( owner );
-      }
+      for ( const match of [
+        ...ProfileMerger.cmp.match< CmpStrResult[] >( names, normalized, 0.85 ),
+        ...ProfileMerger.cmp.match< CmpStrResult[] >( names, reversed, 0.75 )
+      ] ) for ( const owner of owners.get( match.source ) ?? [] )
+        if ( owner !== uri ) res.add( owner );
     }
 
     return [ ...res ];
