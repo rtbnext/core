@@ -33,7 +33,7 @@ export class ProfileMerger {
   // --- check mergeable profiles ---
 
   public static mergeableProfiles ( target: Partial< TProfileData >, source: Partial< TProfileData > ) : boolean {
-    if ( target.id === source.id ) return true;
+    if ( ! target || ! source || target.id === source.id ) return true;
 
     for ( const match of [ 'gender', 'birthDate', 'birthPlace', 'citizenship', 'industry' ] ) if (
       target.info && match in target.info && source.info && match in source.info &&
