@@ -1,7 +1,7 @@
 import { Job } from '@/abstract/Job';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import type { TCommandJob, TJobClsOptions } from '@/type/job';
+import type { TCommandJob, TCronJob, TJobClsOptions } from '@/type/job';
 import { ProfileMerger } from '@/util/ProfileMerger';
 
 
@@ -54,4 +54,10 @@ export class ReconcileJob extends Job {
     id: 'reconcile',
     desc: 'Detect and resolve URI-alias conflicts'
   } as const;
+
+  // --- cron job definition ---
+
+  public static readonly cron: TCronJob = [ {
+    cronexpr: '0 0 * * *', // run every day at 00:00
+  } ] as const;
 }
