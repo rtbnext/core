@@ -37,8 +37,10 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
   // --- special profile index operations ---
 
   public find ( uriLike: string ) : TProfileIndexMap {
-    const uri = Utils.sanitize( uriLike );
-    return new Map( [ ...this.index ].filter( ( [ key, { aliases } ] ) => key === uri || aliases.includes( uri ) ) );
+    const uri = Utils.sanitize( uriLike ), exact = this.index.get( uri );
+    if ( exact ) return new Map( [ [ uri, exact ] ] );
+
+    return new Map( [ ...this.index ].filter( ( [ , { aliases } ] ) => aliases.includes( uri ) ) );
   }
 
   public move ( from: string, to: string, makeAlias: boolean = true ) : TProfileIndexItem | false {
