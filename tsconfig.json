@@ -13,6 +13,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "paths": {
+      "@VERSION": [ "./src/_version.ts" ],
       "@/abstract/*": [ "./src/abstract/*" ],
       "@/core/*": [ "./src/core/*" ],
       "@/interface/*": [ "./src/interfaces/*" ],
