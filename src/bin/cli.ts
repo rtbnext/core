@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 
 import { JOBS } from '@/job/index';
+import { VERSION } from '@VERSION';
 
 
 const addGlobalOptions = ( command: Command ) : void => void command
@@ -15,7 +16,7 @@ const program = new Command();
 program
   .name( 'ntbnext-cli' )
   .description( 'CLI to maintain the @rtbnext billionaires database' )
-  .version( '2.0.0', '-v, --version' );
+  .version( VERSION, '-v, --version' );
 
 for ( const JobClass of JOBS ) {
   const { id, desc, options } = JobClass.command;
