@@ -28,7 +28,7 @@ export class Performance {
 
   public static generateProfileReturns ( history: TProfileHistory ) : TReturns {
     const latest = history.at( -1 );
-    if ( ! latest ) return {};
+    if ( ! latest || ! latest[ 2 ] ) return {};
 
     const result: TReturns = {};
     const now = Date.parse( latest[ 0 ] );
@@ -38,6 +38,8 @@ export class Performance {
     let remaining = Object.keys( returns ).length;
 
     for ( const item of history.toReversed() ) {
+      if ( ! item[ 2 ] ) continue;
+
       const days = ( now - Date.parse( item[ 0 ] ) ) / 86400000;
 
       for ( const [ key, target ] of returns ) {
