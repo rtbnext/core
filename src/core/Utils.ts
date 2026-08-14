@@ -8,6 +8,7 @@ import { REGEX_DIACRITICS, REGEX_NOALNUM, REGEX_SEARCH_CLEANUP, REGEX_SPACES } f
 import { Parser } from '@/parser/Parser';
 import type { TAggregator, TMeasuredResult, TObjOperator } from '@/type/generic';
 import type { TParserDateType } from '@/type/parser';
+import { VERSION } from '@VERSION';
 
 
 export class Utils {
@@ -59,7 +60,7 @@ export class Utils {
   // --- meta data ---
 
   public static get schemaVersion () : '2' { return '2' }
-  public static get version () : string { return '2.3.7' }
+  public static get version () : string { return VERSION }
 
   public static generator () : TMetaData[ '$metadata' ][ 'generator' ] {
     return `rtbnext/${ Utils.version }`;
