@@ -37,7 +37,7 @@ export class SchedulerJob extends Job {
 
   public static readonly command: TCommandJob = {
     id: 'scheduler',
-    desc: 'Processes either the profile or list queue, depends on workload'
+    desc: 'Processes profile/list queue, depending on workload'
   } as const;
 
   // --- cron job definition ---
