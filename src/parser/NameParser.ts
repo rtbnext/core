@@ -87,13 +87,13 @@ export class NameParser {
 
   private static fixLastName ( parts: string[], fN: string, lN: string ) : TFirstLastName {
     if ( ! fN && lN ) {
-      const size = lN.split( REGEX_SPACE_DELIMITER ).length;
+      const targetParts = lN.split( REGEX_SPACE_DELIMITER ), target = lN.toLowerCase();
 
-      for ( let i = 0; i <= parts.length - size; i++ ) {
-        const value = parts.slice( i, i + size ).join( ' ' );
+      for ( let i = 0; i <= parts.length - targetParts.length; i++ ) {
+        const value = parts.slice( i, i + targetParts.length ).join( ' ' );
 
-        if ( value.toLowerCase() === lN.toLowerCase() ) {
-          fN = parts.slice( 0, i ).join( ' ' );
+        if ( value.toLowerCase() === target ) {
+          fN = i === 0 ? parts.slice( targetParts.length ).join( ' ' ) : parts.slice( 0, i ).join( ' ' );
           lN = value;
 
           break;
@@ -136,6 +136,7 @@ export class NameParser {
 
     if ( REGEX_GROUP.test( raw ) ) return this.group( value, family );
     const parts = clean.split( REGEX_SPACE_DELIMITER ).filter( Boolean );
+    const fullParts = [ ...parts ];
 
     let suffix = '';
     if ( REGEX_SUFFIX.test( parts.at( -1 ) ?? '' ) ) suffix = parts.pop() ?? '';
@@ -145,7 +146,7 @@ export class NameParser {
 
     ( { firstName: fN, lastName: lN } = this.validate( clean, fN, lN ) );
     if ( ! fN && ! lN ) ( { firstName: fN, lastName: lN } = this.detect( parts, asianFormat ) );
-    ( { firstName: fN, lastName: lN } = this.fixLastName( parts, fN, lN ) );
+    ( { firstName: fN, lastName: lN } = this.fixLastName( fullParts, fN, lN ) );
 
     const split = this.splitSuffix( lN );
     if ( split.suffix ) suffix = split.suffix;
