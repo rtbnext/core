@@ -19,6 +19,8 @@ export class Parser {
       : safe ? Parser.safeStr( value ) : Parser.string( value );
   }
 
+  // --- strings ---
+
   public static string ( value: unknown ) : string {
     return String( value ).trim().replace( REGEX_SPACES, ' ' );
   }
@@ -39,11 +41,15 @@ export class Parser {
     return text;
   }
 
+  // --- booleans ---
+
   public static boolean ( value: unknown ) : boolean {
     return value !== null && value !== undefined && ( typeof value === 'boolean' ? value :
       [ '1', 'true', 'yes', 'y' ].includes( Parser.string( value ).toLowerCase() )
     );
   }
+
+  // --- numbers ---
 
   public static number ( value: unknown, digits: number = 0 ) : number {
     const parsed = Number( value );
@@ -62,10 +68,14 @@ export class Parser {
     return Parser.number( value, digits );
   }
 
+  // --- dates ---
+
   public static date ( value?: any, format: TParserDateType = 'ymd' ) : string | undefined {
     try { value = ( value ? new Date( value ) : new Date() ).toISOString() } catch { return undefined }
     return format === 'iso' ? value : value.split( 'T' )[ 0 ].split( '-' ).slice( 0, format.length ).join( '-' );
   }
+
+  // --- JSON parser ---
 
   public static json ( value: unknown ) : any {
     if ( typeof value === 'object' ) return value;
