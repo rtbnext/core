@@ -1,7 +1,8 @@
 import { ArrayMode } from '@komed3/deepmerge';
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import process, { cwd } from 'node:process';
+import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 
 import { Utils } from '@/core/Utils';
@@ -17,11 +18,13 @@ export class Config implements IConfig {
 
   private readonly cwd: string;
   private readonly path: string;
+  private readonly packagePath: string;
   private readonly env: string;
   private readonly cfg: TConfigObject;
 
   private constructor () {
     this.cwd = cwd();
+    this.packagePath = join( dirname( fileURLToPath( import.meta.url ) ), '..', '..', 'config' );
     this.path = join( this.cwd, 'config' );
     this.env = process.env.NODE_ENV ?? 'production';
     this.cfg = this.loadConfig();
