@@ -32,16 +32,19 @@ export class Config implements IConfig {
 
   // --- config loader ---
 
-  private loadConfigFile ( path: string ) : Partial< TConfigObject > {
-    if ( ! existsSync( path = join( this.path, path ) ) ) return {};
+  private loadConfigFile ( path: string, base: string ) : Partial< TConfigObject > {
+    if ( ! existsSync( path = join( base, path ) ) ) return {};
+
     try { return parse( readFileSync( path, 'utf8' ) ) as Partial< TConfigObject > }
     catch { return {} }
   }
 
   private loadConfig () : TConfigObject {
     return Utils.merge( ArrayMode.Replace,
-      this.loadConfigFile( 'default.yml' ) as TConfigObject,
-      this.loadConfigFile( `${ this.env }.yml` )
+      this.loadConfigFile( 'default.yml', this.packagePath ) as TConfigObject,
+      this.loadConfigFile( 'default.yml', this.path ),
+      this.loadConfigFile( `${ this.env }.yml`, this.packagePath ),
+      this.loadConfigFile( `${ this.env }.yml`, this.path )
     );
   }
 
