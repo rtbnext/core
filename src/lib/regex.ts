@@ -12,6 +12,7 @@ export const REGEX_NOALNUM = /[^a-z0-9]+/g;
 export const REGEX_NONUM = /[^\d]+/g;
 
 export const REGEX_QUOTES = /"([^"]+)"/g;
+export const REGEX_SENTENCE = /[.!?:…]$/;
 
 export const REGEX_FAMILY = /\s*(?:(&|and)\s*)?famil(?:y|ies)\b\s*$/i;
 export const REGEX_GROUP = /,|\band\b(?!\s+famil(?:y|ies)\b)|&\s*(?!famil(?:y|ies)\b)/i;
@@ -20,3 +21,9 @@ export const REGEX_SUFFIX = /^(?:jr\.?|sr\.?|sen\.?|m{0,3}(cm|cd|d?c{0,3})(xc|xl
 export const REGEX_LOWER_START = /^[a-z]/;
 
 export const REGEX_URI_CLEANUP = /(?:-(?:and-)?(?:family|families)|-\d+)+$/i;
+
+export const REGEX_ENTITIES = /&(amp|apos|quot|#39|#x27|nbsp);/gi;
+export const ENTITIES: Record< string, string > = {
+  '&amp;': '&', '&apos;': '’', '&quot;': '"',
+  '&#39;': '’', '&#x27;': '’', '&nbsp;': ' '
+};

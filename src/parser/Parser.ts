@@ -6,7 +6,7 @@ import countries from 'i18n-iso-countries';
 
 import { Utils } from '@/core/Utils';
 import { GenderResolver, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
-import { REGEX_QUOTES, REGEX_SPACES } from '@/lib/regex';
+import { REGEX_QUOTES, REGEX_SENTENCE, REGEX_SPACES } from '@/lib/regex';
 import type { TGenderResolver, TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
 import type { TParserContainer, TParserDateType, TParserMethod } from '@/type/parser';
 
@@ -36,7 +36,7 @@ export class Parser {
       .replaceAll( '...', '…' ).replaceAll( ' - ', ' – ' ).replace( REGEX_QUOTES, '“$1”' )
       .replace( REGEX_SPACES, ' ' ).trim();
 
-    if ( text && ! /[.!?:]$/.test( text ) ) text += '.';
+    if ( text && ! REGEX_SENTENCE.test( text ) ) text += '.';
     return text;
   }
 
