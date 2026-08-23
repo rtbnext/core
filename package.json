@@ -21,6 +21,7 @@
     "core"
   ],
   "files": [
+    "config",
     "dist",
     "README.md",
     "LICENSE"
