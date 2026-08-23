@@ -12,8 +12,19 @@ import type { TFinancialAsset, TListResponse, TPersonListEntry, TResponse } from
 
 export class RTBListParser extends PersonListParser implements IRTBListParser {
   public assets () : TAsset[] {
-    return this.cache( 'assets', () => ( this.raw.financialAssets ?? [] ).map( a =>
-      Parser.container< TAsset >( {
+    return this.cache( 'assets', () => {
+      if ( ! this.raw.financialAssets?.length ) return [];
+
+      const assets = ( this.raw.financialAssets ?? [] ).reduce< TFinancialAsset[] >( ( assets, asset ) => {
+        const existing = assets.find( a => a.exchange === asset.exchange && a.ticker === asset.ticker );
+
+        if ( ! existing ) assets.push( asset );
+        else existing.numberOfShares = ( existing.numberOfShares ?? 0 ) + ( asset.numberOfShares ?? 0 ) || undefined;
+
+        return assets;
+      }, [] );
+
+      return assets.map( a => Parser.container< TAsset >( {
         type: { value: 'public', type: 'string' },
         label: { value: a.companyName, type: 'string' },
         value: { value: a.numberOfShares && ( a.currentPrice ?? a.sharePrice )
@@ -27,8 +38,8 @@ export class RTBListParser extends PersonListParser implements IRTBListParser {
           currency: { value: a.currencyCode, type: 'string' },
           exRate: { value: a.exchangeRate, type: 'number', args: [ 6 ] }
         } ) : undefined, type: 'container' }
-      } )
-    ) );
+      } ) );
+    } );
   }
 
   public realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined {
