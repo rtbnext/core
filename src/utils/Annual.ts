@@ -1,3 +1,4 @@
+import { ArrayMode } from '@komed3/deepmerge';
 import type { TAnnual, TAnnualRecord } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
 import type { TProfileHistory } from '@rtbnext/schema/src/model/profile';
@@ -99,7 +100,7 @@ export class Annual {
       if ( idx >= 0 ) annual[ idx ] = item;
       else annual.push( item );
 
-      profile.updateData( { annual } );
+      profile.updateData( { annual }, ArrayMode.Unique );
       profile.save();
       return true;
     }, `Failed to generate annual report for ${ uriLike } @ ${ year }` ) ?? false;
