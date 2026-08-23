@@ -6,8 +6,8 @@ import type { TGenericStats } from '@rtbnext/schema/src/model/stats';
 import type { IRTBListParser } from '@/interface/parser';
 import { Parser } from '@/parser/Parser';
 import { PersonListParser } from '@/parser/PersonListParser';
-import { TPreparedList } from '@/type/list';
-import { TListResponse, TPersonListEntry, TResponse } from '@/type/response';
+import type { TPreparedList } from '@/type/list';
+import type { TFinancialAsset, TListResponse, TPersonListEntry, TResponse } from '@/type/response';
 
 
 export class RTBListParser extends PersonListParser implements IRTBListParser {
