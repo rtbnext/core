@@ -129,9 +129,9 @@ export class Wiki {
         url: { value: info.descriptionurl, type: 'string' },
         file: { value: info.url, type: 'string' },
         thumb: { value: thumbUrl, type: 'string' },
-        caption: { value: meta.ImageDescription?.value, type: 'safeStr' },
+        caption: { value: meta.ImageDescription?.value, type: 'text' },
         date: { value: dateTime, type: 'date', args: [ 'iso' ] },
-        credits: { value: credits, type: 'safeStr' }
+        credits: { value: credits, type: 'text' }
       } );
     }, `Failed to query Wikimedia Commons image: ${ title }` );
   }
@@ -166,10 +166,10 @@ export class Wiki {
         confidence: { value: confidence, type: 'number', args: [ 3 ] },
         name: { value: raw.title, type: 'string' },
         lastModified: { value: raw.touched, type: 'date', args: [ 'iso' ] },
-        summary: { value: raw.extract ?? '', type: 'list', args: [ 'safeStr', '\n' ], strict: false },
+        summary: { value: raw.extract ?? '', type: 'list', args: [ 'text', '\n' ], strict: false },
         sortKey: { value: raw.pageprops?.[ 'defaultsort' ], type: 'string' },
         wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], type: 'string' },
-        desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], type: 'safeStr' }
+        desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], type: 'text' }
       } ) };
     }, `Failed to query Wikipedia page: ${ title }` );
   }

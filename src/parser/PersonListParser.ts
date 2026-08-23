@@ -104,9 +104,9 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
 
   public bio () : TProfileBio {
     return this.cache( 'bio', () => Parser.container< TProfileBio >( {
-      cv: { value: this.raw.bios, type: 'list', args: [ 'safeStr' ] },
-      facts: { value: this.raw.abouts, type: 'list', args: [ 'safeStr' ] },
-      quotes: { value: [], type: 'list', args: [ 'safeStr' ] }
+      cv: { value: this.raw.bios, type: 'list', args: [ 'text' ] },
+      facts: { value: this.raw.abouts, type: 'list', args: [ 'text' ] },
+      quotes: { value: [], type: 'list', args: [ 'text' ] }
     } ) );
   }
 

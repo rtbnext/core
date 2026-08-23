@@ -154,18 +154,18 @@ export class ProfileParser extends Cache implements IProfileParser {
 
   public cv () : string[] {
     return this.cache( 'cv', () => Parser.list(
-      ( Utils.aggregate( this.lists, 'bios', 'first' ) ?? [] ) as string[], 'safeStr'
+      ( Utils.aggregate( this.lists, 'bios', 'first' ) ?? [] ) as string[], 'text'
     ) );
   }
 
   public facts () : string[] {
     return this.cache( 'facts', () => Parser.list(
-      ( Utils.aggregate( this.lists, 'abouts', 'first' ) ?? [] ) as string[], 'safeStr'
+      ( Utils.aggregate( this.lists, 'abouts', 'first' ) ?? [] ) as string[], 'text'
     ) );
   }
 
   public quotes () : string[] {
-    return this.cache( 'quotes', () => Parser.list( [ this.raw.quote ?? '' ], 'safeStr' ) );
+    return this.cache( 'quotes', () => Parser.list( [ this.raw.quote ?? '' ], 'text' ) );
   }
 
   // --- related entries ---
@@ -189,10 +189,10 @@ export class ProfileParser extends Cache implements IProfileParser {
     return this.cache( 'media', () => ( this.raw.listImages ?? [] ).filter( Boolean ).map(
       item => Parser.container< TImage >( {
         url: { value: item.uri, type: 'string' },
-        credits: { value: item.credit, type: 'safeStr' },
+        credits: { value: item.credit, type: 'text' },
         file: { value: item.image, type: 'string' },
-        caption: { value: item.caption, type: 'safeStr' },
-        desc: { value: item.description, type: 'safeStr' }
+        caption: { value: item.caption, type: 'text' },
+        desc: { value: item.description, type: 'text' }
       } ) )
     );
   }
