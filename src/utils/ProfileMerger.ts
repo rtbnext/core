@@ -6,10 +6,12 @@ import type { IProfile } from '@/interface/profile';
 import { REGEX_URI_CLEANUP } from '@/lib/regex';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
+import { ProfileQueue } from '@/core/Queue';
 
 export class ProfileMerger {
   private static readonly cmp = CmpStr.create( { metric: 'dice', safeEmpty: true } );
   private static readonly index = ProfileIndex.getInstance();
+  private static readonly queue = ProfileQueue.getInstance();
 
   // --- helper ---
 
@@ -75,9 +77,12 @@ export class ProfileMerger {
     target.mergeHistory( source.getHistory() );
     target.save();
 
-    return Profile.delete( source.getUri() ) && ( ! makeAlias ? true :
+    const res = Profile.delete( source.getUri() ) && ( ! makeAlias ? true :
       !! ProfileMerger.index.addAliases( target.getUri(), source.getUri() )
     );
+
+    if ( res ) ProfileMerger.queue.add( { uriLike: target.getUri(), prio: 20 } );
+    return res;
   }
 
   // --- list matching candidates ---
