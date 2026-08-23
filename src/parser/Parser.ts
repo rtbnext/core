@@ -29,6 +29,10 @@ export class Parser {
     ), '' ).replace( REGEX_SPACES, ' ' ).trim();
   }
 
+  public static text ( value: unknown ) : string {
+    return Parser.safeStr( value );
+  }
+
   public static boolean ( value: unknown ) : boolean {
     return value !== null && value !== undefined && ( typeof value === 'boolean' ? value :
       [ '1', 'true', 'yes', 'y' ].includes( Parser.string( value ).toLowerCase() )
