@@ -81,7 +81,11 @@ export class ProfileMerger {
       !! ProfileMerger.index.addAliases( target.getUri(), source.getUri() )
     );
 
-    if ( res ) ProfileMerger.queue.add( { uriLike: target.getUri(), prio: 20 } );
+    if ( res ) {
+      ProfileMerger.queue.remove( source.getUri() );
+      ProfileMerger.queue.add( { uriLike: target.getUri(), prio: 20 } );
+    }
+
     return res;
   }
 
