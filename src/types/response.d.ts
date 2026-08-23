@@ -18,6 +18,16 @@ export type TWaybackResponse = {
   };
 };
 
+export type TFinancialAsset = {
+  exchange: string;
+  ticker: string;
+  companyName: string;
+  numberOfShares?: number;
+  sharePrice: number;
+  exchangeRate?: number;
+  currentPrice?: number;
+};
+
 export type TProfileResponse = {
   person: {
     naturalId: string;
@@ -65,15 +75,7 @@ export type TProfileResponse = {
       rank?: number;
       finalWorth?: number;
       timestamp: number | string;
-      financialAssets?: Array< {
-        exchange: string;
-        ticker: string;
-        companyName: string;
-        numberOfShares?: number;
-        sharePrice: number;
-        exchangeRate?: number;
-        currentPrice?: number;
-      } >;
+      financialAssets?: TFinancialAsset[];
       date?: number | string;
       estWorthPrev?: number;
       privateAssetsWorth?: number;
