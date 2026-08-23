@@ -23,7 +23,8 @@ export type TFinancialAsset = {
   ticker: string;
   companyName: string;
   numberOfShares?: number;
-  sharePrice: number;
+  sharePrice?: number;
+  currencyCode?: string;
   exchangeRate?: number;
   currentPrice?: number;
 };
@@ -142,16 +143,7 @@ export type TPersonListEntry = {
   title?: string;
   bios?: string[];
   abouts?: string[];
-  financialAssets?: Array< {
-    exchange: string;
-    ticker: string;
-    companyName: string;
-    numberOfShares?: number;
-    sharePrice?: number;
-    currencyCode?: string;
-    exchangeRate?: number;
-    currentPrice?: number;
-  } >;
+  financialAssets?: TFinancialAsset[];
   csfDisplayFields: string[];
 };
 
