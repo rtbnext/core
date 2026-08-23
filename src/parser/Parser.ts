@@ -6,10 +6,17 @@ import countries from 'i18n-iso-countries';
 
 import { Utils } from '@/core/Utils';
 import { GenderResolver, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
-import { ENTITIES, REGEX_ENTITIES, REGEX_QUOTES, REGEX_SENTENCE, REGEX_SPACES } from '@/lib/regex';
+import { REGEX_QUOTES, REGEX_SENTENCE, REGEX_SPACES } from '@/lib/regex';
 import type { TGenderResolver, TIndustryResolver, TMaritalStatusResolver } from '@/type/generic';
 import type { TParserContainer, TParserDateType, TParserMethod } from '@/type/parser';
 
+
+const ENTITIES: Record< string, string > = {
+  '&amp;': '&', '&apos;': '’', '&quot;': '"',
+  '&#39;': '’', '&#x27;': '’', '&nbsp;': ' ',
+  '&ndash;': '–', '&mdash;': '—', '\'': '’',
+  '...': '…', ' - ': ' – '
+};
 
 export class Parser {
   public static primitive ( value: unknown, safe: boolean = true ) : Primitive {
@@ -32,12 +39,14 @@ export class Parser {
   }
 
   public static text ( value: unknown ) : string {
-    let text = Parser.safeStr( value ).replaceAll( '\'', '’' ).replaceAll( '&amp;', '&' )
-      .replaceAll( '...', '…' ).replaceAll( ' - ', ' – ' ).replace( REGEX_QUOTES, '“$1”' )
-      .replace( REGEX_ENTITIES, entity => ENTITIES[ entity.toLowerCase() ] ?? entity )
-      .replace( REGEX_SPACES, ' ' ).trim();
+    let text = Parser.safeStr( value );
 
+    for ( const [ entity, replacement ] of Object.entries( ENTITIES ) )
+      text = text.replaceAll( entity, replacement );
+
+    text = text.replace( REGEX_QUOTES, '“$1”' ).replace( REGEX_SPACES, ' ' );
     if ( text && ! REGEX_SENTENCE.test( text ) ) text += '.';
+
     return text;
   }
 

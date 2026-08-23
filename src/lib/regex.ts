@@ -2,7 +2,6 @@ export const REGEX_DIACRITICS = /[\u0300-\u036f]/g;
 
 export const REGEX_SPACES = /\s+/g;
 export const REGEX_SPACE_DELIMITER = /\s+/;
-export const REGEX_NEWLINE = /[\n\r]+/g;
 
 export const REGEX_NAME_CLEANUP = /[^\p{L}\s\-().']/gu;
 export const REGEX_NAME_TRIM = /^[\s.'-]+|[\s'-]+$/g;
@@ -21,9 +20,3 @@ export const REGEX_SUFFIX = /^(?:jr\.?|sr\.?|sen\.?|m{0,3}(cm|cd|d?c{0,3})(xc|xl
 export const REGEX_LOWER_START = /^[a-z]/;
 
 export const REGEX_URI_CLEANUP = /(?:-(?:and-)?(?:family|families)|-\d+)+$/i;
-
-export const REGEX_ENTITIES = /&(amp|apos|quot|#39|#x27|nbsp);/gi;
-export const ENTITIES: Record< string, string > = {
-  '&amp;': '&', '&apos;': '’', '&quot;': '"',
-  '&#39;': '’', '&#x27;': '’', '&nbsp;': ' '
-};
