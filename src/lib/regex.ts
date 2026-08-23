@@ -11,7 +11,7 @@ export const REGEX_SEARCH_CLEANUP = /[^a-z0-9\s-]/g;
 export const REGEX_NOALNUM = /[^a-z0-9]+/g;
 export const REGEX_NONUM = /[^\d]+/g;
 
-export const REGEX_QUOTE = /"([\"]+)"/g;
+export const REGEX_QUOTES = /"([^"]+)"/g;
 
 export const REGEX_FAMILY = /\s*(?:(&|and)\s*)?famil(?:y|ies)\b\s*$/i;
 export const REGEX_GROUP = /,|\band\b(?!\s+famil(?:y|ies)\b)|&\s*(?!famil(?:y|ies)\b)/i;
