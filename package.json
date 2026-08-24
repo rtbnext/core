@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@isodb/us-states": "^0.1.0",
-    "@komed3/deepmerge": "^1.1.0",
+    "@komed3/deepmerge": "^1.2.0",
     "@rtbnext/schema": "^2.3.3",
     "axios": "^1.19.0",
     "cmpstr": "^3.3.0",
