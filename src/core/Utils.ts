@@ -169,6 +169,8 @@ export class Utils {
   public static mergeArray < T = unknown > ( target: T[], source: T[], mode: ArrayMode = ArrayMode.Unique ) : T[] {
     switch ( mode ) {
       case ArrayMode.Replace: return source;
+      case ArrayMode.ReplaceLeft: return target.length ? target : source;
+      case ArrayMode.ReplaceRight: return source.length ? source : target;
       case ArrayMode.Keep: return target;
       case ArrayMode.Concat: return [ ...target, ...source ];
       case ArrayMode.Reference: return [ ...new Set( [ ...target, ...source ] ) ];
