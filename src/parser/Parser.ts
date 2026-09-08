@@ -1,8 +1,8 @@
+import countries from '@isodb/countries';
 import usStates from '@isodb/us-states';
 import type { TAgeGroup, TGender, TIndustry, TMaritalStatus } from '@rtbnext/schema/src/base/const';
 import type { TLocation } from '@rtbnext/schema/src/base/generic';
 import type { Primitive } from 'devtypes/types/primitive';
-import countries from 'i18n-iso-countries';
 
 import { Utils } from '@/core/Utils';
 import { GenderResolver, IndustryResolver, MaritalStatusResolver } from '@/lib/const';
@@ -147,8 +147,7 @@ export class Parser {
   // --- location ---
 
   public static country ( value: unknown ) : string | undefined {
-    const code = countries.getAlpha2Code( Parser.string( value ), 'en' );
-    return code ? code.toUpperCase() : undefined;
+    return countries.byName( Parser.string( value ) )?.alpha2;
   }
 
   public static state ( value: unknown ) : string | undefined {
