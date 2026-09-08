@@ -1,5 +1,5 @@
+import countries from '@isodb/countries';
 import type { TProfileData, TProfileIndexItem, TProfileStatus } from '@rtbnext/schema/src/model/profile';
-import countries from 'i18n-iso-countries';
 import { join } from 'node:path';
 
 import { log } from '@/core/Logger';
@@ -74,7 +74,7 @@ export class Integrity {
 
       [ !! info?.birthPlace, 'missing-birthPlace', 5, false ],
       [ !! info?.citizenship, 'missing-citizenship', 5, false ],
-      [ this._isValid( info?.citizenship, v => !! countries.getName( v, 'en' ) ), 'invalid-citizenship', 20, false ],
+      [ this._isValid( info?.citizenship, v => !! countries.byAlpha2( v ) ), 'invalid-citizenship', 20, false ],
       [ !! info?.residence, 'missing-residence', 5, false ],
 
       // --- profile metadata ---
