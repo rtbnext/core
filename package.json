@@ -48,6 +48,7 @@
     "prepublishOnly": "npm run build:clean"
   },
   "dependencies": {
+    "@isodb/countries": "^0.1.0",
     "@isodb/us-states": "^0.1.1",
     "@komed3/deepmerge": "^1.2.0",
     "@rtbnext/schema": "^2.3.3",
