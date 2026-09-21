@@ -26,6 +26,10 @@ export class Image implements IImage {
     return `${ this.hash( buffer ) }.${ ext.toLowerCase() }`;
   }
 
+  private saveMedia ( buffer: Buffer, filename: string ) : boolean {
+    return Image.storage.mediaExists( filename ) || Image.storage.writeMedia( filename, buffer );
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IImage {
