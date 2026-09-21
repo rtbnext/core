@@ -3,6 +3,7 @@ import { CmpStr, type CmpStrResult } from 'cmpstr';
 
 import { Fetch } from '@/core/Fetch';
 import { Image } from '@/core/Image';
+import { log } from '@/core/Logger';
 import type { TWikidataResponseItem } from '@/type/response';
 import type { TWikidata } from '@/type/wiki';
 
@@ -56,5 +57,11 @@ export class Wiki {
     return Math.max( 0, score );
   }
 
-  public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {}
+  public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {
+    log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName }` );
+
+    return await log.catchAsync( async () => {
+      //
+    }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
+  }
 }
