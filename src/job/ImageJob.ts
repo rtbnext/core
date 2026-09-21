@@ -13,6 +13,7 @@ export class ImageJob extends Job< TImageJobOptions > {
 
   public async run () : Promise< void > {
     await this.protect( async () => {
+      for ( const uri of this.options.remove ?? [] ) ImageJob.image.remove( uri );
       if ( this.options.cleanup ) ImageJob.image.clean();
     } );
   };
