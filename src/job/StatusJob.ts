@@ -1,5 +1,4 @@
 import { Job } from '@/abstract/Job';
-import { Status } from '@/core/Status';
 import type { TCommandJob, TCronJob, TStatusJobOptions } from '@/type/job';
 
 
@@ -10,10 +9,8 @@ export class StatusJob extends Job< TStatusJobOptions > {
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
-      const status = Status.getInstance();
-
-      if ( this.options.cleanup ) status.cleanup();
-      else status.flush();
+      if ( this.options.cleanup ) StatusJob.status.cleanup();
+      else StatusJob.status.flush();
     } );
   }
 
