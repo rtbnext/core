@@ -14,6 +14,7 @@ export class Wiki {
   private static readonly image = Image.getInstance();
 
   private static readonly threshold = 0.85;
+  private static readonly wdItems = 25;
 
   private static scoreWDItem ( item: TWikidataResponseItem, data: Partial< TProfileData > ) : number {
     const { name: { fullName, shortName, firstName, lastName } = {}, gender, birthDate, citizenship } = data.info ?? {};
@@ -67,6 +68,29 @@ export class Wiki {
       const [ first, ...rest ] = shortName.split( ' ' ), last = rest.pop();
       const nameVariants = [ shortName, `${ first[ 0 ] }. ${ last }`, `${ first } ${ last }` ]
         .filter( Boolean ).map( n => `"${ n }"@en "${ n }"@de` ).join( ' ' );
+
+      const sparql = `
+        SELECT DISTINCT
+          ?item ?itemLabel ?gender ?birthdate ?article ?image ?iso2 ?occupation ?employer ?ownerOf ?netWorth
+        WHERE {
+          VALUES ?name { ${ nameVariants } }
+          ?item wdt:P31 wd:Q5 .
+          { { ?item rdfs:label ?name . } UNION { ?item skos:altLabel ?name . } }
+          OPTIONAL { ?item wdt:P21 ?gender . }
+          OPTIONAL { ?item wdt:P569 ?birthdate . }
+          OPTIONAL { ?article schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> . }
+          OPTIONAL { ?item wdt:P18 ?image . }
+          OPTIONAL { ?item wdt:P27 ?country . ?country wdt:P297 ?iso2 . }
+          OPTIONAL { ?item wdt:P106 ?occupation . }
+          OPTIONAL { ?item wdt:P108 ?employer . }
+          OPTIONAL { ?item wdt:P169 ?employer . }
+          OPTIONAL { ?item wdt:P127 ?ownerOf . }
+          OPTIONAL { ?item wdt:P1830 ?ownerOf . }
+          OPTIONAL { ?item wdt:P2218 ?netWorth . }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,de" . }
+        }
+        LIMIT ${ Wiki.wdItems }
+      `;
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
