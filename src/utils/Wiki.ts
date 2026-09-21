@@ -14,11 +14,19 @@ export class Wiki {
   private static readonly threshold = 0.85;
 
   private static scoreWDItem ( item: TWikidataResponseItem, data: Partial< TProfileData > ) : number {
-    const { name: { shortName } = {}, gender, birthDate, citizenship } = data.info ?? {};
+    const { name: { fullName, shortName, firstName, lastName } = {}, gender, birthDate, citizenship } = data.info ?? {};
     let score = 0;
 
     // --- name matching ---
-    //
+    const name = item.itemLabel.value.trim().toLowerCase();
+    const test = [ fullName, shortName ].filter( Boolean ) as string[];
+
+    if ( name === fullName?.toLowerCase() || name === shortName?.toLowerCase() ) score += 0.35;
+    else if ( Wiki.cmp.match< CmpStrResult[] >( test, name, 0.8 ).length > 0 ) score += 0.2;
+    else if (
+      ( firstName && name.includes( firstName.toLowerCase() ) ) ||
+      ( lastName && name.includes( lastName.toLowerCase() ) )
+    ) score += 0.1;
 
     // --- birth date matching ---
     if ( birthDate && item.birthdate?.value.startsWith( birthDate ) ) score += 0.25;
