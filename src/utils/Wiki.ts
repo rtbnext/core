@@ -15,5 +15,10 @@ export class Wiki {
   ) : number {
     const { name: { shortName } = {}, gender, birthDate, citizenship } = data.info ?? {};
     let score = 0;
+
+    // --- name matching ---
+    if ( shortName && item.itemLabel.value.trim() === shortName ) score += 0.25;
+    else if ( shortName && item.itemLabel.value.trim().toLowerCase() === shortName.toLowerCase() ) score += 0.15;
+    else return 0;
   }
 }
