@@ -7,13 +7,14 @@ import type { TImageMedia } from '@/type/image';
 
 export class Image implements IImage {
   private static readonly storage = Storage.getInstance();
-  private static instance: IImage;
   private static readonly hashLength = 32;
+  private static readonly mediaFile = 'profile/media.json';
+  private static instance: IImage;
 
   private readonly media: TImageMedia;
 
   private constructor () {
-    this.media = Image.storage.readJSON< TImageMedia >( 'profile/media.json' ) || {};
+    this.media = Image.storage.readJSON< TImageMedia >( Image.mediaFile ) || {};
   }
 
   // --- helper ---
@@ -28,6 +29,10 @@ export class Image implements IImage {
 
   private saveMedia ( buffer: Buffer, filename: string ) : boolean {
     return Image.storage.mediaExists( filename ) || Image.storage.writeMedia( filename, buffer );
+  }
+
+  private saveIndex () : boolean {
+    return Image.storage.writeJSON( Image.mediaFile, this.media );
   }
 
   // --- instantiate ---
