@@ -4,3 +4,8 @@ export interface IImageMedia {
 }
 
 export type TImageMedia = Record< string, IImageMedia >;
+
+export interface TImage {
+  buffer: Buffer;
+  filename: string;
+}
