@@ -179,6 +179,7 @@ export type TWikipediaResponse = {
       extract?: string;
       touched: string;
       lastrevid: number;
+      canonicalurl: string;
       pageimage?: string;
       pageprops?: {
         [ K in ( 'defaultsort' | 'wikibase-shortdesc' | 'wikibase_item' ) ]?: string;

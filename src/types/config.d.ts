@@ -26,6 +26,7 @@ export type TCronConfig = {
 export type TStorageConfig = {
   baseDir: string;
   compression: boolean;
+  mediaDir: string;
 };
 
 export type TFetchConfig = {

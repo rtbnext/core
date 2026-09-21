@@ -3,6 +3,7 @@
 export { Config } from '@/core/Config';
 export { Cron, run } from '@/core/Cron';
 export { Fetch } from '@/core/Fetch';
+export { Image } from '@/core/Image';
 export { log, Logger } from '@/core/Logger';
 export { ListQueue, ProfileQueue, Queue } from '@/core/Queue';
 export { Status } from '@/core/Status';
@@ -58,6 +59,7 @@ export { Wiki } from '@/util/Wiki';
 
 export { AliasJob } from '@/job/AliasJob';
 export { AnnualJob } from '@/job/AnnualJob';
+export { ImageJob } from '@/job/ImageJob';
 export { JOBS } from '@/job/index';
 export { IndexJob } from '@/job/IndexJob';
 export { IntegrityJob } from '@/job/IntegrityJob';
@@ -83,6 +85,7 @@ export type * from '@/type/annual';
 export type * from '@/type/config';
 export type * from '@/type/fetch';
 export type * from '@/type/generic';
+export type * from '@/type/image';
 export type * from '@/type/integrity';
 export type * from '@/type/job';
 export type * from '@/type/list';

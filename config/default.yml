@@ -17,6 +17,7 @@ cron:
 storage:
   baseDir: "v2"
   compression: true
+  mediaDir: "media"
 
 fetch:
   endpoints:

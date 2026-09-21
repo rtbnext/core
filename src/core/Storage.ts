@@ -16,11 +16,14 @@ export class Storage implements IStorage {
 
   private readonly config: TStorageConfig;
   private readonly path: string;
+  private readonly mediaPath: string;
 
-   private constructor () {
+  private constructor () {
     const { root, storage } = Config.getInstance();
     this.config = storage;
+
     this.path = join( root, this.config.baseDir );
+    this.mediaPath = join( root, this.config.mediaDir );
 
     this.initDB();
   }
@@ -28,6 +31,7 @@ export class Storage implements IStorage {
   private initDB () : void {
     log.debug( `Initializing storage at ${ this.path }` );
     this.ensurePath( this.path );
+    this.ensurePath( this.mediaPath );
 
     [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue', 'system' ]
       .forEach( path => this.ensurePath( path, true ) );
@@ -37,6 +41,10 @@ export class Storage implements IStorage {
 
   private resolvePath ( path: string ) : string {
     return path.includes( this.path ) ? path : join( this.path, path );
+  }
+
+  private resolveMediaPath ( path: string ) : string {
+    return path.includes( this.mediaPath ) ? path : join( this.mediaPath, path );
   }
 
   private fileExt ( path: string ) : string {
@@ -91,12 +99,25 @@ export class Storage implements IStorage {
     return existsSync( this.resolvePath( path ) );
   }
 
+  public mediaExists ( path: string ) : boolean {
+    return existsSync( this.resolveMediaPath( path ) );
+  }
+
   public assertPath ( path: string ) : void | never {
     if ( ! this.exists( path ) ) throw new Error( `Path ${ path } does not exist` );
   }
 
+  public assertMediaPath ( path: string ) : void | never {
+    if ( ! this.mediaExists( path ) ) throw new Error( `Media path ${ path } does not exist` );
+  }
+
   public ensurePath ( path: string, isDir: boolean = false ) : void {
     path = this.resolvePath( path );
+    mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
+  }
+
+  public ensureMediaPath ( path: string, isDir: boolean = false ) : void {
+    path = this.resolveMediaPath( path );
     mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
   }
 
@@ -105,6 +126,13 @@ export class Storage implements IStorage {
       this.assertPath( path = this.resolvePath( path ) );
       return statSync( path );
     }, `Failed to stat ${ path }` ) ?? false;
+  }
+
+  public statMedia ( path: string ) : Stats | false {
+    return log.catch( () => {
+      this.assertMediaPath( path = this.resolveMediaPath( path ) );
+      return statSync( path );
+    }, `Failed to stat media ${ path }` ) ?? false;
   }
 
   // --- scan dir ---
@@ -131,6 +159,19 @@ export class Storage implements IStorage {
 
   public scanDirs ( path: string, exclude?: string[] ) : string[] {
     return this.scanDir( path, [], exclude, 'dirs' );
+  }
+
+  public scanMedia ( path: string, ext: string[] = [ 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp' ], exclude?: string[] ) : string[] {
+    return log.catch( () => {
+      this.assertMediaPath( path = this.resolveMediaPath( path ) );
+
+      return readdirSync( path, { withFileTypes: true } ).filter( entry => {
+        const name = entry.name;
+
+        if ( exclude?.includes( name ) ) return false;
+        return entry.isFile() && ext.includes( extname( name ).slice( 1 ).toLowerCase() );
+      } ).map( entry => entry.name );
+    }, `Failed to scan media ${ path }` ) ?? [];
   }
 
   // --- JSON files ---
@@ -202,10 +243,52 @@ export class Storage implements IStorage {
         else throw new Error( `Destination path ${ to } already exists` );
       }
 
+      this.ensurePath( to );
       renameSync( from, to );
+
       log.debug( `Moved ${ from } to ${ to }` );
       return true;
     }, `Failed to move ${ from } to ${ to }` ) ?? false;
+  }
+
+  // --- media file operations ---
+
+  public writeMedia ( path: string, content: Buffer ) : boolean {
+    return log.catch( () => {
+      this.ensureMediaPath( path = this.resolveMediaPath( path ) );
+
+      writeFileSync( path, content );
+      log.debug( `Wrote media to ${ path }` );
+
+      return true;
+    }, `Failed to write media ${ path }` ) ?? false;
+  }
+
+  public removeMedia ( path: string, force: boolean = true ) : boolean {
+    return log.catch( () => {
+      this.assertMediaPath( path = this.resolveMediaPath( path ) );
+
+      rmSync( path, { recursive: true, force } );
+      log.debug( `Removed media ${ path }` );
+      return true;
+    }, `Failed to remove media ${ path }` ) ?? false;
+  }
+
+  public moveMedia ( from: string, to: string, force: boolean = false ) : boolean {
+    return log.catch( () => {
+      this.assertMediaPath( from = this.resolveMediaPath( from ) );
+
+      if ( this.mediaExists( to = this.resolveMediaPath( to ) ) ) {
+        if ( force ) this.removeMedia( to, true );
+        else throw new Error( `Destination path ${ to } already exists` );
+      }
+
+      this.ensureMediaPath( to );
+      renameSync( from, to );
+
+      log.debug( `Moved media from ${ from } to ${ to }` );
+      return true;
+    }, `Failed to move media ${ from } to ${ to }` ) ?? false;
   }
 
   // --- instantiate ---

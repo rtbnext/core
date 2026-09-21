@@ -22,6 +22,8 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
+      const { skipRanking, skipWiki } = this.options;
+
       const method = this.options.replace ? 'setData' : 'updateData';
       const batch = this.options.profiles?.length ? this.options.profiles
         : ProfileJob.queue.nextUri( Job.config.fetch.rateLimit.batchSize );
@@ -39,22 +41,28 @@ export class ProfileJob extends Job< TProfileJobOptions > {
 
         // --- parse raw profile data ---
         const parsed = new ProfileParser( raw.data );
-        const uri = parsed.uri();
-        const id = parsed.id();
+        const uri = parsed.uri(), id = parsed.id();
         const profileData = Profile.factory( {
           uri, id, info: parsed.info(), bio: parsed.bio(),
           related: parsed.related(), media: parsed.media()
         } );
 
-        // --- enrich profile data with ranking and wiki ---
-        if ( ! Parser.boolean( this.options.skipRanking ) )
-          profileData.ranking = Ranking.generateProfileRanking( parsed.sortedLists(), profileData.ranking );
-
-        if ( ! Parser.boolean( this.options.skipWiki ) )
-          profileData.wiki = await Wiki.fromProfileData( profileData );
-
         // --- process profile using ProfileManager ---
-        const res = ProfileManager.process( uri, id, profileData, method, true, true );
+        const res = await ProfileManager.process(
+          uri, id, profileData, method, true, true, async ( { lookup, profileData } ) => {
+            const existing = lookup.profile ? lookup.profile.getData() : undefined;
+            
+            // --- enrich profile data with ranking ---
+            if ( ! skipRanking ) profileData.ranking = Ranking.generateProfileRanking(
+              parsed.sortedLists(), existing?.ranking
+            );
+
+            // --- enrich profile data with wiki ---
+            if ( ! skipWiki ) profileData.wiki = await Wiki.updateWiki(
+              { ...profileData, wiki: existing?.wiki }, this.options.updateImage
+            );
+          }
+        );
 
         if ( ! res || ! res.success ) {
           this.log( `Failed to process profile with uri ${ uri }`, profileData, 'warn' );
@@ -88,6 +96,9 @@ export class ProfileJob extends Job< TProfileJobOptions > {
     }, {
       name: '--skip-wiki',
       desc: 'Skip wiki data enrichment'
+    }, {
+      name: '--update-image',
+      desc: 'Update the image from the current Wikipedia page'
     } ]
   } as const;
 }

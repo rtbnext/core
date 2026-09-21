@@ -71,7 +71,7 @@ export class ListJob extends Job< TListJobOptions > {
       let profileData = Profile.factory( { uri, id, info: parsed.info(), bio: parsed.bio() } );
 
       // --- process profile using ProfileManager ---
-      const { profile, action } = ProfileManager.process( uri, id, profileData, method ) || {};
+      const { profile, action } = await ProfileManager.process( uri, id, profileData, method ) || {};
 
       if ( ! profile || ! action ) this.log( `Failed to process profile for ${ uri }`, undefined, 'warn' );
       else {

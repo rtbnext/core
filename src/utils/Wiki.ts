@@ -1,7 +1,9 @@
 import type { TImage, TWiki } from '@rtbnext/schema/src/base/generic';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+import { CmpStr, type CmpStrResult } from 'cmpstr';
 
 import { Fetch } from '@/core/Fetch';
+import { Image } from '@/core/Image';
 import { log } from '@/core/Logger';
 import { Parser } from '@/parser/Parser';
 import type { TCommonsResponse, TWikidataResponse, TWikidataResponseItem, TWikipediaResponse } from '@/type/response';
@@ -9,46 +11,61 @@ import type { TWikidata } from '@/type/wiki';
 
 
 export class Wiki {
+  private static readonly cmp = CmpStr.create( { metric: 'dice', safeEmpty: true, flags: 'i' } );
   private static readonly fetch = Fetch.getInstance();
+  private static readonly image = Image.getInstance();
+
+  private static readonly threshold = 0.85;
+  private static readonly wdItems = 25;
+
+  // --- helper ---
 
   private static scoreWDItem ( item: TWikidataResponseItem, data: Partial< TProfileData > ) : number {
-    const { name: { shortName } = {}, gender, birthDate, citizenship } = data.info ?? {};
+    const { name: { fullName, shortName, firstName, lastName } = {}, gender, birthDate, citizenship } = data.info ?? {};
     let score = 0;
 
     // --- name matching ---
-    if ( item.itemLabel.value.trim() === shortName ) score += 0.2;
-    else if ( item.itemLabel.xmlLang === 'en' ) score += 0.1;
-    else score += 0.1;
+    const name = item.itemLabel.value.trim().toLowerCase();
+    const test = [ fullName, shortName ].filter( Boolean ) as string[];
 
-    // --- birthdate matching ---
-    if ( birthDate && item.birthdate?.value.startsWith( birthDate ) ) score += 0.2;
+    if ( name === fullName?.toLowerCase() || name === shortName?.toLowerCase() ) score += 0.35;
+    else if ( Wiki.cmp.match< CmpStrResult[] >( test, name, 0.8 ).length > 0 ) score += 0.2;
+    else if (
+      ( firstName && name.includes( firstName.toLowerCase() ) ) ||
+      ( lastName && name.includes( lastName.toLowerCase() ) )
+    ) score += 0.1;
+
+    // --- birth date matching ---
+    if ( birthDate && item.birthdate?.value.startsWith( birthDate ) ) score += 0.25;
     else if ( birthDate && item.birthdate?.value.startsWith( birthDate.substring( 0, 4 ) ) ) score += 0.1;
-    else if ( birthDate && item.birthdate?.value ) score -= 0.1;
+    else if ( birthDate && item.birthdate?.value ) score -= 0.2;
 
     // --- gender matching ---
-    if ( gender && item.gender?.value.endsWith( gender === 'm' ? 'Q6581097' : gender === 'f' ? 'Q6581072' : '-' ) ) score += 0.1;
-    else if ( score && item.gender?.value ) score -= 0.2;
+    if ( gender && item.gender?.value.endsWith( gender === 'm' ? 'Q6581097' : gender === 'f' ? 'Q6581072' : '-' ) ) score += 0.15;
+    else if ( gender && item.gender?.value ) score -= 0.5;
 
     // --- citizenship matching ---
-    if ( citizenship && item.iso2?.value === citizenship.toUpperCase() ) score += 0.2;
+    if ( citizenship && item.iso2?.value === citizenship.toUpperCase() ) score += 0.15;
 
-    // --- media matching ---
-    if ( item.article ) score += 0.1;
+    // --- article / image ---
+    if ( item.article ) score += 0.05;
     if ( item.image ) score += 0.05;
 
-    // --- occupation matching ---
-    if ( [ 'Q131524', 'Q557880', 'Q911554', 'Q2462658' ].some( e => item.occupation?.value.endsWith( e ) ) ) score += 0.2;
+    // --- occupation ---
+    if ( [ 'Q131524', 'Q557880', 'Q911554', 'Q2462658' ].some( e => item.occupation?.value.endsWith( e ) ) ) score += 0.25;
     else if ( item.occupation ) score += 0.05;
 
-    // --- economic matching ---
-    if ( item.employer ?? item.ownerOf ) score += 0.1;
-    if ( item.netWorth ) score += 0.2;
+    // --- economic relation ---
+    if ( item.employer ?? item.ownerOf ) score += 0.2;
+    if ( item.netWorth ) score += 0.25;
 
-    return Math.min( 1, Math.max( 0, score ) );
+    return Math.max( 0, score );
   }
 
+  // --- query data ---
+
   public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {
-    log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName }` );
+    log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
 
     return await log.catchAsync( async () => {
       const shortName = data.info?.name?.shortName;
@@ -78,7 +95,7 @@ export class Wiki {
           OPTIONAL { ?item wdt:P2218 ?netWorth . }
           SERVICE wikibase:label { bd:serviceParam wikibase:language "en,de" . }
         }
-        LIMIT 20
+        LIMIT ${ Wiki.wdItems }
       `;
 
       const res = await Wiki.fetch.wikidata< TWikidataResponse >( sparql );
@@ -86,12 +103,10 @@ export class Wiki {
 
       for ( const item of res.data?.results.bindings ?? [] ) {
         const score = Wiki.scoreWDItem( item, data );
-
         if ( ! best || score > best.score ) best = { score, item };
-        if ( best.score === 1 ) break;
       }
 
-      if ( ! best || best.score < 0.65 ) throw new Error( 'No suitable Wikidata item found' );
+      if ( ! best || best.score < Wiki.threshold ) throw new Error( 'No suitable Wikidata item found' );
       log.debug( `Best Wikidata item for ${ shortName } has score: ${ best.score }` );
 
       return Parser.container< TWikidata >( {
@@ -103,7 +118,7 @@ export class Wiki {
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 
-  public static async queryCommonsImage ( title: string ) : Promise< TImage | undefined > {
+  public static async queryCommonsImage ( uri: string, title: string ) : Promise< TImage | undefined > {
     log.debug( `Querying Wikimedia Commons image: ${ title }` );
 
     return await log.catchAsync( async () => {
@@ -116,13 +131,26 @@ export class Wiki {
       if ( ! info ) throw new Error( `No image info found for: ${ title }` );
 
       log.debug( `Wikimedia Commons image info received for: ${ title }` );
-      const meta = info.extmetadata ?? {};
+
+      const file = await Wiki.fetch.download( info.url );
+      if ( ! file.success || ! file.data ) throw new Error( `Failed to download image: ${ title }` );
+
       const thumbUrl = info.thumburl ?? Object.values( info.responsiveUrls ?? {} ).at( 0 );
+      const thumb = thumbUrl ? await Wiki.fetch.download( thumbUrl ) : undefined;
+
+      if ( thumbUrl && ( ! thumb?.success || ! thumb.data ) )
+        throw new Error( `Failed to download image thumbnail: ${ title }` );
+
+      if ( ! Wiki.image.save( uri, { buffer: file.data, filename: info.url },
+        thumb?.data ? { buffer: thumb.data, filename: thumbUrl! } : undefined
+      ) ) throw new Error( `Failed to save image: ${ title }` );
+
+      const meta = info.extmetadata ?? {};
       const dateTime = meta.DateTimeOriginal?.value ?? meta.DateTime?.value;
       const credits = Parser.list( [
-          meta.Attribution?.value ?? meta.Artist?.value ?? meta.Credit?.value,
-          meta.LicenseShortName?.value ?? meta.UsageTerms?.value,
-          'via Wikimedia Commons'
+        meta.Attribution?.value ?? meta.Artist?.value ?? meta.Credit?.value,
+        meta.LicenseShortName?.value ?? meta.UsageTerms?.value,
+        'via Wikimedia Commons'
       ] ).join( ', ' );
 
       return Parser.container< TImage >( {
@@ -133,56 +161,85 @@ export class Wiki {
         date: { value: dateTime, type: 'date', args: [ 'iso' ] },
         credits: { value: credits, type: 'text' }
       } );
-    }, `Failed to query Wikimedia Commons image: ${ title }` );
+    }, `Failed to load Wikimedia Commons image: ${ title }` );
   }
 
-  public static async queryWikiPage (
-    title: string, qid?: string, image?: TImage, confidence: number = 1
-  ) : Promise< TWiki | undefined > {
-    log.debug( `Querying Wikipedia page: ${ title }` );
+  public static async queryWikiPage ( article: string | number ) : Promise< {
+    wiki: Partial< TWiki >, image?: string
+  } | undefined > {
+    log.debug( `Querying Wikipedia page: ${ article }` );
 
     return await log.catchAsync( async () => {
       const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
-        action: 'query', prop: 'extracts|info|pageprops|pageimages',
-        titles: title, redirects: 1, exintro: 1, explaintext: 1,
-        exsectionformat: 'plain', piprop: 'name', pilimit: 1
+        action: 'query', prop: 'extracts|info|pageprops|pageimages', redirects: 1, exintro: 1,
+        explaintext: 1, exsectionformat: 'plain', inprop: 'url', piprop: 'name', pilimit: 1,
+        [ typeof article === 'number' ? 'pageids' : 'titles' ]: article
       } );
 
       if ( ! res?.success || ! res.data || ! res.data.query.pages.length )
-        throw new Error( `No Wikipedia page found for: ${ title }` );
+        throw new Error( `No Wikipedia page found for: ${ article }` );
 
-      log.debug( `Wikipedia page info received for: ${ title }` );
+      log.debug( `Wikipedia page info received for: ${ article }` );
       const raw = res.data.query.pages[ 0 ];
 
-      if ( ! image && raw.pageimage ) {
-        log.debug( `Querying page image from Wikimedia Commons: ${ raw.pageimage }` );
-        image = await Wiki.queryCommonsImage( raw.pageimage );
-      }
-
-      return { image, ...Parser.container< TWiki >( {
-        uri: { value: title, type: 'string' },
+      return { wiki: Parser.container< Partial< TWiki > >( {
+        uri: { value: raw.canonicalurl, type: 'string' },
         pageId: { value: raw.pageid, type: 'number' },
         refId: { value: raw.lastrevid, type: 'number' },
-        confidence: { value: confidence, type: 'number', args: [ 3 ] },
         name: { value: raw.title, type: 'string' },
         lastModified: { value: raw.touched, type: 'date', args: [ 'iso' ] },
         summary: { value: raw.extract ?? '', type: 'list', args: [ 'text', '\n' ], strict: false },
         sortKey: { value: raw.pageprops?.[ 'defaultsort' ], type: 'string' },
-        wikidata: { value: qid ?? raw.pageprops?.[ 'wikibase_item' ], type: 'string' },
+        wikidata: { value: raw.pageprops?.[ 'wikibase_item' ], type: 'string' },
         desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], type: 'text' }
-      } ) };
-    }, `Failed to query Wikipedia page: ${ title }` );
+      } ), image: raw.pageimage };
+    }, `Failed to query Wikipedia page: ${ article }` );
   }
 
-  public static async fromProfileData ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
-    const { qid, confidence, article, image } = await Wiki.queryWikidata( data ) ?? {};
-    log.debug(
-      `Query Wikidata for ${ data.info?.name?.shortName ?? 'unknown' }: ${ qid || 'no match' } ` +
-      `(score: ${ confidence || 0 })`
-    );
+  // --- update wiki data ---
 
-    return article ? await Wiki.queryWikiPage( article, qid,
-      image ? await Wiki.queryCommonsImage( image ) : undefined
-    ) : undefined;
+  public static async fromProfileData ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
+    return await log.catchAsync( async () => {
+      const wikidata = await Wiki.queryWikidata( data );
+      if ( ! wikidata?.article ) throw new Error( 'No Wikipedia article linked' );
+
+      log.debug(
+        `Query Wikidata for ${ data.info?.name?.shortName ?? 'unknown' }: ` +
+        `${ wikidata?.qid || 'no match' } (score: ${ wikidata?.confidence || 0 })`
+      );
+
+      const page = await Wiki.queryWikiPage( wikidata.article );
+      if ( ! page ) throw new Error( 'No Wikipedia page found' );
+
+      const imageTitle = wikidata.image ?? page.image;
+      const image = imageTitle ? await Wiki.queryCommonsImage( data.uri!, imageTitle ) : undefined;
+
+      return {
+        ...page.wiki as TWiki, ...( image ? { image } : {} ),
+        confidence: wikidata.confidence, wikidata: wikidata.qid
+      };
+    }, `Failed to get Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
+  }
+
+  public static async updateWiki ( data: Partial< TProfileData >, updateImage: boolean = false ) : Promise< TWiki | undefined > {
+    return await log.catchAsync( async () => {
+      if ( ! data.wiki ) return await Wiki.fromProfileData( data );
+
+      const page = await Wiki.queryWikiPage( data.wiki.pageId );
+      if ( ! page ) throw new Error( 'No Wikipedia page found' );
+
+      const image = ( updateImage && page.image ) ? await Wiki.queryCommonsImage( data.uri!, page.image ) : undefined;
+      return { ...data.wiki, ...page.wiki, ...( image ? { image } : {} ) };
+    }, `Failed to update Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
+  }
+
+  public static async assign ( data: Partial< TProfileData >, title: string ) : Promise< TWiki | undefined > {
+    return await log.catchAsync( async () => {
+      const page = await Wiki.queryWikiPage( title );
+      if ( ! page ) throw new Error( 'No Wikipedia page found' );
+
+      const image = page.image ? await Wiki.queryCommonsImage( data.uri!, page.image ) : undefined;
+      return { ...page.wiki as TWiki, confidence: 1, ...( image ? { image } : {} ) };
+    }, `Failed to assign ${ title } to: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }

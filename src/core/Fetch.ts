@@ -16,7 +16,7 @@ export class Fetch implements IFetch {
   private static instance: IFetch;
 
   private readonly config: TFetchConfig;
-  private readonly wikiQuery = { format: 'json', formatversion: 2 };
+  private readonly wikiQuery = { format: 'json', utf8: 1, formatversion: 2 };
   private lastRequest: number = 0;
   private httpClient: AxiosInstance;
 
@@ -73,7 +73,9 @@ export class Fetch implements IFetch {
     };
   }
 
-  private async fetch < T > ( url: string, method: TFetchMethod = 'get', headers?: THeader ) : Promise< TResponse< T > > {
+  private async fetch < T > (
+    url: string, method: TFetchMethod = 'get', headers?: THeader, responseType?: 'json' | 'arraybuffer'
+  ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
     headers = { ...this.config.headers, ...headers };
 
@@ -82,7 +84,7 @@ export class Fetch implements IFetch {
       let retries = 0;
 
       do {
-        res = await this.applyRateLimit( () => this.httpClient[ method ]< T >( url, { headers } ) );
+        res = await this.applyRateLimit( () => this.httpClient[ method ]< T >( url, { headers, responseType } ) );
         if ( res.status === 200 && res.data ) break;
 
         log.warn( `Request failed with status: ${ res.status }. Retrying ...` );
@@ -103,8 +105,10 @@ export class Fetch implements IFetch {
 
   // --- fetch methods ---
 
-  public async single < T > ( url: string, method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T > > {
-    return this.fetch< T >( url, method, header );
+  public async single < T > (
+    url: string, method: TFetchMethod = 'get', header?: THeader, responseType?: 'json' | 'arraybuffer'
+  ) : Promise< TResponse< T > > {
+    return this.fetch< T >( url, method, header, responseType );
   }
 
   public async batch < T > ( urls: string[], method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T >[] > {
@@ -177,6 +181,13 @@ export class Fetch implements IFetch {
     return this.single< T >( this.prepQuery( this.config.endpoints.commons, {
       query: Utils.queryStr( { ...this.wikiQuery, ...query } )
     } ), 'get', this.useApiUserAgent() );
+  }
+
+  public async download ( uri: string ) : Promise< TResponse< Buffer > > {
+    const res = await this.single< ArrayBuffer >( uri, 'get', { Accept: '*/*' }, 'arraybuffer' );
+
+    if ( ! res.success || ! res.data ) return this.retErr( res, `Failed to download: ${ uri }` );
+    return { ...res, data: Buffer.from( res.data ) };
   }
 
   // --- instantiate ---

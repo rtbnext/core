@@ -21,6 +21,11 @@ export type TAnnualJobOptions = TJobClsOptions< {
   profiles?: string[];
 } >;
 
+export type TImageJobOptions = TJobClsOptions< {
+  remove?: string[];
+  cleanup?: boolean;
+} >;
+
 export type TIndexJobOptions = TJobClsOptions< {
   targets?: ( 'all' | 'filter' | 'mover' | 'list' )[];
 } >;
@@ -59,6 +64,7 @@ export type TProfileJobOptions = TJobClsOptions< {
   replace?: boolean;
   skipRanking?: boolean;
   skipWiki?: boolean;
+  updateImage?: boolean;
 } >;
 
 export type TQueueJobOptions = TJobClsOptions< {
@@ -88,6 +94,10 @@ export type TTop10JobOptions = TJobClsOptions< {
 export type TWikiJobOptions = TJobClsOptions< {
   profile: string;
   assign?: string;
+  remove?: boolean;
+  updateImage?: boolean;
+  image?: string;
+  removeImage?: boolean;
 } >;
 
 export type TJobOption = {
