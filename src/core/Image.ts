@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import { Storage } from '@/core/Storage';
 import type { IImage } from '@/interface/image';
 import type { TImageMedia } from '@/type/image';
@@ -12,6 +14,12 @@ export class Image implements IImage {
 
   private constructor () {
     this.media = Image.storage.readJSON< TImageMedia >( 'profile/media.json' ) || {};
+  }
+
+  // --- helper ---
+
+  private hash ( buffer: Buffer ) : string {
+    return createHash( 'sha256' ).update( buffer ).digest( 'hex' ).slice( 0, Image.hashLength );
   }
 
   // --- instantiate ---
