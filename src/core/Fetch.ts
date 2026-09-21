@@ -183,17 +183,11 @@ export class Fetch implements IFetch {
     } ), 'get', this.useApiUserAgent() );
   }
 
-  public async download ( uri: string ) : Promise< Buffer | undefined > {
-    return log.catchAsync( async () => {
-      log.debug( `Downloading URI: ${ uri }` );
+  public async download ( uri: string ) : Promise< TResponse< Buffer > > {
+    const res = await this.single< ArrayBuffer >( uri, 'get', { Accept: '*/*' }, 'arraybuffer' );
 
-      const res = await this.httpClient.get< ArrayBuffer >( uri, {
-        headers: { ...this.config.headers, Accept: '*/*' },
-        responseType: 'arraybuffer'
-      } );
-
-      return Buffer.from( res.data );
-    }, `Failed to download URI: ${ uri }` );
+    if ( ! res.success || ! res.data ) return this.retErr( res, `Failed to download: ${ uri }` );
+    return { ...res, data: Buffer.from( res.data ) };
   }
 
   // --- instantiate ---
