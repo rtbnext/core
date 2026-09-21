@@ -21,6 +21,11 @@ export type TAnnualJobOptions = TJobClsOptions< {
   profiles?: string[];
 } >;
 
+export type TImageJobOptions = TJobClsOptions< {
+  remove?: string[];
+  cleanup?: boolean;
+} >;
+
 export type TIndexJobOptions = TJobClsOptions< {
   targets?: ( 'all' | 'filter' | 'mover' | 'list' )[];
 } >;
