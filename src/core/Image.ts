@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { extname } from 'node:path';
 
 import { Storage } from '@/core/Storage';
 import type { IImage } from '@/interface/image';
@@ -23,8 +24,8 @@ export class Image implements IImage {
     return createHash( 'sha256' ).update( buffer ).digest( 'hex' ).slice( 0, Image.hashLength );
   }
 
-  private filename ( buffer: Buffer, ext: string ) : string {
-    return `${ this.hash( buffer ) }.${ ext.toLowerCase() }`;
+  private filename ( buffer: Buffer, name: string ) : string {
+    return `${ this.hash( buffer ) }${ extname( name ).toLowerCase() }`;
   }
 
   private saveMedia ( buffer: Buffer, filename: string ) : boolean {
