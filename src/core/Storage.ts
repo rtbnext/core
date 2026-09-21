@@ -261,6 +261,23 @@ export class Storage implements IStorage {
     }, `Failed to remove media ${ path }` ) ?? false;
   }
 
+  public moveMedia ( from: string, to: string, force: boolean = false ) : boolean {
+    return log.catch( () => {
+      this.assertMediaPath( from = this.resolveMediaPath( from ) );
+
+      if ( this.mediaExists( to = this.resolveMediaPath( to ) ) ) {
+        if ( force ) this.removeMedia( to, true );
+        else throw new Error( `Destination path ${ to } already exists` );
+      }
+
+      this.ensureMediaPath( to );
+      renameSync( from, to );
+
+      log.debug( `Moved media from ${ from } to ${ to }` );
+      return true;
+    }, `Failed to move media ${ from } to ${ to }` ) ?? false;
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IStorage {
