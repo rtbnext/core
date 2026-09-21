@@ -60,7 +60,7 @@ export class Wiki {
   }
 
   public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {
-    log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName }` );
+    log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
 
     return await log.catchAsync( async () => {
       const shortName = data.info?.name?.shortName;
