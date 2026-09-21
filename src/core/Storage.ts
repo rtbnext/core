@@ -16,11 +16,14 @@ export class Storage implements IStorage {
 
   private readonly config: TStorageConfig;
   private readonly path: string;
+  private readonly mediaPath: string;
 
-   private constructor () {
+  private constructor () {
     const { root, storage } = Config.getInstance();
     this.config = storage;
+
     this.path = join( root, this.config.baseDir );
+    this.mediaPath = join( root, this.config.mediaDir );
 
     this.initDB();
   }
@@ -28,6 +31,7 @@ export class Storage implements IStorage {
   private initDB () : void {
     log.debug( `Initializing storage at ${ this.path }` );
     this.ensurePath( this.path );
+    this.ensurePath( this.mediaPath );
 
     [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue', 'system' ]
       .forEach( path => this.ensurePath( path, true ) );
