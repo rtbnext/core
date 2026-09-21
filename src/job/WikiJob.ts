@@ -76,7 +76,7 @@ export class WikiJob extends Job< TWikiJobOptions > {
       else if ( this.options.remove ) this.remove( profile );
       else await this.update( profile );
 
-      if ( this.options.image ) this.assignImage( profile );
+      if ( this.options.image ) await this.assignImage( profile );
       else if ( this.options.removeImage ) this.removeImage( profile );
     } );
   }
