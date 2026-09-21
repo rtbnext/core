@@ -4,6 +4,7 @@ import { CmpStr, type CmpStrResult } from 'cmpstr';
 import { Fetch } from '@/core/Fetch';
 import { Image } from '@/core/Image';
 import { log } from '@/core/Logger';
+import { Parser } from '@/parser/Parser';
 import type { TWikidataResponse, TWikidataResponseItem } from '@/type/response';
 import type { TWikidata } from '@/type/wiki';
 
@@ -102,6 +103,13 @@ export class Wiki {
 
       if ( ! best || best.score < Wiki.threshold ) throw new Error( 'No suitable Wikidata item found' );
       log.debug( `Best Wikidata item for ${ shortName } has score: ${ best.score }` );
+
+      return Parser.container< TWikidata >( {
+        qid: { value: best.item.item.value.split( '/' ).pop()!, type: 'string' },
+        confidence: { value: best.score, type: 'number', args: [ 3 ] },
+        article: { value: best.item.article?.value.split( '/' ).pop(), type: 'decodeURI' },
+        image: { value: best.item.image?.value.split( '/' ).pop(), type: 'decodeURI' }
+      } );
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
