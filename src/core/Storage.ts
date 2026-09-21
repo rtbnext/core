@@ -230,7 +230,9 @@ export class Storage implements IStorage {
         else throw new Error( `Destination path ${ to } already exists` );
       }
 
+      this.ensurePath( to );
       renameSync( from, to );
+
       log.debug( `Moved ${ from } to ${ to }` );
       return true;
     }, `Failed to move ${ from } to ${ to }` ) ?? false;
