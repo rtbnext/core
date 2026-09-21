@@ -5,7 +5,7 @@ export interface IImageMedia {
 
 export type TImageMedia = Record< string, IImageMedia >;
 
-export interface TImage {
+export interface TImageProps {
   buffer: Buffer;
   filename: string;
 }

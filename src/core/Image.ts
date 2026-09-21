@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 
 import { Storage } from '@/core/Storage';
 import type { IImage } from '@/interface/image';
-import type { IImageMedia, TImageMedia } from '@/type/image';
+import type { IImageMedia, TImageMedia, TImageProps } from '@/type/image';
 
 
 export class Image implements IImage {
@@ -39,6 +39,10 @@ export class Image implements IImage {
 
   public get ( uri: string ) : IImageMedia | undefined {
     return this.media[ uri ];
+  }
+
+  public save ( uri: string, file: TImageProps, thumb?: TImageProps ) : boolean {
+    return false;
   }
 
   // --- instantiate ---
