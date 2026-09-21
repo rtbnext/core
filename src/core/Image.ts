@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 
 import { Storage } from '@/core/Storage';
 import type { IImage } from '@/interface/image';
-import type { TImageMedia } from '@/type/image';
+import type { IImageMedia, TImageMedia } from '@/type/image';
 
 
 export class Image implements IImage {
@@ -33,6 +33,12 @@ export class Image implements IImage {
 
   private saveIndex () : boolean {
     return Image.storage.writeJSON( Image.mediaFile, this.media );
+  }
+
+  // --- media ---
+
+  public get ( uri: string ) : IImageMedia | undefined {
+    return this.media[ uri ];
   }
 
   // --- instantiate ---
