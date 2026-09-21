@@ -75,7 +75,16 @@ export class Image implements IImage {
   }
 
   public clean () : boolean {
-    return false;
+    return log.catch( () => {
+      const referenced = new Set( Object.values( this.media ).flatMap(
+        media => [ media.file, ...( media.thumb ? [ media.thumb ] : [] ) ]
+      ) );
+
+      for ( const file of Image.storage.scanMedia( '' ) ) if ( ! referenced.has( file ) )
+        Image.storage.removeMedia( file );
+
+      return true;
+    }, 'Failed to clean media storage' ) ?? false;
   }
 
   // --- instantiate ---
