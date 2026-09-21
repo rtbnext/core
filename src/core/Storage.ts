@@ -99,6 +99,10 @@ export class Storage implements IStorage {
     return existsSync( this.resolvePath( path ) );
   }
 
+  public mediaExists ( path: string ) : boolean {
+    return existsSync( this.resolveMediaPath( path ) );
+  }
+
   public assertPath ( path: string ) : void | never {
     if ( ! this.exists( path ) ) throw new Error( `Path ${ path } does not exist` );
   }
