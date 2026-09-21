@@ -105,8 +105,10 @@ export class Fetch implements IFetch {
 
   // --- fetch methods ---
 
-  public async single < T > ( url: string, method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T > > {
-    return this.fetch< T >( url, method, header );
+  public async single < T > (
+    url: string, method: TFetchMethod = 'get', header?: THeader, responseType?: 'json' | 'arraybuffer'
+  ) : Promise< TResponse< T > > {
+    return this.fetch< T >( url, method, header, responseType );
   }
 
   public async batch < T > ( urls: string[], method: TFetchMethod = 'get', header?: THeader ) : Promise< TResponse< T >[] > {
