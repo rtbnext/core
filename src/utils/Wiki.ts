@@ -232,4 +232,6 @@ export class Wiki {
       return { ...data.wiki, ...page.wiki, ...( image ? { image } : {} ) };
     }, `Failed to update Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
+
+  public static async assign ( data: Partial< TProfileData >, title: string ) : Promise< TWiki | undefined > {}
 }
