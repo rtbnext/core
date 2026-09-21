@@ -10,7 +10,17 @@ export class WikiJob extends Job< TWikiJobOptions > {
 
   // --- job runner ---
 
-  private async remove ( profile: IProfile ) : Promise< void > {
+  private async assign ( profile: IProfile, title: string ) : Promise< void > {
+    this.log( `Assigning wiki page "${ title }" to profile: ${ profile.getUri() }` );
+
+    const wiki = await Wiki.assign( profile.getData(), title );
+    if ( ! wiki ) throw new Error( `Wiki page not found: ${ title }` );
+
+    profile.updateData( { wiki } );
+    profile.save();
+  }
+
+  private remove ( profile: IProfile ) : void {
     this.log( `Removing wiki assignment from profile: ${ profile.getUri() }` );
 
     const data = profile.getData();
@@ -25,7 +35,8 @@ export class WikiJob extends Job< TWikiJobOptions > {
       const profile = Profile.find( this.options.profile );
       if ( ! profile ) throw new Error( `Profile not found: ${ this.options.profile }` );
 
-      if ( this.options.assign ) Wiki.assign( profile.getData(), this.options.assign );
+      if ( this.options.assign ) await this.assign( profile, this.options.assign );
+      if ( this.options.remove ) this.remove( profile );
     } );
   }
 
