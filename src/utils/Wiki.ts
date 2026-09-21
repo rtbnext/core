@@ -25,5 +25,9 @@ export class Wiki {
     if ( birthDate && item.birthdate?.value.startsWith( birthDate ) ) score += 0.25;
     else if ( birthDate && item.birthdate?.value.startsWith( birthDate.substring( 0, 4 ) ) ) score += 0.1;
     else if ( birthDate && item.birthdate?.value ) score -= 0.5;
+
+    // --- gender matching ---
+    if ( gender && item.gender?.value.endsWith( gender === 'm' ? 'Q6581097' : gender === 'f' ? 'Q6581072' : '-' ) ) score += 0.15;
+    else if ( gender && item.gender?.value ) return 0;
   }
 }
