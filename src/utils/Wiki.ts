@@ -125,6 +125,15 @@ export class Wiki {
 
       const info = res.data?.query.pages?.[ 0 ]?.imageinfo?.[ 0 ];
       if ( ! info ) throw new Error( `No image info found for: ${ title }` );
+
+      const meta = info.extmetadata ?? {};
+      const thumbUrl = info.thumburl ?? Object.values( info.responsiveUrls ?? {} ).at( 0 );
+      const dateTime = meta.DateTimeOriginal?.value ?? meta.DateTime?.value;
+      const credits = Parser.list( [
+        meta.Attribution?.value ?? meta.Artist?.value ?? meta.Credit?.value,
+        meta.LicenseShortName?.value ?? meta.UsageTerms?.value,
+        'via Wikimedia Commons'
+      ] ).join( ', ' );
     }, `Failed to load Wikimedia Commons image: ${ title }` ) ?? undefined;
   }
 }
