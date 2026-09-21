@@ -122,6 +122,9 @@ export class Wiki {
         action: 'query', titles: `File:${ title }`, prop: 'imageinfo', redirects: 1,
         iiprop: 'url|extmetadata', iiurlwidth: 400
       } );
+
+      const info = res.data?.query.pages?.[ 0 ]?.imageinfo?.[ 0 ];
+      if ( ! info ) throw new Error( `No image info found for: ${ title }` );
     }, `Failed to load Wikimedia Commons image: ${ title }` ) ?? undefined;
   }
 }
