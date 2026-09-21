@@ -200,6 +200,11 @@ export class Wiki {
         `Query Wikidata for ${ data.info?.name?.shortName ?? 'unknown' }: ` +
         `${ wikidata?.qid || 'no match' } (score: ${ wikidata?.confidence || 0 })`
       );
+
+      if ( ! wikidata?.article ) throw new Error( 'No Wikipedia article linked' );
+
+      const page = await Wiki.queryWikiPage( wikidata.article );
+      if ( ! page ) throw new Error( 'No Wikipedia page found' );
     }, `Failed to get Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
