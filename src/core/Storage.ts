@@ -161,6 +161,19 @@ export class Storage implements IStorage {
     return this.scanDir( path, [], exclude, 'dirs' );
   }
 
+  public scanMedia ( path: string, ext: string[] = [ 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp' ], exclude?: string[] ) : string[] {
+    return log.catch( () => {
+      this.assertMediaPath( path = this.resolveMediaPath( path ) );
+
+      return readdirSync( path, { withFileTypes: true } ).filter( entry => {
+        const name = entry.name;
+
+        if ( exclude?.includes( name ) ) return false;
+        return entry.isFile() && ext.includes( extname( name ).slice( 1 ).toLowerCase() );
+      } ).map( entry => entry.name );
+    }, `Failed to scan media ${ path }` ) ?? [];
+  }
+
   // --- JSON files ---
 
   public readJSON < T extends object > ( path: string ) : T | false {
