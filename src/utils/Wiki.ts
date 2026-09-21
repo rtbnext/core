@@ -4,6 +4,7 @@ import { CmpStr, type CmpStrResult } from 'cmpstr';
 import { Fetch } from '@/core/Fetch';
 import { Image } from '@/core/Image';
 import type { TWikidataResponseItem } from '@/type/response';
+import type { TWikidata } from '@/type/wiki';
 
 
 export class Wiki {
@@ -54,4 +55,6 @@ export class Wiki {
 
     return Math.max( 0, score );
   }
+
+  public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {}
 }
