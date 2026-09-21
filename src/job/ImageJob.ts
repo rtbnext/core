@@ -16,7 +16,7 @@ export class ImageJob extends Job< TImageJobOptions > {
       for ( const uri of this.options.remove ?? [] ) ImageJob.image.remove( uri );
       if ( this.options.cleanup ) ImageJob.image.clean();
     } );
-  };
+  }
 
   // --- command definition ---
 
