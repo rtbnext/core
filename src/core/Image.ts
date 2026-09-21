@@ -48,7 +48,16 @@ export class Image implements IImage {
   }
 
   public save ( uri: string, file: TImageProps, thumb?: TImageProps ) : boolean {
-    return false;
+    return log.catch( () => {
+      const media: IImageMedia = { file: this.filename( file.buffer, file.filename ) };
+      if ( thumb ) media.thumb = this.filename( thumb.buffer, thumb.filename );
+
+      if ( ! this.saveMedia( file.buffer, media.file ) ) return false;
+      if ( thumb && media.thumb && ! this.saveMedia( thumb.buffer, media.thumb ) ) return false;
+
+      this.media[ uri ] = media;
+      return this.saveIndex();
+    }, `Failed to save media for ${ uri }` ) ?? false;
   }
 
   public remove ( uri: string ) : boolean {
