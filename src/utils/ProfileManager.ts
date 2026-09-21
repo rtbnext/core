@@ -4,7 +4,7 @@ import { log } from '@/core/Logger';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import { ProfileIndex } from '@/model/ProfileIndex';
-import type { TProfileLookupResult, TProfileOperation, TProfileProcessResult, TProfileUpdateMode } from '@/type/profile';
+import type { TProfileExecuteState, TProfileLookupResult, TProfileOperation, TProfileProcessResult, TProfileUpdateMode } from '@/type/profile';
 import type { TQueueOptions } from '@/type/queue';
 import { DropOff } from '@/util/DropOff';
 import { ProfileMerger } from '@/util/ProfileMerger';
@@ -13,10 +13,9 @@ import { ProfileMerger } from '@/util/ProfileMerger';
 export class ProfileManager {
   private static readonly index = ProfileIndex.getInstance();
 
-  private static execute (
-    profile: IProfile | false, action: TProfileOperation, uriLike: string, profileData: Partial< TProfileData >,
-    mode: TProfileUpdateMode = 'updateData', makeAlias: boolean = true, touchLookup: boolean = false
-  ) : IProfile | false {
+  private static execute ( {
+    lookup: { profile }, action, uriLike, profileData, mode = 'updateData', makeAlias = true, touchLookup = false
+  }: TProfileExecuteState ) : IProfile | false {
     if ( ! profile ) return Profile.create( uriLike, profileData as TProfileData );
     if ( touchLookup ) profile.touchLookup();
 
@@ -55,15 +54,18 @@ export class ProfileManager {
 
   // --- perform profile operation ---
 
-  public static process (
+  public static async process (
     uriLike: string, id: string, profileData: Partial< TProfileData >, mode: TProfileUpdateMode = 'updateData',
-    makeAlias: boolean = true, touchLookup: boolean = false
-  ) : TProfileProcessResult | false {
-    return log.catch( () => {
+    makeAlias: boolean = true, touchLookup: boolean = false, hook?: ( state: TProfileExecuteState ) => Promise< void >
+  ) : Promise< TProfileProcessResult | false > {
+    return await log.catchAsync( async () => {
       const lookup = ProfileManager.lookup( uriLike, id, profileData );
       const action = ProfileManager.determineAction( lookup );
-      const profile = ProfileManager.execute( lookup.profile, action, uriLike, profileData, mode, makeAlias, touchLookup );
 
+      const state: TProfileExecuteState = { lookup, action, uriLike, profileData, mode, makeAlias, touchLookup };
+      if ( hook ) await hook( state );
+
+      const profile = ProfileManager.execute( state );
       return { profile, action, success: !! profile };
     }, `Failed to process profile for ${ uriLike }` ) ?? false;
   }
