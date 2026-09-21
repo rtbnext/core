@@ -10,6 +10,16 @@ export class WikiJob extends Job< TWikiJobOptions > {
 
   // --- job runner ---
 
+  private async update ( profile: IProfile, updateImage: boolean ) : Promise< void > {
+    this.log( `Update wiki page for profile: ${ profile.getUri() }` );
+
+    const wiki = await Wiki.updateWiki( profile.getData(), updateImage );
+    if ( ! wiki ) throw new Error( `Failed to update wiki data for profile: ${ profile.getUri() }` );
+
+    profile.updateData( { wiki } );
+    profile.save();
+  }
+
   private async assign ( profile: IProfile, title: string ) : Promise< void > {
     this.log( `Assigning wiki page "${ title }" to profile: ${ profile.getUri() }` );
 
@@ -36,7 +46,8 @@ export class WikiJob extends Job< TWikiJobOptions > {
       if ( ! profile ) throw new Error( `Profile not found: ${ this.options.profile }` );
 
       if ( this.options.assign ) await this.assign( profile, this.options.assign );
-      if ( this.options.remove ) this.remove( profile );
+      else if ( this.options.remove ) this.remove( profile );
+      else await this.update( profile, this.options.updateImage ?? false );
     } );
   }
 
