@@ -123,6 +123,13 @@ export class Storage implements IStorage {
     }, `Failed to stat ${ path }` ) ?? false;
   }
 
+  public statMedia ( path: string ) : Stats | false {
+    return log.catch( () => {
+      this.assertMediaPath( path = this.resolveMediaPath( path ) );
+      return statSync( path );
+    }, `Failed to stat media ${ path }` ) ?? false;
+  }
+
   // --- scan dir ---
 
   public scanDir ( path: string, ext: string[] = [ 'json', 'jsonl', 'csv' ], exclude?: string[], type: TStorageScanType = 'files' ) : string[] {
