@@ -66,11 +66,12 @@ export class Image implements IImage {
       if ( ! file && ! thumb ) return false;
 
       delete this.media[ uri ];
+      if ( ! this.saveIndex() ) return false;
 
       if ( file && ! this.isUsed( file ) ) Image.storage.removeMedia( file );
       if ( thumb && ! this.isUsed( thumb ) ) Image.storage.removeMedia( thumb );
 
-      return this.saveIndex();
+      return true;
     }, `Failed to remove media for ${ uri }` ) ?? false;
   }
 
