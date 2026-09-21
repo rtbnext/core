@@ -20,5 +20,10 @@ export class Wiki {
     if ( shortName && item.itemLabel.value.trim() === shortName ) score += 0.25;
     else if ( shortName && item.itemLabel.value.trim().toLowerCase() === shortName.toLowerCase() ) score += 0.15;
     else return 0;
+
+    // --- birth date matching ---
+    if ( birthDate && item.birthdate?.value.startsWith( birthDate ) ) score += 0.25;
+    else if ( birthDate && item.birthdate?.value.startsWith( birthDate.substring( 0, 4 ) ) ) score += 0.1;
+    else if ( birthDate && item.birthdate?.value ) score -= 0.5;
   }
 }
