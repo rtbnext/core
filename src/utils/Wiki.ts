@@ -148,6 +148,15 @@ export class Wiki {
         meta.LicenseShortName?.value ?? meta.UsageTerms?.value,
         'via Wikimedia Commons'
       ] ).join( ', ' );
+
+      return Parser.container< TImage >( {
+        url: { value: info.descriptionurl, type: 'string' },
+        file: { value: info.url, type: 'string' },
+        thumb: { value: thumbUrl, type: 'string' },
+        caption: { value: meta.ImageDescription?.value, type: 'text' },
+        date: { value: dateTime, type: 'date', args: [ 'iso' ] },
+        credits: { value: credits, type: 'text' }
+      } );
     }, `Failed to load Wikimedia Commons image: ${ title }` ) ?? undefined;
   }
 }
