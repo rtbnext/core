@@ -195,19 +195,23 @@ export class Wiki {
   public static async fromProfileData ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
     return await log.catchAsync( async () => {
       const wikidata = await Wiki.queryWikidata( data );
+      if ( ! wikidata?.article ) throw new Error( 'No Wikipedia article linked' );
 
       log.debug(
         `Query Wikidata for ${ data.info?.name?.shortName ?? 'unknown' }: ` +
         `${ wikidata?.qid || 'no match' } (score: ${ wikidata?.confidence || 0 })`
       );
 
-      if ( ! wikidata?.article ) throw new Error( 'No Wikipedia article linked' );
-
       const page = await Wiki.queryWikiPage( wikidata.article );
       if ( ! page ) throw new Error( 'No Wikipedia page found' );
 
       const imageTitle = wikidata.image ?? page.image;
       const image = imageTitle ? await Wiki.queryCommonsImage( data.uri!, imageTitle ) : undefined;
+
+      return {
+        ...page.wiki as TWiki, ...( image ? { image } : {} ),
+        confidence: wikidata.confidence, wikidata: wikidata.qid
+      };
     }, `Failed to get Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
