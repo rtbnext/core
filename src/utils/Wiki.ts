@@ -220,4 +220,16 @@ export class Wiki {
       };
     }, `Failed to get Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
+
+  public static async updateWiki ( data: Partial< TProfileData >, updateImage: boolean = false ) : Promise< TWiki | undefined > {
+    return await log.catchAsync( async () => {
+      if ( ! data.wiki ) return await Wiki.fromProfileData( data );
+
+      const page = await Wiki.queryWikiPage( data.wiki.pageId );
+      if ( ! page ) throw new Error( 'No Wikipedia page found' );
+
+      const image = ( updateImage && page.image ) ? await Wiki.queryCommonsImage( data.uri!, page.image ) : undefined;
+      return { ...data.wiki, ...page.wiki, ...( image ? { image } : {} ) };
+    }, `Failed to update Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
+  }
 }
