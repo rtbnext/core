@@ -1,11 +1,11 @@
-export interface IImageMedia {
+export type IImageMedia = {
   file: string;
   thumb?: string;
-}
+};
 
 export type TImageMedia = Record< string, IImageMedia >;
 
-export interface TImageProps {
+export type TImageProps = {
   buffer: Buffer;
   filename: string;
-}
+};
