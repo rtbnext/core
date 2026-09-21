@@ -73,7 +73,9 @@ export class Fetch implements IFetch {
     };
   }
 
-  private async fetch < T > ( url: string, method: TFetchMethod = 'get', headers?: THeader ) : Promise< TResponse< T > > {
+  private async fetch < T > (
+    url: string, method: TFetchMethod = 'get', headers?: THeader, responseType?: 'json' | 'arraybuffer'
+  ) : Promise< TResponse< T > > {
     log.debug( `Fetching URL: ${ url } via ${ method.toUpperCase() }` );
     headers = { ...this.config.headers, ...headers };
 
@@ -82,7 +84,7 @@ export class Fetch implements IFetch {
       let retries = 0;
 
       do {
-        res = await this.applyRateLimit( () => this.httpClient[ method ]< T >( url, { headers } ) );
+        res = await this.applyRateLimit( () => this.httpClient[ method ]< T >( url, { headers, responseType } ) );
         if ( res.status === 200 && res.data ) break;
 
         log.warn( `Request failed with status: ${ res.status }. Retrying ...` );
