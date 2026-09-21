@@ -64,6 +64,7 @@ export type TProfileJobOptions = TJobClsOptions< {
   replace?: boolean;
   skipRanking?: boolean;
   skipWiki?: boolean;
+  updateImage?: boolean;
 } >;
 
 export type TQueueJobOptions = TJobClsOptions< {
@@ -93,6 +94,9 @@ export type TTop10JobOptions = TJobClsOptions< {
 export type TWikiJobOptions = TJobClsOptions< {
   profile: string;
   assign?: string;
+  remove?: boolean;
+  updateImage?: boolean;
+  image?: string;
 } >;
 
 export type TJobOption = {
