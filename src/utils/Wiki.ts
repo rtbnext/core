@@ -1,4 +1,5 @@
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+import { CmpStr, type CmpStrResult } from 'cmpstr';
 
 import { Fetch } from '@/core/Fetch';
 import { Image } from '@/core/Image';
@@ -6,6 +7,7 @@ import type { TWikidataResponseItem } from '@/type/response';
 
 
 export class Wiki {
+  private static readonly cmp = CmpStr.create( { metric: 'dice', safeEmpty: true, flags: 'i' } );
   private static readonly fetch = Fetch.getInstance();
   private static readonly image = Image.getInstance();
 
