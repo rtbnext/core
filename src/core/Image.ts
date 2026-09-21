@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { extname } from 'node:path';
 
+import { log } from '@/core/Logger';
 import { Storage } from '@/core/Storage';
 import type { IImage } from '@/interface/image';
 import type { IImageMedia, TImageMedia, TImageProps } from '@/type/image';
@@ -47,7 +48,16 @@ export class Image implements IImage {
   }
 
   public remove ( uri: string ) : boolean {
-    return false;
+    return log.catch( () => {
+      const { file, thumb } = this.get( uri ) ?? {};
+      if ( ! file && ! thumb ) return false;
+
+      file && Image.storage.removeMedia( file );
+      thumb && Image.storage.removeMedia( thumb );
+
+      delete this.media[ uri ];
+      return this.saveIndex();
+    }, `Failed to remove media for ${ uri }` ) ?? false;
   }
 
   public clean () : boolean {
