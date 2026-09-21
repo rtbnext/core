@@ -1,3 +1,4 @@
+import type { TImage } from '@rtbnext/schema/src/base/generic';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import { CmpStr, type CmpStrResult } from 'cmpstr';
 
@@ -111,5 +112,9 @@ export class Wiki {
         image: { value: best.item.image?.value.split( '/' ).pop(), type: 'decodeURI' }
       } );
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
+  }
+
+  public static async queryCommonsImage ( title: string ) : Promise< TImage | undefined > {
+    log.debug( `Querying Wikimedia Commons image: ${ title }` );
   }
 }
