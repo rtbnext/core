@@ -1,4 +1,4 @@
-import type { TImage } from '@rtbnext/schema/src/base/generic';
+import type { TImage, TWiki } from '@rtbnext/schema/src/base/generic';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import { CmpStr, type CmpStrResult } from 'cmpstr';
 
@@ -158,5 +158,9 @@ export class Wiki {
         credits: { value: credits, type: 'text' }
       } );
     }, `Failed to load Wikimedia Commons image: ${ title }` ) ?? undefined;
+  }
+
+  public static async queryWikiPage ( article: string | number ) : Promise< Partial< TWiki > | undefined > {
+    log.debug( `Querying Wikipedia page: ${ article }` );
   }
 }
