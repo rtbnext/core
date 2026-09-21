@@ -249,6 +249,16 @@ export class Storage implements IStorage {
     }, `Failed to write media ${ path }` ) ?? false;
   }
 
+  public removeMedia ( path: string, force: boolean = true ) : boolean {
+    return log.catch( () => {
+      this.assertMediaPath( path = this.resolveMediaPath( path ) );
+
+      rmSync( path, { recursive: true, force } );
+      log.debug( `Removed media ${ path }` );
+      return true;
+    }, `Failed to remove media ${ path }` ) ?? false;
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IStorage {
