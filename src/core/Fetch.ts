@@ -118,6 +118,8 @@ export class Fetch implements IFetch {
     return results;
   }
 
+  public async download ( uri: string ) : Promise< Buffer > {}
+
   // --- special requests ---
 
   public async wayback < T > ( url: string, ts: unknown ) : Promise< TResponse< T > > {
