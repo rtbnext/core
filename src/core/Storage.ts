@@ -43,6 +43,10 @@ export class Storage implements IStorage {
     return path.includes( this.path ) ? path : join( this.path, path );
   }
 
+  private resolveMediaPath ( path: string ) : string {
+    return path.includes( this.mediaPath ) ? path : join( this.mediaPath, path );
+  }
+
   private fileExt ( path: string ) : string {
     return extname( this.resolvePath( path ) ).toLowerCase().slice( 1 );
   }
