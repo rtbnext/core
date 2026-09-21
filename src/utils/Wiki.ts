@@ -52,6 +52,6 @@ export class Wiki {
     if ( item.employer ?? item.ownerOf ) score += 0.2;
     if ( item.netWorth ) score += 0.25;
 
-    return Math.min( 1, Math.max( 0, score ) );
+    return Math.max( 0, score );
   }
 }
