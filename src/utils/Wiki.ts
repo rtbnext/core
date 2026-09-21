@@ -171,6 +171,12 @@ export class Wiki {
         exintro: 1, explaintext: 1, exsectionformat: 'plain', piprop: 'name', pilimit: 1,
         [ Number.isNaN( article ) ? 'titles' : 'pageids' ]: article
       } );
+
+      if ( ! res?.success || ! res.data || ! res.data.query.pages.length )
+        throw new Error( `No Wikipedia page found for: ${ article }` );
+
+      log.debug( `Wikipedia page info received for: ${ article }` );
+      const raw = res.data.query.pages[ 0 ];
     }, `Failed to query Wikipedia page: ${ article }` );
   }
 }
