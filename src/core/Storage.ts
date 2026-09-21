@@ -236,6 +236,19 @@ export class Storage implements IStorage {
     }, `Failed to move ${ from } to ${ to }` ) ?? false;
   }
 
+  // --- media file operations ---
+
+  public writeMedia ( path: string, content: Buffer ) : boolean {
+    return log.catch( () => {
+      this.ensureMediaPath( path = this.resolveMediaPath( path ) );
+
+      writeFileSync( path, content );
+      log.debug( `Wrote media to ${ path }` );
+
+      return true;
+    }, `Failed to write media ${ path }` ) ?? false;
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IStorage {
