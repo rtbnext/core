@@ -52,6 +52,15 @@ export class WikiJob extends Job< TWikiJobOptions > {
     }, {
       name: '--assign <TITLE>',
       desc: 'Assign wiki data from the specified wiki title to the profile'
+    }, {
+      name: '--remove',
+      desc: 'Remove the wiki assignment from the profile'
+    }, {
+      name: '--update-image',
+      desc: 'Update the image from the current Wikipedia page'
+    }, {
+      name: '--image <TITLE>',
+      desc: 'Link the specified Wikimedia Commons image only'
     } ]
   } as const;
 }
