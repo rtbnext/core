@@ -4,7 +4,7 @@ import { CmpStr, type CmpStrResult } from 'cmpstr';
 import { Fetch } from '@/core/Fetch';
 import { Image } from '@/core/Image';
 import { log } from '@/core/Logger';
-import type { TWikidataResponseItem } from '@/type/response';
+import type { TWikidataResponse, TWikidataResponseItem } from '@/type/response';
 import type { TWikidata } from '@/type/wiki';
 
 
@@ -91,6 +91,16 @@ export class Wiki {
         }
         LIMIT ${ Wiki.wdItems }
       `;
+
+      const res = await Wiki.fetch.wikidata< TWikidataResponse >( sparql );
+      let best: { score: number, item: TWikidataResponseItem } | undefined;
+
+      for ( const item of res.data?.results.bindings ?? [] ) {
+        const score = Wiki.scoreWDItem( item, data );
+        if ( score <= Wiki.threshold ) continue;
+
+        if ( ! best || score > best.score ) best = { score, item };
+      }
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
