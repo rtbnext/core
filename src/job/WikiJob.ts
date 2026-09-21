@@ -1,4 +1,5 @@
 import { Job } from '@/abstract/Job';
+import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import type { TCommandJob, TWikiJobOptions } from '@/type/job';
 import { Wiki } from '@/util/Wiki';
@@ -8,6 +9,16 @@ export class WikiJob extends Job< TWikiJobOptions > {
   constructor ( options: TWikiJobOptions ) { super( options, 'Wiki', [ 'profile' ] ) }
 
   // --- job runner ---
+
+  private async remove ( profile: IProfile ) : Promise< void > {
+    this.log( `Removing wiki assignment from profile: ${ profile.getUri() }` );
+
+    const data = profile.getData();
+    delete data.wiki;
+
+    profile.setData( data );
+    profile.save();
+  }
 
   public override async run () : Promise< void > {
     await this.protect( async () => {
