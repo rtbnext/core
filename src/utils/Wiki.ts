@@ -191,4 +191,15 @@ export class Wiki {
       } ), image: raw.pageimage };
     }, `Failed to query Wikipedia page: ${ article }` );
   }
+
+  public static async fromProfileData ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
+    return await log.catchAsync( async () => {
+      const wikidata = await Wiki.queryWikidata( data );
+
+      log.debug(
+        `Query Wikidata for ${ data.info?.name?.shortName ?? 'unknown' }: ` +
+        `${ wikidata?.qid || 'no match' } (score: ${ wikidata?.confidence || 0 })`
+      );
+    }, `Failed to get Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
+  }
 }
