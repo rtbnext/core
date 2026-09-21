@@ -157,10 +157,12 @@ export class Wiki {
         date: { value: dateTime, type: 'date', args: [ 'iso' ] },
         credits: { value: credits, type: 'text' }
       } );
-    }, `Failed to load Wikimedia Commons image: ${ title }` ) ?? undefined;
+    }, `Failed to load Wikimedia Commons image: ${ title }` );
   }
 
   public static async queryWikiPage ( article: string | number ) : Promise< Partial< TWiki > | undefined > {
     log.debug( `Querying Wikipedia page: ${ article }` );
+
+    return await log.catchAsync( async () => {}, `Failed to query Wikipedia page: ${ article }` );
   }
 }
