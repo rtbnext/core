@@ -21,6 +21,10 @@ export class Image implements IImage {
 
   // --- helper ---
 
+  private isUsed ( filename: string ) : boolean {
+    return Object.values( this.media ).some( ( { file, thumb } ) => file === filename || thumb === filename );
+  }
+
   private hash ( buffer: Buffer ) : string {
     return createHash( 'sha256' ).update( buffer ).digest( 'hex' ).slice( 0, Image.hashLength );
   }
