@@ -1,3 +1,5 @@
+import type { TProfileData } from '@rtbnext/schema/src/model/profile';
+
 import { Job } from '@/abstract/Job';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
@@ -10,21 +12,21 @@ export class WikiJob extends Job< TWikiJobOptions > {
 
   // --- job runner ---
 
-  private async update ( profile: IProfile, updateImage: boolean ) : Promise< void > {
+  private async update ( profile: IProfile ) : Promise< void > {
     this.log( `Update wiki page for profile: ${ profile.getUri() }` );
 
-    const wiki = await Wiki.updateWiki( profile.getData(), updateImage );
+    const wiki = await Wiki.updateWiki( profile.getData(), this.options.updateImage );
     if ( ! wiki ) throw new Error( `Failed to update wiki data for profile: ${ profile.getUri() }` );
 
     profile.updateData( { wiki } );
     profile.save();
   }
 
-  private async assign ( profile: IProfile, title: string ) : Promise< void > {
-    this.log( `Assigning wiki page "${ title }" to profile: ${ profile.getUri() }` );
+  private async assign ( profile: IProfile ) : Promise< void > {
+    this.log( `Assigning wiki page "${ this.options.assign }" to profile: ${ profile.getUri() }` );
 
-    const wiki = await Wiki.assign( profile.getData(), title );
-    if ( ! wiki ) throw new Error( `Wiki page not found: ${ title }` );
+    const wiki = await Wiki.assign( profile.getData(), this.options.assign! );
+    if ( ! wiki ) throw new Error( `Wiki page not found: ${ this.options.assign }` );
 
     profile.updateData( { wiki } );
     profile.save();
@@ -40,14 +42,26 @@ export class WikiJob extends Job< TWikiJobOptions > {
     profile.save();
   }
 
+  private async assignImage ( profile: IProfile ) : Promise< void > {
+    this.log( `Assigning image "${ this.options.image }" to profile: ${ profile.getUri() }` );
+
+    const image = await Wiki.queryCommonsImage( profile.getUri(), this.options.image! );
+    if ( ! image ) throw new Error( `Wikimedia Commons image not found: ${ this.options.image }` );
+
+    profile.updateData( { wiki: { image } } as Partial< TProfileData > );
+    profile.save();
+  }
+
   public override async run () : Promise< void > {
     await this.protect( async () => {
       const profile = Profile.find( this.options.profile );
       if ( ! profile ) throw new Error( `Profile not found: ${ this.options.profile }` );
 
-      if ( this.options.assign ) await this.assign( profile, this.options.assign );
+      if ( this.options.assign ) await this.assign( profile );
       else if ( this.options.remove ) this.remove( profile );
-      else await this.update( profile, this.options.updateImage ?? false );
+      else await this.update( profile );
+
+      if ( this.options.image ) this.assignImage( profile );
     } );
   }
 
