@@ -45,6 +45,14 @@ export class Image implements IImage {
     return false;
   }
 
+  public remove ( uri: string ) : boolean {
+    return false;
+  }
+
+  public clean () : boolean {
+    return false;
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IImage {
