@@ -126,6 +126,8 @@ export class Wiki {
       const info = res.data?.query.pages?.[ 0 ]?.imageinfo?.[ 0 ];
       if ( ! info ) throw new Error( `No image info found for: ${ title }` );
 
+      log.debug( `Wikimedia Commons image info received for: ${ title }` );
+
       const meta = info.extmetadata ?? {};
       const thumbUrl = info.thumburl ?? Object.values( info.responsiveUrls ?? {} ).at( 0 );
       const dateTime = meta.DateTimeOriginal?.value ?? meta.DateTime?.value;
