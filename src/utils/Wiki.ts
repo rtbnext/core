@@ -128,8 +128,16 @@ export class Wiki {
 
       log.debug( `Wikimedia Commons image info received for: ${ title }` );
 
-      const meta = info.extmetadata ?? {};
+      const file = await Wiki.fetch.download( info.url );
+      if ( ! file.success || ! file.data ) throw new Error( `Failed to download image: ${ title }` );
+
       const thumbUrl = info.thumburl ?? Object.values( info.responsiveUrls ?? {} ).at( 0 );
+      const thumb = thumbUrl ? await Wiki.fetch.download( thumbUrl ) : undefined;
+
+      if ( thumbUrl && ( ! thumb?.success || ! thumb.data ) )
+        throw new Error( `Failed to download image thumbnail: ${ title }` );
+
+      const meta = info.extmetadata ?? {};
       const dateTime = meta.DateTimeOriginal?.value ?? meta.DateTime?.value;
       const credits = Parser.list( [
         meta.Attribution?.value ?? meta.Artist?.value ?? meta.Credit?.value,
