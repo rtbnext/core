@@ -16,7 +16,7 @@ export class Fetch implements IFetch {
   private static instance: IFetch;
 
   private readonly config: TFetchConfig;
-  private readonly wikiQuery = { format: 'json', formatversion: 2 };
+  private readonly wikiQuery = { format: 'json', utf8: 1, formatversion: 2 };
   private lastRequest: number = 0;
   private httpClient: AxiosInstance;
 
