@@ -6,7 +6,7 @@ import { Fetch } from '@/core/Fetch';
 import { Image } from '@/core/Image';
 import { log } from '@/core/Logger';
 import { Parser } from '@/parser/Parser';
-import type { TWikidataResponse, TWikidataResponseItem } from '@/type/response';
+import type { TCommonsResponse, TWikidataResponse, TWikidataResponseItem } from '@/type/response';
 import type { TWikidata } from '@/type/wiki';
 
 
@@ -114,7 +114,14 @@ export class Wiki {
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 
-  public static async queryCommonsImage ( title: string ) : Promise< TImage | undefined > {
+  public static async queryCommonsImage ( uri: string, title: string ) : Promise< TImage | undefined > {
     log.debug( `Querying Wikimedia Commons image: ${ title }` );
+
+    return await log.catchAsync( async () => {
+      const res = await Wiki.fetch.commons< TCommonsResponse >( {
+        action: 'query', titles: `File:${ title }`, prop: 'imageinfo', redirects: 1,
+        iiprop: 'url|extmetadata', iiurlwidth: 400
+      } );
+    }, `Failed to load Wikimedia Commons image: ${ title }` ) ?? undefined;
   }
 }
