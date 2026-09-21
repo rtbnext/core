@@ -16,3 +16,13 @@ export type TProfileProcessResult = {
   action: TProfileOperation;
   success: boolean;
 };
+
+export type TProfileExecuteState = {
+  lookup: TProfileLookupResult;
+  action: TProfileOperation;
+  uriLike: string;
+  profileData: Partial< TProfileData >;
+  mode: TProfileUpdateMode;
+  makeAlias: boolean;
+  touchLookup: boolean;
+};
