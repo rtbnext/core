@@ -88,6 +88,9 @@ export class ProfileJob extends Job< TProfileJobOptions > {
     }, {
       name: '--skip-wiki',
       desc: 'Skip wiki data enrichment'
+    }, {
+      name: '--update-image',
+      desc: 'Update the image from the current Wikipedia page'
     } ]
   } as const;
 }
