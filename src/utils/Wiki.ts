@@ -97,10 +97,11 @@ export class Wiki {
 
       for ( const item of res.data?.results.bindings ?? [] ) {
         const score = Wiki.scoreWDItem( item, data );
-        if ( score <= Wiki.threshold ) continue;
-
         if ( ! best || score > best.score ) best = { score, item };
       }
+
+      if ( ! best || best.score < Wiki.threshold ) throw new Error( 'No suitable Wikidata item found' );
+      log.debug( `Best Wikidata item for ${ shortName } has score: ${ best.score }` );
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
