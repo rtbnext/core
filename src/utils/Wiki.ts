@@ -18,6 +18,8 @@ export class Wiki {
   private static readonly threshold = 0.85;
   private static readonly wdItems = 25;
 
+  // --- helper ---
+
   private static scoreWDItem ( item: TWikidataResponseItem, data: Partial< TProfileData > ) : number {
     const { name: { fullName, shortName, firstName, lastName } = {}, gender, birthDate, citizenship } = data.info ?? {};
     let score = 0;
@@ -59,6 +61,8 @@ export class Wiki {
 
     return Math.max( 0, score );
   }
+
+  // --- query data ---
 
   public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {
     log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
@@ -191,6 +195,8 @@ export class Wiki {
       } ), image: raw.pageimage };
     }, `Failed to query Wikipedia page: ${ article }` );
   }
+
+  // --- update wiki data ---
 
   public static async fromProfileData ( data: Partial< TProfileData > ) : Promise< TWiki | undefined > {
     return await log.catchAsync( async () => {
