@@ -235,7 +235,11 @@ export class Wiki {
 
   public static async assign ( data: Partial< TProfileData >, title: string ) : Promise< TWiki | undefined > {
     return await log.catchAsync( async () => {
-      //
+      const page = await Wiki.queryWikiPage( title );
+      if ( ! page ) throw new Error( 'No Wikipedia page found' );
+
+      const image = page.image ? await Wiki.queryCommonsImage( data.uri!, page.image ) : undefined;
+      return { ...page.wiki as TWiki, confidence: 1, ...( image ? { image } : {} ) };
     }, `Failed to assign ${ title } to: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
