@@ -6,7 +6,7 @@ import { Fetch } from '@/core/Fetch';
 import { Image } from '@/core/Image';
 import { log } from '@/core/Logger';
 import { Parser } from '@/parser/Parser';
-import type { TCommonsResponse, TWikidataResponse, TWikidataResponseItem } from '@/type/response';
+import type { TCommonsResponse, TWikidataResponse, TWikidataResponseItem, TWikipediaResponse } from '@/type/response';
 import type { TWikidata } from '@/type/wiki';
 
 
@@ -160,9 +160,17 @@ export class Wiki {
     }, `Failed to load Wikimedia Commons image: ${ title }` );
   }
 
-  public static async queryWikiPage ( article: string | number ) : Promise< Partial< TWiki > | undefined > {
+  public static async queryWikiPage ( article: string | number ) : Promise< {
+    wiki: Partial< TWiki >, image?: string
+  } | undefined > {
     log.debug( `Querying Wikipedia page: ${ article }` );
 
-    return await log.catchAsync( async () => {}, `Failed to query Wikipedia page: ${ article }` );
+    return await log.catchAsync( async () => {
+      const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
+        action: 'query', prop: 'extracts|info|pageprops|pageimages', redirects: 1,
+        exintro: 1, explaintext: 1, exsectionformat: 'plain', piprop: 'name', pilimit: 1,
+        [ Number.isNaN( article ) ? 'titles' : 'pageids' ]: article
+      } );
+    }, `Failed to query Wikipedia page: ${ article }` );
   }
 }
