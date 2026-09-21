@@ -169,7 +169,7 @@ export class Wiki {
       const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
         action: 'query', prop: 'extracts|info|pageprops|pageimages', redirects: 1, exintro: 1,
         explaintext: 1, exsectionformat: 'plain', inprop: 'url', piprop: 'name', pilimit: 1,
-        [ Number.isNaN( article ) ? 'titles' : 'pageids' ]: article
+        [ typeof article === 'number' ? 'pageids' : 'titles' ]: article
       } );
 
       if ( ! res?.success || ! res.data || ! res.data.query.pages.length )
