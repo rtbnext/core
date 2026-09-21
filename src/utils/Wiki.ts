@@ -61,7 +61,12 @@ export class Wiki {
     log.debug( `Querying Wikidata for: ${ data.info?.name?.shortName }` );
 
     return await log.catchAsync( async () => {
-      //
+      const shortName = data.info?.name?.shortName;
+      if ( ! shortName ) throw new Error( 'No short name provided' );
+
+      const [ first, ...rest ] = shortName.split( ' ' ), last = rest.pop();
+      const nameVariants = [ shortName, `${ first[ 0 ] }. ${ last }`, `${ first } ${ last }` ]
+        .filter( Boolean ).map( n => `"${ n }"@en "${ n }"@de` ).join( ' ' );
     }, `Failed to query Wikidata for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
