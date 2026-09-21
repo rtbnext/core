@@ -97,6 +97,7 @@ export type TWikiJobOptions = TJobClsOptions< {
   remove?: boolean;
   updateImage?: boolean;
   image?: string;
+  removeImage?: boolean;
 } >;
 
 export type TJobOption = {

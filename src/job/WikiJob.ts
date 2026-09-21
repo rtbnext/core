@@ -1,6 +1,7 @@
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 
 import { Job } from '@/abstract/Job';
+import { Image } from '@/core/Image';
 import type { IProfile } from '@/interface/profile';
 import { Profile } from '@/model/Profile';
 import type { TCommandJob, TWikiJobOptions } from '@/type/job';
@@ -8,6 +9,8 @@ import { Wiki } from '@/util/Wiki';
 
 
 export class WikiJob extends Job< TWikiJobOptions > {
+  private static readonly image = Image.getInstance();
+
   constructor ( options: TWikiJobOptions ) { super( options, 'Wiki', [ 'profile' ] ) }
 
   // --- job runner ---
@@ -52,6 +55,18 @@ export class WikiJob extends Job< TWikiJobOptions > {
     profile.save();
   }
 
+  private removeImage ( profile: IProfile ) : void {
+    this.log( `Removing Wikimedia Commons image from profile: ${ profile.getUri() }` );
+
+    WikiJob.image.remove( profile.getUri() );
+
+    const data = profile.getData();
+    delete data.wiki?.image;
+
+    profile.setData( data );
+    profile.save();
+  }
+
   public override async run () : Promise< void > {
     await this.protect( async () => {
       const profile = Profile.find( this.options.profile );
@@ -62,6 +77,7 @@ export class WikiJob extends Job< TWikiJobOptions > {
       else await this.update( profile );
 
       if ( this.options.image ) this.assignImage( profile );
+      else if ( this.options.removeImage ) this.removeImage( profile );
     } );
   }
 
@@ -86,6 +102,9 @@ export class WikiJob extends Job< TWikiJobOptions > {
     }, {
       name: '--image <TITLE>',
       desc: 'Link the specified Wikimedia Commons image only'
+    }, {
+      name: '--remove-image',
+      desc: 'Remove the Wikimedia Commons image from the profile'
     } ]
   } as const;
 }
