@@ -205,6 +205,9 @@ export class Wiki {
 
       const page = await Wiki.queryWikiPage( wikidata.article );
       if ( ! page ) throw new Error( 'No Wikipedia page found' );
+
+      const imageTitle = wikidata.image ?? page.image;
+      const image = imageTitle ? await Wiki.queryCommonsImage( data.uri!, imageTitle ) : undefined;
     }, `Failed to get Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 }
