@@ -13,9 +13,12 @@ import { ProfileMerger } from '@/util/ProfileMerger';
 export class ProfileManager {
   private static readonly index = ProfileIndex.getInstance();
 
-  private static execute ( {
-    lookup: { profile }, action, uriLike, profileData, mode = 'updateData', makeAlias = true, touchLookup = false
-  }: TProfileExecuteState ) : IProfile | false {
+  private static execute ( state: TProfileExecuteState ) : IProfile | false {
+    const {
+      lookup: { profile }, action, uriLike, profileData, mode = 'updateData',
+      makeAlias = true, touchLookup = false
+    } = state;
+
     if ( ! profile ) return Profile.create( uriLike, profileData as TProfileData );
     if ( touchLookup ) profile.touchLookup();
 
