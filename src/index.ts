@@ -59,6 +59,7 @@ export { Wiki } from '@/util/Wiki';
 
 export { AliasJob } from '@/job/AliasJob';
 export { AnnualJob } from '@/job/AnnualJob';
+export { ImageJob } from '@/job/ImageJob';
 export { JOBS } from '@/job/index';
 export { IndexJob } from '@/job/IndexJob';
 export { IntegrityJob } from '@/job/IntegrityJob';
@@ -95,4 +96,3 @@ export type * from '@/type/response';
 export type * from '@/type/status';
 export type * from '@/type/storage';
 export type * from '@/type/wiki';
-
