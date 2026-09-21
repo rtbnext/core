@@ -112,7 +112,10 @@ export class Utils {
   // --- deep object updates ---
 
   public static update ( operator: TObjOperator, obj: any, path: string, n?: any ) : void {
-    return path.split( '.' ).reduce( ( curr, p, i, arr ) => (
+    const parts = path.split( '.' );
+    if ( parts.some( p => p === '__proto__' || p === 'prototype' || p === 'constructor' ) ) return;
+
+    return parts.reduce( ( curr, p, i, arr ) => (
       i < arr.length - 1 && ( curr[ p ] ??= {} ),
       i === arr.length - 1
         ? ( operator === 'set' ? ( curr[ p ] = n )
