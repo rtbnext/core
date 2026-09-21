@@ -167,8 +167,8 @@ export class Wiki {
 
     return await log.catchAsync( async () => {
       const res = await Wiki.fetch.wikipedia< TWikipediaResponse >( {
-        action: 'query', prop: 'extracts|info|pageprops|pageimages', redirects: 1,
-        exintro: 1, explaintext: 1, exsectionformat: 'plain', piprop: 'name', pilimit: 1,
+        action: 'query', prop: 'extracts|info|pageprops|pageimages', redirects: 1, exintro: 1,
+        explaintext: 1, exsectionformat: 'plain', inprop: 'url', piprop: 'name', pilimit: 1,
         [ Number.isNaN( article ) ? 'titles' : 'pageids' ]: article
       } );
 
@@ -177,6 +177,18 @@ export class Wiki {
 
       log.debug( `Wikipedia page info received for: ${ article }` );
       const raw = res.data.query.pages[ 0 ];
+
+      return { wiki: Parser.container< Partial< TWiki > >( {
+        uri: { value: raw.canonicalurl, type: 'string' },
+        pageId: { value: raw.pageid, type: 'number' },
+        refId: { value: raw.lastrevid, type: 'number' },
+        name: { value: raw.title, type: 'string' },
+        lastModified: { value: raw.touched, type: 'date', args: [ 'iso' ] },
+        summary: { value: raw.extract ?? '', type: 'list', args: [ 'text', '\n' ], strict: false },
+        sortKey: { value: raw.pageprops?.[ 'defaultsort' ], type: 'string' },
+        wikidata: { value: raw.pageprops?.[ 'wikibase_item' ], type: 'string' },
+        desc: { value: raw.pageprops?.[ 'wikibase-shortdesc' ], type: 'text' }
+      } ), image: raw.pageimage };
     }, `Failed to query Wikipedia page: ${ article }` );
   }
 }
