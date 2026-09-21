@@ -107,6 +107,10 @@ export class Storage implements IStorage {
     if ( ! this.exists( path ) ) throw new Error( `Path ${ path } does not exist` );
   }
 
+  public assertMediaPath ( path: string ) : void | never {
+    if ( ! this.mediaExists( path ) ) throw new Error( `Media path ${ path } does not exist` );
+  }
+
   public ensurePath ( path: string, isDir: boolean = false ) : void {
     path = this.resolvePath( path );
     mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
