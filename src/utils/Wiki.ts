@@ -11,6 +11,8 @@ export class Wiki {
   private static readonly fetch = Fetch.getInstance();
   private static readonly image = Image.getInstance();
 
+  private static readonly threshold = 0.85;
+
   private static scoreWDItem ( item: TWikidataResponseItem, data: Partial< TProfileData > ) : number {
     const { name: { shortName } = {}, gender, birthDate, citizenship } = data.info ?? {};
     let score = 0;
