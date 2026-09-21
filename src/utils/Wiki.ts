@@ -233,5 +233,9 @@ export class Wiki {
     }, `Failed to update Wikipedia data for: ${ data.info?.name?.shortName ?? 'unknown' }` );
   }
 
-  public static async assign ( data: Partial< TProfileData >, title: string ) : Promise< TWiki | undefined > {}
+  public static async assign ( data: Partial< TProfileData >, title: string ) : Promise< TWiki | undefined > {
+    return await log.catchAsync( async () => {
+      //
+    }, `Failed to assign ${ title } to: ${ data.info?.name?.shortName ?? 'unknown' }` );
+  }
 }
