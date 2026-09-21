@@ -22,6 +22,10 @@ export class Image implements IImage {
     return createHash( 'sha256' ).update( buffer ).digest( 'hex' ).slice( 0, Image.hashLength );
   }
 
+  private filename ( buffer: Buffer, ext: string ) : string {
+    return `${ this.hash( buffer ) }.${ ext.toLowerCase() }`;
+  }
+
   // --- instantiate ---
 
   public static getInstance () : IImage {
