@@ -4,12 +4,17 @@ import type { TStorageScanType } from '@/type/storage';
 export interface IStorage {
   readonly root: string;
   exists ( path: string ) : boolean;
+  mediaExists ( path: string ) : boolean;
   assertPath ( path: string ) : void | never;
+  assertMediaPath ( path: string ) : void | never;
   ensurePath ( path: string, isDir?: boolean ) : void;
+  ensureMediaPath ( path: string, isDir?: boolean ) : void;
   stat ( path: string ) : Stats | false;
+  statMedia ( path: string ) : Stats | false;
   scanDir ( path: string, ext?: string[], exclude?: string[], type?: TStorageScanType ) : string[];
   scanFiles ( path: string, ext?: string[], exclude?: string[] ) : string[];
   scanDirs ( path: string, exclude?: string[] ) : string[];
+  scanMedia ( path: string, ext?: string[], exclude?: string[] ) : string[];
   readJSON < T extends object > ( path: string ) : T | false;
   writeJSON < T extends object > ( path: string, content: T ) : boolean;
   readJSONL < T extends object > ( path: string ) : T[] | false;
@@ -21,4 +26,7 @@ export interface IStorage {
   datedCSV < T extends any[] > ( path: string, content: T, force?: boolean ) : boolean;
   remove ( path: string, force?: boolean ) : boolean;
   move ( from: string, to: string, force?: boolean ) : boolean;
+  writeMedia ( path: string, content: Buffer ) : boolean;
+  removeMedia ( path: string, force?: boolean ) : boolean;
+  moveMedia ( from: string, to: string, force?: boolean ) : boolean;
 }
