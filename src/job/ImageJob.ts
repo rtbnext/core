@@ -1,15 +1,20 @@
 import { Job } from '@/abstract/Job';
+import { Image } from '@/core/Image';
 import { Parser } from '@/parser/Parser';
 import type { TCommandJob, TImageJobOptions } from '@/type/job';
 
 
 export class ImageJob extends Job< TImageJobOptions > {
+  private static readonly image = Image.getInstance();
+
   constructor ( options: TImageJobOptions ) { super( options, 'image', [ 'system' ] ) }
 
   // --- job runner ---
 
   public async run () : Promise< void > {
-    await this.protect( async () => {} );
+    await this.protect( async () => {
+      if ( this.options.cleanup ) ImageJob.image.clean();
+    } );
   };
 
   // --- command definition ---
