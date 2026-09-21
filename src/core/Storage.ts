@@ -116,6 +116,11 @@ export class Storage implements IStorage {
     mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
   }
 
+  public ensureMediaPath ( path: string, isDir: boolean = false ) : void {
+    path = this.resolveMediaPath( path );
+    mkdirSync( isDir ? path : dirname( path ), { recursive: true } );
+  }
+
   public stat ( path: string ) : Stats | false {
     return log.catch( () => {
       this.assertPath( path = this.resolvePath( path ) );
