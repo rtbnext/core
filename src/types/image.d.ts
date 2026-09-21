@@ -1,6 +1,6 @@
-interface IImageMedia {
+export interface IImageMedia {
   file: string;
   thumb?: string;
 }
 
-type TImageMedia = Record< string, IImageMedia >;
+export type TImageMedia = Record< string, IImageMedia >;
