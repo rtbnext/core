@@ -43,8 +43,7 @@ export const LISTS = {
     lists: [ 'billionaires', 'forbes-400' ],
     parser: BillionairesListParser,
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
-      uri, name: ctx.name, shortName: ctx.name, desc: ctx.desc,
-      text: Utils.buildSearchText( ctx.desc ),
+      uri, name: ctx.name, desc: ctx.desc, text: Utils.buildSearchText( ctx.desc ),
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'selfMadeRank', 'philanthropyScore', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
     } ),
@@ -57,8 +56,7 @@ export const LISTS = {
   person: {
     parser: PersonListParser,
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
-      uri, name: ctx.name, shortName: ctx.name, desc: ctx.desc,
-      text: Utils.buildSearchText( ctx.desc ),
+      uri, name: ctx.name, desc: ctx.desc, text: Utils.buildSearchText( ctx.desc ),
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age' ]
     } ),
