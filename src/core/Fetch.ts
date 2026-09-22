@@ -184,10 +184,7 @@ export class Fetch implements IFetch {
   }
 
   public async download ( uri: string ) : Promise< TResponse< Buffer > > {
-    const url = new URL( uri );
-    url.search = '', url.hash = '';
-
-    const res = await this.single< ArrayBuffer >( url.toString(), 'get', {
+    const res = await this.single< ArrayBuffer >( uri, 'get', {
       ...this.useApiUserAgent(), Accept: '*/*'
     }, 'arraybuffer' );
 
