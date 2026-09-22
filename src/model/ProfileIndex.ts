@@ -73,7 +73,7 @@ export class ProfileIndex extends Index< TProfileIndexItem, TProfileIndex, TProf
     return this.update( uri, { ...item,
       uri, name, desc, image: image?.thumb ?? image?.file,
       aliases: this.resolveAliases( uri, item?.aliases ),
-      text: Utils.buildSearchText( cv )
+      text: Utils.buildSearchText( cv ?? '' )
     } );
   }
 
