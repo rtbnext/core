@@ -30,8 +30,8 @@ export class Storage implements IStorage {
 
   private initDB () : void {
     log.debug( `Initializing storage at ${ this.path }` );
-    this.ensurePath( this.path, true );
-    this.ensureMediaPath( this.mediaPath, true );
+    this.ensurePath( '', true );
+    this.ensureMediaPath( '', true );
 
     [ 'profile', 'list', 'filter', 'mover', 'stats', 'queue', 'system' ]
       .forEach( path => this.ensurePath( path, true ) );
