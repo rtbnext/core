@@ -1,5 +1,5 @@
 import { RTBListParser } from '@/parser/RTBListParser';
-import type { TListConfig } from '@/type/list';
+import type { TListConfig, TRTBListItemCtx } from '@/type/list';
 
 
 export const LISTS = {
@@ -14,6 +14,7 @@ export const LISTS = {
       text: 'todays richest people world',
       columns: [ 'rank', 'diff', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
-    } )
+    } ),
+    listItem: ( ctx: TRTBListItemCtx ) => ( {} )
   }
 } as const satisfies TListConfig;
