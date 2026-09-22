@@ -1,5 +1,3 @@
-import type { TRTBListItem } from '@rtbnext/schema/src/model/list';
-
 import { Utils } from '@/core/Utils';
 import { Parser } from '@/parser/Parser';
 import { PersonListParser } from '@/parser/PersonListParser';
@@ -10,14 +8,13 @@ import type { TListConfig, TListIndexItemCtx, TPersonListItemCtx, TRTBListItemCt
 export const LISTS = {
   rtb: {
     parser: RTBListParser,
-    indexItem: ( ctx: { items: TRTBListItem[] } ) => ( {
+    indexItem: ( ctx: Omit< TListIndexItemCtx, 'name' | 'desc' > ) => ( {
       uri: 'rtb',
       name: 'The World’s Real-Time Billionaires',
       shortName: 'Real-Time Billionaires',
       desc: 'Today’s richest people in the world',
       text: 'todays richest people world',
-      columns: RTBListParser.columns( ctx.items ),
-      filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
+      columns: ctx.columns, filters: ctx.filters
     } ),
     listItem: ( ctx: TRTBListItemCtx ) => ( {
       uri: ctx.profile ? ctx.profile.getUri() : undefined,
@@ -41,11 +38,9 @@ export const LISTS = {
   person: {
     parser: PersonListParser,
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
-      uri, name: ctx.name,
+      uri, name: ctx.name, columns: ctx.columns, filters: ctx.filters,
       desc: Parser.strict( ctx.desc, 'string' ),
-      text: Utils.buildSearchText( ctx.desc || ctx.name ),
-      columns: PersonListParser.columns( ctx.items ),
-      filters: []
+      text: Utils.buildSearchText( ctx.desc || ctx.name )
     } ),
     listItem: ( ctx: TPersonListItemCtx ) => ( {
       uri: ctx.profile ? ctx.profile.getUri() : undefined,
