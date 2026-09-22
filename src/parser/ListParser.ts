@@ -5,6 +5,10 @@ import type { IListParser } from '@/interface/parser';
 
 
 export class ListParser< T extends object > extends Cache implements IListParser< T > {
+  protected static readonly FILTERABLE = new Set< string >( [
+    //
+  ] );
+
   constructor ( protected readonly raw: T ) { super() }
   public rawData () : T { return this.raw }
 
@@ -27,5 +31,9 @@ export class ListParser< T extends object > extends Cache implements IListParser
 
     for ( const item of list ) collect( item );
     return [ ...columns ];
+  }
+
+  public static filters ( columns: string[] ) : string[] {
+    return columns.filter( c => ListParser.FILTERABLE.has( c ) );
   }
 }
