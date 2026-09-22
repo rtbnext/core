@@ -184,7 +184,12 @@ export class Fetch implements IFetch {
   }
 
   public async download ( uri: string ) : Promise< TResponse< Buffer > > {
-    const res = await this.single< ArrayBuffer >( uri, 'get', { Accept: '*/*' }, 'arraybuffer' );
+    const url = new URL( uri );
+    url.search = '', url.hash = '';
+
+    const res = await this.single< ArrayBuffer >( url.toString(), 'get', {
+      ...this.useApiUserAgent(), Accept: '*/*'
+    }, 'arraybuffer' );
 
     if ( ! res.success || ! res.data ) return this.retErr( res, `Failed to download: ${ uri }` );
     return { ...res, data: Buffer.from( res.data ) };
