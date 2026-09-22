@@ -1,5 +1,8 @@
+import { Utils } from '@/core/Utils';
+import { Parser } from '@/parser/Parser';
+import { PersonListParser } from '@/parser/PersonListParser';
 import { RTBListParser } from '@/parser/RTBListParser';
-import type { TListConfig, TRTBListItemCtx } from '@/type/list';
+import type { TListConfig, TListIndexItemCtx, TRTBListItemCtx } from '@/type/list';
 
 
 export const LISTS = {
@@ -32,6 +35,16 @@ export const LISTS = {
       rankDiff: ctx.rankDiff,
       today: ctx.realtime?.today,
       ytd: ctx.realtime?.ytd
+    } )
+  },
+  person: {
+    parser: PersonListParser,
+    indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
+      uri, name: ctx.name,
+      desc: Parser.strict( ctx.desc, 'string' ),
+      text: Utils.buildSearchText( ctx.desc || ctx.name ),
+      columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
+      filters: [ 'gender', 'industry', 'citizenship', 'age' ]
     } )
   }
 } as const satisfies TListConfig;
