@@ -167,7 +167,7 @@ export class Wiki {
 
       return Parser.container< TImage >( {
         url: { value: info.descriptionurl, type: 'string' },
-        file: { value: info.url, type: 'string' },
+        file: { value: fileUrl, type: 'string' },
         thumb: { value: thumbUrl, type: 'string' },
         caption: { value: meta.ImageDescription?.value, type: 'text' },
         date: { value: dateTime, type: 'date', args: [ 'iso' ] },
