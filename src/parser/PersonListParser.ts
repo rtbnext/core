@@ -28,7 +28,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   }
 
   public year () : number {
-    return this.cache( 'year', () => Number( this.date().slice( 0, 4 ) ) );
+    return this.cache( 'year', () => Number( this.raw.year ?? this.date().slice( 0, 4 ) ) );
   }
 
   public rank () : number | undefined {
