@@ -51,7 +51,7 @@
     "@isodb/countries": "^0.1.0",
     "@isodb/us-states": "^0.1.1",
     "@komed3/deepmerge": "^1.2.0",
-    "@rtbnext/schema": "^2.3.6",
+    "@rtbnext/schema": "^2.3.7",
     "axios": "^1.20.0",
     "cmpstr": "^3.4.0",
     "commander": "^15.0.0",
