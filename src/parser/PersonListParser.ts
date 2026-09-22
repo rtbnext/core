@@ -107,8 +107,8 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   public organization () : TOrganization | undefined {
     return this.cache( 'organization', () => {
       if ( this.raw.organization ) return Parser.container< TOrganization >( {
-        name: { value: this.raw.organization, type: 'string' },
-        title: { value: this.raw.title, type: 'string' }
+        name: { value: this.raw.employment?.name ?? this.raw.organization, type: 'string' },
+        title: { value: this.raw.employment?.title ?? this.raw.title, type: 'string' }
       } );
     } );
   }
