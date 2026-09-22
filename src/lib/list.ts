@@ -2,7 +2,7 @@ import { Utils } from '@/core/Utils';
 import { Parser } from '@/parser/Parser';
 import { PersonListParser } from '@/parser/PersonListParser';
 import { RTBListParser } from '@/parser/RTBListParser';
-import type { TListConfig, TListIndexItemCtx, TRTBListItemCtx } from '@/type/list';
+import type { TListConfig, TListIndexItemCtx, TPersonListItemCtx, TRTBListItemCtx } from '@/type/list';
 
 
 export const LISTS = {
