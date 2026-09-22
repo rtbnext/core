@@ -7,7 +7,6 @@ import type { TListConfig, TListIndexItemCtx, TPersonListItemCtx, TRTBListItemCt
 
 export const LISTS = {
   rtb: {
-    lists: [ 'rtb' ],
     parser: RTBListParser,
     indexItem: () => ( {
       uri: 'rtb',
