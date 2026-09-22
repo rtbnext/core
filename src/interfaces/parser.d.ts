@@ -59,5 +59,3 @@ export interface IRTBListParser extends IPersonListParser {
   realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined;
   rankDiff ( data?: Partial< TProfileData > ) : { flag: TChangeFlag, rankDiff?: number };
 }
-
-export interface IBillionairesListParser extends IPersonListParser {}
