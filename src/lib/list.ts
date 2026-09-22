@@ -49,7 +49,7 @@ export const LISTS = {
       uri: ctx.profile ? ctx.profile.getUri() : undefined,
       sourceUri: ctx.parsed.uri(),
       name: ctx.profileData.info!.name.shortName,
-      rank: ctx.parsed.rank()!,
+      rank: ctx.parsed.rank(),
       networth: ctx.parsed.networth(),
       industry: ctx.profileData.info?.industry,
       source: ctx.profileData.info?.source,
