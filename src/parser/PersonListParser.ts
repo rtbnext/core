@@ -43,6 +43,16 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'dropOff', () => this.raw.finalWorth ? this.raw.finalWorth < 1e3 : undefined );
   }
 
+  public flags () : { family?: boolean, embargo?: boolean } | undefined {
+    return this.cache( 'flags', () => {
+      const family = Parser.strict< boolean >( this.raw.familyList, 'boolean' );
+      const embargo = Parser.strict< boolean >( this.raw.embargo, 'boolean' );
+
+      if ( family === undefined && embargo === undefined ) return;
+      return { family, embargo };
+    } );
+  }
+
   public name () : TNameResult {
     return this.cache( 'name', () => NameParser.parse(
       this.raw.person?.name ?? this.raw.personName, this.raw.lastName, this.raw.firstName
