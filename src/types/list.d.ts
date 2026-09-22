@@ -12,6 +12,7 @@ import type { TListResponse } from '@/type/response';
 export type TListParserCls< T extends IListParser > = new ( ...args: any[] ) => T;
 
 export type TListIndexItemCtx = {
+  items: TPersonListItem[];
   name: string;
   desc?: string;
 };
@@ -31,7 +32,7 @@ export type TRTBListItemCtx = Expand< TPersonListItemCtx & {
 
 export type TRTBListConfig = {
   parser: TListParserCls< IRTBListParser >;
-  indexItem () : TListIndexItem;
+  indexItem ( ctx: { items: TRTBListItem[] } ) : TListIndexItem;
   listItem ( ctx: TRTBListItemCtx ) : TRTBListItem;
 };
 

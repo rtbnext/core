@@ -1,3 +1,5 @@
+import type { TRTBListItem } from '@rtbnext/schema/src/model/list';
+
 import { Utils } from '@/core/Utils';
 import { Parser } from '@/parser/Parser';
 import { PersonListParser } from '@/parser/PersonListParser';
@@ -8,13 +10,13 @@ import type { TListConfig, TListIndexItemCtx, TPersonListItemCtx, TRTBListItemCt
 export const LISTS = {
   rtb: {
     parser: RTBListParser,
-    indexItem: () => ( {
+    indexItem: ( ctx: { items: TRTBListItem[] } ) => ( {
       uri: 'rtb',
       name: 'The World’s Real-Time Billionaires',
       shortName: 'Real-Time Billionaires',
       desc: 'Today’s richest people in the world',
       text: 'todays richest people world',
-      columns: [ 'rank', 'diff', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
+      columns: RTBListParser.columns( ctx.items ),
       filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
     } ),
     listItem: ( ctx: TRTBListItemCtx ) => ( {
@@ -42,7 +44,7 @@ export const LISTS = {
       uri, name: ctx.name,
       desc: Parser.strict( ctx.desc, 'string' ),
       text: Utils.buildSearchText( ctx.desc || ctx.name ),
-      columns: [],
+      columns: PersonListParser.columns( ctx.items ),
       filters: []
     } ),
     listItem: ( ctx: TPersonListItemCtx ) => ( {

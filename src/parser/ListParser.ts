@@ -10,7 +10,7 @@ export class ListParser< T extends object > extends Cache implements IListParser
 
   // --- columns / filters ---
 
-  public static columns ( list: Array< TPersonListItem | TRTBListItem > ) : string[] {
+  public static columns ( list: ( TPersonListItem | TRTBListItem )[] ) : string[] {
     const columns = new Set< string >();
 
     const collect = ( value: unknown, prefix = '' ) : void => {
