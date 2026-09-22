@@ -28,7 +28,7 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   }
 
   public year () : number {
-    return this.cache( 'year', () => Number( this.date().slice( 0, 4 ) ) );
+    return this.cache( 'year', () => Number( this.raw.year ?? this.date().slice( 0, 4 ) ) );
   }
 
   public rank () : number | undefined {
@@ -43,6 +43,16 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'dropOff', () => this.raw.finalWorth ? this.raw.finalWorth < 1e3 : undefined );
   }
 
+  public flags () : { family?: boolean, embargo?: boolean } | undefined {
+    return this.cache( 'flags', () => {
+      const family = Parser.strict< boolean >( this.raw.familyList, 'boolean' );
+      const embargo = Parser.strict< boolean >( this.raw.embargo, 'boolean' );
+
+      if ( family === undefined && embargo === undefined ) return;
+      return { family, embargo };
+    } );
+  }
+
   public name () : TNameResult {
     return this.cache( 'name', () => NameParser.parse(
       this.raw.person?.name ?? this.raw.personName, this.raw.lastName, this.raw.firstName
@@ -55,7 +65,8 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'info', () => ( {
       flags: Parser.container< TProfileFlags >( {
         dropOff: { value: this.dropOff(), type: 'boolean' },
-        family: { value: this.name().family, type: 'boolean' }
+        family: { value: this.name().family, type: 'boolean' },
+        embargo: { value: this.raw.embargo, type: 'boolean' }
       } ),
       ...Parser.container< Partial< TProfileInfo > >( {
         gender: { value: this.raw.gender, type: 'gender' },
@@ -96,8 +107,8 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
   public organization () : TOrganization | undefined {
     return this.cache( 'organization', () => {
       if ( this.raw.organization ) return Parser.container< TOrganization >( {
-        name: { value: this.raw.organization, type: 'string' },
-        title: { value: this.raw.title, type: 'string' }
+        name: { value: this.raw.employment?.name ?? this.raw.organization, type: 'string' },
+        title: { value: this.raw.employment?.title ?? this.raw.title, type: 'string' }
       } );
     } );
   }

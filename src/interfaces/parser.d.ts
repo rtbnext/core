@@ -44,6 +44,7 @@ export interface IPersonListParser extends IListParser< TPersonListEntry > {
   rank () : number | undefined;
   networth () : number | undefined;
   dropOff () : boolean | undefined;
+  flags () : { family?: boolean, embargo?: boolean } | undefined;
   name () : TNameResult;
   info () : Partial< TProfileInfo >;
   residence () : TLocation | undefined;
@@ -59,5 +60,3 @@ export interface IRTBListParser extends IPersonListParser {
   realtime ( data?: Partial< TProfileData >, prev?: string, next?: string ) : TRealtime | undefined;
   rankDiff ( data?: Partial< TProfileData > ) : { flag: TChangeFlag, rankDiff?: number };
 }
-
-export interface IBillionairesListParser extends IPersonListParser {}

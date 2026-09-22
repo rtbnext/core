@@ -1,19 +1,19 @@
 import type { TRealtime } from '@rtbnext/schema/src/base/assets';
 import type { TChangeFlag } from '@rtbnext/schema/src/base/const';
-import type { TBillionairesListItem, TListIndexItem, TPersonListItem, TRTBListItem } from '@rtbnext/schema/src/model/list';
+import type { TListIndexItem, TPersonListItem, TRTBListItem } from '@rtbnext/schema/src/model/list';
 import type { TProfileData } from '@rtbnext/schema/src/model/profile';
 import type { Expand } from 'devtypes/types/util';
 
-import type { IBillionairesListParser, IListParser, IPersonListParser, IRTBListParser } from '@/interface/parser';
-import type { TListResponse } from '@/type/response';
+import type { IListParser, IPersonListParser, IRTBListParser } from '@/interface/parser';
 import type { IProfile } from '@/interface/profile';
+import type { TListResponse } from '@/type/response';
 
-
-export type TListTypes = 'rtb' | 'billionaires' | 'person';
 
 export type TListParserCls< T extends IListParser > = new ( ...args: any[] ) => T;
 
 export type TListIndexItemCtx = {
+  columns: string[];
+  filters: string[];
   name: string;
   desc?: string;
 };
@@ -32,17 +32,9 @@ export type TRTBListItemCtx = Expand< TPersonListItemCtx & {
 } >;
 
 export type TRTBListConfig = {
-  lists: readonly [ 'rtb' ];
   parser: TListParserCls< IRTBListParser >;
-  indexItem () : TListIndexItem;
+  indexItem ( ctx: Omit< TListIndexItemCtx, 'name' | 'desc' > ) : TListIndexItem;
   listItem ( ctx: TRTBListItemCtx ) : TRTBListItem;
-};
-
-export type TBillionairesListConfig = {
-  lists: readonly [ 'billionaires', 'forbes-400' ];
-  parser: TListParserCls< IBillionairesListParser >;
-  indexItem ( uri: string, ctx: TListIndexItemCtx ) : TListIndexItem;
-  listItem ( ctx: TPersonListItemCtx ) : TBillionairesListItem;
 };
 
 export type TPersonListConfig = {
@@ -53,7 +45,6 @@ export type TPersonListConfig = {
 
 export type TListConfig = {
   rtb: TRTBListConfig;
-  billionaires: TBillionairesListConfig;
   person: TPersonListConfig;
 };
 

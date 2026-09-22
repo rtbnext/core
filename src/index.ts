@@ -36,7 +36,6 @@ export { Stats } from '@/model/Stats';
 
 // --- export parser classes ---
 
-export { BillionairesListParser } from '@/parser/BillionairesListParser';
 export { ListParser } from '@/parser/ListParser';
 export { NameParser } from '@/parser/NameParser';
 export { Parser } from '@/parser/Parser';

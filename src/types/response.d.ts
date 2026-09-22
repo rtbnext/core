@@ -78,10 +78,6 @@ export type TProfileResponse = {
       timestamp: number | string;
       financialAssets?: TFinancialAsset[];
       date?: number | string;
-      estWorthPrev?: number;
-      privateAssetsWorth?: number;
-      familyList?: boolean;
-      archivedWorth?: number;
       bios?: string[];
       abouts?: string[];
       philanthropyScore?: number;
@@ -115,13 +111,7 @@ export type TPersonListEntry = {
   uri: string;
   position?: number;
   rank?: number;
-  previousRank?: number;
   finalWorth?: number;
-  estWorthPrev?: number;
-  privateAssetsWorth?: number;
-  archivedWorth?: number;
-  change?: number;
-  changePercent?: number;
   person?: {
     name?: string;
     uri?: string;
@@ -144,7 +134,12 @@ export type TPersonListEntry = {
   bios?: string[];
   abouts?: string[];
   financialAssets?: TFinancialAsset[];
-  csfDisplayFields: string[];
+  familyList?: boolean;
+  embargo?: boolean;
+  employment?: {
+    name?: string;
+    title?: string;
+  };
 };
 
 export type TListResponse< T extends object > = {
