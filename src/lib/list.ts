@@ -42,8 +42,8 @@ export const LISTS = {
       uri, name: ctx.name,
       desc: Parser.strict( ctx.desc, 'string' ),
       text: Utils.buildSearchText( ctx.desc || ctx.name ),
-      columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
-      filters: [ 'gender', 'industry', 'citizenship', 'age' ]
+      columns: [],
+      filters: []
     } ),
     listItem: ( ctx: TPersonListItemCtx ) => ( {
       uri: ctx.profile ? ctx.profile.getUri() : undefined,
