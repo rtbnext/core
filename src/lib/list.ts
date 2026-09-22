@@ -1,5 +1,6 @@
 import { Utils } from '@/core/Utils';
 import { BillionairesListParser } from '@/parser/BillionairesListParser';
+import { Parser } from '@/parser/Parser';
 import { PersonListParser } from '@/parser/PersonListParser';
 import { RTBListParser } from '@/parser/RTBListParser';
 import type { TListConfig, TListIndexItemCtx, TListTypes, TPersonListItemCtx, TRTBListItemCtx } from '@/type/list';
@@ -43,7 +44,9 @@ export const LISTS = {
     lists: [ 'billionaires', 'forbes-400' ],
     parser: BillionairesListParser,
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
-      uri, name: ctx.name, desc: ctx.desc, text: Utils.buildSearchText( ctx.desc ),
+      uri, name: ctx.name,
+      desc: Parser.strict( ctx.desc, 'string' ),
+      text: Utils.buildSearchText( ctx.desc ?? ctx.name ?? '' ),
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'selfMadeRank', 'philanthropyScore', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
     } ),
@@ -56,7 +59,9 @@ export const LISTS = {
   person: {
     parser: PersonListParser,
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
-      uri, name: ctx.name, desc: ctx.desc, text: Utils.buildSearchText( ctx.desc ),
+      uri, name: ctx.name,
+      desc: Parser.strict( ctx.desc, 'string' ),
+      text: Utils.buildSearchText( ctx.desc ?? ctx.name ?? '' ),
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age' ]
     } ),
