@@ -62,6 +62,15 @@ export class Wiki {
     return Math.max( 0, score );
   }
 
+  private static cleanupCommonsUri ( uri?: string ) : string | undefined {
+    if ( uri === undefined ) return;
+
+    const url = new URL( uri );
+    url.search = '', url.hash = '';
+
+    return url.toString();
+  }
+
   // --- query data ---
 
   public static async queryWikidata ( data: Partial< TProfileData > ) : Promise< TWikidata | undefined > {
@@ -132,17 +141,20 @@ export class Wiki {
 
       log.debug( `Wikimedia Commons image info received for: ${ title }` );
 
-      const file = await Wiki.fetch.download( info.url );
+      const fileUrl = this.cleanupCommonsUri( info.url );
+      if ( ! fileUrl ) throw new Error( `No image URL found for: ${ title }` );
+
+      const file = await Wiki.fetch.download( fileUrl );
       if ( ! file.success || ! file.data ) throw new Error( `Failed to download image: ${ title }` );
 
-      const thumbUrl = info.thumburl ?? Object.values( info.responsiveUrls ?? {} ).at( 0 );
+      const thumbUrl = this.cleanupCommonsUri( info.thumburl ?? Object.values( info.responsiveUrls ?? {} ).at( 0 ) );
       const thumb = thumbUrl ? await Wiki.fetch.download( thumbUrl ) : undefined;
 
       if ( thumbUrl && ( ! thumb?.success || ! thumb.data ) )
         throw new Error( `Failed to download image thumbnail: ${ title }` );
 
-      if ( ! Wiki.image.save( uri, { buffer: file.data, filename: title },
-        thumb?.data ? { buffer: thumb.data, filename: title } : undefined
+      if ( ! Wiki.image.save( uri, { buffer: file.data, filename: fileUrl },
+        thumb?.data ? { buffer: thumb.data, filename: thumbUrl! } : undefined
       ) ) throw new Error( `Failed to save image: ${ title }` );
 
       const meta = info.extmetadata ?? {};
