@@ -6,7 +6,8 @@ import type { IListParser } from '@/interface/parser';
 
 export class ListParser< T extends object > extends Cache implements IListParser< T > {
   protected static readonly FILTERABLE = new Set< string >( [
-    //
+    'industry', 'gender', 'citizenship', 'place.country', 'place.state',
+    'selfMadeRank', 'philanthropyScore', 'flag'
   ] );
 
   constructor ( protected readonly raw: T ) { super() }
