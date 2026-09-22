@@ -87,8 +87,12 @@ export class ListJob extends Job< TListJobOptions > {
     }
 
     // --- create list (if not exists) ---
-    if ( ! name ) throw new Error( `Failed to determine name for ${ listUri } list` );
-    list ??= List.create( listUri, indexItem( listUri, { items, name, desc } ) ) || undefined;
+    if ( ! list ) {
+      if ( ! name ) throw new Error( `Failed to determine name for ${ listUri } list` );
+
+      const columns = parser.columns( items ), filters = parser.filters( columns );
+      list = List.create( listUri, indexItem( listUri, { name, desc, columns, filters } ) ) || undefined;
+    }
 
     if ( ! list ) throw new Error( `Failed to create or retrieve ${ listUri } list` );
     this.log( `Saving ${ listUri } list for year ${ args.year ?? '-' } (${ count } items)` );
