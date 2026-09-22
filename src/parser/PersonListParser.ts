@@ -65,7 +65,8 @@ export class PersonListParser extends ListParser< TPersonListEntry > implements 
     return this.cache( 'info', () => ( {
       flags: Parser.container< TProfileFlags >( {
         dropOff: { value: this.dropOff(), type: 'boolean' },
-        family: { value: this.name().family, type: 'boolean' }
+        family: { value: this.name().family, type: 'boolean' },
+        embargo: { value: this.raw.embargo, type: 'boolean' }
       } ),
       ...Parser.container< Partial< TProfileInfo > >( {
         gender: { value: this.raw.gender, type: 'gender' },
