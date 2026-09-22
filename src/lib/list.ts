@@ -45,6 +45,23 @@ export const LISTS = {
       text: Utils.buildSearchText( ctx.desc || ctx.name ),
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age' ]
+    } ),
+    listItem: ( ctx: TPersonListItemCtx ) => ( {
+      uri: ctx.profile ? ctx.profile.getUri() : undefined,
+      sourceUri: ctx.parsed.uri(),
+      name: ctx.profileData.info!.name.shortName,
+      rank: ctx.parsed.rank()!,
+      networth: ctx.parsed.networth(),
+      industry: ctx.profileData.info?.industry,
+      source: ctx.profileData.info?.source,
+      gender: ctx.profileData.info?.gender,
+      age: ctx.parsed.age(),
+      citizenship: 
+      place: 
+      organization: 
+      selfMadeRank: ctx.parsed.selfMade()?.rank,
+      philanthropyScore: ctx.parsed.philanthropyScore(),
+      flags: ctx.parsed.flags()
     } )
   }
 } as const satisfies TListConfig;
