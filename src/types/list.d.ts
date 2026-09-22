@@ -9,8 +9,6 @@ import type { IProfile } from '@/interface/profile';
 import type { TListResponse } from '@/type/response';
 
 
-export type TListTypes = 'rtb' | 'billionaires' | 'person';
-
 export type TListParserCls< T extends IListParser > = new ( ...args: any[] ) => T;
 
 export type TListIndexItemCtx = {
