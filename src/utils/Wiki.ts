@@ -141,8 +141,8 @@ export class Wiki {
       if ( thumbUrl && ( ! thumb?.success || ! thumb.data ) )
         throw new Error( `Failed to download image thumbnail: ${ title }` );
 
-      if ( ! Wiki.image.save( uri, { buffer: file.data, filename: info.url },
-        thumb?.data ? { buffer: thumb.data, filename: thumbUrl! } : undefined
+      if ( ! Wiki.image.save( uri, { buffer: file.data, filename: title },
+        thumb?.data ? { buffer: thumb.data, filename: title } : undefined
       ) ) throw new Error( `Failed to save image: ${ title }` );
 
       const meta = info.extmetadata ?? {};
