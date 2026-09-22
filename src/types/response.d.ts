@@ -138,7 +138,7 @@ export type TPersonListEntry = {
   embargo?: boolean;
   employment?: {
     name?: string;
-    titl?: string;
+    title?: string;
   };
 };
 
