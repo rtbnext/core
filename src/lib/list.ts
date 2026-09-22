@@ -15,6 +15,23 @@ export const LISTS = {
       columns: [ 'rank', 'diff', 'profile', 'networth', 'today', 'ytd', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'diff', 'age' ]
     } ),
-    listItem: ( ctx: TRTBListItemCtx ) => ( {} )
+    listItem: ( ctx: TRTBListItemCtx ) => ( {
+      uri: ctx.profile ? ctx.profile.getUri() : undefined,
+      sourceUri: ctx.parsed.uri(),
+      name: ctx.profileData.info!.name.shortName,
+      rank: ctx.parsed.rank()!,
+      networth: ctx.parsed.networth()!,
+      industry: ctx.profileData.info!.industry,
+      source: ctx.profileData.info!.source,
+      gender: ctx.profileData.info?.gender,
+      age: ctx.parsed.age(),
+      citizenship: ctx.profileData.info?.citizenship,
+      selfMadeRank: ctx.parsed.selfMade()?.rank,
+      philanthropyScore: ctx.parsed.philanthropyScore(),
+      flag: ctx.flag,
+      rankDiff: ctx.rankDiff,
+      today: ctx.realtime?.today,
+      ytd: ctx.realtime?.ytd
+    } )
   }
 } as const satisfies TListConfig;
