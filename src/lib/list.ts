@@ -46,7 +46,7 @@ export const LISTS = {
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
       uri, name: ctx.name,
       desc: Parser.strict( ctx.desc, 'string' ),
-      text: Utils.buildSearchText( ctx.desc ?? ctx.name ?? '' ),
+      text: Utils.buildSearchText( ctx.desc || ctx.name ),
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'selfMadeRank', 'philanthropyScore', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age', 'selfMadeRank', 'philanthropyScore' ]
     } ),
@@ -61,7 +61,7 @@ export const LISTS = {
     indexItem: ( uri: string, ctx: TListIndexItemCtx ) => ( {
       uri, name: ctx.name,
       desc: Parser.strict( ctx.desc, 'string' ),
-      text: Utils.buildSearchText( ctx.desc ?? ctx.name ?? '' ),
+      text: Utils.buildSearchText( ctx.desc || ctx.name ),
       columns: [ 'rank', 'profile', 'networth', 'age', 'citizenship', 'source' ],
       filters: [ 'gender', 'industry', 'citizenship', 'age' ]
     } ),
