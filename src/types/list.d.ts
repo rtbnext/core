@@ -15,7 +15,7 @@ export type TListParserCls< T extends IListParser > = new ( ...args: any[] ) => 
 
 export type TListIndexItemCtx = {
   name: string;
-  desc: string;
+  desc?: string;
 };
 
 export type TPersonListItemCtx = {
