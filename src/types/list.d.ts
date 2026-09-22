@@ -30,7 +30,6 @@ export type TRTBListItemCtx = Expand< TPersonListItemCtx & {
 } >;
 
 export type TRTBListConfig = {
-  lists: readonly [ 'rtb' ];
   parser: TListParserCls< IRTBListParser >;
   indexItem () : TListIndexItem;
   listItem ( ctx: TRTBListItemCtx ) : TRTBListItem;
