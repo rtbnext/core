@@ -56,9 +56,9 @@ export const LISTS = {
       source: ctx.profileData.info?.source,
       gender: ctx.profileData.info?.gender,
       age: ctx.parsed.age(),
-      citizenship: 
-      place: 
-      organization: 
+      citizenship: ctx.profileData.info?.citizenship,
+      place: ctx.parsed.residence(),
+      organization: ctx.parsed.organization(),
       selfMadeRank: ctx.parsed.selfMade()?.rank,
       philanthropyScore: ctx.parsed.philanthropyScore(),
       flags: ctx.parsed.flags()
